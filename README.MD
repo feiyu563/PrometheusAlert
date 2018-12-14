@@ -30,13 +30,13 @@ webhook地址为： http://[程序部署的IP:端口]/prometheus/alert 即可.
 groups:
 - name: node_alert
   rules:
-  - alert: Node_CPU_Alert
+  - alert: 主机CPU监控
     expr: node_load1 > 3
     labels:
-      node: alert
+      severity: warning
     annotations:
-      description: If this value is high, it shows that CPU is very complex and very high !  #描述告警信息
-      summary: "{{ $labels.instance }} node CPU load goes too high !(current value: {{ $value }}s)"  #告警的实际内容
+      description: If this value is high, it shows that CPU is very complex and very high !  #告警信息
+      summary: "{{ $labels.instance }} node CPU load is ok !(current value: {{ $value }}s)"  #告警恢复信息
 ```
 --------------------------------------      
 

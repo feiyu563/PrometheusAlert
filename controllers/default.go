@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type MainController struct {
@@ -17,9 +18,9 @@ type MainController struct {
 
 type Labels struct{
 	Alertname string `json:"alertname"`
+	Instance string `json:"instance"`
 }
 type Annotations struct{
-	Message string `json:"message"`
 	Description string `json:"description"`
 	Summary string `json:"summary"`
 }
@@ -28,7 +29,6 @@ type Alerts struct {
 	Annotations Annotations `json:"annotations"`
 	StartsAt string `json:"startsAt"`
 	EndsAt string `json:"endsAt"`
-	GeneratorURL string `json:"generatorUrl"`
 }
 type Prometheus struct {
 	Status string
@@ -63,28 +63,37 @@ func (c *MainController) PrometheusAlert() {
 	log.Println(c.Data["json"])
 	c.ServeJSON()
 }
-
+func GetCSTtime(date string)(string)  {
+	T1:=date[0:10]
+	T2:=date[11:19]
+	T3:=T1+" "+T2
+	tm2, _ := time.Parse("2006-01-02 15:04:05", T3)
+	h, _ := time.ParseDuration("-1h")
+	tm3:=tm2.Add(-8*h)
+	tm:=tm3.Format("2006-01-02 15:04:05")
+	return tm
+}
 func PostToDingDingP(message Prometheus)(string)  {
 	Ddurl:=beego.AppConfig.String("ddurl")
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("alerturl")
 	Logourl:=beego.AppConfig.String("logourl")
-	Alertmessage:=""
-	switch {
-	case message.Alerts[0].Annotations.Message!="":
-		Alertmessage=message.Alerts[0].Annotations.Message
-	case message.Alerts[0].Annotations.Description!="":
-		Alertmessage=message.Alerts[0].Annotations.Description
-	case message.Alerts[0].Annotations.Summary!="":
-		Alertmessage=message.Alerts[0].Annotations.Summary
+	text:=""
+    titleend:=""
+	if message.Status=="resolved" {
+		text="## ["+Title+"云Prometheus故障恢复信息]("+Alerturl+")\n\n"+"#### "+message.Alerts[0].Labels.Alertname+"\n\n"+"###### 告警级别：故障恢复\n\n"+"###### 开始时间："+GetCSTtime(message.Alerts[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(message.Alerts[0].EndsAt)+"\n\n"+"###### 故障主机IP："+message.Alerts[0].Labels.Instance+"\n\n"+"##### "+message.Alerts[0].Annotations.Summary+"\n\n"+"!["+Title+"]("+Logourl+")"
+		titleend="云故障恢复信息"
+	}else {
+		text="## ["+Title+"云Prometheus故障告警信息]("+Alerturl+")\n\n"+"#### "+message.Alerts[0].Labels.Alertname+"\n\n"+"###### 告警级别：故障告警\n\n"+"###### 开始时间："+GetCSTtime(message.Alerts[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(message.Alerts[0].EndsAt)+"\n\n"+"###### 故障主机IP："+message.Alerts[0].Labels.Instance+"\n\n"+"##### "+message.Alerts[0].Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
+		titleend="云故障告警信息"
 	}
-	text:="## ["+Title+"云告警Prometheus平台告警信息]("+Alerturl+")\n\n"+"#### "+message.Alerts[0].Labels.Alertname+"\n\n"+"###### 告警级别："+message.Status+"\n\n"+"###### 开始时间："+message.Alerts[0].StartsAt+"\n\n"+"###### 结束时间："+message.Alerts[0].EndsAt+"\n\n"+"`"+Alertmessage+"`\n\n"+"!["+Title+"]("+Logourl+")"
+
 	u := DDMessage{
 		Msgtype:"markdown",
 		Markdown: struct {
 			Title string `json:"title"`
 			Text  string `json:"text"`
-		}{Title: Title+"云告警平台告警信息", Text: text},
+		}{Title: Title+titleend, Text: text},
 		At: struct {
 			AtMobiles []string `json:"atMobiles"`
 			IsAtAll   bool `json:"isAtAll"`
@@ -146,13 +155,13 @@ func PostToDingDingG(message Graylog)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("alerturl")
 	Logourl:=beego.AppConfig.String("logourl")
-	text:="## ["+Title+"云告警Graylog平台告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警名称："+message.Check_result.Triggered_condition.Title+"\n\n"+"###### 告警类型："+message.Check_result.Triggered_condition.Type+"\n\n"+"###### 开始时间："+message.Check_result.Triggered_at+" UTC\n\n"+"###### 持续时间："+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n\n"+"!["+Title+"]("+Logourl+")"
+	text:="## ["+Title+"云Graylog告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警名称："+message.Check_result.Triggered_condition.Title+"\n\n"+"###### 告警类型："+message.Check_result.Triggered_condition.Type+"\n\n"+"###### 开始时间："+message.Check_result.Triggered_at+" UTC\n\n"+"###### 持续时间："+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n\n"+"!["+Title+"]("+Logourl+")"
 	u := DDMessage{
 		Msgtype:"markdown",
 		Markdown: struct {
 			Title string `json:"title"`
 			Text  string `json:"text"`
-		}{Title: Title+"云告警平台告警信息", Text: text},
+		}{Title: Title+"云告警信息", Text: text},
 		At: struct {
 			AtMobiles []string `json:"atMobiles"`
 			IsAtAll   bool `json:"isAtAll"`
