@@ -33,30 +33,30 @@ data:
     phonecalllevel=4
 kind: ConfigMap
 metadata:
-  name: dingding-conf
+  name: prometheus-alert-center-conf
 ---
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   labels:
-    app: dingding
-    alertname: DeadMansSwitch
-  name: dingding
+    app: prometheus-alert-center
+    alertname: prometheus-alert-center
+  name: prometheus-alert-center
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: dingding
-      alertname: DeadMansSwitch
+      app: prometheus-alert-center
+      alertname: prometheus-alert-center
   template:
     metadata:
       labels:
-        app: dingding
-        alertname: DeadMansSwitch
+        app: prometheus-alert-center
+        alertname: prometheus-alert-center
     spec:
       containers:
-      - image: feiyu563/prometheus-dingding:0.6
-        name: dingding
+      - image: feiyu563/prometheus-prometheus-alert-center:0.6
+        name: prometheus-alert-center
         env:
         - name: TZ
           value: "Asia/Shanghai"
@@ -71,13 +71,13 @@ spec:
             cpu: 100m
             memory: 100Mi
         volumeMounts:
-        - name: dingding-conf-map
+        - name: prometheus-alert-center-conf-map
           mountPath: /app/conf/app.conf
           subPath: app.conf
       volumes:
-      - name: dingding-conf-map
+      - name: prometheus-alert-center-conf-map
         configMap:
-          name: dingding-conf
+          name: prometheus-alert-center-conf
           items:
           - key: app.conf
             path: app.conf
@@ -86,12 +86,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    alertname: DeadMansSwitch
-  name: dingding
+    alertname: prometheus-alert-center
+  name: prometheus-alert-center
 spec:
   ports:
   - name: http
     port: 80
     targetPort: http
   selector:
-    app: dingding
+    app: prometheus-alert-center
