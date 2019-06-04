@@ -90,7 +90,7 @@ groups:
 ```
 最终告警效果:
 
-![prometheus1](doc/prometheus.png)
+![prometheus1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/doc/prometheus.png)
 
 --------------------------------------
  **2. Grafana 接入配置**
@@ -153,9 +153,9 @@ logourl=https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/ha
 #腾讯短信接口key
 appkey=e7xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #腾讯短信模版ID
-tpl_id=14386
+tpl_id=143xxxxx
 #腾讯短信sdk app id
-sdkappid=1400027785
+sdkappid=140xxxxxxx
 #短信告警级别(等于3就进行短信告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 messagelevel=3
 #腾讯电话接口key
