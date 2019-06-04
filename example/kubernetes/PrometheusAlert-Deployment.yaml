@@ -55,7 +55,7 @@ spec:
         alertname: prometheus-alert-center
     spec:
       containers:
-      - image: feiyu563/prometheus-prometheus-alert-center:0.6
+      - image: feiyu563/prometheus-alert
         name: prometheus-alert-center
         env:
         - name: TZ
