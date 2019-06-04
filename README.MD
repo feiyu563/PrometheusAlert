@@ -89,6 +89,7 @@ groups:
       ddurl: "https://oapi.dingtalk.com/robot/send?access_token=f259e295a8f63c93b44498c53aba170882f948b2e967ac6027,https://oapi.dingtalk.com/robot/send?access_token=914129ff5cd8199072773d736c6bbfabe421f19a9af9511374d687ee0" #支持添加多个钉钉告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的钉钉地址
 ```
 最终告警效果:
+
 ![prometheus1](doc/prometheus.png)
 
 --------------------------------------
@@ -109,6 +110,7 @@ Notifications配置格式参考,支持配置多个钉钉机器人url:
 ```
 
 最终告警效果:
+
 ![grafana5](doc/grafana.png)
 
 --------------------------------------
@@ -124,6 +126,7 @@ Notifications配置格式参考,支持配置多个钉钉机器人url:
 配置完成后,点击```Test```测试下是否能够正常接收告警消息即可
 
 最终告警效果:
+
 ![graylog4](doc/graylog4.png)
 
 --------------------------------------
