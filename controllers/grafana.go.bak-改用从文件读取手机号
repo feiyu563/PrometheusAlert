@@ -1,0 +1,92 @@
+package controllers
+
+import (
+	"encoding/json"
+	"github.com/astaxie/beego"
+	"log"
+	"strings"
+	"time"
+)
+
+type GrafanaController struct {
+	beego.Controller
+}
+
+// {"evalMatches":[],"message":"5分钟内申请云服务流量低于100","ruleId":6,"ruleName":"云服务任务成功数量过低","ruleUrl":"http://grafana.haimacloud.com/d/pH9lfnrmk/ias-p3-ji-gao-jing-xiang?fullscreen=true\u0026edit=true\u0026tab=alert\u0026panelId=28\u0026orgId=1","state":"ok","title":"[OK] 云服务任务成功数量过低"}
+//{"evalMatches":[{"value":0,"metric":"Count","tags":{}}],"message":"5分钟内申请云服务流量低于100","ruleId":6,"ruleName":"云服务任务成功数量过低","ruleUrl":"http://grafana.haimacloud.com/d/pH9lfnrmk/ias-p3-ji-gao-jing-xiang?fullscreen=true\u0026edit=true\u0026tab=alert\u0026panelId=28\u0026orgId=1","state":"alerting","title":"[Alerting] 云服务任务成功数量过低"}
+
+type Grafana struct {
+	Message string `json:"message"`
+	RuleName string `json:"ruleName"`
+	RuleUrl string `json:"ruleUrl"`
+	State string `json:"state"`
+}
+
+func (c *GrafanaController) GrafanaAlert() {
+	alert:=Grafana{}
+	log.SetPrefix("[DEBUG 1]")
+	log.Println(string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageGrafana(alert)
+	log.SetPrefix("[DEBUG 3]")
+	log.Println(c.Data["json"])
+	c.ServeJSON()
+}
+
+func SendMessageGrafana(message Grafana)(string)  {
+	Title:=beego.AppConfig.String("title")
+	Logourl:=beego.AppConfig.String("logourl")
+	text:=""
+	//MobileMessage:=""
+	PhoneCallMessage:=""
+	titleend:=""
+	returnMessage:=""
+	//告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
+	AlertLevel:=[]string{"信息","警告","一般严重","严重","灾难"}
+
+	//拆分用户号码和告警消息
+	fullMessage:=strings.Split(message.Message,"&&phone")
+
+	if message.State=="ok" {
+		titleend="故障恢复信息"
+		text="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+"#### "+message.RuleName+"\n\n"+"###### 告警级别："+AlertLevel[4]+"\n\n"+"###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+"##### "+fullMessage[0]+" 已经恢复正常\n\n"+"!["+Title+"]("+Logourl+")"
+		//MobileMessage="\n["+Title+"Grafana"+titleend+"]\n"+message.RuleName+"\n"+"告警级别："+AlertLevel[4]+"\n"+"开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n"+message.Message+" 已经恢复正常"
+		PhoneCallMessage=fullMessage[0]+" 已经恢复正常"
+	}else {
+		titleend="故障告警信息"
+		text="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+"#### "+message.RuleName+"\n\n"+"###### 告警级别："+AlertLevel[4]+"\n\n"+"###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+"##### "+fullMessage[0]+"\n\n"+"!["+Title+"]("+Logourl+")"
+		//MobileMessage="\n["+Title+"Grafana"+titleend+"]\n"+message.RuleName+"\n"+"告警级别："+AlertLevel[4]+"\n"+"开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n"+message.Message
+		PhoneCallMessage=fullMessage[0]
+	}
+
+	//根据不同nLevel 优先级告警
+	//if (nLevel==Messagelevel) {
+	//	return PostTXmessage(MobileMessage,AlerMessage[0].Annotations.Mobile)
+	//} else if (nLevel==PhoneCalllevel) {
+	//	return PostTXphonecall(PhoneCallMessage,AlerMessage[0].Annotations.Mobile)
+	//}
+	//return PostToDingDing(Title+titleend,text)
+
+	//拆分ddurl
+	url:=beego.AppConfig.String("ddurl")
+	if len(fullMessage)<2 {
+		returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,text,url)+"\n"
+	} else {
+		DURL := strings.Split(fullMessage[1], "&&ddurl")
+		if len(DURL)<2{
+			returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,text,url)+"\n"
+			//取到手机号
+			phone:=fullMessage[1]
+			returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,phone)+"\n"
+		} else {
+			DD:=strings.Split(DURL[1], ",")
+			for _,d:=range DD {
+				returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,text,d)+"\n"
+			}
+			//取到手机号
+			phone:=DURL[0]
+			returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,phone)+"\n"
+		}
+	}
+	return returnMessage
+}

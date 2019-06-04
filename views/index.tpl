@@ -75,7 +75,7 @@
   <header>
     <h1 class="logo">Welcome to Prometheus Alert System</h1>
     <div class="description">
-      
+		<a class="email" href="https://github.com/feiyu563/PrometheusAlert">Go to My GitHub and find how to use it !</a>
     </div>
   </header>
   <footer>

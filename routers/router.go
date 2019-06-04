@@ -7,8 +7,8 @@ import (
 
 func init() {
     beego.Router("/", &controllers.MainController{})
-
-	//prometheus alert
-	beego.Router("/prometheus/alert", &controllers.MainController{},"post:PrometheusAlert")
-	beego.Router("/graylog/alert", &controllers.MainController{},"post:GraylogAlert")
+	//alert
+	beego.Router("/prometheus/alert", &controllers.PrometheusController{},"post:PrometheusAlert")
+	beego.Router("/graylog/alert", &controllers.GraylogController{},"post:GraylogAlert")
+	beego.Router("/grafana/alert", &controllers.GrafanaController{},"post:GrafanaAlert")
 }

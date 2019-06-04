@@ -1,4 +1,6 @@
-FROM docker.io/busybox
+FROM centos:7
 MAINTAINER jikun.zhang <jikun.zhang>
-ADD . ./
-ENTRYPOINT ["./PrometheusAlert"]
+RUN mkdir /app
+ADD . /app/
+WORKDIR /app
+ENTRYPOINT ["/app/PrometheusAlert"]
