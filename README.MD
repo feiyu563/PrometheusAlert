@@ -86,7 +86,7 @@ groups:
       summary: "{{ $labels.instance }} CPU load占用过高已经恢复"  #告警恢复信息
       level: 3   #告警级别,告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
       mobile: 15888888881,15888888882,15888888883  #告警发送目标手机号(需要设置电话和短信告警级别)
-      ddurl: "https://oapi.dingtalk.com/robot/send?access_token=f259e295a8f63c93b44498c53aba170882f948b2e967ac6027,https://oapi.dingtalk.com/robot/send?access_token=914129ff5cd8199072773d736c6bbfabe421f19a9af9511374d687ee0" #支持添加多个钉钉告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的钉钉地址
+      ddurl: "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" #支持添加多个钉钉告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的钉钉地址
 ```
 最终告警效果:
 
@@ -143,7 +143,7 @@ runmode = dev
 #开启JSON请求
 copyrequestbody = true
 #钉钉机器人地址
-ddurl=https://oapi.dingtalk.com/robot/send?access_token=914129ff5cd8199072773d736c6bbfabe421f19a9af9
+ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #告警消息标题
 title=NB云平台
 #点击告警消息后链接到告警平台地址
@@ -151,7 +151,7 @@ alerturl=http://prometheus.haima.me
 #告警消息中显示的logo图标地址
 logourl=https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/haima.png
 #腾讯短信接口key
-appkey=e710521dad8e545d4df964513f
+appkey=e7xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #腾讯短信模版ID
 tpl_id=14386
 #腾讯短信sdk app id
@@ -159,11 +159,11 @@ sdkappid=1400027785
 #短信告警级别(等于3就进行短信告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 messagelevel=3
 #腾讯电话接口key
-phonecallappkey=c24bbacb6bea9d3ab306475f55
+phonecallappkey=c24xxxxxxxxxxxxxxx
 #腾讯电话模版ID
-phonecalltpl_id=2920
+phonecalltpl_id=29xxxxx
 #腾讯电话sdk app id
-phonecallsdkappid=1400191
+phonecallsdkappid=140xxxxx
 #电话告警级别(等于4就进行语音告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 phonecalllevel=4
 #默认拨打号码,默认不配置,如果配置了此项,那么按照user.csv文件轮询的方式将自动失效
