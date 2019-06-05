@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"io"
 	"log"
 	"os"
 	"strings"
@@ -15,6 +14,7 @@ type GrafanaController struct {
 	beego.Controller
 }
 
+var PhoneCallMessage=""
 // {"evalMatches":[],"message":"5分钟内申请云服务流量低于100","ruleId":6,"ruleName":"云服务任务成功数量过低","ruleUrl":"http://grafana.haimacloud.com/d/pH9lfnrmk/ias-p3-ji-gao-jing-xiang?fullscreen=true\u0026edit=true\u0026tab=alert\u0026panelId=28\u0026orgId=1","state":"ok","title":"[OK] 云服务任务成功数量过低"}
 //{"evalMatches":[{"value":0,"metric":"Count","tags":{}}],"message":"5分钟内申请云服务流量低于100","ruleId":6,"ruleName":"云服务任务成功数量过低","ruleUrl":"http://grafana.haimacloud.com/d/pH9lfnrmk/ias-p3-ji-gao-jing-xiang?fullscreen=true\u0026edit=true\u0026tab=alert\u0026panelId=28\u0026orgId=1","state":"alerting","title":"[Alerting] 云服务任务成功数量过低"}
 
@@ -42,7 +42,7 @@ func SendMessageGrafana(message Grafana)(string)  {
 	Defaultphone:=beego.AppConfig.String("defaultphone")
 	text:=""
 	//MobileMessage:=""
-	PhoneCallMessage:=""
+
 	titleend:=""
 	returnMessage:=""
 
@@ -87,19 +87,18 @@ func SendMessageGrafana(message Grafana)(string)  {
 	}
 	//取到手机号
 	if Defaultphone=="" {
-		phone=GetUserPhone()
+		phone=GetUserPhone(1)
 	} else {
 		phone=Defaultphone
 	}
-
 	returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,phone)+"\n"
 	return returnMessage
 }
 
 //获取用户号码
-func GetUserPhone() string  {
+func GetUserPhone(neednum int) string  {
 	//判断是否存在user.csv文件
-	Num:=""
+	Num:=beego.AppConfig.String("backupphone")
 	Today:=time.Now()
 	//Today:=time.Now().Format("2006年1月2日")
 	//判断当前时间是否大于10点,大于10点取当天值班号码,小于10点取前一天值班号码
@@ -119,23 +118,19 @@ func GetUserPhone() string  {
 			panic(err)
 		}
 		defer f.Close()
-
 		rd := bufio.NewReader(f)
 		for {
 			line, err := rd.ReadString('\n') //以'\n'为结束符读入一行
-			if err != nil || io.EOF == err {
-				Num="15110176396"
-			} else {
-				if strings.Contains(line,DayString ) {
-					x:=strings.Split(line, ",")
-					Num=x[1]
-					break
-				}
+			if err!=nil {
+				log.SetPrefix("[DEBUG 3]")
+				log.Println(err.Error())
 			}
+			if strings.Contains(line,DayString ) {
+				x:=strings.Split(line, ",")
+				Num=x[neednum]
+				break
+				}
 		}
-
-	}else {
-		Num="15110176396"
 	}
 	return Num
 }
