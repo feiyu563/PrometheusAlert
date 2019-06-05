@@ -1,4 +1,7 @@
 PrometheusAlert 简介
+
+![img](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/img.png)
+
 -----------------
 
 PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的监控系统Prometheus,日志系统Graylog和数据可视化系统Grafana发出的预警消息,支持将收到的这些消息发送到钉钉,短信和语音提醒等
@@ -90,7 +93,7 @@ groups:
 ```
 最终告警效果:
 
-![prometheus1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/doc/prometheus.png)
+![prometheus1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/prometheus.png)
 
 --------------------------------------
  **2. Grafana 接入配置**
