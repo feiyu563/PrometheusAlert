@@ -134,6 +134,8 @@ Notifications配置格式参考,支持配置多个钉钉机器人url:
 **4. 配置文件解析**
 
 短信告警和语音告警均使用的是腾讯云的短信和语音提醒接口,具体参数获取可去腾讯云开通相关服务即可
+![tengxun1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tengxun1.png)
+
 
 ```
 appname = PrometheusAlert
@@ -179,6 +181,12 @@ backupphone=151xxxxxxxx
 2019年4月12日,15888888883,小王,15999999999,备用联系人小陈,15999999998,备用联系人小赵
 2019年4月13日,15888888884,小宋,15999999999,备用联系人小陈,15999999998,备用联系人小赵
 ```
+
+启用告警失败重试功能需要在腾讯云上配置: 
+云产品--->短信--->事件回调配置--->语音短信回调
+
+![tengxun2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tengxun2.png)
+
 
 --------------------------------------
 
