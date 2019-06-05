@@ -127,7 +127,8 @@ func PostTXphonecall(text string,mobile string)(string)  {
 			Time:intTime,
 		}
 		log.SetPrefix("[DEBUG 2]")
-		log.Println(PhoneCallPost(TXurl,u))
+		res:=PhoneCallPost(TXurl,u)
+		log.Println(res)
 	}
 	return "ok"
 }
