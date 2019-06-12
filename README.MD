@@ -1,11 +1,12 @@
 PrometheusAlert 简介
 
-![img](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/img.png)
+![logo](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/logo.png)
 
 -----------------
 
 PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的监控系统Prometheus,日志系统Graylog和数据可视化系统Grafana发出的预警消息,支持将收到的这些消息发送到钉钉,短信和语音提醒等
 
+![it](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/it.png)
 --------------------------------------
 
 PrometheusAlert具备如下特性
@@ -52,8 +53,17 @@ PrometheusAlert 暂提供以下三个接口,分别对应各自接入端
  - `prometheus接口`  `/prometheus/alert`
  - `grafana接口`     `/grafana/alert`
  - `graylog接口`     `/graylog/alert`
- - `腾讯语音短信回调接口`     `/tengxun/status`
+ - `腾讯云语音短信回调接口`     `/tengxun/status`
+ - `阿里云短信/语音提醒`  `即将接入`
  
+--------------------------------------
+ **0. 开启钉钉机器人**
+
+打开钉钉,进入钉钉群中,选择群设置-->群机器人-->自定义，可参下图：
+
+![ding](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding1.png)
+![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding2.png)
+
 --------------------------------------
 
  **1. Prometheus 接入配置**
