@@ -38,10 +38,6 @@
       text-shadow: 0px 1px 2px #ddd;
     }
 
-    header {
-      padding: 100px 0;
-    }
-
     footer {
       line-height: 1.8;
       text-align: center;
@@ -56,7 +52,6 @@
 
     a {
       color: #444;
-      text-decoration: none;
     }
 
     .backdrop {
@@ -75,13 +70,15 @@
   <header>
     <h1 class="logo">Welcome to Prometheus Alert System</h1>
     <div class="description">
-		<a class="email" href="https://github.com/feiyu563/PrometheusAlert">Go to My GitHub and find how to use it !</a>
+		<a href="https://github.com/feiyu563/PrometheusAlert">Go to My GitHub and find how to use it or get new version !</a>
     </div>
   </header>
   <footer>
     <div class="author">
       Contact me:
-      <a class="email" href="mailto:{{.Email}}">{{.Email}}</a>
+      <p>
+      <img height="10%" width="10%" src="/static/img/wx.png"></img>
+      </p>
     </div>
   </footer>
   <div class="backdrop"></div>
