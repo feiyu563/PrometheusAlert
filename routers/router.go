@@ -10,6 +10,7 @@ func init() {
 	//alert
 	beego.Router("/prometheus/alert", &controllers.PrometheusController{},"post:PrometheusAlert")
 	beego.Router("/graylog/alert", &controllers.GraylogController{},"post:GraylogAlert")
-	beego.Router("/grafana/alert", &controllers.GrafanaController{},"post:GrafanaAlert")
+	beego.Router("/grafana/phone", &controllers.GrafanaController{},"post:GrafanaPhone")
+	beego.Router("/grafana/dingding", &controllers.GrafanaController{},"post:GrafanaDingding")
 	beego.Router("/tengxun/status", &controllers.TengXunStatusController{},"post:TengXunStatus")
 }

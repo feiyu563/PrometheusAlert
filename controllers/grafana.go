@@ -25,18 +25,30 @@ type Grafana struct {
 	State string `json:"state"`
 }
 
-func (c *GrafanaController) GrafanaAlert() {
+func (c *GrafanaController) GrafanaPhone() {
 	alert:=Grafana{}
 	log.SetPrefix("[DEBUG 1]")
 	log.Println(string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert)
+	c.Data["json"]=SendMessageGrafana(alert,0)
 	log.SetPrefix("[DEBUG 3]")
 	log.Println(c.Data["json"])
 	c.ServeJSON()
 }
 
-func SendMessageGrafana(message Grafana)(string)  {
+func (c *GrafanaController) GrafanaDingding() {
+	alert:=Grafana{}
+	log.SetPrefix("[DEBUG 1]")
+	log.Println(string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageGrafana(alert,1)
+	log.SetPrefix("[DEBUG 3]")
+	log.Println(c.Data["json"])
+	c.ServeJSON()
+}
+
+//typeid 为0,触发电话告警和钉钉告警, typeid 为1 仅触发dingding告警
+func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Logourl:=beego.AppConfig.String("logourl")
 	Defaultphone:=beego.AppConfig.String("defaultphone")
@@ -44,6 +56,7 @@ func SendMessageGrafana(message Grafana)(string)  {
 	//MobileMessage:=""
 
 	titleend:=""
+	//返回的内容
 	returnMessage:=""
 
 	//拨号的手机号码
@@ -91,7 +104,11 @@ func SendMessageGrafana(message Grafana)(string)  {
 	} else {
 		phone=Defaultphone
 	}
-	returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,phone)+"\n"
+
+	//触发电话告警
+	if typeid==0 {
+		returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,phone)+"\n"
+	}
 	return returnMessage
 }
 

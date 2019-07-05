@@ -217,4 +217,4 @@ FOR HELP
 ----
 Email: 244217140@qq.com
 
-![me](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/me.jpg)
+![me](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/wx.jpg)
