@@ -30,7 +30,7 @@ func (c *GrafanaController) GrafanaPhone() {
 	log.SetPrefix("[DEBUG 1]")
 	log.Println(string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,0)
+	c.Data["json"]=SendMessageGrafana(alert,4)
 	log.SetPrefix("[DEBUG 3]")
 	log.Println(c.Data["json"])
 	c.ServeJSON()
@@ -41,7 +41,7 @@ func (c *GrafanaController) GrafanaDingding() {
 	log.SetPrefix("[DEBUG 1]")
 	log.Println(string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,1)
+	c.Data["json"]=SendMessageGrafana(alert,3)
 	log.SetPrefix("[DEBUG 3]")
 	log.Println(c.Data["json"])
 	c.ServeJSON()
@@ -106,7 +106,7 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	}
 
 	//触发电话告警
-	if typeid==0 {
+	if typeid==4 {
 		returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,phone)+"\n"
 	}
 	return returnMessage
