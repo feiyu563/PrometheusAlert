@@ -25,7 +25,10 @@ PrometheusAlert可以部署在本地和云平台上，支持windows、linux、�
 
  - 使用容器部署
 ```
-docker run -d -p 8080:8080 --name prometheusalert-center feiyu563/prometheus-alert:latest
+git clone https://github.com/feiyu563/PrometheusAlert.git
+mkdir /etc/prometheusalert-center/
+cp PrometheusAlert/conf/app.conf /etc/prometheusalert-center/
+docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prometheusalert-center feiyu563/prometheus-alert:latest
 ```
  - 在linux系统中部署
 ```
