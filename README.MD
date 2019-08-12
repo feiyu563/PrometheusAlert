@@ -1,6 +1,6 @@
 PrometheusAlert 简介
 
-![logo](doc/logo.png){:height="100" width="100"}
+![logo](doc/logo.png)
 
 -----------------
 
