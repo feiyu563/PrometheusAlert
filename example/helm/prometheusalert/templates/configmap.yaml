@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+{{ include "prometheusalert.labels" . | indent 4 }}
+  name: {{ template "prometheusalert.fullname" . }}
+data:
+{{ (.Files.Glob "config/*").AsConfig | indent 2 }}

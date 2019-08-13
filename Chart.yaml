@@ -1,0 +1,13 @@
+apiVersion: v1
+name: prometheusalert
+description: A Alert Center for Prometheus Grafana and Graylog
+home: https://github.com/feiyu563/PrometheusAlert
+icon: https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/logo.png
+maintainers:
+- email: 244217140@qq.com
+  name: jikun.zhang
+sources:
+- https://github.com/feiyu563/PrometheusAlert
+type: application
+version: 1.0.0
+appVersion: 1.2.0
