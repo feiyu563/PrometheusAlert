@@ -74,12 +74,14 @@ func GetCSTtime(date string)(string)  {
 	return tm
 }
 func SendMessageP(message Prometheus)(string)  {
+	WebhookType:=beego.AppConfig.String("webhook_type")
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("alerturl")
 	Logourl:=beego.AppConfig.String("logourl")
 	Messagelevel,_:=beego.AppConfig.Int("messagelevel")
 	PhoneCalllevel,_:=beego.AppConfig.Int("phonecalllevel")
-	text:=""
+	ddtext:=""
+	wxtext:=""
 	MobileMessage:=""
 	PhoneCallMessage:=""
 	titleend:=""
@@ -94,22 +96,38 @@ func SendMessageP(message Prometheus)(string)  {
 
 	if message.Status=="resolved" {
 		titleend="故障恢复信息"
-		text="## ["+Title+"Prometheus"+titleend+"]("+Alerturl+")\n\n"+"#### "+AlerMessage[0].Labels.Alertname+"\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Summary+"\n\n"+"!["+Title+"]("+Logourl+")"
+		ddtext="## ["+Title+"Prometheus"+titleend+"]("+Alerturl+")\n\n"+"#### "+AlerMessage[0].Labels.Alertname+"\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Summary+"\n\n"+"!["+Title+"]("+Logourl+")"
+		wxtext="告警级别:"+AlertLevel[nLevel]+"\n开始时间:"+GetCSTtime(AlerMessage[0].StartsAt)+"\n结束时间:"+GetCSTtime(AlerMessage[0].EndsAt)+"\n故障主机IP:"+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Summary
 		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n"+"结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Summary
 		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Summary
 	}else {
 		titleend="故障告警信息"
-		text="## ["+Title+"Prometheus"+titleend+"]("+Alerturl+")\n\n"+"#### "+AlerMessage[0].Labels.Alertname+"\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
+		ddtext="## ["+Title+"Prometheus"+titleend+"]("+Alerturl+")\n\n"+"#### "+AlerMessage[0].Labels.Alertname+"\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
+		wxtext="告警级别:"+AlertLevel[nLevel]+"\n开始时间:"+GetCSTtime(AlerMessage[0].StartsAt)+"\n结束时间:"+GetCSTtime(AlerMessage[0].EndsAt)+"\n故障主机IP:"+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
 		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n"+"结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
 		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Description
 	}
 	if AlerMessage[0].Annotations.Ddurl==""{
-		url:=beego.AppConfig.String("ddurl")
-		returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,text,url)+"\n"
+		if WebhookType=="0" {
+			url:=beego.AppConfig.String("ddurl")
+			returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,ddtext,url)+"\n"
+		}else {
+			url:=beego.AppConfig.String("wxurl")
+			//(title,text,Alerturl,Logourl,WXurl string)
+			returnMessage=returnMessage+"PostToWeiXin:"+PostToWeiXin(Title+titleend,wxtext,Alerturl,Logourl,url)+"\n"
+		}
+
 	}else {
-		Ddurl:=strings.Split(AlerMessage[0].Annotations.Ddurl,",")
-		for _,url:=range Ddurl{
-			returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,text,url)+"\n"
+		if WebhookType=="0" {
+			Ddurl := strings.Split(AlerMessage[0].Annotations.Ddurl, ",")
+			for _, url := range Ddurl {
+				returnMessage = returnMessage + "PostToDingDing:" + PostToDingDing(Title+titleend, ddtext, url) + "\n"
+			}
+		}else {
+			Ddurl := strings.Split(AlerMessage[0].Annotations.Ddurl, ",")
+			for _, url := range Ddurl {
+				returnMessage = returnMessage+"PostToWeiXin:"+PostToWeiXin(Title+titleend,wxtext,Alerturl,Logourl,url) + "\n"
+			}
 		}
 	}
 	if (nLevel==Messagelevel) {
