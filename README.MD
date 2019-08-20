@@ -4,7 +4,7 @@ PrometheusAlert 简介
 
 -----------------
 
-PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的监控系统Prometheus,日志系统Graylog和数据可视化系统Grafana发出的预警消息,支持将收到的这些消息发送到钉钉,短信和语音提醒等
+PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的监控系统Prometheus,日志系统Graylog和数据可视化系统Grafana发出的预警消息,支持将收到的这些消息发送到钉钉,微信,短信和语音提醒等
 
 ![it](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/it.png)
 --------------------------------------
@@ -12,7 +12,7 @@ PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的�
 PrometheusAlert具备如下特性
 ---------------------
  - 支持多种消息来源,目前主要有prometheus,graylog,grafana
- - 支持多种类型的发送目标,支持钉钉,短信,语音
+ - 支持多种类型的发送目标,支持钉钉,微信,短信,语音
  - 针对Prometheus增加了告警级别,并且支持按照不同级别发送消息到不同目标对象
  - 简化Prometheus分组配置,支持按照具体消息发送到单个或多个接收方
  - 增加手机号码配置项,和号码自动轮询配置,可固定发送给单一个人告警信息,也可以通过自动轮询的方式发送到多个人员且支持按照不同日期发送到不同人员
@@ -75,6 +75,15 @@ PrometheusAlert 暂提供以下三个接口,分别对应各自接入端
 ![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding2.png)
 
 --------------------------------------
+ **1. 开启企业微信机器人**
+
+打开企业微信,进入企业微信群中,选择群设置-->群机器人-->添加，可参下图：
+
+![wx1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/wx1.png)
+![wx2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/wx2.png)
+
+
+--------------------------------------
 
  **1. Prometheus 接入配置**
 
@@ -110,7 +119,7 @@ groups:
       summary: "{{ $labels.instance }} CPU load占用过高已经恢复"  #告警恢复信息
       level: 3   #告警级别,告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
       mobile: 15888888881,15888888882,15888888883  #告警发送目标手机号(需要设置电话和短信告警级别)
-      ddurl: "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" #支持添加多个钉钉告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的钉钉地址
+      ddurl: "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" #支持添加多个钉钉或企业微信机器人告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的钉钉或企业微信机器人地址
 ```
 最终告警效果:
 
@@ -168,31 +177,35 @@ httpport = 8080
 runmode = dev
 #开启JSON请求
 copyrequestbody = true
+#webhook告警类型0 dingding,1 weixin
+webhook_type=0
 #钉钉机器人地址
 ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#企业微信机器人地址
+wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #告警消息标题
-title=NB云平台
-#点击告警消息后链接到告警平台地址
-alerturl=http://prometheus.local
-#告警消息中显示的logo图标地址
+title=AlertCenter
+#链接到告警平台地址
+alerturl=http://prometheus.io
+#logo图标地址
 logourl=https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/logo.png
-#腾讯短信接口key
-appkey=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#腾讯短信模版ID
-tpl_id=xxxxxxxx
-#腾讯短信sdk app id
-sdkappid=xxxxxxxxxx
+#短信接口key
+appkey=e71xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#短信模版ID
+tpl_id=xxxxxx
+#短信sdk app id
+sdkappid=xxxxxxxxx
 #短信告警级别(等于3就进行短信告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 messagelevel=3
-#腾讯电话接口key
-phonecallappkey=xxxxxxxxxxxxxxxxxx
-#腾讯电话模版ID
-phonecalltpl_id=xxxxxxxx
-#腾讯电话sdk app id
-phonecallsdkappid=xxxxxxxx
+#电话接口key
+phonecallappkey=xxxxxxxxxxxxxxxxxxxxxx
+#电话模版ID
+phonecalltpl_id=xxxxxxxxx
+#电话sdk app id
+phonecallsdkappid=xxxxxxxxxx
 #电话告警级别(等于4就进行语音告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 phonecalllevel=4
-#默认拨打号码,默认不配置,如果配置了此项,那么按照user.csv文件轮询的方式将自动失效
+#默认拨打号码
 #defaultphone=
 #未使用user.csv或者user.csv中的号码轮询结束备用号码
 backupphone=xxxxxxxxxxx
