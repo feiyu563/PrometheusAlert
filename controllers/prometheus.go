@@ -93,17 +93,17 @@ func SendMessageP(message Prometheus)(string)  {
 	nLevel,_:=strconv.Atoi(AlerMessage[0].Annotations.Level)
 	//告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 	AlertLevel:=[]string{"信息","警告","一般严重","严重","灾难"}
-
+    nowtime:=time.Now()
 	if message.Status=="resolved" {
 		titleend="故障恢复信息"
 		ddtext="## ["+Title+"Prometheus"+titleend+"]("+Alerturl+")\n\n"+"#### "+AlerMessage[0].Labels.Alertname+"\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Summary+"\n\n"+"!["+Title+"]("+Logourl+")"
-		wxtext="告警级别:"+AlertLevel[nLevel]+"\n开始时间:"+GetCSTtime(AlerMessage[0].StartsAt)+"\n结束时间:"+GetCSTtime(AlerMessage[0].EndsAt)+"\n故障主机IP:"+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Summary
+		wxtext="告警级别:"+AlertLevel[nLevel]+"\n触发时间:"+nowtime.Format("2006-01-02 15:04:05")+"\n时间区间:"+GetCSTtime(AlerMessage[0].StartsAt)+"---"+GetCSTtime(AlerMessage[0].EndsAt)+"\n故障主机IP:"+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Summary
 		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n"+"结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Summary
 		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Summary
 	}else {
 		titleend="故障告警信息"
 		ddtext="## ["+Title+"Prometheus"+titleend+"]("+Alerturl+")\n\n"+"#### "+AlerMessage[0].Labels.Alertname+"\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
-		wxtext="告警级别:"+AlertLevel[nLevel]+"\n开始时间:"+GetCSTtime(AlerMessage[0].StartsAt)+"\n结束时间:"+GetCSTtime(AlerMessage[0].EndsAt)+"\n故障主机IP:"+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
+		wxtext="告警级别:"+AlertLevel[nLevel]+"\n触发时间:"+nowtime.Format("2006-01-02 15:04:05")+"\n时间区间:"+GetCSTtime(AlerMessage[0].StartsAt)+"---"+GetCSTtime(AlerMessage[0].EndsAt)+"\n故障主机IP:"+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
 		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n"+"结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
 		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Description
 	}
