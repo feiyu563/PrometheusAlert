@@ -42,10 +42,17 @@ func (c *GraylogController) GraylogAlert() {
 }
 
 func SendMessageG(message Graylog)(string)  {
+	WebhookType:=beego.AppConfig.String("webhook_type")
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("alerturl")
 	Logourl:=beego.AppConfig.String("logourl")
-	text:="## ["+Title+"Graylog告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警名称："+message.Check_result.Triggered_condition.Title+"\n\n"+"###### 告警类型："+message.Check_result.Triggered_condition.Type+"\n\n"+"###### 开始时间："+message.Check_result.Triggered_at+" UTC\n\n"+"###### 持续时间："+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n\n"+"!["+Title+"]("+Logourl+")"
-	Ddurl:=beego.AppConfig.String("ddurl")
-	return PostToDingDing(Title+"告警信息",text,Ddurl)
+	DDtext:="## ["+Title+"Graylog告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警名称："+message.Check_result.Triggered_condition.Title+"\n\n"+"###### 告警类型："+message.Check_result.Triggered_condition.Type+"\n\n"+"###### 开始时间："+message.Check_result.Triggered_at+" UTC\n\n"+"###### 持续时间："+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n\n"+"!["+Title+"]("+Logourl+")"
+	WXtext:="["+Title+"Graylog告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警名称:``"+message.Check_result.Triggered_condition.Title+"`\n`告警类型:``"+message.Check_result.Triggered_condition.Type+"`\n`开始时间:``"+message.Check_result.Triggered_at+" UTC`\n`持续时间:``"+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"`\n"
+	if WebhookType=="0" {
+		Ddurl:=beego.AppConfig.String("ddurl")
+		return PostToDingDing(Title+"告警信息", DDtext, Ddurl)
+	}else {
+		Wxurl:=beego.AppConfig.String("wxurl")
+		return PostToWeiXin(WXtext, Wxurl)
+	}
 }

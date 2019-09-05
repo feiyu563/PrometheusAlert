@@ -9,47 +9,26 @@ import (
 	"encoding/json"
 )
 
-type Article struct {
-	Title string `json:"title"`
-	Description string `json:"description"`
-	Url string `json:"url"`
-	Picurl string `json:"picurl"`
-}
-type New struct {
-	Articles []Article `json:"articles"`
+type Mark struct {
+	Content string `json:"content"`
 }
 type WXMessage struct {
 	Msgtype string `json:"msgtype"`
-	News New `json:"news"`
+	Markdown Mark `json:"markdown"`
 }
 /*
 {
-    "msgtype": "news",
-    "news": {
-       "articles" : [
-           {
-               "title" : "For Test Messages,请忽略",
-               "description" : "告警级别:严重\n开始时间:2019-08-13 23:52:19\n结束时间:2019-08-14 12:58:09\n故障主机IP:172.16.83.164:8080\n部署 default/demo 当前状态不可用.",
-               "url" : "https://prometheus-dev.gn.i-tetris.com/alerts",
-               "picurl" : "https://www.megatronix.cn/logo.png?v=1"
-           }
-        ]
+    "msgtype": "markdown",
+    "markdown": {
+        "content": "[Prometheus故障告警信息](https://prometheus-dev.gn.i-tetris.com/alerts)\n>**For Test Messages,请忽略**\n>`告警级别：``严重`\n`开始时间:``2019-08-13 23:52:19`\n`结束时间:``2019-08-14 12:58:09`\n`故障主机IP:``172.16.83.164:8080`\n**部署 default/demo 当前状态不可用.**"
     }
 }
 */
-func PostToWeiXin(title,text,alerturl,logourl,WXurl string)(string)  {
+func PostToWeiXin(text,WXurl string)(string)  {
 	u := WXMessage{
-		Msgtype:"news",
-		News:New{
-			Articles: []Article{
-				Article{
-					Title:title,
-					Description:text,
-					Url:alerturl,
-					Picurl:logourl,
-				},
-			},
-		},
+		Msgtype:"markdown",
+		Markdown: struct{ Content string }{
+			Content: text},
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
