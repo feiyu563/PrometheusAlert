@@ -27,8 +27,7 @@ type WXMessage struct {
 func PostToWeiXin(text,WXurl string)(string)  {
 	u := WXMessage{
 		Msgtype:"markdown",
-		Markdown: struct{ Content string }{
-			Content: text},
+		Markdown:Mark{Content:text},
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
