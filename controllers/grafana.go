@@ -52,7 +52,9 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Logourl:=beego.AppConfig.String("logourl")
 	Defaultphone:=beego.AppConfig.String("defaultphone")
-	text:=""
+	WebhookType:=beego.AppConfig.String("webhook_type")
+	DDtext:=""
+	WXtext:=""
 	//MobileMessage:=""
 
 	titleend:=""
@@ -69,12 +71,14 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 
 	if message.State=="ok" {
 		titleend="故障恢复信息"
-		text="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+"#### "+message.RuleName+"\n\n"+"###### 告警级别："+AlertLevel[4]+"\n\n"+"###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+"##### "+fullMessage[0]+" 已经恢复正常\n\n"+"!["+Title+"]("+Logourl+")"
+		DDtext="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n#### "+message.RuleName+"\n\n###### 告警级别："+AlertLevel[4]+"\n\n###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n##### "+fullMessage[0]+" 已经恢复正常\n\n"+"!["+Title+"]("+Logourl+")"
+		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:``"+AlertLevel[4]+"`\n`开始时间:``"+time.Now().Format("2006-01-02 15:04:05")+"`\n`"+fullMessage[0]+" 已经恢复正常`\n"
 		//MobileMessage="\n["+Title+"Grafana"+titleend+"]\n"+message.RuleName+"\n"+"告警级别："+AlertLevel[4]+"\n"+"开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n"+message.Message+" 已经恢复正常"
 		PhoneCallMessage=fullMessage[0]+" 已经恢复正常"
 	}else {
 		titleend="故障告警信息"
-		text="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+"#### "+message.RuleName+"\n\n"+"###### 告警级别："+AlertLevel[4]+"\n\n"+"###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+"##### "+fullMessage[0]+"\n\n"+"!["+Title+"]("+Logourl+")"
+		DDtext="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+"#### "+message.RuleName+"\n\n"+"###### 告警级别："+AlertLevel[4]+"\n\n"+"###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+"##### "+fullMessage[0]+"\n\n"+"!["+Title+"]("+Logourl+")"
+		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:``"+AlertLevel[4]+"`\n`开始时间:``"+time.Now().Format("2006-01-02 15:04:05")+"`\n`"+fullMessage[0]+"`\n"
 		//MobileMessage="\n["+Title+"Grafana"+titleend+"]\n"+message.RuleName+"\n"+"告警级别："+AlertLevel[4]+"\n"+"开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n"+message.Message
 		PhoneCallMessage=fullMessage[0]
 	}
@@ -88,16 +92,34 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	//return PostToDingDing(Title+titleend,text)
 
 	//拆分ddurl
-	url:=beego.AppConfig.String("ddurl")
-	//判断发送到默认钉钉 还是多个钉钉
-	if len(fullMessage)<2 {
-		returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,text,url)+"\n"
-	} else {
-		DD:=strings.Split(fullMessage[1], ",")
-		for _,d:=range DD {
-			returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,text,d)+"\n"
+	if WebhookType=="0" {
+		url:=beego.AppConfig.String("ddurl")
+		//判断发送到默认钉钉 还是多个钉钉
+		if len(fullMessage)<2 {
+			returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,DDtext,url)+"\n"
+		} else {
+			DD:=strings.Split(fullMessage[1], ",")
+			for _,d:=range DD {
+				returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,DDtext,d)+"\n"
+			}
+		}
+	}else {
+		url:=beego.AppConfig.String("wxurl")
+		//判断发送到默认微信 还是多个微信
+		if len(fullMessage)<2 {
+			returnMessage=returnMessage+"PostToWeiXin:"+PostToWeiXin(WXtext, url)+"\n"
+
+		} else {
+			DD:=strings.Split(fullMessage[1], ",")
+			for _,d:=range DD {
+				returnMessage=returnMessage+"PostToWeiXin:"+PostToWeiXin(WXtext, d)+"\n"
+			}
 		}
 	}
+
+
+
+
 	//取到手机号
 	if Defaultphone=="" {
 		phone=GetUserPhone(1)
