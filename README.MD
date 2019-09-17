@@ -61,6 +61,7 @@ PrometheusAlert 暂提供以下三个接口,分别对应各自接入端
 
  - `prometheus接口`  `/prometheus/alert`
  - `grafana钉钉接口`     `/grafana/dingding`
+ - `grafana微信接口`     `/grafana/weixin`
  - `grafana电话接口`     `/grafana/phone`
  - `graylog接口`     `/graylog/alert`
  - `腾讯云语音短信回调接口`     `/tengxun/status`

@@ -72,13 +72,13 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	if message.State=="ok" {
 		titleend="故障恢复信息"
 		DDtext="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n#### "+message.RuleName+"\n\n###### 告警级别："+AlertLevel[4]+"\n\n###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n##### "+fullMessage[0]+" 已经恢复正常\n\n"+"!["+Title+"]("+Logourl+")"
-		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:``"+AlertLevel[4]+"`\n`开始时间:``"+time.Now().Format("2006-01-02 15:04:05")+"`\n`"+fullMessage[0]+" 已经恢复正常`\n"
+		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:`"+AlertLevel[4]+"\n`开始时间:`"+time.Now().Format("2006-01-02 15:04:05")+"\n"+fullMessage[0]+" 已经恢复正常\n"
 		//MobileMessage="\n["+Title+"Grafana"+titleend+"]\n"+message.RuleName+"\n"+"告警级别："+AlertLevel[4]+"\n"+"开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n"+message.Message+" 已经恢复正常"
 		PhoneCallMessage=fullMessage[0]+" 已经恢复正常"
 	}else {
 		titleend="故障告警信息"
 		DDtext="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+"#### "+message.RuleName+"\n\n"+"###### 告警级别："+AlertLevel[4]+"\n\n"+"###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+"##### "+fullMessage[0]+"\n\n"+"!["+Title+"]("+Logourl+")"
-		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:``"+AlertLevel[4]+"`\n`开始时间:``"+time.Now().Format("2006-01-02 15:04:05")+"`\n`"+fullMessage[0]+"`\n"
+		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:`"+AlertLevel[4]+"\n`开始时间:`"+time.Now().Format("2006-01-02 15:04:05")+"\n"+fullMessage[0]+"\n"
 		//MobileMessage="\n["+Title+"Grafana"+titleend+"]\n"+message.RuleName+"\n"+"告警级别："+AlertLevel[4]+"\n"+"开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n"+message.Message
 		PhoneCallMessage=fullMessage[0]
 	}
