@@ -137,9 +137,9 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 //获取用户号码
 func GetUserPhone(neednum int) string  {
 	//判断是否存在user.csv文件
+
 	Num:=beego.AppConfig.String("backupphone")
 	Today:=time.Now()
-	//Today:=time.Now().Format("2006年1月2日")
 	//判断当前时间是否大于10点,大于10点取当天值班号码,小于10点取前一天值班号码
 	DayString:=""
 	if time.Now().Hour()>=10 {
