@@ -2,7 +2,10 @@
 <html>
  <head> 
   <title>Prometheus Alert System</title> 
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+   <script src="/static/js/jquery.js"></script>
+   <script src="/static/js/bootstrap.min.js"></script>
   <style type="text/css">
     *,body {
       margin: 0px;
@@ -33,11 +36,15 @@
       background-position: center center;
       text-align: center;
       font-size: 42px;
-      padding: 250px 0 70px;
+      padding: 200px 0 20px;
       font-weight: normal;
       text-shadow: 0px 1px 2px #ddd;
     }
-
+    .box {
+      text-align: center;
+      font-size: 16px;
+      height: 50px;
+    }
     .description {
       text-align: center;
       font-size: 16px;
@@ -59,14 +66,29 @@
   </style> 
  </head> 
  <body class="backdrop"> 
-  <header> 
-   <h1 class="logo">Welcome to Prometheus Alert System</h1> 
-   <div class="description"> 
-    <a href="https://github.com/feiyu563/PrometheusAlert">Go to My GitHub and find how to use it or get new version !</a> 
-    <p>  Contact me: </p> 
-    <p> <img height="10%" width="10%" src="/static/img/wx.png" /> </p> 
-   </div> 
-  </header> 
-  <script src="/static/js/reload.min.js"></script>  
+  <header>
+   <h1 class="logo">Welcome to Prometheus Alert System</h1>
+   <div class="box">
+     <button class="btn btn-primary" data-toggle='modal' id="wx">微信告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="dd">钉钉告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="txdx">腾讯短信告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="txdh">腾讯电话告警测试</button>
+   </div>
+   <div class="description">
+    <a href="https://github.com/feiyu563/PrometheusAlert">Go to My GitHub and find how to use it or get new version !</a>
+    <p>  Contact me: </p>
+    <p> <img height="10%" width="10%" src="/static/img/wx.png" /> </p>
+   </div>
+  </header>
+  <script src="/static/js/reload.min.js"></script>
+   <script>
+     $(function(){
+        $(".btn").click(function(){
+          $.post("/alerttest",{mtype:$(this).attr("id")},function(result){
+            alert(result);
+            });
+         });
+      })
+   </script>
  </body>
 </html>

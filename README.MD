@@ -1,6 +1,7 @@
 PrometheusAlert 简介
 
 ![logo](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png)
+![dashboard](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dashboard.png)
 
 -----------------
 
@@ -16,8 +17,9 @@ PrometheusAlert具备如下特性
  - 针对Prometheus增加了告警级别,并且支持按照不同级别发送消息到不同目标对象
  - 简化Prometheus分组配置,支持按照具体消息发送到单个或多个接收方
  - 增加手机号码配置项,和号码自动轮询配置,可固定发送给单一个人告警信息,也可以通过自动轮询的方式发送到多个人员且支持按照不同日期发送到不同人员
-
+ - 增加dashboard,暂时支持测试配置是否正确
 --------------------------------------
+
 部署方式
 ----
 
@@ -53,6 +55,10 @@ cd PrometheusAlert/example/helm/prometheusalert
 #如需修改配置文件,请更新config中的app.conf
 helm install -n monitoring .
 ```
+```
+启动后可使用浏览器打开测试地址: http://127.0.0.1:8080
+```
+
 配置说明
 ----
 --------------------------------------
