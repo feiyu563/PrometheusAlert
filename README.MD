@@ -8,6 +8,9 @@ PrometheusAlert 简介
 PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的监控系统Prometheus,日志系统Graylog和数据可视化系统Grafana发出的预警消息,支持将收到的这些消息发送到钉钉,微信,短信和语音提醒等
 
 ![it](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/it.png)
+
+近期新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus,参考下图
+![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding3.png)
 --------------------------------------
 
 PrometheusAlert具备如下特性
@@ -80,6 +83,10 @@ PrometheusAlert 暂提供以下三个接口,分别对应各自接入端
 
 ![ding](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding1.png)
 ![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding2.png)
+
+新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus,参考下图
+![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding3.png)
+
 
 --------------------------------------
  **1. 开启企业微信机器人**
