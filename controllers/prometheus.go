@@ -17,11 +17,12 @@ type PrometheusController struct {
 type Labels struct{
 	Alertname string `json:"alertname"`
 	Instance string `json:"instance"`
+	Level string `json:"level"`  //2019年11月20日 16:03:10更改告警级别定义位置,适配prometheus alertmanager rule
 }
 type Annotations struct{
 	Description string `json:"description"`
 	Summary string `json:"summary"`
-	Level string `json:"level"`  //2019年2月15日 19:03:07 增加告警级别
+	//Level string `json:"level"`  //2019年11月20日 16:04:04 删除Annotations level,改用label中的level
 	Mobile string `json:"mobile"` //2019年2月25日 19:09:23 增加手机号支持
 	Ddurl string `json:"ddurl"` //2019年3月12日 20:33:38 增加多个钉钉告警支持
 }
@@ -49,7 +50,7 @@ func (a AlerMessages) Swap(i, j int){     // 重写 Swap() 方法
 	a[i], a[j] = a[j], a[i]
 }
 func (a AlerMessages) Less(i, j int) bool {    // 重写 Less() 方法， 从大到小排序
-	return a[j].Annotations.Level < a[i].Annotations.Level
+	return a[j].Labels.Level < a[i].Labels.Level
 }
 
 //for prometheus alert
@@ -92,7 +93,7 @@ func SendMessageP(message Prometheus)(string)  {
 	AlerMessage:=message.Alerts
 	sort.Sort(AlerMessages(AlerMessage))
 	//nLevel 为第一条告警信息的告警级别
-	nLevel,_:=strconv.Atoi(AlerMessage[0].Annotations.Level)
+	nLevel,_:=strconv.Atoi(AlerMessage[0].Labels.Level)
 	//告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 	AlertLevel:=[]string{"信息","警告","一般严重","严重","灾难"}
     //nowtime:=time.Now()
