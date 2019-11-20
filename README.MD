@@ -9,7 +9,13 @@ PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的�
 
 ![it](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/it.png)
 
-近期新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus,参考下图
+--------------------------------------
+
+重要更新说明:
+---------------------
+1.注意: prometheus rules中告警级别配置已经由早期的版本中的Annotations字段下迁移到Labels字段下,为方便alertmanager也可以匹配level字段
+
+2.近期新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus或者app.conf中设置的title值均可,参考下图
 ![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding3.png)
 --------------------------------------
 
@@ -84,7 +90,7 @@ PrometheusAlert 暂提供以下三个接口,分别对应各自接入端
 ![ding](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding1.png)
 ![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding2.png)
 
-新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus,参考下图
+新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus或者app.conf中设置的title值均可,参考下图
 ![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding3.png)
 
 
@@ -127,11 +133,11 @@ groups:
  2. alert: 主机CPU告警
     expr: node_load1 > 3
     labels:
-      severity: warning
+      name: prometheusalertcenter
+      level: 3   #告警级别,告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
     annotations:
       description: "{{ $labels.instance }} CPU load占用过高"  #告警信息
       summary: "{{ $labels.instance }} CPU load占用过高已经恢复"  #告警恢复信息
-      level: 3   #告警级别,告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
       mobile: 15888888881,15888888882,15888888883  #告警发送目标手机号(需要设置电话和短信告警级别)
       ddurl: "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" #支持添加多个钉钉或企业微信机器人告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的钉钉或企业微信机器人地址
 ```
@@ -197,7 +203,7 @@ webhook_type=0
 ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #企业微信机器人地址
 wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#告警消息标题
+#告警消息标题(钉钉的安全配置)
 title=AlertCenter
 #链接到告警平台地址
 alerturl=http://prometheus.io
