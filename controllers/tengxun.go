@@ -44,6 +44,7 @@ func PostTXmessage(text string,mobile string)(string)  {
 	strAppKey:=beego.AppConfig.String("appkey")
 	tpl_id,_:=beego.AppConfig.Int("tpl_id")
 	sdkappid:=beego.AppConfig.String("sdkappid")
+	sign:=beego.AppConfig.String("sign")
 	//腾讯短信接口算法部分
 	//mobile格式:"15395105573,16619875573"
 	TXmobile:=Mobiles{}
@@ -64,6 +65,7 @@ func PostTXmessage(text string,mobile string)(string)  {
 		Extend:"",
 		Params:[]string{text},
 		Sig:sig,
+		Sign:sign,
 		Tel:TXmobiles,
 		Time:intTime,
 		Tpl_id:tpl_id,
