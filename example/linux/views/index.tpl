@@ -69,6 +69,7 @@
   <header>
    <h1 class="logo">Welcome to Prometheus Alert System</h1>
    <div class="box">
+     <p>PS:短信测试和电话测试请提前配置好app.conf中的[defaultphone]配置项</p>
      <button class="btn btn-primary" data-toggle='modal' id="wx">微信告警测试</button>
      <button class="btn btn-primary" data-toggle='modal' id="dd">钉钉告警测试</button>
      <button class="btn btn-primary" data-toggle='modal' id="txdx">腾讯短信告警测试</button>
