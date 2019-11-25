@@ -186,9 +186,14 @@ Notifications配置格式参考,支持配置多个钉钉机器人url:
 
 **4. 配置文件解析**
 
-短信告警和语音告警均使用的是腾讯云的短信和语音提醒接口,具体参数获取可去腾讯云开通相关服务即可
+1.腾讯云短信告警和语音告警
+具体参数获取可去腾讯云开通相关服务即可,并配置相关参数https://cloud.tencent.com/document/product/382/18071
+腾讯云短信模版配置可参考 prometheus告警:{1}
 ![tengxun1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tengxun1.png)
 
+2.阿里云短信告警和语音告警
+具体参数获取可去阿里云开通相关服务即可,并配置相关参数https://help.aliyun.com/document_detail/55288.html?spm=5176.8195934.1283918.11.73af30c917Jfti&aly_as=m1ouSihk
+阿里云短信模版配置可参考 prometheus告警:${code}
 
 ```
 appname = PrometheusAlert
@@ -200,28 +205,30 @@ copyrequestbody = true
 #webhook告警类型0 dingding,1 weixin
 webhook_type=0
 #钉钉机器人地址
-ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx
 #企业微信机器人地址
-wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#告警消息标题(钉钉的安全配置)
+wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxx
+#告警消息标题
 title=AlertCenter
 #链接到告警平台地址
 alerturl=http://prometheus.io
 #logo图标地址
-logourl=https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/logo.png
-#短信接口key
+logourl=https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png
+#腾讯云短信接口key
 appkey=e71xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#短信模版ID
+#腾讯云短信模版ID 腾讯云短信模版配置可参考 prometheus告警:{1}
 tpl_id=xxxxxx
-#短信sdk app id
+#腾讯云短信sdk app id
 sdkappid=xxxxxxxxx
+#腾讯云短信签名 根据自己审核通过的签名来填写
+sign=腾讯云
 #短信告警级别(等于3就进行短信告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 messagelevel=3
-#电话接口key
+#腾讯云电话接口key
 phonecallappkey=xxxxxxxxxxxxxxxxxxxxxx
-#电话模版ID
+#腾讯云电话模版ID
 phonecalltpl_id=xxxxxxxxx
-#电话sdk app id
+#腾讯云电话sdk app id
 phonecallsdkappid=xxxxxxxxxx
 #电话告警级别(等于4就进行语音告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 phonecalllevel=4
@@ -240,7 +247,7 @@ backupphone=xxxxxxxxxxx
 ```
 
 启用告警失败重试功能需要在腾讯云上配置: 
-云产品--->短信--->事件回调配置--->语音短信回调
+云产品--->短信--->事件回调配置--->语音短信回调(回调接口 http://prometheusalertcenter_url/tengxun/status)
 
 ![tengxun2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tengxun2.png)
 
