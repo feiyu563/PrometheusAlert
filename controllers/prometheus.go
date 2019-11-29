@@ -25,6 +25,7 @@ type Annotations struct{
 	//Level string `json:"level"`  //2019年11月20日 16:04:04 删除Annotations level,改用label中的level
 	Mobile string `json:"mobile"` //2019年2月25日 19:09:23 增加手机号支持
 	Ddurl string `json:"ddurl"` //2019年3月12日 20:33:38 增加多个钉钉告警支持
+	Wxurl string `json:"wxurl"` //2019年3月12日 20:33:38 增加多个钉钉告警支持
 }
 type Alerts struct {
 	Labels Labels `json:"labels"`
@@ -77,10 +78,9 @@ func GetCSTtime(date string)(string)  {
 	return tm
 }
 func SendMessageP(message Prometheus)(string)  {
-	WebhookType:=beego.AppConfig.String("webhook_type")
 	Title:=beego.AppConfig.String("title")
-	//Alerturl:=beego.AppConfig.String("alerturl")
 	Logourl:=beego.AppConfig.String("logourl")
+	defaultphone:=beego.AppConfig.String("defaultphone")
 	Messagelevel,_:=beego.AppConfig.Int("messagelevel")
 	PhoneCalllevel,_:=beego.AppConfig.Int("phonecalllevel")
 	ddtext:=""
@@ -99,10 +99,10 @@ func SendMessageP(message Prometheus)(string)  {
     //nowtime:=time.Now()
 	if message.Status=="resolved" {
 		titleend="故障恢复信息"
-		ddtext="## ["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n\n"+"#### ["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Summary+"\n\n"+"!["+Title+"]("+Logourl+")"
-		wxtext="["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n>**["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+GetCSTtime(AlerMessage[0].StartsAt)+"\n`结束时间:`"+GetCSTtime(AlerMessage[0].EndsAt)+"\n`故障主机IP:`"+AlerMessage[0].Labels.Instance+"\n**"+AlerMessage[0].Annotations.Summary+"**"
-		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n"+"结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Summary
-		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Summary
+		ddtext="## ["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n\n"+"#### ["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
+		wxtext="["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n>**["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+GetCSTtime(AlerMessage[0].StartsAt)+"\n`结束时间:`"+GetCSTtime(AlerMessage[0].EndsAt)+"\n`故障主机IP:`"+AlerMessage[0].Labels.Instance+"\n**"+AlerMessage[0].Annotations.Description+"**"
+		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n"+"结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
+		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Description
 	}else {
 		titleend="故障告警信息"
 		ddtext="## ["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n\n"+"#### ["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n\n"+"###### 结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
@@ -110,33 +110,46 @@ func SendMessageP(message Prometheus)(string)  {
 		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+GetCSTtime(AlerMessage[0].StartsAt)+"\n"+"结束时间："+GetCSTtime(AlerMessage[0].EndsAt)+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
 		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Description
 	}
-	if AlerMessage[0].Annotations.Ddurl==""{
-		if WebhookType=="0" {
-			url:=beego.AppConfig.String("ddurl")
-			returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,ddtext,url)+"\n"
-		}else {
-			url:=beego.AppConfig.String("wxurl")
-			//(title,text,Alerturl,Logourl,WXurl string)
-			returnMessage=returnMessage+"PostToWeiXin:"+PostToWeiXin(wxtext,url)+"\n"
-		}
 
+	//发送消息到钉钉
+	if AlerMessage[0].Annotations.Ddurl==""{
+		url:=beego.AppConfig.String("ddurl")
+		returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,ddtext,url)+"\n"
 	}else {
-		if WebhookType=="0" {
-			Ddurl := strings.Split(AlerMessage[0].Annotations.Ddurl, ",")
-			for _, url := range Ddurl {
-				returnMessage = returnMessage + "PostToDingDing:" + PostToDingDing(Title+titleend, ddtext, url) + "\n"
-			}
-		}else {
-			Ddurl := strings.Split(AlerMessage[0].Annotations.Ddurl, ",")
-			for _, url := range Ddurl {
-				returnMessage = returnMessage+"PostToWeiXin:"+PostToWeiXin(wxtext,url) + "\n"
-			}
+		Ddurl := strings.Split(AlerMessage[0].Annotations.Ddurl, ",")
+		for _, url := range Ddurl {
+			returnMessage = returnMessage + "PostToDingDing:" + PostToDingDing(Title+titleend, ddtext, url) + "\n"
 		}
 	}
+
+	//发送消息到微信
+	if AlerMessage[0].Annotations.Wxurl=="" {
+		url := beego.AppConfig.String("wxurl")
+		returnMessage = returnMessage + "PostToWeiXin:" + PostToWeiXin(wxtext, url) + "\n"
+	}else {
+		Wxurl := strings.Split(AlerMessage[0].Annotations.Wxurl, ",")
+		for _, url := range Wxurl {
+			returnMessage = returnMessage+"PostToWeiXin:"+PostToWeiXin(wxtext,url) + "\n"
+		}
+	}
+
+	//发送消息到短信
 	if (nLevel==Messagelevel) {
-		returnMessage=returnMessage+"PostTXmessage:"+PostTXmessage(MobileMessage,AlerMessage[0].Annotations.Mobile)+"\n"
-	} else if (nLevel==PhoneCalllevel) {
-		returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,AlerMessage[0].Annotations.Mobile)+"\n"
+		if AlerMessage[0].Annotations.Mobile=="" {
+			returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage,defaultphone ) + "\n"
+			returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, defaultphone) + "\n"
+		}else {
+			returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, AlerMessage[0].Annotations.Mobile) + "\n"
+			returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, AlerMessage[0].Annotations.Mobile) + "\n"
+		}
+	}
+	//发送消息到语音
+	if (nLevel==PhoneCalllevel) {
+		if AlerMessage[0].Annotations.Mobile=="" {
+			returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage,defaultphone) + "\n"
+		}else {
+			returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, AlerMessage[0].Annotations.Mobile) + "\n"
+		}
 	}
 	return returnMessage
 }
