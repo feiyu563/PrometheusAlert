@@ -13,17 +13,17 @@ PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的�
 
 2.0版本更新说明:
 ---------------------
-1.prometheus rules中告警级别配置已经由早期的版本中的Annotations字段下迁移到Labels字段下,为方便alertmanager也可以匹配level字段
-2.prometheus rules中告警配置summary字段已经删除,现只保留description字段
-3.近期新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus或者app.conf中设置的title值均可,参考下图
+ - 1.prometheus rules中告警级别配置已经由早期的版本中的Annotations字段下迁移到Labels字段下,为方便alertmanager也可以匹配level字段
+ - 2.prometheus rules中告警配置summary字段已经删除,现只保留description字段
+ - 3.近期新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus或者app.conf中设置的title值均可,参考下图
 ![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding3.png)
-4.配置文件全面更新,支持对各个配置开关,不再限制告警发送的目标,本次配置文件更新较大,建议查看下配置文件中的说明
-5.增加新的告警源支持graylog3
-6.增加新的目标支持华为云短信
-7.告警接口的路由改变较大,主要针对grafana,graylog2,graylog3
-8.prometheus rules中告警配置新增字段wxurl,可以指定多个企业微信机器人地址
-9.web页面增加华为短信测试按钮
-10.grafana,graylog2,graylog3已经开启支持user.csv文件循环告警支持
+ - 4.配置文件全面更新,支持对各个配置开关,不再限制告警发送的目标,本次配置文件更新较大,建议查看下配置文件中的说明
+ - 5.增加新的告警源支持graylog3
+ - 6.增加新的目标支持华为云短信
+ - 7.告警接口的路由改变较大,主要针对grafana,graylog2,graylog3
+ - 8.prometheus rules中告警配置新增字段wxurl,可以指定多个企业微信机器人地址
+ - 9.web页面增加华为短信测试按钮
+ - 10.grafana,graylog2,graylog3已经开启支持user.csv文件循环告警支持
 --------------------------------------
 
 PrometheusAlert具备如下特性
