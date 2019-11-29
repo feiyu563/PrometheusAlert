@@ -25,11 +25,15 @@ func (c *MainController)AlertTest()  {
 	    ret:=PostToDingDing("PrometheusAlert",ddtext,beego.AppConfig.String("ddurl"))
 		c.Data["json"]=ret
 	case "txdx":
-		MobileMessage:="\n[PrometheusAlert]\n测试告警\n"+"告警级别：测试\nPrometheusAlert"
+		MobileMessage:="PrometheusAlertCenter测试告警"
 		ret:=PostTXmessage(MobileMessage,beego.AppConfig.String("defaultphone"))
 		c.Data["json"]=ret
 	case "txdh":
-		ret:=PostTXphonecall("PrometheusAlert测试告警",beego.AppConfig.String("defaultphone"))
+		ret:=PostTXphonecall("PrometheusAlertCenter测试告警",beego.AppConfig.String("defaultphone"))
+		c.Data["json"]=ret
+	case "hwdx":
+		MobileMessage:="PrometheusAlertCenter测试告警"
+		ret:=PostHWmessage(MobileMessage,beego.AppConfig.String("defaultphone"))
 		c.Data["json"]=ret
 	default:
 		c.Data["json"]="fuck you!"

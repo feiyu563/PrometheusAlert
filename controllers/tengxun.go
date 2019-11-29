@@ -41,6 +41,10 @@ type TXmessage struct {
 
 //腾讯短信子程序
 func PostTXmessage(text string,mobile string)(string)  {
+	open:=beego.AppConfig.String("open-txdx")
+	if open=="0" {
+		return "腾讯短信接口未配置未开启状态,请先配置open-txdx为1"
+	}
 	strAppKey:=beego.AppConfig.String("appkey")
 	tpl_id,_:=beego.AppConfig.Int("tpl_id")
 	sdkappid:=beego.AppConfig.String("sdkappid")
@@ -105,6 +109,10 @@ type TXphonecall struct {
 
 //腾讯语音子程序
 func PostTXphonecall(text string,mobile string)(string)  {
+	open:=beego.AppConfig.String("open-txdh")
+	if open=="0" {
+		return "腾讯语音接口未配置未开启状态,请先配置open-txdh为1"
+	}
 	strAppKey:=beego.AppConfig.String("phonecallappkey")
 	sdkappid:=beego.AppConfig.String("phonecallsdkappid")
 	tpl_id,_:=beego.AppConfig.Int("phonecalltpl_id")
@@ -143,8 +151,6 @@ func PhoneCallPost(url string,u TXphonecall)(string) {
 	tr :=&http.Transport{
 		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	}
-	//res,err := http.Post(Ddurl, "application/json", b)
-	//resp, err := http.PostForm(url,url.Values{"key": {"Value"}, "id": {"123"}})
 	client := &http.Client{Transport: tr}
 	res,err  := client.Post(url, "application/json", b)
 	if err != nil {

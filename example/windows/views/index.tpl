@@ -43,7 +43,7 @@
     .box {
       text-align: center;
       font-size: 16px;
-      height: 50px;
+      height: 100px;
     }
     .description {
       text-align: center;
@@ -70,10 +70,11 @@
    <h1 class="logo">Welcome to Prometheus Alert System</h1>
    <div class="box">
      <p>PS:短信测试和电话测试请提前配置好app.conf中的[defaultphone]配置项</p>
-     <button class="btn btn-primary" data-toggle='modal' id="wx">微信告警测试</button>
      <button class="btn btn-primary" data-toggle='modal' id="dd">钉钉告警测试</button>
-     <button class="btn btn-primary" data-toggle='modal' id="txdx">腾讯短信告警测试</button>
-     <button class="btn btn-primary" data-toggle='modal' id="txdh">腾讯电话告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="wx">微信告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="txdx">腾讯云短信告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="txdh">腾讯云电话告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="hwdx">华为云短信告警测试</button>
    </div>
    <div class="description">
     <a href="https://github.com/feiyu563/PrometheusAlert">Go to My GitHub and find how to use it or get new version !</a>
