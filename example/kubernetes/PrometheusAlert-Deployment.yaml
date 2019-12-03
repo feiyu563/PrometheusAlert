@@ -129,7 +129,7 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 80
+    port: 8080
     targetPort: http
   selector:
     app: prometheus-alert-center
