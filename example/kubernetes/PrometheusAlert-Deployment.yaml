@@ -20,7 +20,8 @@ data:
     phonecalllevel=4
     #默认拨打号码
     defaultphone=15395105573
-    
+    #故障恢复是否启用电话通知0为关闭,1为开启
+    phonecallresolved=1
     #---------------------↓webhook-----------------------
     #是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
     open-dingding=1
