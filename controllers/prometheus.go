@@ -27,6 +27,7 @@ type Annotations struct{
 	Wxurl string `json:"wxurl"` //2019年3月12日 20:33:38 增加多个钉钉告警支持
 }
 type Alerts struct {
+	Status string
 	Labels Labels `json:"labels"`
 	Annotations Annotations `json:"annotations"`
 	StartsAt string `json:"startsAt"`
@@ -56,7 +57,7 @@ func (a AlerMessages) Less(i, j int) bool {    // 重写 Less() 方法， 从大
 //for prometheus alert
 //关于告警级别level共有5个级别,0-4,0 信息,1 警告,2 一般严重,3 严重,4 灾难
 func (c *PrometheusController) PrometheusAlert() {
-	//{"receiver":"web\\.hook","status":"firing","alerts":[{"status":"firing","labels":{"alertname":"Node_alert","instance":"192.168.10.5:9100","job":"node1","monitor":"node1","node":"alert"},"annotations":{"description":"If one more node goes down the node will be unavailable","summary":"192.168.10.5:9100 node goes down!(current value: 0.2s)"},"startsAt":"2018-08-01T02:01:44.71271343-04:00","endsAt":"0001-01-01T00:00:00Z","generatorURL":"http://localhost.localdomain:9090/graph?g0.expr=node_load1+%3E+0.1\u0026g0.tab=1"}],"groupLabels":{"alertname":"Node_alert"},"commonLabels":{"alertname":"Node_alert","instance":"192.168.10.5:9100","job":"node1","monitor":"node1","node":"alert"},"commonAnnotations":{"description":"If one more node goes down the node will be unavailable","summary":"192.168.10.5:9100 node goes down!(current value: 0.2s)"},"externalURL":"http://localhost.localdomain:9093","version":"4","groupKey":"{}:{alertname=\"Node_alert\"}"}
+	//{"receiver":"prometheus-alert-center","status":"firing","alerts":[{"status":"firing","labels":{"alertname":"KubePodCrashLooping","app":"kube-state-metrics","container":"emqx-test","instance":"172.28.58.250:8080","job":"kubernetes-service-endpoints","kubernetes_name":"kube-state-metrics","kubernetes_namespace":"monitor","level":"3","namespace":"test-mars","pod":"emqx-test-0"},"annotations":{"description":"Pod CrashLooping,test-mars/emqx-test-0 的容器 emqx-test 10分钟重启了5次","level":"3","timestamp":"@2019-12-06 03:00:00.516 +0000 UTC"},"startsAt":"2019-12-06T02:57:50.516115711Z","endsAt":"0001-01-01T00:00:00Z","generatorURL":"https://xprometheus-dev.i-tetris.com/graph?g0.expr=increase%28kube_pod_container_status_restarts_total%7Bnamespace%21~%22.%2Adev.%2A%22%7D%5B10m%5D%29+%3E+5\u0026g0.tab=1"},{"status":"firing","labels":{"alertname":"PodNotReady","app":"kube-state-metrics","class":"basic","container":"emqx-test","infrastructure":"true","instance":"172.28.58.250:8080","job":"kubernetes-service-endpoints","kubernetes_name":"kube-state-metrics","kubernetes_namespace":"monitor","level":"2","namespace":"test-mars","pod":"emqx-test-0"},"annotations":{"description":"test-mars/emqx-test-0 was not ready more than 120s.","level":"2","timestamp":"@2019-12-06 02:59:57.829 +0000 UTC"},"startsAt":"2019-12-06T02:12:17.830216179Z","endsAt":"0001-01-01T00:00:00Z","generatorURL":"https://xprometheus-dev.i-tetris.com/graph?g0.expr=kube_pod_container_status_ready+%21%3D+1\u0026g0.tab=1"},{"status":"firing","labels":{"alertname":"PodNotReady","app":"kube-state-metrics","class":"basic","container":"emqx-test","infrastructure":"true","instance":"172.28.58.250:8080","job":"kubernetes-service-endpoints","kubernetes_name":"kube-state-metrics","kubernetes_namespace":"monitor","level":"3","namespace":"test-mars","pod":"emqx-test-0"},"annotations":{"description":"test-mars/emqx-test-0 was not ready more than 300s.","level":"3","timestamp":"@2019-12-06 02:59:42.829 +0000 UTC"},"startsAt":"2019-12-06T02:15:17.830216179Z","endsAt":"0001-01-01T00:00:00Z","generatorURL":"https://xprometheus-dev.i-tetris.com/graph?g0.expr=kube_pod_container_status_ready%7Bnamespace%21~%22.%2Adev.%2A%22%7D+%21%3D+1\u0026g0.tab=1"}],"groupLabels":{"instance":"172.28.58.250:8080"},"commonLabels":{"app":"kube-state-metrics","container":"emqx-test","instance":"172.28.58.250:8080","job":"kubernetes-service-endpoints","kubernetes_name":"kube-state-metrics","kubernetes_namespace":"monitor","namespace":"test-mars","pod":"emqx-test-0"},"commonAnnotations":{},"externalURL":"https://xalertmanager-dev.i-tetris.com","version":"4","groupKey":"{}/{job=~\"^(?:.*)$\"}:{instance=\"172.28.58.250:8080\"}"}
 	alert:=Prometheus{}
 	log.SetPrefix("[DEBUG 1]")
 	log.Println(string(c.Ctx.Input.RequestBody))
@@ -83,74 +84,75 @@ func SendMessageP(message Prometheus)(string)  {
 	Messagelevel,_:=beego.AppConfig.Int("messagelevel")
 	PhoneCalllevel,_:=beego.AppConfig.Int("phonecalllevel")
 	PhoneCallResolved,_:=beego.AppConfig.Int("phonecallresolved")
-	ddtext:=""
-	wxtext:=""
-	MobileMessage:=""
-	PhoneCallMessage:=""
-	titleend:=""
-	returnMessage:=""
+	Silent,_:=beego.AppConfig.Int("silent")
+	var ddtext,wxtext,MobileMessage,PhoneCallMessage,titleend,returnMessage string
 	//对分组消息进行排序
 	AlerMessage:=message.Alerts
 	sort.Sort(AlerMessages(AlerMessage))
-	//nLevel 为第一条告警信息的告警级别
-	nLevel,_:=strconv.Atoi(AlerMessage[0].Labels.Level)
 	//告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 	AlertLevel:=[]string{"信息","警告","一般严重","严重","灾难"}
-    //nowtime:=time.Now()
-	if message.Status=="resolved" {
-		titleend="故障恢复信息"
-		ddtext="## ["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n\n"+"#### ["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+AlerMessage[0].StartsAt+"\n\n"+"###### 结束时间："+AlerMessage[0].EndsAt+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
-		wxtext="["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n>**["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+AlerMessage[0].StartsAt+"\n`结束时间:`"+AlerMessage[0].EndsAt+"\n`故障主机IP:`"+AlerMessage[0].Labels.Instance+"\n**"+AlerMessage[0].Annotations.Description+"**"
-		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+AlerMessage[0].StartsAt+"\n"+"结束时间："+AlerMessage[0].EndsAt+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
-		if PhoneCallResolved==1 {
-		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Description+"已经恢复"
+    //遍历消息
+	for _, RMessage := range AlerMessage {
+		nLevel,_:=strconv.Atoi(RMessage.Labels.Level)
+		if RMessage.Status=="resolved" {
+			titleend="故障恢复信息"
+			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+RMessage.StartsAt+"\n\n"+"###### 结束时间："+RMessage.EndsAt+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
+			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+RMessage.StartsAt+"\n`结束时间:`"+RMessage.EndsAt+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
+			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+RMessage.StartsAt+"\n"+"结束时间："+RMessage.EndsAt+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
+			PhoneCallMessage="故障主机IP："+RMessage.Labels.Instance+","+RMessage.Annotations.Description+"已经恢复"
+		}else {
+			titleend="故障告警信息"
+			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+RMessage.StartsAt+"\n\n"+"###### 结束时间："+RMessage.EndsAt+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
+			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+RMessage.StartsAt+"\n`结束时间:`"+RMessage.EndsAt+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
+			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+RMessage.StartsAt+"\n"+"结束时间："+RMessage.EndsAt+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
+			PhoneCallMessage="故障主机IP："+RMessage.Labels.Instance+","+RMessage.Annotations.Description
 		}
-	}else {
-		titleend="故障告警信息"
-		ddtext="## ["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n\n"+"#### ["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+AlerMessage[0].StartsAt+"\n\n"+"###### 结束时间："+AlerMessage[0].EndsAt+"\n\n"+"###### 故障主机IP："+AlerMessage[0].Labels.Instance+"\n\n"+"##### "+AlerMessage[0].Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
-		wxtext="["+Title+"Prometheus"+titleend+"]("+AlerMessage[0].GeneratorUrl+")\n>**["+AlerMessage[0].Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+AlerMessage[0].StartsAt+"\n`结束时间:`"+AlerMessage[0].EndsAt+"\n`故障主机IP:`"+AlerMessage[0].Labels.Instance+"\n**"+AlerMessage[0].Annotations.Description+"**"
-		MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+AlerMessage[0].Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+AlerMessage[0].StartsAt+"\n"+"结束时间："+AlerMessage[0].EndsAt+"\n"+"故障主机IP："+AlerMessage[0].Labels.Instance+"\n"+AlerMessage[0].Annotations.Description
-		PhoneCallMessage="故障主机IP："+AlerMessage[0].Labels.Instance+","+AlerMessage[0].Annotations.Description
-	}
-
-	//发送消息到钉钉
-	if AlerMessage[0].Annotations.Ddurl==""{
-		url:=beego.AppConfig.String("ddurl")
-		returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,ddtext,url)+"\n"
-	}else {
-		Ddurl := strings.Split(AlerMessage[0].Annotations.Ddurl, ",")
-		for _, url := range Ddurl {
+		//发送消息到钉钉
+		if RMessage.Annotations.Ddurl==""{
+			url:=beego.AppConfig.String("ddurl")
 			returnMessage = returnMessage + "PostToDingDing:" + PostToDingDing(Title+titleend, ddtext, url) + "\n"
-		}
-	}
-
-	//发送消息到微信
-	if AlerMessage[0].Annotations.Wxurl=="" {
-		url := beego.AppConfig.String("wxurl")
-		returnMessage = returnMessage + "PostToWeiXin:" + PostToWeiXin(wxtext, url) + "\n"
-	}else {
-		Wxurl := strings.Split(AlerMessage[0].Annotations.Wxurl, ",")
-		for _, url := range Wxurl {
-			returnMessage = returnMessage+"PostToWeiXin:"+PostToWeiXin(wxtext,url) + "\n"
-		}
-	}
-
-	//发送消息到短信
-	if (nLevel==Messagelevel) {
-		if AlerMessage[0].Annotations.Mobile=="" {
-			returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage,defaultphone ) + "\n"
-			returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, defaultphone) + "\n"
 		}else {
-			returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, AlerMessage[0].Annotations.Mobile) + "\n"
-			returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, AlerMessage[0].Annotations.Mobile) + "\n"
+			Ddurl := strings.Split(RMessage.Annotations.Ddurl, ",")
+			for _, url := range Ddurl {
+				returnMessage = returnMessage + "PostToDingDing:" + PostToDingDing(Title+titleend, ddtext, url) + "\n"
+			}
 		}
-	}
-	//发送消息到语音
-	if (nLevel==PhoneCalllevel) {
-		if AlerMessage[0].Annotations.Mobile=="" {
-			returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage,defaultphone) + "\n"
+		//发送消息到微信
+		if RMessage.Annotations.Wxurl=="" {
+			url := beego.AppConfig.String("wxurl")
+			returnMessage = returnMessage + "PostToWeiXin:" + PostToWeiXin(wxtext, url) + "\n"
 		}else {
-			returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, AlerMessage[0].Annotations.Mobile) + "\n"
+			Wxurl := strings.Split(RMessage.Annotations.Wxurl, ",")
+			for _, url := range Wxurl {
+				returnMessage = returnMessage + "PostToWeiXin:" + PostToWeiXin(wxtext, url) + "\n"
+			}
+		}
+		//发送消息到短信
+		if (nLevel==Messagelevel) {
+			if RMessage.Annotations.Mobile=="" {
+				returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, defaultphone) + "\n"
+				returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, defaultphone) + "\n"
+			}else {
+				returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, RMessage.Annotations.Mobile) + "\n"
+				returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, RMessage.Annotations.Mobile) + "\n"
+			}
+		}
+		//发送消息到语音
+		if (nLevel==PhoneCalllevel) {
+			//判断如果是恢复信息且PhoneCallResolved
+			if (RMessage.Status=="resolved" && PhoneCallResolved!=1) {
+				returnMessage="告警恢复消息已经关闭\n"
+			}else {
+				if RMessage.Annotations.Mobile=="" {
+					returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, defaultphone) + "\n"
+				}else {
+					returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, RMessage.Annotations.Mobile) + "\n"
+				}
+			}
+		}
+		//告警抑制开启就直接跳出循环
+		if Silent==1 {
+			break
 		}
 	}
 	return returnMessage
