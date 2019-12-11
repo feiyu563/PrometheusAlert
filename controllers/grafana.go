@@ -172,6 +172,7 @@ func GetUserPhone(neednum int) string  {
 			if err!=nil {
 				log.SetPrefix("[DEBUG 3]")
 				log.Println(err.Error())
+                                break
 			}
 			if strings.Contains(line,DayString ) {
 				x:=strings.Split(line, ",")
