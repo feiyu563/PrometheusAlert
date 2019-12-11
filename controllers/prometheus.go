@@ -80,7 +80,6 @@ func (c *PrometheusController) PrometheusAlert() {
 func SendMessageP(message Prometheus)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Logourl:=beego.AppConfig.String("logourl")
-	defaultphone:=beego.AppConfig.String("defaultphone")
 	Messagelevel,_:=beego.AppConfig.Int("messagelevel")
 	PhoneCalllevel,_:=beego.AppConfig.Int("phonecalllevel")
 	PhoneCallResolved,_:=beego.AppConfig.Int("phonecallresolved")
@@ -130,8 +129,9 @@ func SendMessageP(message Prometheus)(string)  {
 		//发送消息到短信
 		if (nLevel==Messagelevel) {
 			if RMessage.Annotations.Mobile=="" {
-				returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, defaultphone) + "\n"
-				returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, defaultphone) + "\n"
+				phone:=GetUserPhone(1)
+				returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, phone) + "\n"
+				returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, phone) + "\n"
 			}else {
 				returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, RMessage.Annotations.Mobile) + "\n"
 				returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, RMessage.Annotations.Mobile) + "\n"
@@ -144,7 +144,8 @@ func SendMessageP(message Prometheus)(string)  {
 				returnMessage="告警恢复消息已经关闭\n"
 			}else {
 				if RMessage.Annotations.Mobile=="" {
-					returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, defaultphone) + "\n"
+					phone:=GetUserPhone(1)
+					returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, phone) + "\n"
 				}else {
 					returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, RMessage.Annotations.Mobile) + "\n"
 				}

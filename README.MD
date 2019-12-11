@@ -344,7 +344,10 @@ Sender=xxxxxxxxxx
 
 ```
 
-另外 PrometheusAlert 同时支持按照日期发送告警到不同号码,并且已经加入告警失败或者被告警人未接听电话后转联系备用联系人,只需新建user.csv文件,并将文件放到程序运行目录下即可自动加载,该功能暂时支持grafana发出的告警信息,csv文件格式如下:
+另外 PrometheusAlert 同时支持按照日期发送告警到不同号码,并且已经加入告警失败或者被告警人未接听电话后转联系默认联系人(defaultphone),只需新建user.csv文件,并将文件放到程序运行目录下即可自动加载,同时该文件也是电话回调接口所必需文件(如回调接口返回非0状态,则会在此文件中寻找下一号码进行拨打,如开启回调功能,请务必创建该文件)
+ps:目前grafana/graylog的电话和短信告警依赖于该文件,prometheus电话和短信告警优先从rules的Mobile字段读取,如未配置号码,则会从user.csv中读取,如user.csv中也未配置,则会直接发送到defaultphone
+关于user.csv中值班时间切换问题,默认每日上午10点进行切换
+csv文件格式如下:
 ```
 2019年4月10日,15888888881,小张,15999999999,备用联系人小陈,15999999998,备用联系人小赵
 2019年4月11日,15888888882,小李,15999999999,备用联系人小陈,15999999998,备用联系人小赵
@@ -354,6 +357,7 @@ Sender=xxxxxxxxxx
 
 启用电话告警失败重试功能需要在腾讯云上配置:
 云产品--->短信--->事件回调配置--->语音短信回调(回调接口 http://prometheusalertcenter_url/tengxun/status)
+ps:回调接口需对公网开放,否则云平台无法访问到接口.开启回调之后请务必创建user.csv文件
 
 ![tengxun2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tengxun2.png)
 
