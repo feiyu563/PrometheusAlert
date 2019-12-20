@@ -171,8 +171,10 @@ func GetUserPhone(neednum int) string  {
 			line, err := rd.ReadString('\n') //以'\n'为结束符读入一行
 			if err!=nil {
 				log.SetPrefix("[DEBUG 3]")
-				log.Println(err.Error())
-                                break
+				if err.Error()!="EOF" {
+					log.Println(err.Error())
+				}
+				break
 			}
 			if strings.Contains(line,DayString ) {
 				x:=strings.Split(line, ",")
@@ -180,6 +182,7 @@ func GetUserPhone(neednum int) string  {
 				break
 				}
 		}
+		f.Close()
 	}
 	return Num
 }
