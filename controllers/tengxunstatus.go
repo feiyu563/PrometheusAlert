@@ -36,11 +36,19 @@ func (c *TengXunStatusController) TengXunStatus() {
 	log.SetPrefix("[DEBUG tengxun]")
 	log.Println(string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &TengXunReturn)
-	if TengXunReturn.Voiceprompt_callback.Result!="0" && TengXunReturn.Voiceprompt_callback.Mobile==GetUserPhone(1) {
-		CallOthers(3)
-	}
-	if TengXunReturn.Voiceprompt_callback.Result!="0" && TengXunReturn.Voiceprompt_callback.Mobile==GetUserPhone(3) {
-		CallOthers(5)
+	DefaultPhone:=beego.AppConfig.String("defaultphone")
+	//判断失败号码是否是defaultphone中配置的号码,如果不是则继续,是则跳过,不执行重试逻辑
+	if TengXunReturn.Voiceprompt_callback.Result!="0" && TengXunReturn.Voiceprompt_callback.Mobile!=DefaultPhone  {
+		//如果失败号码不是user.csv或者defaultphone的号码,那么就直接拨打返回的第一个号码
+		if TengXunReturn.Voiceprompt_callback.Result!="0" && TengXunReturn.Voiceprompt_callback.Mobile!=GetUserPhone(1) {
+			CallOthers(1)
+			//如果失败号码是user.csv的第一个号码,那么就直接拨打user.csv的第2个号码
+		} else if TengXunReturn.Voiceprompt_callback.Result!="0" && TengXunReturn.Voiceprompt_callback.Mobile==GetUserPhone(1) {
+			CallOthers(3)
+			//如果失败号码是user.csv的第2个号码,那么就直接拨打user.csv的第3个号码
+		} else if TengXunReturn.Voiceprompt_callback.Result!="0" && TengXunReturn.Voiceprompt_callback.Mobile==GetUserPhone(3) {
+			CallOthers(5)
+		}
 	}
 	result:=Re{}
 	result.Result=0
