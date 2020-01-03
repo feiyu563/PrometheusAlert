@@ -129,38 +129,45 @@ PrometheusAlert 暂提供以下几类接口,分别对应各自接入端
  - `prometheus接口`
 
    `/prometheus/alert`
+
  - `grafana接口`
 
-   `/grafana/phone  腾讯云电话接口(v3.0版本将废弃)`
-   `/grafana/dingding  钉钉接口`
-   `/grafana/weixin  微信接口`
-   `/grafana/txdx  腾讯云短信接口`
-   `/grafana/txdh  腾讯云电话接口`
-   `/grafana/hwdx  华为云短信接口`
-   `/grafana/alydx  阿里云短信接口`
-   `/grafana/alydh  阿里云电话接口`
+```
+/grafana/phone  腾讯云电话接口(v3.0版本将废弃)
+/grafana/dingding  钉钉接口
+/grafana/weixin  微信接口
+/grafana/txdx  腾讯云短信接口
+/grafana/txdh  腾讯云电话接口
+/grafana/hwdx  华为云短信接口
+/grafana/alydx  阿里云短信接口
+/grafana/alydh  阿里云电话接口
+```
 
  - `graylog2接口`
 
-   `/graylog2/phone  腾讯云电话接口(v3.0版本将废弃)`
-   `/graylog2/dingding  钉钉接口`
-   `/graylog2/weixin  微信接口`
-   `/graylog2/txdx  腾讯云短信接口`
-   `/graylog2/txdh  腾讯云电话接口`
-   `/graylog2/hwdx  华为云短信接口`
-   `/graylog2/alydx  阿里云短信接口`
-   `/graylog2/alydh  阿里云电话接口`
+```
+/graylog2/phone  腾讯云电话接口(v3.0版本将废弃)
+/graylog2/dingding  钉钉接口
+/graylog2/weixin  微信接口
+/graylog2/txdx  腾讯云短信接口
+/graylog2/txdh  腾讯云电话接口
+/graylog2/hwdx  华为云短信接口
+/graylog2/alydx  阿里云短信接口
+/graylog2/alydh  阿里云电话接口
+```
 
  - `graylog3接口`
 
-   `/graylog3/phone  腾讯云电话接口(v3.0版本将废弃)`
-   `/graylog3/dingding  钉钉接口`
-   `/graylog3/weixin  微信接口`
-   `/graylog3/txdx  腾讯云短信接口`
-   `/graylog3/txdh  腾讯云电话接口`
-   `/graylog3/hwdx  华为云短信接口`
-   `/graylog3/alydx  阿里云短信接口`
-   `/graylog3/alydh  阿里云电话接口`
+```
+/graylog3/phone  腾讯云电话接口(v3.0版本将废弃)
+/graylog3/dingding  钉钉接口
+/graylog3/weixin  微信接口
+/graylog3/txdx  腾讯云短信接口
+/graylog3/txdh  腾讯云电话接口
+/graylog3/hwdx  华为云短信接口
+/graylog3/alydx  阿里云短信接口
+/graylog3/alydh  阿里云电话接口
+```
 
  - `语音短信回调接口`
 
@@ -238,14 +245,16 @@ groups:
 注意这里的url地址填写上自己部署所在的url
  - `grafana接口`
 
-   `/grafana/phone  腾讯云电话接口(v3.0版本将废弃)`
-   `/grafana/dingding  钉钉接口`
-   `/grafana/weixin  微信接口`
-   `/grafana/txdx  腾讯云短信接口`
-   `/grafana/txdh  腾讯云电话接口`
-   `/grafana/hwdx  华为云短信接口`
-   `/grafana/alydx  阿里云短信接口`
-   `/grafana/alydh  阿里云电话接口`
+```
+/grafana/phone  腾讯云电话接口(v3.0版本将废弃)
+/grafana/dingding  钉钉接口
+/grafana/weixin  微信接口
+/grafana/txdx  腾讯云短信接口
+/grafana/txdh  腾讯云电话接口
+/grafana/hwdx  华为云短信接口
+/grafana/alydx  阿里云短信接口
+/grafana/alydh  阿里云电话接口
+```
 
 ![grafana2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/addchannel2.png)
 配置完成后保存即可.继续进行告警消息配置,选择任意一个折线图,点击编辑,进入aler配置,配置参考下图:
@@ -270,27 +279,32 @@ Notifications配置格式参考,支持配置多个告警机器人url:
 点击```Add new notification```创建新的告警通道,选择如下图配置:
 ![graylog2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/graylog2.png)
 在弹出的窗口中填入名称和对应的PrometheusAlert的接口地址即可,配置参考下图:
+
  - `graylog2接口`
 
-   `/graylog2/phone  腾讯云电话接口(v3.0版本将废弃)`
-   `/graylog2/dingding  钉钉接口`
-   `/graylog2/weixin  微信接口`
-   `/graylog2/txdx  腾讯云短信接口`
-   `/graylog2/txdh  腾讯云电话接口`
-   `/graylog2/hwdx  华为云短信接口`
-   `/graylog2/alydx  阿里云短信接口`
-   `/graylog2/alydh  阿里云电话接口`
+```
+/graylog2/phone  腾讯云电话接口(v3.0版本将废弃)
+/graylog2/dingding  钉钉接口
+/graylog2/weixin  微信接口
+/graylog2/txdx  腾讯云短信接口
+/graylog2/txdh  腾讯云电话接口
+/graylog2/hwdx  华为云短信接口
+/graylog2/alydx  阿里云短信接口
+/graylog2/alydh  阿里云电话接口
+```
 
  - `graylog3接口`
 
-   `/graylog3/phone  腾讯云电话接口(v3.0版本将废弃)`
-   `/graylog3/dingding  钉钉接口`
-   `/graylog3/weixin  微信接口`
-   `/graylog3/txdx  腾讯云短信接口`
-   `/graylog3/txdh  腾讯云电话接口`
-   `/graylog3/hwdx  华为云短信接口`
-   `/graylog3/alydx  阿里云短信接口`
-   `/graylog3/alydh  阿里云电话接口`
+```
+/graylog3/phone  腾讯云电话接口(v3.0版本将废弃)
+/graylog3/dingding  钉钉接口
+/graylog3/weixin  微信接口
+/graylog3/txdx  腾讯云短信接口
+/graylog3/txdh  腾讯云电话接口
+/graylog3/hwdx  华为云短信接口
+/graylog3/alydx  阿里云短信接口
+/graylog3/alydh  阿里云电话接口
+```
 
 ![graylog3](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/graylog3.png)
 配置完成后,点击```Test```测试下是否能够正常接收告警消息即可
@@ -302,22 +316,40 @@ Notifications配置格式参考,支持配置多个告警机器人url:
 --------------------------------------
 
 **4. 配置文件解析**
+--------------------------------------
 
 1.腾讯云短信告警和语音告警
+
 具体参数获取可去腾讯云开通相关服务即可,并配置相关参数https://cloud.tencent.com/document/product/382/18071
 腾讯云模版配置可参考
+
 `prometheus告警:{1}`
+
 ![tengxun1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tengxun1.png)
+
+--------------------------------------
+
 2.华为云短信告警
+
 具体参数获取可去华为云开通相关服务即可,并配置相关参数
 https://support.huaweicloud.com/qs-msgsms/sms_02_0001.html
 华为云短信模版配置可参考
+
 `模版类型:通知类`
+
 `模版内容:运维告警:${TXT_66}`
+
+--------------------------------------
+
 3.阿里云短信告警和语音告警
+
 具体参数获取可去阿里云开通相关服务即可,并配置相关参数https://help.aliyun.com/document_detail/55288.html?spm=5176.8195934.1283918.11.73af30c917Jfti&aly_as=m1ouSihk
+
 阿里云模版配置可参考,code为变量名称,不推荐更改
+
 `prometheus告警:${code}`
+
+--------------------------------------
 
 ```
 #---------------------↓全局配置-----------------------
