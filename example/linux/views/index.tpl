@@ -75,6 +75,8 @@
      <button class="btn btn-primary" data-toggle='modal' id="txdx">腾讯云短信告警测试</button>
      <button class="btn btn-primary" data-toggle='modal' id="txdh">腾讯云电话告警测试</button>
      <button class="btn btn-primary" data-toggle='modal' id="hwdx">华为云短信告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="alydx">阿里云短信告警测试</button>
+     <button class="btn btn-primary" data-toggle='modal' id="alydh">阿里云电话告警测试</button>
    </div>
    <div class="description">
     <a href="https://github.com/feiyu563/PrometheusAlert">Go to My GitHub and find how to use it or get new version !</a>

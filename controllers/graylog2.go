@@ -68,12 +68,32 @@ func (c *Graylog2Controller) GraylogHwdx() {
 	log.Println(c.Data["json"])
 	c.ServeJSON()
 }
-func (c *Graylog2Controller) GraylogPhone() {
+func (c *Graylog2Controller) GraylogTxdh() {
 	alert:=Graylog2{}
 	log.SetPrefix("[DEBUG 1]")
 	log.Println(string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
 	c.Data["json"]=SendMessageG(alert,4)
+	log.SetPrefix("[DEBUG 3]")
+	log.Println(c.Data["json"])
+	c.ServeJSON()
+}
+func (c *Graylog2Controller) GraylogALYdx() {
+	alert:=Graylog2{}
+	log.SetPrefix("[DEBUG 1]")
+	log.Println(string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageG(alert,7)
+	log.SetPrefix("[DEBUG 3]")
+	log.Println(c.Data["json"])
+	c.ServeJSON()
+}
+func (c *Graylog2Controller) GraylogALYdh() {
+	alert:=Graylog2{}
+	log.SetPrefix("[DEBUG 1]")
+	log.Println(string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageG(alert,8)
 	log.SetPrefix("[DEBUG 3]")
 	log.Println(c.Data["json"])
 	c.ServeJSON()
@@ -110,6 +130,14 @@ func SendMessageG(message Graylog2,typeid int)(string)  {
 	//触发华为云短信告警
 	if typeid==6 {
 		returnMessage=returnMessage+"PostHWmessage:"+PostHWmessage(PhoneCallMessage,phone)+"\n"
+	}
+	//触发阿里云短信告警
+	if typeid==7 {
+		returnMessage=returnMessage+"PostALYmessage:"+PostALYmessage(PhoneCallMessage,phone)+"\n"
+	}
+	//触发阿里云电话告警
+	if typeid==8 {
+		returnMessage=returnMessage+"PostALYphonecall:"+PostALYphonecall(PhoneCallMessage,phone)+"\n"
 	}
 	return returnMessage
 }

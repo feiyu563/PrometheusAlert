@@ -35,6 +35,14 @@ func (c *MainController)AlertTest()  {
 		MobileMessage:="PrometheusAlertCenter测试告警"
 		ret:=PostHWmessage(MobileMessage,beego.AppConfig.String("defaultphone"))
 		c.Data["json"]=ret
+	case "alydx":
+		MobileMessage:="PrometheusAlertCenter测试告警"
+		ret:=PostALYmessage(MobileMessage,beego.AppConfig.String("defaultphone"))
+		c.Data["json"]=ret
+	case "alydh":
+		MobileMessage:="PrometheusAlertCenter测试告警"
+		ret:=PostALYphonecall(MobileMessage,beego.AppConfig.String("defaultphone"))
+		c.Data["json"]=ret
 	default:
 		c.Data["json"]="fuck you!"
 	}

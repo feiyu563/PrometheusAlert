@@ -40,20 +40,20 @@ type TXmessage struct {
 }
 
 //腾讯短信子程序
-func PostTXmessage(text string,mobile string)(string)  {
+func PostTXmessage(Messages string,PhoneNumbers string)(string)  {
 	open:=beego.AppConfig.String("open-txdx")
 	if open=="0" {
 		return "腾讯短信接口未配置未开启状态,请先配置open-txdx为1"
 	}
-	strAppKey:=beego.AppConfig.String("appkey")
-	tpl_id,_:=beego.AppConfig.Int("tpl_id")
-	sdkappid:=beego.AppConfig.String("sdkappid")
-	sign:=beego.AppConfig.String("sign")
+	strAppKey:=beego.AppConfig.String("TXY_DX_appkey")
+	tpl_id,_:=beego.AppConfig.Int("TXY_DX_tpl_id")
+	sdkappid:=beego.AppConfig.String("TXY_DX_sdkappid")
+	sign:=beego.AppConfig.String("TXY_DX_sign")
 	//腾讯短信接口算法部分
 	//mobile格式:"15395105573,16619875573"
 	TXmobile:=Mobiles{}
 	TXmobiles:=[]Mobiles{}
-	mobiles:=strings.Split(mobile,",")
+	mobiles:=strings.Split(PhoneNumbers,",")
 	for _,m:=range mobiles {
 		TXmobile.Mobile=m
 		TXmobile.Nationcode="86"
@@ -62,12 +62,12 @@ func PostTXmessage(text string,mobile string)(string)  {
 	strRand := "7226249334"
 	strTime := strconv.FormatInt(time.Now().Unix(),10)
 	intTime,_:=strconv.Atoi(strTime)
-	sig := getSha256Code("appkey="+strAppKey+"&random="+strRand+"&time="+strTime+"&mobile="+mobile)
+	sig := getSha256Code("appkey="+strAppKey+"&random="+strRand+"&time="+strTime+"&mobile="+PhoneNumbers)
 	TXurl:="https://yun.tim.qq.com/v5/tlssmssvr/sendmultisms2?sdkappid="+sdkappid+"&random="+strRand
 	u := TXmessage{
 		Ext:"",
 		Extend:"",
-		Params:[]string{text},
+		Params:[]string{Messages},
 		Sig:sig,
 		Sign:sign,
 		Tel:TXmobiles,
@@ -108,17 +108,17 @@ type TXphonecall struct {
 }
 
 //腾讯语音子程序
-func PostTXphonecall(text string,mobile string)(string)  {
+func PostTXphonecall(Messages string,PhoneNumbers string)(string)  {
 	open:=beego.AppConfig.String("open-txdh")
 	if open=="0" {
 		return "腾讯语音接口未配置未开启状态,请先配置open-txdh为1"
 	}
-	strAppKey:=beego.AppConfig.String("phonecallappkey")
-	sdkappid:=beego.AppConfig.String("phonecallsdkappid")
-	tpl_id,_:=beego.AppConfig.Int("phonecalltpl_id")
+	strAppKey:=beego.AppConfig.String("TXY_DH_phonecallappkey")
+	sdkappid:=beego.AppConfig.String("TXY_DH_phonecallsdkappid")
+	tpl_id,_:=beego.AppConfig.Int("TXY_DH_phonecalltpl_id")
 	//腾讯短信接口算法部分
 	TXmobile:=Mobiles{}
-	mobiles:=strings.Split(mobile,",")
+	mobiles:=strings.Split(PhoneNumbers,",")
 	for _,m:=range mobiles {
 		TXmobile.Mobile=m
 		TXmobile.Nationcode="86"
@@ -130,7 +130,7 @@ func PostTXphonecall(text string,mobile string)(string)  {
 		u := TXphonecall{
 			Ext:"",
 			Tpl_id:tpl_id,
-			Params:[]string{text},
+			Params:[]string{Messages},
 			Playtimes:2,
 			Sig:sig,
 			Tel:TXmobile,
@@ -140,7 +140,7 @@ func PostTXphonecall(text string,mobile string)(string)  {
 		res:=PhoneCallPost(TXurl,u)
 		log.Println(res)
 	}
-	return "ok"
+	return "tengxun PhoneCall for :"+Messages+" ok"
 }
 
 func PhoneCallPost(url string,u TXphonecall)(string) {
