@@ -4,6 +4,66 @@
 	"GodepVersion": "v80",
 	"Deps": [
 		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials/provider",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/signers",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/endpoints",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/sdk/utils",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
+			"ImportPath": "github.com/aliyun/alibaba-cloud-sdk-go/services/dyvmsapi",
+			"Comment": "v1.60.313",
+			"Rev": "6b5ab51b9e410be6d7dd42394d2ddb0fcb23d0e9"
+		},
+		{
 			"ImportPath": "github.com/astaxie/beego",
 			"Comment": "v1.9.2-2-gf166888",
 			"Rev": "f16688817aa428d10361394015b40d096b680542"
@@ -47,6 +107,31 @@
 			"ImportPath": "github.com/astaxie/beego/utils",
 			"Comment": "v1.9.2-2-gf166888",
 			"Rev": "f16688817aa428d10361394015b40d096b680542"
+		},
+		{
+			"ImportPath": "github.com/jmespath/go-jmespath",
+			"Comment": "0.2.2-22-gc2b33e8",
+			"Rev": "c2b33e8439af944379acbdd9c3a5fe0bc44bd8a5"
+		},
+		{
+			"ImportPath": "github.com/json-iterator/go",
+			"Comment": "1.1.3-18-g8744d7c",
+			"Rev": "8744d7c5c7b40a53e018f78d8c508b3315260b96"
+		},
+		{
+			"ImportPath": "github.com/modern-go/concurrent",
+			"Comment": "1.0.3",
+			"Rev": "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+		},
+		{
+			"ImportPath": "github.com/modern-go/reflect2",
+			"Comment": "1.0.0-11-g58118c1",
+			"Rev": "58118c1ea9161250907268a484af4dd6ed314280"
+		},
+		{
+			"ImportPath": "gopkg.in/ini.v1",
+			"Comment": "v1.51.1",
+			"Rev": "94291fffe2b14f4632ec0e67c1bfecfc1287a168"
 		}
 	]
 }

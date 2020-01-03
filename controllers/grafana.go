@@ -25,7 +25,7 @@ type Grafana struct {
 	State string `json:"state"`
 }
 
-func (c *GrafanaController) GrafanaPhone() {
+func (c *GrafanaController) GrafanaTxdh() {
 	alert:=Grafana{}
 	log.SetPrefix("[DEBUG 1]")
 	log.Println(string(c.Ctx.Input.RequestBody))
@@ -79,7 +79,27 @@ func (c *GrafanaController) GrafanaHwdx() {
 	c.ServeJSON()
 }
 
+func (c *GrafanaController) GrafanaALYdx() {
+	alert:=Grafana{}
+	log.SetPrefix("[DEBUG 1]")
+	log.Println(string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageGrafana(alert,7)
+	log.SetPrefix("[DEBUG 3]")
+	log.Println(c.Data["json"])
+	c.ServeJSON()
+}
 
+func (c *GrafanaController) GrafanaALYdh() {
+	alert:=Grafana{}
+	log.SetPrefix("[DEBUG 1]")
+	log.Println(string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageGrafana(alert,8)
+	log.SetPrefix("[DEBUG 3]")
+	log.Println(c.Data["json"])
+	c.ServeJSON()
+}
 
 //typeid 为0,触发电话告警和钉钉告警, typeid 为1 仅触发dingding告警
 func SendMessageGrafana(message Grafana,typeid int)(string)  {
@@ -143,6 +163,15 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	if typeid==6 {
 		returnMessage=returnMessage+"PostHWmessage:"+PostHWmessage(PhoneCallMessage,phone)+"\n"
 	}
+	//触发阿里云短信告警
+	if typeid==7 {
+		returnMessage=returnMessage+"PostALYmessage:"+PostALYmessage(PhoneCallMessage,phone)+"\n"
+	}
+	//触发阿里云电话告警
+	if typeid==8 {
+		returnMessage=returnMessage+"PostALYphonecall:"+PostALYphonecall(PhoneCallMessage,phone)+"\n"
+	}
+
 	return returnMessage
 }
 //获取用户号码

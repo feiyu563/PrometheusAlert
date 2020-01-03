@@ -5,9 +5,20 @@ PrometheusAlert 简介
 
 -----------------
 
-PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的监控系统Prometheus,日志系统Graylog2,Graylog3和数据可视化系统Grafana发出的预警消息,支持将收到的这些消息发送到钉钉,微信,腾讯短信,腾讯语音提醒,华为短信等
+PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的监控系统Prometheus,日志系统Graylog2,Graylog3和数据可视化系统Grafana发出的预警消息,支持将收到的这些消息发送到钉钉,微信,腾讯短信,腾讯电话,阿里云短信,阿里云电话,华为短信等
 
 ![it](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/it.png)
+
+--------------------------------------
+
+2.2版本更新说明:
+---------------------
+ - 1.增加阿里云短信接口支持
+ - 2.增加阿里云电话接口支持
+ - 3.增加grafana/graylog2/graylog3/prometheus等阿里云电话和短信的发送接口
+ - 4.增加dashboard阿里云短信和电话测试告警
+ - 5.配置文件新增阿里云短信和电话的配置
+ - 6.配置文件更新部分配置名称,主要是短信和电话配置部分名称改变
 
 --------------------------------------
 
@@ -120,30 +131,40 @@ PrometheusAlert 暂提供以下几类接口,分别对应各自接入端
    `/prometheus/alert`
  - `grafana接口`
 
-   `/grafana/dingding`
-   `/grafana/weixin`
-   `/grafana/phone`
-   `/grafana/txdx`
-   `/grafana/hwdx`
+   `/grafana/phone  腾讯云电话接口(v3.0版本将废弃)`
+   `/grafana/dingding  钉钉接口`
+   `/grafana/weixin  微信接口`
+   `/grafana/txdx  腾讯云短信接口`
+   `/grafana/txdh  腾讯云电话接口`
+   `/grafana/hwdx  华为云短信接口`
+   `/grafana/alydx  阿里云短信接口`
+   `/grafana/alydh  阿里云电话接口`
+
  - `graylog2接口`
 
-   `/graylog2/phone`
-   `/graylog2/dingding`
-   `/graylog2/weixin`
-   `/graylog2/txdx`
-   `/graylog2/hwdx`
+   `/graylog2/phone  腾讯云电话接口(v3.0版本将废弃)`
+   `/graylog2/dingding  钉钉接口`
+   `/graylog2/weixin  微信接口`
+   `/graylog2/txdx  腾讯云短信接口`
+   `/graylog2/txdh  腾讯云电话接口`
+   `/graylog2/hwdx  华为云短信接口`
+   `/graylog2/alydx  阿里云短信接口`
+   `/graylog2/alydh  阿里云电话接口`
 
  - `graylog3接口`
 
-   `/graylog3/phone`
-   `/graylog3/dingding`
-   `/graylog3/weixin`
-   `/graylog3/txdx`
-   `/graylog3/hwdx`
- - `腾讯云语音短信回调接口(仅在腾讯短信后台配置回调使用)`
+   `/graylog3/phone  腾讯云电话接口(v3.0版本将废弃)`
+   `/graylog3/dingding  钉钉接口`
+   `/graylog3/weixin  微信接口`
+   `/graylog3/txdx  腾讯云短信接口`
+   `/graylog3/txdh  腾讯云电话接口`
+   `/graylog3/hwdx  华为云短信接口`
+   `/graylog3/alydx  阿里云短信接口`
+   `/graylog3/alydh  阿里云电话接口`
+
+ - `语音短信回调接口`
 
    `/tengxun/status`
- - `阿里云短信/语音提醒(即将接入)`
 
 --------------------------------------
  **0. 开启钉钉机器人**
@@ -217,11 +238,14 @@ groups:
 注意这里的url地址填写上自己部署所在的url
  - `grafana接口`
 
-   `/grafana/dingding`
-   `/grafana/weixin`
-   `/grafana/phone`
-   `/grafana/txdx`
-   `/grafana/hwdx`
+   `/grafana/phone  腾讯云电话接口(v3.0版本将废弃)`
+   `/grafana/dingding  钉钉接口`
+   `/grafana/weixin  微信接口`
+   `/grafana/txdx  腾讯云短信接口`
+   `/grafana/txdh  腾讯云电话接口`
+   `/grafana/hwdx  华为云短信接口`
+   `/grafana/alydx  阿里云短信接口`
+   `/grafana/alydh  阿里云电话接口`
 
 ![grafana2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/addchannel2.png)
 配置完成后保存即可.继续进行告警消息配置,选择任意一个折线图,点击编辑,进入aler配置,配置参考下图:
@@ -248,19 +272,25 @@ Notifications配置格式参考,支持配置多个告警机器人url:
 在弹出的窗口中填入名称和对应的PrometheusAlert的接口地址即可,配置参考下图:
  - `graylog2接口`
 
-   `/graylog2/phone`
-   `/graylog2/dingding`
-   `/graylog2/weixin`
-   `/graylog2/txdx`
-   `/graylog2/hwdx`
+   `/graylog2/phone  腾讯云电话接口(v3.0版本将废弃)`
+   `/graylog2/dingding  钉钉接口`
+   `/graylog2/weixin  微信接口`
+   `/graylog2/txdx  腾讯云短信接口`
+   `/graylog2/txdh  腾讯云电话接口`
+   `/graylog2/hwdx  华为云短信接口`
+   `/graylog2/alydx  阿里云短信接口`
+   `/graylog2/alydh  阿里云电话接口`
 
  - `graylog3接口`
 
-   `/graylog3/phone`
-   `/graylog3/dingding`
-   `/graylog3/weixin`
-   `/graylog3/txdx`
-   `/graylog3/hwdx`
+   `/graylog3/phone  腾讯云电话接口(v3.0版本将废弃)`
+   `/graylog3/dingding  钉钉接口`
+   `/graylog3/weixin  微信接口`
+   `/graylog3/txdx  腾讯云短信接口`
+   `/graylog3/txdh  腾讯云电话接口`
+   `/graylog3/hwdx  华为云短信接口`
+   `/graylog3/alydx  阿里云短信接口`
+   `/graylog3/alydh  阿里云电话接口`
 
 ![graylog3](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/graylog3.png)
 配置完成后,点击```Test```测试下是否能够正常接收告警消息即可
@@ -275,7 +305,7 @@ Notifications配置格式参考,支持配置多个告警机器人url:
 
 1.腾讯云短信告警和语音告警
 具体参数获取可去腾讯云开通相关服务即可,并配置相关参数https://cloud.tencent.com/document/product/382/18071
-腾讯云短信模版配置可参考
+腾讯云模版配置可参考
 `prometheus告警:{1}`
 ![tengxun1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tengxun1.png)
 2.华为云短信告警
@@ -284,9 +314,9 @@ https://support.huaweicloud.com/qs-msgsms/sms_02_0001.html
 华为云短信模版配置可参考
 `模版类型:通知类`
 `模版内容:运维告警:${TXT_66}`
-3.阿里云短信告警和语音告警(待接入测试)
+3.阿里云短信告警和语音告警
 具体参数获取可去阿里云开通相关服务即可,并配置相关参数https://help.aliyun.com/document_detail/55288.html?spm=5176.8195934.1283918.11.73af30c917Jfti&aly_as=m1ouSihk
-阿里云短信模版配置可参考
+阿里云模版配置可参考,code为变量名称,不推荐更改
 `prometheus告警:${code}`
 
 ```
@@ -298,7 +328,7 @@ runmode = dev
 #开启JSON请求
 copyrequestbody = true
 #告警消息标题
-title=AlertCenter
+title=NX-TEST
 #链接到告警平台地址
 GraylogAlerturl=http://graylog.org
 #logo图标地址
@@ -313,6 +343,7 @@ defaultphone=15395105573
 phonecallresolved=1
 #自动告警抑制(自动告警抑制是默认同一个告警源的告警信息只发送告警级别最高的第一条告警信息,其他消息默认屏蔽,这么做的目的是为了减少相同告警来源的消息数量,防止告警炸弹,0为关闭,1为开启)
 silent=1
+
 #---------------------↓webhook-----------------------
 #是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
 open-dingding=1
@@ -320,46 +351,69 @@ open-dingding=1
 ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx
 
 #是否开启微信告警通道,可同时开始多个通道0为关闭,1为开启
-open-weixin=0
+open-weixin=1
 #默认企业微信机器人地址
-wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxx
+wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
 
 #---------------------↓腾讯云接口-----------------------
 #是否开启腾讯云短信告警通道,可同时开始多个通道0为关闭,1为开启
 open-txdx=0
 #腾讯云短信接口key
-appkey=e71xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TXY_DX_appkey=xxxxx
 #腾讯云短信模版ID 腾讯云短信模版配置可参考 prometheus告警:{1}
-tpl_id=xxxxxx
+TXY_DX_tpl_id=xxxxx
 #腾讯云短信sdk app id
-sdkappid=xxxxxxxxx
+TXY_DX_sdkappid=xxxxx
 #腾讯云短信签名 根据自己审核通过的签名来填写
-sign=腾讯云
+TXY_DX_sign=腾讯云
 
 #是否开启腾讯云电话告警通道,可同时开始多个通道0为关闭,1为开启
-open-txdh=0
+TXY_DH_open-txdh=0
 #腾讯云电话接口key
-phonecallappkey=xxxxxxxxxxxxxxxxxxxxxx
+TXY_DH_phonecallappkey=xxxxx
 #腾讯云电话模版ID
-phonecalltpl_id=xxxxxxxxx
+TXY_DH_phonecalltpl_id=xxxxx
 #腾讯云电话sdk app id
-phonecallsdkappid=xxxxxxxxxx
+TXY_DH_phonecallsdkappid=xxxxx
 
 #---------------------↓华为云接口-----------------------
 #是否开启华为云短信告警通道,可同时开始多个通道0为关闭,1为开启
 open-hwdx=0
 #华为云短信接口key
-APP_Key=xxxxxxxxxxxxxxxxxxxxxx
+HWY_DX_APP_Key=xxxxxxxxxxxxxxxxxxxxxx
 #华为云短信接口Secret
-APP_Secret=xxxxxxxxxxxxxxxxxxxxxx
-#APP接入地址(端口接口地址)
-APP_Url=https://rxxxxxxxxxxxxxxxxxxxxxx:10743
-#短信模板ID
-Templateid=xxxxxxxxxxxxxxxxxxxxxx
-#签名名称，必须是已审核通过的，与模板类型一致的签名名称,按照自己的实际签名填写
-Signature=PrometheusAlertCenter
-#签名通道号
-Sender=xxxxxxxxxx
+HWY_DX_APP_Secret=xxxxxxxxxxxxxxxxxxxxxx
+#华为云APP接入地址(端口接口地址)
+HWY_DX_APP_Url=https://rtcsms.cn-north-1.myhuaweicloud.com:10743
+#华为云短信模板ID
+HWY_DX_Templateid=xxxxxxxxxxxxxxxxxxxxxx
+#华为云签名名称，必须是已审核通过的，与模板类型一致的签名名称,按照自己的实际签名填写
+HWY_DX_Signature=华为云
+#华为云签名通道号
+HWY_DX_Sender=xxxxxxxxxx
+
+#---------------------↓阿里云接口-----------------------
+#是否开启阿里云短信告警通道,可同时开始多个通道0为关闭,1为开启
+open-alydx=0
+#阿里云短信主账号AccessKey的ID
+ALY_DX_AccessKeyId=xxxxxxxxxxxxxxxxxxxxxx
+#阿里云短信接口密钥
+ALY_DX_AccessSecret=xxxxxxxxxxxxxxxxxxxxxx
+#阿里云短信签名名称
+ALY_DX_SignName=阿里云
+#阿里云短信模板ID
+ALY_DX_Template=xxxxxxxxxxxxxxxxxxxxxx
+
+#是否开启阿里云电话告警通道,可同时开始多个通道0为关闭,1为开启
+open-alydx=0
+#阿里云电话主账号AccessKey的ID
+ALY_DH_AccessKeyId=xxxxxxxxxxxxxxxxxxxxxx
+#阿里云电话接口密钥
+ALY_DH_AccessSecret=xxxxxxxxxxxxxxxxxxxxxx
+#阿里云电话被叫显号，必须是已购买的号码
+ALY_DX_CalledShowNumber=xxxxxxxxx
+#阿里云电话文本转语音（TTS）模板ID
+ALY_DH_TtsCode=xxxxxxxx
 
 ```
 

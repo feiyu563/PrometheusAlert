@@ -131,10 +131,12 @@ func SendMessageP(message Prometheus)(string)  {
 			if RMessage.Annotations.Mobile=="" {
 				phone:=GetUserPhone(1)
 				returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, phone) + "\n"
-				returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, phone) + "\n"
+				returnMessage = returnMessage + "PostHWmessage:" + PostHWmessage(MobileMessage, phone) + "\n"
+				returnMessage = returnMessage + "PostALYmessage:" + PostHWmessage(MobileMessage, phone) + "\n"
 			}else {
 				returnMessage = returnMessage + "PostTXmessage:" + PostTXmessage(MobileMessage, RMessage.Annotations.Mobile) + "\n"
-				returnMessage = returnMessage + "PostTXmessage:" + PostHWmessage(MobileMessage, RMessage.Annotations.Mobile) + "\n"
+				returnMessage = returnMessage + "PostHWmessage:" + PostHWmessage(MobileMessage, RMessage.Annotations.Mobile) + "\n"
+				returnMessage = returnMessage + "PostALYmessage:" + PostHWmessage(MobileMessage, RMessage.Annotations.Mobile) + "\n"
 			}
 		}
 		//发送消息到语音
@@ -146,8 +148,10 @@ func SendMessageP(message Prometheus)(string)  {
 				if RMessage.Annotations.Mobile=="" {
 					phone:=GetUserPhone(1)
 					returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, phone) + "\n"
+					returnMessage = returnMessage + "PostALYphonecall:" + PostALYphonecall(PhoneCallMessage, phone) + "\n"
 				}else {
 					returnMessage = returnMessage + "PostTXphonecall:" + PostTXphonecall(PhoneCallMessage, RMessage.Annotations.Mobile) + "\n"
+					returnMessage = returnMessage + "PostALYphonecall:" + PostALYphonecall(PhoneCallMessage, RMessage.Annotations.Mobile) + "\n"
 				}
 			}
 		}
