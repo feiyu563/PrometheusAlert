@@ -27,6 +27,11 @@ func PostToDingDing(title,text,Ddurl string)(string)  {
 	if open=="0" {
 		return "钉钉接口未配置未开启状态,请先配置open-dingding为1"
 	}
+	Isatall,_:=beego.AppConfig.Int("dd_isatall")
+	Atall:=true
+	if Isatall==0 {
+		Atall=false
+	}
 	u := DDMessage{
 		Msgtype:"markdown",
 		Markdown: struct {
@@ -36,7 +41,7 @@ func PostToDingDing(title,text,Ddurl string)(string)  {
 		At: struct {
 			AtMobiles []string `json:"atMobiles"`
 			IsAtAll   bool `json:"isAtAll"`
-		}{AtMobiles:[]string{"15395105573"} , IsAtAll:true },
+		}{AtMobiles:[]string{"15395105573"} , IsAtAll:Atall },
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)

@@ -11,6 +11,14 @@ PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的�
 
 --------------------------------------
 
+2.2.1版本更新说明:
+---------------------
+ - 1.增加配置项dd_isatall,功能是否开启钉钉 @所有人(0为关闭,1为开启)
+ - 2.美化前端页面CSS
+ - 3.新增接口 /prometheus/router,专门用于处理Prometheus AlertManager的route路由定义的消息(即通过路由指定发送目标),readme中有详细使用方法
+
+--------------------------------------
+
 2.2版本更新说明:
 ---------------------
  - 1.增加阿里云短信接口支持
@@ -128,7 +136,10 @@ PrometheusAlert 暂提供以下几类接口,分别对应各自接入端
 
  - `prometheus接口`
 
-   `/prometheus/alert`
+```
+/prometheus/alert  默认接口
+/prometheus/router  AlertManager router指定接收端接口
+```
 
  - `grafana接口`
 
@@ -171,7 +182,9 @@ PrometheusAlert 暂提供以下几类接口,分别对应各自接入端
 
  - `语音短信回调接口`
 
-   `/tengxun/status`
+```
+/tengxun/status  腾讯语音短信回调接口
+```
 
 --------------------------------------
  **0. 开启钉钉机器人**
@@ -213,6 +226,25 @@ receivers:
 - name: 'web.hook.prometheusalert'
   webhook_configs:
   - url: 'http://[prometheusalert_url]:8080/prometheus/alert'
+```
+
+针对 `/prometheus/router  AlertManager router指定接收端接口`,该接口可在url中直接指定告警的接收端,目前之前三个参数,分别是:wxurl,ddurl,phone(phone用于短信和电话告警)
+
+在 Prometheus Alertmanager 中启用 Webhook，可参考如下模板：
+
+```
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['instance']
+  group_wait: 10m
+  group_interval: 10s
+  repeat_interval: 10m
+  receiver: 'web.hook.prometheusalert'
+receivers:
+- name: 'web.hook.prometheusalert'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheus/router?wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx&phone=15395105573'
 ```
 
 Prometheus Server 的告警rules配置，可参考如下模板：
