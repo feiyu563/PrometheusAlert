@@ -1,6 +1,6 @@
 PrometheusAlert 简介
 
-![logo](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png)
+![logo](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/logo.png)
 ![dashboard](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dashboard.png)
 
 -----------------
