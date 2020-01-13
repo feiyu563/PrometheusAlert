@@ -98,6 +98,13 @@ func (c *Graylog3Controller) GraylogALYdh() {
 func SendMessageG3(message Graylog3,typeid int,logsign string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Logourl:=beego.AppConfig.String("logourl")
+	if len(message.Backlogs)==0 {
+		ddurl:=beego.AppConfig.String("ddurl")
+		PostToDingDing(Title+"告警信息","## ["+Title+"Graylog3告警信息]("+message.Event.Source+")\n\n"+"#### "+message.Description+"\n\n"+"!["+Title+"]("+Logourl+")", ddurl,logsign)
+		wxurl:=beego.AppConfig.String("wxurl")
+		PostToWeiXin("["+Title+"Graylog3告警信息]("+message.Event.Source+")\n>**"+message.Description+"**", wxurl,logsign)
+		return "告警消息发送完成."
+	}
 	for _, m := range message.Backlogs {
 		DDtext:="## ["+Title+"Graylog3告警信息]("+message.Event.Source+")\n\n"+"#### "+message.Description+"\n\n"+"###### 告警索引："+m.Index+"\n\n"+"###### 开始时间："+m.Timestamp+" \n\n"+"###### 告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+"##### "+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
 		WXtext:="["+Title+"Graylog3告警信息]("+message.Event.Source+")\n>**"+message.Description+"**\n>`告警索引:`"+m.Index+"\n`开始时间:`"+m.Timestamp+" \n`告警主机:`"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n**"+m.Message+"**"
