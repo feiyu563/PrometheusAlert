@@ -4,15 +4,15 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-	"encoding/json"
 )
 
 //腾讯短信接口sha256编码
@@ -40,9 +40,10 @@ type TXmessage struct {
 }
 
 //腾讯短信子程序
-func PostTXmessage(Messages string,PhoneNumbers string)(string)  {
+func PostTXmessage(Messages string,PhoneNumbers,logsign string)(string)  {
 	open:=beego.AppConfig.String("open-txdx")
 	if open=="0" {
+		logs.Info(logsign,"腾讯短信接口未配置未开启状态,请先配置open-txdx为1")
 		return "腾讯短信接口未配置未开启状态,请先配置open-txdx为1"
 	}
 	strAppKey:=beego.AppConfig.String("TXY_DX_appkey")
@@ -76,8 +77,7 @@ func PostTXmessage(Messages string,PhoneNumbers string)(string)  {
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	log.SetPrefix("[DEBUG 2]")
-	log.Println(b)
+	logs.Info(logsign,b)
 	tr :=&http.Transport{
 		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	}
@@ -86,13 +86,14 @@ func PostTXmessage(Messages string,PhoneNumbers string)(string)  {
 	client := &http.Client{Transport: tr}
 	res,err  := client.Post(TXurl, "application/json", b)
 	if err != nil {
-		return err.Error()
+		logs.Error(logsign,err.Error())
 	}
 	defer res.Body.Close()
 	result,err:=ioutil.ReadAll(res.Body)
 	if err != nil {
-		return err.Error()
+		logs.Error(logsign,err.Error())
 	}
+	logs.Info(logsign,string(result))
 	return string(result)
 }
 
@@ -108,9 +109,10 @@ type TXphonecall struct {
 }
 
 //腾讯语音子程序
-func PostTXphonecall(Messages string,PhoneNumbers string)(string)  {
+func PostTXphonecall(Messages string,PhoneNumbers,logsign string)(string)  {
 	open:=beego.AppConfig.String("open-txdh")
 	if open=="0" {
+		logs.Info(logsign,"腾讯语音接口未配置未开启状态,请先配置open-txdh为1")
 		return "腾讯语音接口未配置未开启状态,请先配置open-txdh为1"
 	}
 	strAppKey:=beego.AppConfig.String("TXY_DH_phonecallappkey")
@@ -136,18 +138,16 @@ func PostTXphonecall(Messages string,PhoneNumbers string)(string)  {
 			Tel:TXmobile,
 			Time:intTime,
 		}
-		log.SetPrefix("[DEBUG 2]")
 		res:=PhoneCallPost(TXurl,u)
-		log.Println(res)
+		logs.Info(logsign,res)
 	}
-	return "tengxun PhoneCall for :"+Messages+" ok"
+	return PhoneNumbers+" Called Over."
 }
 
 func PhoneCallPost(url string,u TXphonecall)(string) {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	log.SetPrefix("[DEBUG 2]")
-	log.Println(b)
+	logs.Info(b)
 	tr :=&http.Transport{
 		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	}

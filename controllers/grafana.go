@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"log"
+	"github.com/astaxie/beego/logs"
 	"os"
 	"strings"
 	"time"
@@ -27,89 +27,80 @@ type Grafana struct {
 
 func (c *GrafanaController) GrafanaTxdh() {
 	alert:=Grafana{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,4)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageGrafana(alert,4,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 
 func (c *GrafanaController) GrafanaDingding() {
 	alert:=Grafana{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,2)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageGrafana(alert,2,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 
 func (c *GrafanaController) GrafanaWeixin() {
 	alert:=Grafana{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,3)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageGrafana(alert,3,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 
 func (c *GrafanaController) GrafanaTxdx() {
 	alert:=Grafana{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,5)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageGrafana(alert,5,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 func (c *GrafanaController) GrafanaHwdx() {
 	alert:=Grafana{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,6)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageGrafana(alert,6,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 
 func (c *GrafanaController) GrafanaALYdx() {
 	alert:=Grafana{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,7)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageGrafana(alert,7,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 
 func (c *GrafanaController) GrafanaALYdh() {
 	alert:=Grafana{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,8)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageGrafana(alert,8,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 
 //typeid 为0,触发电话告警和钉钉告警, typeid 为1 仅触发dingding告警
-func SendMessageGrafana(message Grafana,typeid int)(string)  {
+func SendMessageGrafana(message Grafana,typeid int,logsign string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Logourl:=beego.AppConfig.String("logourl")
 	DDtext:=""
 	WXtext:=""
 	titleend:=""
-	//返回的内容
-	returnMessage:=""
 	//告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 	AlertLevel:=[]string{"信息","警告","一般严重","严重","灾难"}
 	//拆分用户号码和告警消息
@@ -129,11 +120,11 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	if typeid==2 {
 		if len(fullMessage)<2 {
 			ddurl:=beego.AppConfig.String("ddurl")
-			returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,DDtext,ddurl)+"\n"
+			PostToDingDing(Title+titleend,DDtext,ddurl,logsign)
 		} else {
 			DD:=strings.Split(fullMessage[1], ",")
 			for _,d:=range DD {
-				returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+titleend,DDtext,d)+"\n"
+				PostToDingDing(Title+titleend,DDtext,d,logsign)
 			}
 		}
 	}
@@ -141,11 +132,11 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	if typeid==3 {
 		if len(fullMessage)<2 {
 			wxurl:=beego.AppConfig.String("wxurl")
-			returnMessage=returnMessage+"PostToWeiXin:"+PostToWeiXin(WXtext, wxurl)+"\n"
+			PostToWeiXin(WXtext, wxurl,logsign)
 		} else {
 			DD:=strings.Split(fullMessage[1], ",")
 			for _,d:=range DD {
-				returnMessage=returnMessage+"PostToWeiXin:"+PostToWeiXin(WXtext, d)+"\n"
+				PostToWeiXin(WXtext, d,logsign)
 			}
 		}
 	}
@@ -153,26 +144,26 @@ func SendMessageGrafana(message Grafana,typeid int)(string)  {
 	phone:=GetUserPhone(1)
 	//触发电话告警
 	if typeid==4 {
-		returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,phone)+"\n"
+		PostTXphonecall(PhoneCallMessage,phone,logsign)
 	}
 	//触发腾讯云短信告警
 	if typeid==5 {
-		returnMessage=returnMessage+"PostTXmessage:"+PostTXmessage(PhoneCallMessage,phone)+"\n"
+		PostTXmessage(PhoneCallMessage,phone,logsign)
 	}
 	//触发华为云短信告警
 	if typeid==6 {
-		returnMessage=returnMessage+"PostHWmessage:"+PostHWmessage(PhoneCallMessage,phone)+"\n"
+		PostHWmessage(PhoneCallMessage,phone,logsign)
 	}
 	//触发阿里云短信告警
 	if typeid==7 {
-		returnMessage=returnMessage+"PostALYmessage:"+PostALYmessage(PhoneCallMessage,phone)+"\n"
+		PostALYmessage(PhoneCallMessage,phone,logsign)
 	}
 	//触发阿里云电话告警
 	if typeid==8 {
-		returnMessage=returnMessage+"PostALYphonecall:"+PostALYphonecall(PhoneCallMessage,phone)+"\n"
+		PostALYphonecall(PhoneCallMessage,phone,logsign)
 	}
 
-	return returnMessage
+	return "告警消息发送完成."
 }
 //获取用户号码
 func GetUserPhone(neednum int) string  {
@@ -192,16 +183,15 @@ func GetUserPhone(neednum int) string  {
 	if err == nil {
 		f, err := os.Open("user.csv")
 		if err != nil {
-			panic(err)
+			logs.Error(err.Error())
 		}
 		defer f.Close()
 		rd := bufio.NewReader(f)
 		for {
 			line, err := rd.ReadString('\n') //以'\n'为结束符读入一行
 			if err!=nil {
-				log.SetPrefix("[DEBUG 3]")
 				if err.Error()!="EOF" {
-					log.Println(err.Error())
+					logs.Error(err.Error())
 				}
 				break
 			}
