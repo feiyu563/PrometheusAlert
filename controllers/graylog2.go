@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"log"
+	"github.com/astaxie/beego/logs"
 	"strconv"
 )
 
@@ -30,114 +30,105 @@ type Parameters struct {
 //for graylog alert
 func (c *Graylog2Controller) GraylogDingding() {
 	alert:=Graylog2{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,2)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageG(alert,2,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 func (c *Graylog2Controller) GraylogWeixin() {
 	alert:=Graylog2{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,3)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageG(alert,3,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 func (c *Graylog2Controller) GraylogTxdx() {
 	alert:=Graylog2{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,5)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageG(alert,5,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 func (c *Graylog2Controller) GraylogHwdx() {
 	alert:=Graylog2{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,6)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageG(alert,6,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 func (c *Graylog2Controller) GraylogTxdh() {
 	alert:=Graylog2{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,4)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageG(alert,4,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 func (c *Graylog2Controller) GraylogALYdx() {
 	alert:=Graylog2{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,7)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageG(alert,7,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 func (c *Graylog2Controller) GraylogALYdh() {
 	alert:=Graylog2{}
-	log.SetPrefix("[DEBUG 1]")
-	log.Println(string(c.Ctx.Input.RequestBody))
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,8)
-	log.SetPrefix("[DEBUG 3]")
-	log.Println(c.Data["json"])
+	c.Data["json"]=SendMessageG(alert,8,logsign)
+	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
-func SendMessageG(message Graylog2,typeid int)(string)  {
+func SendMessageG(message Graylog2,typeid int,logsign string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("GraylogAlerturl")
 	Logourl:=beego.AppConfig.String("logourl")
-	//返回的内容
-	returnMessage:=""
-	DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警名称："+message.Check_result.Triggered_condition.Title+"\n\n"+"###### 告警类型："+message.Check_result.Triggered_condition.Type+"\n\n"+"###### 开始时间："+message.Check_result.Triggered_at+" UTC\n\n"+"###### 持续时间："+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n\n"+"!["+Title+"]("+Logourl+")"
-	WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警名称:`"+message.Check_result.Triggered_condition.Title+"\n`告警类型:`"+message.Check_result.Triggered_condition.Type+"\n`开始时间:`"+message.Check_result.Triggered_at+" UTC\n`持续时间:`"+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n"
+	DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警名称："+message.Check_result.Triggered_condition.Title+"\n\n"+"###### 告警类型："+message.Check_result.Triggered_condition.Type+"\n\n"+"###### 开始时间："+message.Check_result.Triggered_at+" \n\n"+"###### 持续时间："+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n\n"+"!["+Title+"]("+Logourl+")"
+	WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警名称:`"+message.Check_result.Triggered_condition.Title+"\n`告警类型:`"+message.Check_result.Triggered_condition.Type+"\n`开始时间:`"+message.Check_result.Triggered_at+" \n`持续时间:`"+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n"
 	PhoneCallMessage=message.Check_result.Result_description
 	//触发钉钉
 	if typeid==2 {
 		ddurl:=beego.AppConfig.String("ddurl")
-		returnMessage=returnMessage+"PostToDingDing:"+PostToDingDing(Title+"告警信息", DDtext, ddurl)+"\n"
+		PostToDingDing(Title+"告警信息", DDtext, ddurl,logsign)
 	}
 	//触发微信
 	if typeid==3 {
 		wxurl:=beego.AppConfig.String("wxurl")
-		returnMessage=returnMessage+"PostToWeiXin:"+PostToWeiXin(WXtext, wxurl)+"\n"
+		PostToWeiXin(WXtext, wxurl,logsign)
 	}
 	//取到手机号
 	phone:=GetUserPhone(1)
 	//触发电话告警
 	if typeid==4 {
-		returnMessage=returnMessage+"PostTXphonecall:"+PostTXphonecall(PhoneCallMessage,phone)+"\n"
+		PostTXphonecall(PhoneCallMessage,phone,logsign)
 	}
 	//触发腾讯云短信告警
 	if typeid==5 {
-		returnMessage=returnMessage+"PostTXmessage:"+PostTXmessage(PhoneCallMessage,phone)+"\n"
+		PostTXmessage(PhoneCallMessage,phone,logsign)
 	}
 	//触发华为云短信告警
 	if typeid==6 {
-		returnMessage=returnMessage+"PostHWmessage:"+PostHWmessage(PhoneCallMessage,phone)+"\n"
+		PostHWmessage(PhoneCallMessage,phone,logsign)
 	}
 	//触发阿里云短信告警
 	if typeid==7 {
-		returnMessage=returnMessage+"PostALYmessage:"+PostALYmessage(PhoneCallMessage,phone)+"\n"
+		PostALYmessage(PhoneCallMessage,phone,logsign)
 	}
 	//触发阿里云电话告警
 	if typeid==8 {
-		returnMessage=returnMessage+"PostALYphonecall:"+PostALYphonecall(PhoneCallMessage,phone)+"\n"
+		PostALYphonecall(PhoneCallMessage,phone,logsign)
 	}
-	return returnMessage
+	return "告警消息发送完成."
 }

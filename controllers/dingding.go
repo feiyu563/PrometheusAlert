@@ -5,8 +5,8 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -22,9 +22,10 @@ type DDMessage struct {
 	} `json:"at"`
 }
 
-func PostToDingDing(title,text,Ddurl string)(string)  {
+func PostToDingDing(title,text,Ddurl,logsign string)(string)  {
 	open:=beego.AppConfig.String("open-dingding")
 	if open=="0" {
+		logs.Info(logsign,"钉钉接口未配置未开启状态,请先配置open-dingding为1")
 		return "钉钉接口未配置未开启状态,请先配置open-dingding为1"
 	}
 	Isatall,_:=beego.AppConfig.Int("dd_isatall")
@@ -45,20 +46,20 @@ func PostToDingDing(title,text,Ddurl string)(string)  {
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	log.SetPrefix("[DEBUG 2]")
-	log.Println(b)
+	logs.Info(logsign,b)
 	tr :=&http.Transport{
 		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
 	res,err  := client.Post(Ddurl, "application/json", b)
 	if err != nil {
-		return err.Error()
+		logs.Error(logsign,err.Error())
 	}
 	defer res.Body.Close()
 	result,err:=ioutil.ReadAll(res.Body)
 	if err != nil {
-		return err.Error()
+		logs.Error(logsign,err.Error())
 	}
+	logs.Info(logsign,string(result))
 	return string(result)
 }

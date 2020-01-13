@@ -14,6 +14,14 @@ PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的�
 
 --------------------------------------
 
+2.3版本更新说明:
+---------------------
+ - 1.增加日志配置项
+ - 2.优化日志显示
+ - 3.更新关于graylog2和graylog3接口的说明,graylog2接口针对 graylog版本 <= 3.0.x,graylog3接口针对 graylog版本 >= 3.1.x
+
+--------------------------------------
+
 2.2.1版本更新说明:
 ---------------------
  - 1.增加配置项dd_isatall,功能是否开启钉钉 @所有人(0为关闭,1为开启)
@@ -160,6 +168,8 @@ PrometheusAlert 暂提供以下几类接口,分别对应各自接入端
  - `graylog2接口`
 
 ```
+特别说明: graylog2接口针对 graylog版本 <= 3.0.x
+
 /graylog2/phone  腾讯云电话接口(v3.0版本将废弃)
 /graylog2/dingding  钉钉接口
 /graylog2/weixin  微信接口
@@ -173,6 +183,8 @@ PrometheusAlert 暂提供以下几类接口,分别对应各自接入端
  - `graylog3接口`
 
 ```
+特别说明: graylog3接口针对 graylog版本 >= 3.1.x
+
 /graylog3/phone  腾讯云电话接口(v3.0版本将废弃)
 /graylog3/dingding  钉钉接口
 /graylog3/weixin  微信接口
@@ -318,6 +330,8 @@ Notifications配置格式参考,支持配置多个告警机器人url:
  - `graylog2接口`
 
 ```
+特别说明: graylog2接口针对 graylog版本 <= 3.0.x
+
 /graylog2/phone  腾讯云电话接口(v3.0版本将废弃)
 /graylog2/dingding  钉钉接口
 /graylog2/weixin  微信接口
@@ -331,6 +345,8 @@ Notifications配置格式参考,支持配置多个告警机器人url:
  - `graylog3接口`
 
 ```
+特别说明: graylog3接口针对 graylog版本 >= 3.1.x
+
 /graylog3/phone  腾讯云电话接口(v3.0版本将废弃)
 /graylog3/dingding  钉钉接口
 /graylog3/weixin  微信接口

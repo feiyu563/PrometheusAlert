@@ -4,8 +4,8 @@ import (
 	"crypto/tls"
 	"encoding/base64"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -13,9 +13,10 @@ import (
 )
 
 //华为云短信子程序
-func PostHWmessage(Messages string,PhoneNumbers string)(string)  {
+func PostHWmessage(Messages string,PhoneNumbers,logsign string)(string) {
 	open:=beego.AppConfig.String("open-hwdx")
 	if open=="0" {
+		logs.Info(logsign,"华为云短信接口未配置未开启状态,请先配置open-hwdx为1")
 		return "华为云短信接口未配置未开启状态,请先配置open-hwdx为1"
 	}
 	hwappkey:=beego.AppConfig.String("HWY_DX_APP_Key")
@@ -32,8 +33,6 @@ func PostHWmessage(Messages string,PhoneNumbers string)(string)  {
 	//digestBase64:=base64.URLEncoding.EncodeToString([]byte(digest))
 	digestBase64:=base64.StdEncoding.EncodeToString([]byte(digest))
 	xheader:=`"UsernameToken Username="`+hwappkey+`",PasswordDigest="`+digestBase64+`",Nonce="`+nonce+`",Created="`+now+`"`
-	log.SetPrefix("[DEBUG 2]")
-	log.Println(xheader)
 	tr :=&http.Transport{
 		TLSClientConfig:&tls.Config{InsecureSkipVerify: true},
 	}
@@ -45,13 +44,14 @@ func PostHWmessage(Messages string,PhoneNumbers string)(string)  {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return err.Error()
+		logs.Error(logsign,err.Error())
 	}
 	defer resp.Body.Close()
 
 	result,err:=ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err.Error()
+		logs.Error(logsign,err.Error())
 	}
+	logs.Info(logsign,string(result))
 	return string(result)
 }
