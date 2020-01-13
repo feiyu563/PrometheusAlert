@@ -15,17 +15,18 @@ type Graylog2 struct {
 	Check_result Check_result `json:"check_result"`
 }
 type Check_result struct {
+	MatchingMessages []MatchingMessage `json:"matching_messages"`
 	Result_description string `json:"result_description"`
-	Triggered_condition Triggered_condition `json:"triggered_condition"`
-	Triggered_at string `json:"triggered_at"`
 }
-type Triggered_condition struct {
-	Type string `json:"type"`
-	Title string `json:"title"`
-	Parameters Parameters `json:"parameters"`
+type MatchingMessage struct {
+	Index string `json:"index"`
+	Message string `json:"message"`
+	Fields G2Field `json:"fields"`
+	Timestamp string `json:"timestamp"`
 }
-type Parameters struct {
-	Time int `json:"time"`
+type G2Field struct {
+	Gl2RemoteIp string `json:"gl2_remote_ip"`
+	Gl2RemotePort int `json:"gl_2_remote_port"`
 }
 //for graylog alert
 func (c *Graylog2Controller) GraylogDingding() {
@@ -95,40 +96,42 @@ func SendMessageG(message Graylog2,typeid int,logsign string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("GraylogAlerturl")
 	Logourl:=beego.AppConfig.String("logourl")
-	DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警名称："+message.Check_result.Triggered_condition.Title+"\n\n"+"###### 告警类型："+message.Check_result.Triggered_condition.Type+"\n\n"+"###### 开始时间："+message.Check_result.Triggered_at+" \n\n"+"###### 持续时间："+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n\n"+"!["+Title+"]("+Logourl+")"
-	WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警名称:`"+message.Check_result.Triggered_condition.Title+"\n`告警类型:`"+message.Check_result.Triggered_condition.Type+"\n`开始时间:`"+message.Check_result.Triggered_at+" \n`持续时间:`"+strconv.Itoa(message.Check_result.Triggered_condition.Parameters.Time)+"\n"
-	PhoneCallMessage=message.Check_result.Result_description
-	//触发钉钉
-	if typeid==2 {
-		ddurl:=beego.AppConfig.String("ddurl")
-		PostToDingDing(Title+"告警信息", DDtext, ddurl,logsign)
-	}
-	//触发微信
-	if typeid==3 {
-		wxurl:=beego.AppConfig.String("wxurl")
-		PostToWeiXin(WXtext, wxurl,logsign)
-	}
-	//取到手机号
-	phone:=GetUserPhone(1)
-	//触发电话告警
-	if typeid==4 {
-		PostTXphonecall(PhoneCallMessage,phone,logsign)
-	}
-	//触发腾讯云短信告警
-	if typeid==5 {
-		PostTXmessage(PhoneCallMessage,phone,logsign)
-	}
-	//触发华为云短信告警
-	if typeid==6 {
-		PostHWmessage(PhoneCallMessage,phone,logsign)
-	}
-	//触发阿里云短信告警
-	if typeid==7 {
-		PostALYmessage(PhoneCallMessage,phone,logsign)
-	}
-	//触发阿里云电话告警
-	if typeid==8 {
-		PostALYphonecall(PhoneCallMessage,phone,logsign)
+	for _, m := range message.Check_result.MatchingMessages{
+		DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+m.Message+"\n\n"+"###### 告警名称："+message.Check_result.Result_description+"\n\n"+"###### 告警索引："+m.Index+"\n\n"+"###### 开始时间："+m.Timestamp+" \n\n"+"###### 告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+"!["+Title+"]("+Logourl+")"
+		WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+m.Message+"**\n>`告警名称:`"+message.Check_result.Result_description+"\n`告警索引:`"+m.Index+"\n`开始时间:`"+m.Timestamp+" \n`告警主机:`"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n"
+		PhoneCallMessage="告警主机:"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"告警消息:"+m.Message
+		//触发钉钉
+		if typeid==2 {
+			ddurl:=beego.AppConfig.String("ddurl")
+			PostToDingDing(Title+"告警信息", DDtext, ddurl,logsign)
+		}
+		//触发微信
+		if typeid==3 {
+			wxurl:=beego.AppConfig.String("wxurl")
+			PostToWeiXin(WXtext, wxurl,logsign)
+		}
+		//取到手机号
+		phone:=GetUserPhone(1)
+		//触发电话告警
+		if typeid==4 {
+			PostTXphonecall(PhoneCallMessage,phone,logsign)
+		}
+		//触发腾讯云短信告警
+		if typeid==5 {
+			PostTXmessage(PhoneCallMessage,phone,logsign)
+		}
+		//触发华为云短信告警
+		if typeid==6 {
+			PostHWmessage(PhoneCallMessage,phone,logsign)
+		}
+		//触发阿里云短信告警
+		if typeid==7 {
+			PostALYmessage(PhoneCallMessage,phone,logsign)
+		}
+		//触发阿里云电话告警
+		if typeid==8 {
+			PostALYphonecall(PhoneCallMessage,phone,logsign)
+		}
 	}
 	return "告警消息发送完成."
 }
