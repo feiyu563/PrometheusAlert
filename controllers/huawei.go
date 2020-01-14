@@ -16,7 +16,7 @@ import (
 func PostHWmessage(Messages string,PhoneNumbers,logsign string)(string) {
 	open:=beego.AppConfig.String("open-hwdx")
 	if open=="0" {
-		logs.Info(logsign,"华为云短信接口未配置未开启状态,请先配置open-hwdx为1")
+		logs.Info(logsign,"[hwmessage]","华为云短信接口未配置未开启状态,请先配置open-hwdx为1")
 		return "华为云短信接口未配置未开启状态,请先配置open-hwdx为1"
 	}
 	hwappkey:=beego.AppConfig.String("HWY_DX_APP_Key")
@@ -44,14 +44,14 @@ func PostHWmessage(Messages string,PhoneNumbers,logsign string)(string) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		logs.Error(logsign,err.Error())
+		logs.Error(logsign,"[hwmessage]",err.Error())
 	}
 	defer resp.Body.Close()
 
 	result,err:=ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logs.Error(logsign,err.Error())
+		logs.Error(logsign,"[hwmessage]",err.Error())
 	}
-	logs.Info(logsign,string(result))
+	logs.Info(logsign,"[hwmessage]",string(result))
 	return string(result)
 }

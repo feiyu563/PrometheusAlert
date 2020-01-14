@@ -12,7 +12,7 @@ import (
 func PostALYmessage(Messages,PhoneNumbers,logsign string)(string) {
 	open:=beego.AppConfig.String("open-alydx")
 	if open=="0" {
-		logs.Info(logsign,"阿里云短信接口未配置未开启状态,请先配置open-alydx为1")
+		logs.Info(logsign,"[alymessage]","阿里云短信接口未配置未开启状态,请先配置open-alydx为1")
 		return "阿里云短信接口未配置未开启状态,请先配置open-alydx为1"
 	}
 	AccessKeyId:=beego.AppConfig.String("ALY_DX_AccessKeyId")
@@ -30,15 +30,15 @@ func PostALYmessage(Messages,PhoneNumbers,logsign string)(string) {
 	response, err := client.SendBatchSms(request)
 
 	if err != nil {
-		logs.Error(logsign,err.Error())
+		logs.Error(logsign,"[alymessage]",err.Error())
 	}
-	logs.Info(logsign,response)
+	logs.Info(logsign,"[alymessage]",response)
 	return response.Message
 }
 func PostALYphonecall(Messages string,PhoneNumbers,logsign string)(string) {
 	open:=beego.AppConfig.String("open-alydh")
 	if open=="0" {
-		logs.Info(logsign,"阿里云电话接口未配置未开启状态,请先配置open-alydh为1")
+		logs.Info(logsign,"[alyphonecall]","阿里云电话接口未配置未开启状态,请先配置open-alydh为1")
 		return "阿里云电话接口未配置未开启状态,请先配置open-alydh为1"
 	}
 	AccessKeyId:=beego.AppConfig.String("ALY_DH_AccessKeyId")
@@ -59,9 +59,9 @@ func PostALYphonecall(Messages string,PhoneNumbers,logsign string)(string) {
 
 		response, err := client.SingleCallByTts(request)
 		if err != nil {
-			logs.Error(logsign,err.Error())
+			logs.Error(logsign,"[alyphonecall]",err.Error())
 		}
-		logs.Info(logsign,response)
+		logs.Info(logsign,"[alyphonecall]",response)
 	}
 	return PhoneNumbers+"Called Over."
 }
