@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"strconv"
@@ -96,6 +97,7 @@ func SendMessageG(message Graylog2,typeid int,logsign string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("GraylogAlerturl")
 	Logourl:=beego.AppConfig.String("logourl")
+	fmt.Println(len(message.Check_result.MatchingMessages))
 	if len(message.Check_result.MatchingMessages)==0 {
 		ddurl:=beego.AppConfig.String("ddurl")
 		PostToDingDing(Title+"告警信息", "## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"!["+Title+"]("+Logourl+")", ddurl,logsign)

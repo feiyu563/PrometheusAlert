@@ -25,7 +25,7 @@ type DDMessage struct {
 func PostToDingDing(title,text,Ddurl,logsign string)(string)  {
 	open:=beego.AppConfig.String("open-dingding")
 	if open=="0" {
-		logs.Info(logsign,"钉钉接口未配置未开启状态,请先配置open-dingding为1")
+		logs.Info(logsign,"[dingding]","钉钉接口未配置未开启状态,请先配置open-dingding为1")
 		return "钉钉接口未配置未开启状态,请先配置open-dingding为1"
 	}
 	Isatall,_:=beego.AppConfig.Int("dd_isatall")
@@ -46,20 +46,20 @@ func PostToDingDing(title,text,Ddurl,logsign string)(string)  {
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign,b)
+	logs.Info(logsign,"[dingding]",b)
 	tr :=&http.Transport{
 		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
 	res,err  := client.Post(Ddurl, "application/json", b)
 	if err != nil {
-		logs.Error(logsign,err.Error())
+		logs.Error(logsign,"[dingding]",err.Error())
 	}
 	defer res.Body.Close()
 	result,err:=ioutil.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign,err.Error())
+		logs.Error(logsign,"[dingding]",err.Error())
 	}
-	logs.Info(logsign,string(result))
+	logs.Info(logsign,"[dingding]",string(result))
 	return string(result)
 }

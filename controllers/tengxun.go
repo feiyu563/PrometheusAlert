@@ -43,7 +43,7 @@ type TXmessage struct {
 func PostTXmessage(Messages string,PhoneNumbers,logsign string)(string)  {
 	open:=beego.AppConfig.String("open-txdx")
 	if open=="0" {
-		logs.Info(logsign,"腾讯短信接口未配置未开启状态,请先配置open-txdx为1")
+		logs.Info(logsign,"[txmessage]","腾讯短信接口未配置未开启状态,请先配置open-txdx为1")
 		return "腾讯短信接口未配置未开启状态,请先配置open-txdx为1"
 	}
 	strAppKey:=beego.AppConfig.String("TXY_DX_appkey")
@@ -77,7 +77,7 @@ func PostTXmessage(Messages string,PhoneNumbers,logsign string)(string)  {
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign,b)
+	logs.Info(logsign,"[txmessage]",b)
 	tr :=&http.Transport{
 		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	}
@@ -86,14 +86,14 @@ func PostTXmessage(Messages string,PhoneNumbers,logsign string)(string)  {
 	client := &http.Client{Transport: tr}
 	res,err  := client.Post(TXurl, "application/json", b)
 	if err != nil {
-		logs.Error(logsign,err.Error())
+		logs.Error(logsign,"[txmessage]",err.Error())
 	}
 	defer res.Body.Close()
 	result,err:=ioutil.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign,err.Error())
+		logs.Error(logsign,"[txmessage]",err.Error())
 	}
-	logs.Info(logsign,string(result))
+	logs.Info(logsign,"[txmessage]",string(result))
 	return string(result)
 }
 
@@ -112,7 +112,7 @@ type TXphonecall struct {
 func PostTXphonecall(Messages string,PhoneNumbers,logsign string)(string)  {
 	open:=beego.AppConfig.String("open-txdh")
 	if open=="0" {
-		logs.Info(logsign,"腾讯语音接口未配置未开启状态,请先配置open-txdh为1")
+		logs.Info(logsign,"[txphonecall]","腾讯语音接口未配置未开启状态,请先配置open-txdh为1")
 		return "腾讯语音接口未配置未开启状态,请先配置open-txdh为1"
 	}
 	strAppKey:=beego.AppConfig.String("TXY_DH_phonecallappkey")
@@ -138,16 +138,16 @@ func PostTXphonecall(Messages string,PhoneNumbers,logsign string)(string)  {
 			Tel:TXmobile,
 			Time:intTime,
 		}
-		res:=PhoneCallPost(TXurl,u)
-		logs.Info(logsign,res)
+		res:=PhoneCallPost(TXurl,u,logsign)
+		logs.Info(logsign,"[txphonecall]",res)
 	}
 	return PhoneNumbers+" Called Over."
 }
 
-func PhoneCallPost(url string,u TXphonecall)(string) {
+func PhoneCallPost(url string,u TXphonecall,logsign string)(string) {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(b)
+	logs.Info(logsign,"[txphonecall]",b)
 	tr :=&http.Transport{
 		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	}
