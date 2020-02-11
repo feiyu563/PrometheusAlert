@@ -66,7 +66,7 @@ func PostTXmessage(Messages string,PhoneNumbers,logsign string)(string)  {
 	sig := getSha256Code("appkey="+strAppKey+"&random="+strRand+"&time="+strTime+"&mobile="+PhoneNumbers)
 	TXurl:="https://yun.tim.qq.com/v5/tlssmssvr/sendmultisms2?sdkappid="+sdkappid+"&random="+strRand
 	u := TXmessage{
-		Ext:"",
+		Ext:logsign,
 		Extend:"",
 		Params:[]string{Messages},
 		Sig:sig,
@@ -130,7 +130,7 @@ func PostTXphonecall(Messages string,PhoneNumbers,logsign string)(string)  {
 		sig := getSha256Code("appkey="+strAppKey+"&random="+strRand+"&time="+strTime+"&mobile="+m)
 		TXurl:="https://cloud.tim.qq.com/v5/tlsvoicesvr/sendtvoice?sdkappid="+sdkappid+"&random="+strRand
 		u := TXphonecall{
-			Ext:"",
+			Ext:logsign,
 			Tpl_id:tpl_id,
 			Params:[]string{Messages},
 			Playtimes:2,

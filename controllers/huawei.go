@@ -37,7 +37,7 @@ func PostHWmessage(Messages string,PhoneNumbers,logsign string)(string) {
 		TLSClientConfig:&tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
-	req, _ := http.NewRequest("POST", hwappurl + "/sms/batchSendSms/v1", strings.NewReader(url.Values{"from":{sender},"to":{PhoneNumbers},"templateId":{hwtplid},"templateParas":{"["+Messages+"]"},"signature":{hwsign},"statusCallback":{""}}.Encode()))
+	req, _ := http.NewRequest("POST", hwappurl + "/sms/batchSendSms/v1", strings.NewReader(url.Values{"from":{sender},"to":{PhoneNumbers},"templateId":{hwtplid},"templateParas":{"["+Messages+"]"},"signature":{hwsign},"statusCallback":{""},"extend":{logsign}}.Encode()))
 	req.Header.Set("Authorization", `WSSE realm="SDP",profile="UsernameToken",type="Appkey"`)
 	req.Header.Set("X-WSSE", xheader)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")

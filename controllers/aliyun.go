@@ -54,7 +54,7 @@ func PostALYphonecall(Messages string,PhoneNumbers,logsign string)(string) {
 		request.CalledShowNumber = CalledShowNumber
 		request.CalledNumber = m
 		request.TtsCode = TtsCode
-		request.TtsParam = `{"code":` + Messages + `}`
+		request.TtsParam = `{"code":"` + Messages + `"}`
 		request.PlayTimes = requests.NewInteger(2)
 
 		response, err := client.SingleCallByTts(request)
