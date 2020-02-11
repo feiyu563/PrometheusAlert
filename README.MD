@@ -14,6 +14,12 @@ PrometheusAlert是开源的运维告警中心消息转发系统,支持主流的�
 
 --------------------------------------
 
+2.3.2版本更新说明:
+---------------------
+ - 1.更新腾讯短信和电话接口参数ext标识
+
+--------------------------------------
+
 2.3.1版本更新说明:
 ---------------------
  - 1.更新graylog2和graylog3的显示字段
@@ -377,7 +383,9 @@ Notifications配置格式参考,支持配置多个告警机器人url:
 
 1.腾讯云短信告警和语音告警
 
-具体参数获取可去腾讯云开通相关服务即可,并配置相关参数https://cloud.tencent.com/document/product/382/18071
+具体参数获取可去腾讯云开通相关服务即可,并配置相关参数：
+短信：https://cloud.tencent.com/document/product/382/18071
+语音（电话）：https://cloud.tencent.com/document/product/1128/37343
 腾讯云模版配置可参考
 
 `prometheus告警:{1}`
@@ -388,8 +396,8 @@ Notifications配置格式参考,支持配置多个告警机器人url:
 
 2.华为云短信告警
 
-具体参数获取可去华为云开通相关服务即可,并配置相关参数
-https://support.huaweicloud.com/qs-msgsms/sms_02_0001.html
+具体参数获取可去华为云开通相关服务即可,并配置相关参数：
+短信：https://support.huaweicloud.com/qs-msgsms/sms_02_0001.html
 华为云短信模版配置可参考
 
 `模版类型:通知类`
@@ -400,7 +408,9 @@ https://support.huaweicloud.com/qs-msgsms/sms_02_0001.html
 
 3.阿里云短信告警和语音告警
 
-具体参数获取可去阿里云开通相关服务即可,并配置相关参数https://help.aliyun.com/document_detail/55288.html?spm=5176.8195934.1283918.11.73af30c917Jfti&aly_as=m1ouSihk
+具体参数获取可去阿里云开通相关服务即可,并配置相关参数：
+短信：https://help.aliyun.com/document_detail/55288.html?spm=5176.8195934.1283918.11.73af30c917Jfti&aly_as=m1ouSihk
+语音（电话）：https://help.aliyun.com/document_detail/55070.html?spm=a2c4g.11186623.6.547.77e271b9SAbG6p
 
 阿里云模版配置可参考,code为变量名称,不推荐更改
 
@@ -417,7 +427,7 @@ runmode = dev
 #开启JSON请求
 copyrequestbody = true
 #告警消息标题
-title=NX-TEST
+title=PrometheusAlert
 #链接到告警平台地址
 GraylogAlerturl=http://graylog.org
 #logo图标地址
@@ -432,15 +442,21 @@ defaultphone=15395105573
 phonecallresolved=1
 #自动告警抑制(自动告警抑制是默认同一个告警源的告警信息只发送告警级别最高的第一条告警信息,其他消息默认屏蔽,这么做的目的是为了减少相同告警来源的消息数量,防止告警炸弹,0为关闭,1为开启)
 silent=1
+#是否前台输出file or console
+logtype=file
+#日志文件路径
+logpath=logs/prometheusalertcenter.log
 
 #---------------------↓webhook-----------------------
 #是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
 open-dingding=1
 #默认钉钉机器人地址
 ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx
+#是否开启 @所有人(0为关闭,1为开启)
+dd_isatall=1
 
 #是否开启微信告警通道,可同时开始多个通道0为关闭,1为开启
-open-weixin=1
+open-weixin=0
 #默认企业微信机器人地址
 wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
 
