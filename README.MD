@@ -27,21 +27,21 @@ PrometheusAlert具备如下特性
 ## PrometheusAlert全家桶新手入门
 
 * [PrometheusAlert配置]
-  * [安装部署PrometheusAlert](.doc/readme/install.md)
-  * [PrometheusAlert接口说明](.doc/readme/restful.md)
-  * [PrometheusAlert配置文件说明](.doc/readme/setup.md)
-    * [其他配置](.doc/readme/other.md)
+  * [安装部署PrometheusAlert](doc/readme/install.md)
+  * [PrometheusAlert接口说明](doc/readme/restful.md)
+  * [PrometheusAlert配置文件说明](doc/readme/setup.md)
+    * [其他配置](doc/readme/other.md)
 * [告警源配置]
-  * [Prometheus配置](.doc/readme/prometheus.md)
-  * [graylog配置](.doc/readme/graylog.md)
-  * [grafana配置](.doc/readme/grafana.md)
+  * [Prometheus配置](doc/readme/prometheus.md)
+  * [graylog配置](doc/readme/graylog.md)
+  * [grafana配置](doc/readme/grafana.md)
   * [zabbix配置（待更新）](...)
 * [告警接收目标配置]
-  * [钉钉告警配置](.doc/readme/dingding.md)
-  * [企业微信告警配置](.doc/readme/wechat.md)
-  * [阿里云短信和电话告警配置](.doc/readme/aliyun.md)
-  * [腾讯云短信和电话告警配置](.doc/readme/tx.md)
-  * [华为云短信配置](.doc/readme/hw.md)
+  * [钉钉告警配置](doc/readme/dingding.md)
+  * [企业微信告警配置](doc/readme/wechat.md)
+  * [阿里云短信和电话告警配置](doc/readme/aliyun.md)
+  * [腾讯云短信和电话告警配置](doc/readme/tx.md)
+  * [华为云短信配置](doc/readme/hw.md)
 * [PrometheusAlert版本更新说明](https://github.com/feiyu563/PrometheusAlert/releases)
 
 
