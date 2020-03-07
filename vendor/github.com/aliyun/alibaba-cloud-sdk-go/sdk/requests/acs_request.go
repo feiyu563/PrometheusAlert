@@ -39,6 +39,7 @@ const (
 	PUT     = "PUT"
 	POST    = "POST"
 	DELETE  = "DELETE"
+	PATCH   = "PATCH"
 	HEAD    = "HEAD"
 	OPTIONS = "OPTIONS"
 
