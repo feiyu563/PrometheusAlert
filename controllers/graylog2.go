@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"strconv"
+	"time"
 )
 
 type Graylog2Controller struct {
@@ -93,6 +94,19 @@ func (c *Graylog2Controller) GraylogALYdh() {
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
+
+//强制转换时间为cst  2019-09-26T15:27:49.644Z
+func GetGraylogCSTtime(date string)(string)  {
+	T1:=date[0:10] //取日期
+	T2:=date[11:23] //取时间
+	T3:=T1+" "+T2
+	tm2, _ := time.Parse("2006-01-02 15:04:05.000", T3)
+	h, _ := time.ParseDuration("-1h")
+	tm3:=tm2.Add(-8*h)
+	tm:=tm3.Format("2006-01-02 15:04:05.000")
+	return tm
+}
+
 func SendMessageG(message Graylog2,typeid int,logsign string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("GraylogAlerturl")
@@ -106,8 +120,8 @@ func SendMessageG(message Graylog2,typeid int,logsign string)(string)  {
 		return "告警消息发送完成."
 	}
 	for _, m := range message.Check_result.MatchingMessages{
-		DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警索引："+m.Index+"\n\n"+"###### 开始时间："+m.Timestamp+" \n\n"+"###### 告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+"##### "+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
-		WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警索引:`"+m.Index+"\n`开始时间:`"+m.Timestamp+" \n`告警主机:`"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n**"+m.Message+"**"
+		DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警索引："+m.Index+"\n\n"+"###### 开始时间："+GetGraylogCSTtime(m.Timestamp)+" \n\n"+"###### 告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+"##### "+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
+		WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警索引:`"+m.Index+"\n`开始时间:`"+GetGraylogCSTtime(m.Timestamp)+" \n`告警主机:`"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n**"+m.Message+"**"
 		PhoneCallMessage="告警主机:"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"告警消息:"+m.Message
 		//触发钉钉
 		if typeid==2 {
