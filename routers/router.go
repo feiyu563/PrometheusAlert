@@ -12,7 +12,7 @@ func init() {
 	beego.Router("/prometheus/alert", &controllers.PrometheusController{},"post:PrometheusAlert")
 	beego.Router("/prometheus/router", &controllers.PrometheusController{},"post:PrometheusRouter")
     //graylog2
-	beego.Router("/graylog2/phone", &controllers.Graylog2Controller{},"post:GraylogTxdh")
+	//beego.Router("/graylog2/phone", &controllers.Graylog2Controller{},"post:GraylogTxdh")
 	beego.Router("/graylog2/dingding", &controllers.Graylog2Controller{},"post:GraylogDingding")
 	beego.Router("/graylog2/weixin", &controllers.Graylog2Controller{},"post:GraylogWeixin")
 	beego.Router("/graylog2/txdx", &controllers.Graylog2Controller{},"post:GraylogTxdx")
@@ -21,7 +21,7 @@ func init() {
 	beego.Router("/graylog2/alydx", &controllers.Graylog2Controller{},"post:GraylogALYdx")
 	beego.Router("/graylog2/alydh", &controllers.Graylog2Controller{},"post:GraylogALYdh")
 	//graylog3
-	beego.Router("/graylog3/phone", &controllers.Graylog3Controller{},"post:GraylogTxdh")
+	//beego.Router("/graylog3/phone", &controllers.Graylog3Controller{},"post:GraylogTxdh")
 	beego.Router("/graylog3/dingding", &controllers.Graylog3Controller{},"post:GraylogDingding")
 	beego.Router("/graylog3/weixin", &controllers.Graylog3Controller{},"post:GraylogWeixin")
 	beego.Router("/graylog3/txdx", &controllers.Graylog3Controller{},"post:GraylogTxdx")
@@ -30,7 +30,7 @@ func init() {
 	beego.Router("/graylog3/alydx", &controllers.Graylog3Controller{},"post:GraylogALYdx")
 	beego.Router("/graylog3/alydh", &controllers.Graylog3Controller{},"post:GraylogALYdh")
     //grafana
-	beego.Router("/grafana/phone", &controllers.GrafanaController{},"post:GrafanaTxdh")
+	//beego.Router("/grafana/phone", &controllers.GrafanaController{},"post:GrafanaTxdh")
 	beego.Router("/grafana/dingding", &controllers.GrafanaController{},"post:GrafanaDingding")
 	beego.Router("/grafana/weixin", &controllers.GrafanaController{},"post:GrafanaWeixin")
 	beego.Router("/grafana/txdx", &controllers.GrafanaController{},"post:GrafanaTxdx")
@@ -39,4 +39,6 @@ func init() {
 	beego.Router("/grafana/alydx", &controllers.GrafanaController{},"post:GrafanaALYdx")
 	beego.Router("/grafana/alydh", &controllers.GrafanaController{},"post:GrafanaALYdh")
 	beego.Router("/tengxun/status", &controllers.TengXunStatusController{},"post:TengXunStatus")
+    //zabbix
+	beego.Router("/zabbix/alert", &controllers.ZabbixController{},"post:ZabbixAlert")
 }
