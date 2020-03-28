@@ -10,6 +10,12 @@ PrometheusAlert 暂提供以下几类接口,分别对应各自接入端
 /prometheus/router  AlertManager router指定接收端接口
 ```
 
+ - `zabbix接口`
+
+```
+/zabbix/alert  默认接口
+```
+
  - `grafana接口`
 
 ```
