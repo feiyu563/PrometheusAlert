@@ -21,13 +21,13 @@ func PostALYmessage(Messages,PhoneNumbers,logsign string)(string) {
 	Template:=beego.AppConfig.String("ALY_DX_Template")
 	client, err := dysmsapi.NewClientWithAccessKey("cn-hangzhou", AccessKeyId, AccessSecret)
 
-	request := dysmsapi.CreateSendBatchSmsRequest()
+	request := dysmsapi.CreateSendSmsRequest()
 	request.Scheme = "https"
-	request.PhoneNumberJson = `[`+PhoneNumbers+`]`
-	request.SignNameJson = `["`+SignName+`"]`
+	request.PhoneNumbers = PhoneNumbers
+	request.SignName = SignName
 	request.TemplateCode = Template
-	request.TemplateParamJson = `[{"code":"`+Messages+`"}]`
-	response, err := client.SendBatchSms(request)
+	request.TemplateParam = `{"code":"`+Messages+`"}`
+	response, err := client.SendSms(request)
 
 	if err != nil {
 		logs.Error(logsign,"[alymessage]",err.Error())
