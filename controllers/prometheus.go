@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type PrometheusController struct {
@@ -53,7 +54,17 @@ func (a AlerMessages) Swap(i, j int){     // 重写 Swap() 方法
 func (a AlerMessages) Less(i, j int) bool {    // 重写 Less() 方法， 从大到小排序
 	return a[j].Labels.Level < a[i].Labels.Level
 }
-
+//转换Prometheus UTC时区
+func GetPrometheusCSTtime(date string)(string)  {
+	T1:=date[0:10]
+	T2:=date[11:19]
+	T3:=T1+" "+T2
+	tm2, _ := time.Parse("2006-01-02 15:04:05", T3)
+	h, _ := time.ParseDuration("-1h")
+	tm3:=tm2.Add(-8*h)
+	tm:=tm3.Format("2006-01-02 15:04:05")
+	return tm
+}
 //for prometheus alert
 //关于告警级别level共有5个级别,0-4,0 信息,1 警告,2 一般严重,3 严重,4 灾难
 func (c *PrometheusController) PrometheusAlert() {
@@ -76,6 +87,7 @@ func SendMessageP(message Prometheus,logsign string)(string)  {
 	PhoneCalllevel,_:=beego.AppConfig.Int("phonecalllevel")
 	PhoneCallResolved,_:=beego.AppConfig.Int("phonecallresolved")
 	Silent,_:=beego.AppConfig.Int("silent")
+	PCstTime,_:=beego.AppConfig.Int("prometheus_cst_time")
 	var ddtext,wxtext,MobileMessage,PhoneCallMessage,titleend string
 	//对分组消息进行排序
 	AlerMessage:=message.Alerts
@@ -85,17 +97,23 @@ func SendMessageP(message Prometheus,logsign string)(string)  {
     //遍历消息
 	for _, RMessage := range AlerMessage {
 		nLevel,_:=strconv.Atoi(RMessage.Labels.Level)
+		At:=RMessage.StartsAt
+		Et:=RMessage.EndsAt
+		if PCstTime==1 {
+			At=GetPrometheusCSTtime(RMessage.StartsAt)
+			Et=GetPrometheusCSTtime(RMessage.EndsAt)
+		}
 		if RMessage.Status=="resolved" {
 			titleend="故障恢复信息"
-			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+RMessage.StartsAt+"\n\n"+"###### 结束时间："+RMessage.EndsAt+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
-			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+RMessage.StartsAt+"\n`结束时间:`"+RMessage.EndsAt+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
-			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+RMessage.StartsAt+"\n"+"结束时间："+RMessage.EndsAt+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
+			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
+			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
+			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+At+"\n"+"结束时间："+Et+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
 			PhoneCallMessage="故障主机IP："+RMessage.Labels.Instance+","+RMessage.Annotations.Description+"已经恢复"
 		}else {
 			titleend="故障告警信息"
-			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+RMessage.StartsAt+"\n\n"+"###### 结束时间："+RMessage.EndsAt+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
-			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+RMessage.StartsAt+"\n`结束时间:`"+RMessage.EndsAt+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
-			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+RMessage.StartsAt+"\n"+"结束时间："+RMessage.EndsAt+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
+			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
+			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
+			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+At+"\n"+"结束时间："+Et+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
 			PhoneCallMessage="故障主机IP："+RMessage.Labels.Instance+","+RMessage.Annotations.Description
 		}
 		//发送消息到钉钉
@@ -179,6 +197,7 @@ func SendMessageR(message Prometheus,rwxurl,rddurl,rphone,logsign string)(string
 	PhoneCalllevel,_:=beego.AppConfig.Int("phonecalllevel")
 	PhoneCallResolved,_:=beego.AppConfig.Int("phonecallresolved")
 	Silent,_:=beego.AppConfig.Int("silent")
+	PCstTime,_:=beego.AppConfig.Int("prometheus_cst_time")
 	var ddtext,wxtext,MobileMessage,PhoneCallMessage,titleend string
 	//对分组消息进行排序
 	AlerMessage:=message.Alerts
@@ -188,17 +207,23 @@ func SendMessageR(message Prometheus,rwxurl,rddurl,rphone,logsign string)(string
 	//遍历消息
 	for _, RMessage := range AlerMessage {
 		nLevel,_:=strconv.Atoi(RMessage.Labels.Level)
+		At:=RMessage.StartsAt
+		Et:=RMessage.EndsAt
+		if PCstTime==1 {
+			At=GetPrometheusCSTtime(RMessage.StartsAt)
+			Et=GetPrometheusCSTtime(RMessage.EndsAt)
+		}
 		if RMessage.Status=="resolved" {
 			titleend="故障恢复信息"
-			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+RMessage.StartsAt+"\n\n"+"###### 结束时间："+RMessage.EndsAt+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
-			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+RMessage.StartsAt+"\n`结束时间:`"+RMessage.EndsAt+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
-			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+RMessage.StartsAt+"\n"+"结束时间："+RMessage.EndsAt+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
+			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
+			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
+			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+At+"\n"+"结束时间："+Et+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
 			PhoneCallMessage="故障主机IP："+RMessage.Labels.Instance+","+RMessage.Annotations.Description+"已经恢复"
 		}else {
 			titleend="故障告警信息"
-			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+RMessage.StartsAt+"\n\n"+"###### 结束时间："+RMessage.EndsAt+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
-			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+RMessage.StartsAt+"\n`结束时间:`"+RMessage.EndsAt+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
-			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+RMessage.StartsAt+"\n"+"结束时间："+RMessage.EndsAt+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
+			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
+			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
+			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"开始时间："+At+"\n"+"结束时间："+Et+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
 			PhoneCallMessage="故障主机IP："+RMessage.Labels.Instance+","+RMessage.Annotations.Description
 		}
 		//发送消息到钉钉
