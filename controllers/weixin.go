@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 type Mark struct {
@@ -31,8 +32,19 @@ func PostToWeiXin(text,WXurl,logsign string)(string)  {
 	json.NewEncoder(b).Encode(u)
 	logs.Info(logsign,"[weixin]",b)
 	//url="http://127.0.0.1:8081"
-	tr :=&http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	var tr *http.Transport
+	if proxyUrl := beego.AppConfig.String("proxy");proxyUrl != ""{
+		proxy := func(_ *http.Request) (*url.URL, error) {
+			return url.Parse(proxyUrl)
+		}
+		tr = &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+			Proxy: proxy,
+		}
+	}else{
+		tr = &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+		}
 	}
 	client := &http.Client{Transport: tr}
 	res,err  := client.Post(WXurl, "application/json", b)

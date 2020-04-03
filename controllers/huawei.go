@@ -33,8 +33,19 @@ func PostHWmessage(Messages string,PhoneNumbers,logsign string)(string) {
 	//digestBase64:=base64.URLEncoding.EncodeToString([]byte(digest))
 	digestBase64:=base64.StdEncoding.EncodeToString([]byte(digest))
 	xheader:=`"UsernameToken Username="`+hwappkey+`",PasswordDigest="`+digestBase64+`",Nonce="`+nonce+`",Created="`+now+`"`
-	tr :=&http.Transport{
-		TLSClientConfig:&tls.Config{InsecureSkipVerify: true},
+	var tr *http.Transport
+	if proxyUrl := beego.AppConfig.String("proxy");proxyUrl != ""{
+		proxy := func(_ *http.Request) (*url.URL, error) {
+			return url.Parse(proxyUrl)
+		}
+		tr = &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+			Proxy: proxy,
+		}
+	}else{
+		tr = &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+		}
 	}
 	client := &http.Client{Transport: tr}
 	req, _ := http.NewRequest("POST", hwappurl + "/sms/batchSendSms/v1", strings.NewReader(url.Values{"from":{sender},"to":{PhoneNumbers},"templateId":{hwtplid},"templateParas":{"["+Messages+"]"},"signature":{hwsign},"statusCallback":{""},"extend":{logsign}}.Encode()))
