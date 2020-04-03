@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 type DDMessage struct {
@@ -47,8 +48,19 @@ func PostToDingDing(title,text,Ddurl,logsign string)(string)  {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
 	logs.Info(logsign,"[dingding]",b)
-	tr :=&http.Transport{
-		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+	var tr *http.Transport
+	if proxyUrl := beego.AppConfig.String("proxy");proxyUrl != ""{
+		proxy := func(_ *http.Request) (*url.URL, error) {
+			return url.Parse(proxyUrl)
+		}
+		tr = &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+			Proxy: proxy,
+		}
+	}else{
+		tr = &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+		}
 	}
 	client := &http.Client{Transport: tr}
 	res,err  := client.Post(Ddurl, "application/json", b)
