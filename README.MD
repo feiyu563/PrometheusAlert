@@ -1,5 +1,12 @@
 PrometheusAlert全家桶 简介
 
+[![Travis](https://img.shields.io/badge/language-Go-green.svg)]()
+[![Travis](https://img.shields.io/badge/language-JavaScript-yellow.svg)]()
+[![Travis](https://img.shields.io/badge/language-Shell-blue.svg)]()
+
+![历史共访问次数](https://visitor-count-badge.herokuapp.com/total.svg?repo_id=PrometheusAlert.PrometheusAlert)
+![今天被访问次数](https://visitor-count-badge.herokuapp.com/today.svg?repo_id=PrometheusAlert.PrometheusAlert)
+
 -----------------
 
 ![dashboard](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dashboard.png)
@@ -20,7 +27,7 @@ PrometheusAlert具备如下特性
  - 简化Prometheus分组配置，支持按照具体消息发送到单个或多个接收方。
  - 增加手机号码配置项和号码自动轮询配置，可固定发送给单一个人告警信息，也可以通过自动轮询的方式发送到多个人员且支持按照不同日期发送到不同人员。
  - 增加Dashboard
- - 增加代理支持，感谢@pzqu提交
+ - 增加代理支持，感谢[@pzqu](https://github.com/pzqu)提交
 --------------------------------------
 
 ## PrometheusAlert全家桶新手入门
