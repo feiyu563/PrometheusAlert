@@ -1,9 +1,16 @@
 ## PrometheusAlert全家桶
 
+![author](https://img.shields.io/badge/author-jikun.zhang-blueviolet.svg)
+[license](https://img.shields.io/github/license/feiyu563/PrometheusAlert.svg)
+![last commit](https://img.shields.io/github/last-commit/feiyu563/PrometheusAlert.svg)
+![issues](https://img.shields.io/github/issues/feiyu563/PrometheusAlert.svg)
+![stars](https://img.shields.io/github/stars/feiyu563/PrometheusAlert.svg)
+![forks](https://img.shields.io/github/forks/feiyu563/PrometheusAlert.svg)
+[![docker](https://img.shields.io/docker/pulls/feiyu563/prometheus-alert.svg)](https://hub.docker.com/r/feiyu563/prometheus-alert)
+
 [![Travis](https://img.shields.io/badge/language-Go-green.svg)]()
 [![Travis](https://img.shields.io/badge/language-JavaScript-yellow.svg)]()
 [![Travis](https://img.shields.io/badge/language-Shell-blue.svg)]()
-
 ![历史共访问次数](https://visitor-count-badge.herokuapp.com/total.svg?repo_id=PrometheusAlert.PrometheusAlert)
 ![今天被访问次数](https://visitor-count-badge.herokuapp.com/today.svg?repo_id=PrometheusAlert.PrometheusAlert)
 
