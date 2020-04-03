@@ -1,4 +1,4 @@
-PrometheusAlert全家桶 简介
+## PrometheusAlert全家桶
 
 [![Travis](https://img.shields.io/badge/language-Go-green.svg)]()
 [![Travis](https://img.shields.io/badge/language-JavaScript-yellow.svg)]()
