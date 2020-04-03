@@ -1,7 +1,7 @@
 ## PrometheusAlert全家桶
 
 ![author](https://img.shields.io/badge/author-jikun.zhang-blueviolet.svg)
-[license](https://img.shields.io/github/license/feiyu563/PrometheusAlert.svg)
+![license](https://img.shields.io/github/license/feiyu563/PrometheusAlert.svg)
 ![last commit](https://img.shields.io/github/last-commit/feiyu563/PrometheusAlert.svg)
 ![issues](https://img.shields.io/github/issues/feiyu563/PrometheusAlert.svg)
 ![stars](https://img.shields.io/github/stars/feiyu563/PrometheusAlert.svg)
