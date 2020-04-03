@@ -10,6 +10,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -78,9 +79,23 @@ func PostTXmessage(Messages string,PhoneNumbers,logsign string)(string)  {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
 	logs.Info(logsign,"[txmessage]",b)
-	tr :=&http.Transport{
-		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+
+	var tr *http.Transport
+	if proxyUrl := beego.AppConfig.String("proxy");proxyUrl != ""{
+		proxy := func(_ *http.Request) (*url.URL, error) {
+			return url.Parse(proxyUrl)
+		}
+		tr = &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+			Proxy: proxy,
+		}
+	}else{
+		tr = &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+		}
 	}
+
+
 	//res,err := http.Post(Ddurl, "application/json", b)
 	//resp, err := http.PostForm(url,url.Values{"key": {"Value"}, "id": {"123"}})
 	client := &http.Client{Transport: tr}
