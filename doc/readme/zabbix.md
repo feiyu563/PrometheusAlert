@@ -33,7 +33,7 @@ Options:
 
 Zabbix后台配置
 
-1)首先需要在zabbix后台新增报警媒介，进入 管理-->报警媒介-->创建媒介类型，配置如图：
+1) 首先需要在zabbix后台新增报警媒介，进入 管理-->报警媒介-->创建媒介类型，配置如图：
 ![zabbix1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/zabbix1.png)
 
 ```
@@ -48,10 +48,10 @@ Zabbix后台配置
     http://[prometheusalert-url]/zabbix/alert  #PrometheusAlert的地址
 ```
 
-2)将报警媒介分配给用户，进入 用户-->点击需要分配的用户名-->报警媒介-->添加。如图：
+2) 将报警媒介分配给用户，进入 用户-->点击需要分配的用户名-->报警媒介-->添加。如图：
 ![zabbix2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/zabbix2.png)
 
-3)继续添加告警动作，进入 配置-->动作-->创建动作。如图：
+3) 继续添加告警动作，进入 配置-->动作-->创建动作。如图：
 ![zabbix3](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/zabbix3.png)
 ![zabbix4](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/zabbix4.png)
 
@@ -188,11 +188,11 @@ Zabbix后台配置
 ```
 
 
-4)最终告警效果:
+4) 最终告警效果:
 
 ![zabbix5](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/zabbix5.png)
 
-5)zabbixclient其他用法
+5) zabbixclient其他用法
 
 zabbixclient不光可以作为zabbix的告警消息转发客户端，也可以作为命令行工具使用，使用方法如下：
 
