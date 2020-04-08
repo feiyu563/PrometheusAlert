@@ -10,8 +10,9 @@ PrometheusAlert全家桶钉钉配置说明
 ![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding2.png)
 
 新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus或者app.conf中设置的title值均可,参考下图
-![ding2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding3.png)
-
+![ding3](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding3.png)
+![ding4](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dingding4.png)
+复制图中的Webhook地址，并填入PrometheusAlert配置文件app.conf中对应配置项即可。
 钉钉相关配置：
 
 ```

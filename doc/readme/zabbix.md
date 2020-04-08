@@ -1,4 +1,4 @@
-**Zabbix 接入配置**
+## zabbix接入配置
 
 PrometheusAlert For zabbix采用C/S方式。需要现在zabbix-server上部署zabbixclient客户端。
 
@@ -194,7 +194,7 @@ Zabbix后台配置
 
 5) zabbixclient其他用法
 
-zabbixclient不光可以作为zabbix的告警消息转发客户端，也可以作为命令行工具使用，使用方法如下：
+其中命令行工具zabbixclient不仅支持作为监控系统Zabbix的告警中心代理客户端，同时也可作为一个单独的命令行客户端工具来使用，zabbixclient的存在，使其他监控系统能够更容易得接入PrometheusAlert告警中心，zabbixclient支持的参数如下：
 
 ```
 ./zabbixclient -t https://oapi.dingtalk.com/robot/send?access_token=xxxxxxx -m 'PrometheusAlert告警平台告警测试' -type dd -d http://dingding.datafountain.cn/zabbix

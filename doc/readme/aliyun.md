@@ -1,12 +1,14 @@
-阿里云短信告警和语音告警
+## 阿里云短信和电话告警配置
 
-具体参数获取可去阿里云开通相关服务即可,并配置相关参数：
+开启阿里云短信告警和语音告警需要提前注册好阿里云平台的帐号。并开通阿里云短信和语音相关服务。
 
-短信：https://help.aliyun.com/document_detail/55288.html?spm=5176.8195934.1283918.11.73af30c917Jfti&aly_as=m1ouSihk
+开通服务可参考阿里云官方文档：
+* 短信：https://help.aliyun.com/document_detail/55288.html?spm=5176.8195934.1283918.11.73af30c917Jfti&aly_as=m1ouSihk
 
-语音（电话）：https://help.aliyun.com/document_detail/55070.html?spm=a2c4g.11186623.6.547.77e271b9SAbG6p
+* 语音（电话）：https://help.aliyun.com/document_detail/55070.html?spm=a2c4g.11186623.6.547.77e271b9SAbG6p
 
-阿里云模版配置可参考,code为变量名称：`prometheus告警:${code}`
+* 注意事项：开通阿里云短信和语音需要配置的模版请使用如下，`${code}`为变量名称，请勿替换：`prometheus告警:${code}`
+
 
 配置阿里云短信和语音参数：
 
