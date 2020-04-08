@@ -1,4 +1,4 @@
-**Prometheus 接入配置**
+## Prometheus接入配置
 
 Prometheus支持两种配置，任选其一或者两者搭配均可。
 

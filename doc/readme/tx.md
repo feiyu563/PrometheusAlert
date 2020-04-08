@@ -1,12 +1,14 @@
-腾讯云短信告警和语音告警
+## 腾讯云短信和电话告警配置
 
-具体参数获取可去腾讯云开通相关服务即可,并配置相关参数：
+开启腾讯云短信和语音告警渠道均需要提前注册好腾讯云平台的帐号。并开通腾讯云短信和语音相关服务。
 
-短信：https://cloud.tencent.com/document/product/382/18071
+开通服务可参考腾讯云官方文档：
 
-语音（电话）：https://cloud.tencent.com/document/product/1128/37343
+* 短信：https://cloud.tencent.com/document/product/382/18071
 
-腾讯云模版配置可参考：`prometheus告警:{1}`
+* 语音（电话）：https://cloud.tencent.com/document/product/1128/37343
+
+* 注意事项：开通腾讯云短信和语音需要配置的模版请使用如下：`prometheus告警:{1}`
 
 ![tengxun1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tengxun1.png)
 
