@@ -94,6 +94,25 @@ func (c *Graylog2Controller) GraylogALYdh() {
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
+func (c *Graylog2Controller) GraylogRLYdh() {
+	alert:=Graylog2{}
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageG(alert,9,logsign)
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
+
+func (c *Graylog2Controller) GraylogFeishu() {
+	alert:=Graylog2{}
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageG(alert,10,logsign)
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
 
 //强制转换时间为cst  2019-09-26T15:27:49.644Z
 func GetGraylogCSTtime(date string)(string)  {
@@ -115,12 +134,15 @@ func SendMessageG(message Graylog2,typeid int,logsign string)(string)  {
 	if len(message.Check_result.MatchingMessages)==0 {
 		ddurl:=beego.AppConfig.String("ddurl")
 		PostToDingDing(Title+"告警信息", "## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"!["+Title+"]("+Logourl+")", ddurl,logsign)
+		fsurl:=beego.AppConfig.String("fsurl")
+		PostToFeiShu(Title+"告警信息", "["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+""+message.Check_result.Result_description+"\n\n"+"!["+Title+"]("+Logourl+")", fsurl,logsign)
 		wxurl:=beego.AppConfig.String("wxurl")
 		PostToWeiXin("["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**", wxurl,logsign)
 		return "告警消息发送完成."
 	}
 	for _, m := range message.Check_result.MatchingMessages{
 		DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警索引："+m.Index+"\n\n"+"###### 开始时间："+GetGraylogCSTtime(m.Timestamp)+" \n\n"+"###### 告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+"##### "+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
+		FStext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+""+message.Check_result.Result_description+"\n\n"+"告警索引："+m.Index+"\n\n"+"开始时间："+GetGraylogCSTtime(m.Timestamp)+" \n\n"+"告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+""+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
 		WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警索引:`"+m.Index+"\n`开始时间:`"+GetGraylogCSTtime(m.Timestamp)+" \n`告警主机:`"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n**"+m.Message+"**"
 		PhoneCallMessage="告警主机 "+m.Fields.Gl2RemoteIp+"端口 "+strconv.Itoa(m.Fields.Gl2RemotePort)+"告警消息 "+m.Message
 		//触发钉钉
@@ -132,6 +154,11 @@ func SendMessageG(message Graylog2,typeid int,logsign string)(string)  {
 		if typeid==3 {
 			wxurl:=beego.AppConfig.String("wxurl")
 			PostToWeiXin(WXtext, wxurl,logsign)
+		}
+		//出发飞书
+		if typeid==10 {
+			fsurl:=beego.AppConfig.String("fsurl")
+			PostToFeiShu(Title+"告警信息", FStext, fsurl,logsign)
 		}
 		//取到手机号
 		phone:=GetUserPhone(1)
@@ -155,6 +182,11 @@ func SendMessageG(message Graylog2,typeid int,logsign string)(string)  {
 		if typeid==8 {
 			PostALYphonecall(PhoneCallMessage,phone,logsign)
 		}
+		//触发容联云电话告警
+		if typeid==9 {
+			PostRLYphonecall(PhoneCallMessage,phone,logsign)
+		}
+
 	}
 	return "告警消息发送完成."
 }

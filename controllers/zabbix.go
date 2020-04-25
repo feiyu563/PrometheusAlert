@@ -32,6 +32,8 @@ func SendMessageZabbix(message ZabbixMessage,logsign string) (string){
 		ret=PostToWeiXin(message.ZabbixMessage,message.ZabbixTarget,logsign)
 	case "dd":
 		ret=PostToDingDing("Zabbix告警消息",message.ZabbixMessage,message.ZabbixTarget,logsign)
+	case "fs":
+		ret=PostToFeiShu("Zabbix告警消息",message.ZabbixMessage,message.ZabbixTarget,logsign)
 	case "dx":
 		ret=PostTXmessage(message.ZabbixMessage,message.ZabbixTarget,logsign)
 		ret=ret+PostHWmessage(message.ZabbixMessage,message.ZabbixTarget,logsign)
