@@ -35,6 +35,16 @@ func (c *GrafanaController) GrafanaTxdh() {
 	c.ServeJSON()
 }
 
+func (c *GrafanaController) GrafanaFeishu() {
+	alert:=Grafana{}
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageGrafana(alert,10,logsign)
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
+
 func (c *GrafanaController) GrafanaDingding() {
 	alert:=Grafana{}
 	logsign:="["+LogsSign()+"]"
@@ -64,6 +74,7 @@ func (c *GrafanaController) GrafanaTxdx() {
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
+
 func (c *GrafanaController) GrafanaHwdx() {
 	alert:=Grafana{}
 	logsign:="["+LogsSign()+"]"
@@ -94,11 +105,22 @@ func (c *GrafanaController) GrafanaALYdh() {
 	c.ServeJSON()
 }
 
+func (c *GrafanaController) GrafanaRlydh() {
+	alert:=Grafana{}
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageGrafana(alert,9,logsign)
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
+
 //typeid 为0,触发电话告警和钉钉告警, typeid 为1 仅触发dingding告警
 func SendMessageGrafana(message Grafana,typeid int,logsign string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Logourl:=beego.AppConfig.String("logourl")
 	DDtext:=""
+	FStext:=""
 	WXtext:=""
 	titleend:=""
 	//告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
@@ -108,11 +130,13 @@ func SendMessageGrafana(message Grafana,typeid int,logsign string)(string)  {
 	if message.State=="ok" {
 		titleend="故障恢复信息"
 		DDtext="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n#### "+message.RuleName+"\n\n###### 告警级别："+AlertLevel[4]+"\n\n###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n##### "+fullMessage[0]+" 已经恢复正常\n\n"+"!["+Title+"]("+Logourl+")"
+		FStext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+message.RuleName+"\n\n告警级别："+AlertLevel[4]+"\n\n开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+fullMessage[0]+" 已经恢复正常\n\n"+"!["+Title+"]("+Logourl+")"
 		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:`"+AlertLevel[4]+"\n`开始时间:`"+time.Now().Format("2006-01-02 15:04:05")+"\n"+fullMessage[0]+" 已经恢复正常\n"
 		PhoneCallMessage=fullMessage[0]+" 已经恢复正常"
 	}else {
 		titleend="故障告警信息"
 		DDtext="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+"#### "+message.RuleName+"\n\n"+"###### 告警级别："+AlertLevel[4]+"\n\n"+"###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+"##### "+fullMessage[0]+"\n\n"+"!["+Title+"]("+Logourl+")"
+		FStext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+""+message.RuleName+"\n\n"+"告警级别："+AlertLevel[4]+"\n\n"+"开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+""+fullMessage[0]+"\n\n"+"!["+Title+"]("+Logourl+")"
 		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:`"+AlertLevel[4]+"\n`开始时间:`"+time.Now().Format("2006-01-02 15:04:05")+"\n"+fullMessage[0]+"\n"
 		PhoneCallMessage=fullMessage[0]
 	}
@@ -140,6 +164,20 @@ func SendMessageGrafana(message Grafana,typeid int,logsign string)(string)  {
 			}
 		}
 	}
+
+	//触发飞书
+	if typeid==10 {
+		if len(fullMessage)<2 {
+			fsurl:=beego.AppConfig.String("fsurl")
+			PostToFeiShu(Title+titleend,FStext,fsurl,logsign)
+		} else {
+			DD:=strings.Split(fullMessage[1], ",")
+			for _,d:=range DD {
+				PostToFeiShu(Title+titleend,FStext,d,logsign)
+			}
+		}
+	}
+
 	//取到手机号
 	phone:=GetUserPhone(1)
 	//触发电话告警
@@ -162,6 +200,11 @@ func SendMessageGrafana(message Grafana,typeid int,logsign string)(string)  {
 	if typeid==8 {
 		PostALYphonecall(PhoneCallMessage,phone,logsign)
 	}
+	//触发容联云电话告警
+	if typeid==9 {
+		PostRLYphonecall(PhoneCallMessage,phone,logsign)
+	}
+
 
 	return "告警消息发送完成."
 }
