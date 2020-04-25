@@ -24,7 +24,7 @@
 
 -----------------
 
-PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3和数据可视化系统Grafana发出的预警消息，支持将收到的这些消息发送到钉钉，微信，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信等。
+PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3和数据可视化系统Grafana发出的预警消息，支持将收到的这些消息发送到钉钉，微信，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信等。
 
 ![it](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/it.png)
 
@@ -39,6 +39,7 @@ PrometheusAlert具备如下特性
  - 增加手机号码配置项和号码自动轮询配置，可固定发送给单一个人告警信息，也可以通过自动轮询的方式发送到多个人员且支持按照不同日期发送到不同人员。
  - 增加Dashboard
  - 增加代理支持，感谢[@pzqu](https://github.com/pzqu)提交
+ - 增加飞书，容联云告警方式，感谢[@bigdimple](https://github.com/bigdimple)提交
 --------------------------------------
 
 ## PrometheusAlert全家桶新手入门
@@ -55,9 +56,11 @@ PrometheusAlert具备如下特性
   * [zabbix配置](doc/readme/zabbix.md)
 * [告警接收目标配置]
   * [钉钉告警配置](doc/readme/dingding.md)
+  * [飞书告警配置](doc/readme/feishu.md)
   * [企业微信告警配置](doc/readme/wechat.md)
   * [阿里云短信和电话告警配置](doc/readme/aliyun.md)
   * [腾讯云短信和电话告警配置](doc/readme/tx.md)
+  * [容联云电话告警配置](doc/readme/rly.md)
   * [华为云短信配置](doc/readme/hw.md)
 * [PrometheusAlert版本更新说明](https://github.com/feiyu563/PrometheusAlert/releases)
 * [如何对PrometheusAlert进行二次开发](https://github.com/feiyu563/PrometheusAlert/wiki/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E3%80%90PrometheusAlert%E3%80%91%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91)

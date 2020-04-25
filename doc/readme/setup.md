@@ -50,6 +50,11 @@ open-weixin=1
 #默认企业微信机器人地址
 wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
 
+#是否开启飞书告警通道,可同时开始多个通道0为关闭,1为开启
+open-feishu=1
+#默认飞书机器人地址
+fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
+
 #---------------------↓腾讯云接口-----------------------
 #是否开启腾讯云短信告警通道,可同时开始多个通道0为关闭,1为开启
 open-txdx=1
@@ -109,5 +114,17 @@ ALY_DH_AccessSecret=xxxxxxxxxxxxxxxxxxxxxx
 ALY_DX_CalledShowNumber=xxxxxxxxx
 #阿里云电话文本转语音（TTS）模板ID
 ALY_DH_TtsCode=xxxxxxxx
+
+#---------------------↓容联云接口-----------------------
+#是否开启腾讯云电话告警通道,可同时开始多个通道0为关闭,1为开启
+RLY_DH_open-rlydh=1
+#容联云基础接口地址
+RLY_URL=https://app.cloopen.com:8883/2013-12-26/Accounts/
+#容联云后台SID
+RLY_ACCOUNT_SID=xxxxxxxxxxx
+#容联云api-token
+RLY_ACCOUNT_TOKEN=xxxxxxxxxx
+#容联云app_id
+RLY_APP_ID=xxxxxxxxxxxxx
 
 ```

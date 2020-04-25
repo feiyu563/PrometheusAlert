@@ -22,11 +22,13 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /grafana/phone     处理Grafana告警消息转发到腾讯云电话接口(v3.0版本将废弃)
 /grafana/dingding  处理Grafana告警消息转发到钉钉接口
 /grafana/weixin    处理Grafana告警消息转发到微信接口
+/grafana/feishu    处理Grafana告警消息转发到飞书接口
 /grafana/txdx      处理Grafana告警消息转发到腾讯云短信接口
 /grafana/txdh      处理Grafana告警消息转发到腾讯云电话接口
 /grafana/hwdx      处理Grafana告警消息转发到华为云短信接口
 /grafana/alydx     处理Grafana告警消息转发到阿里云短信接口
 /grafana/alydh     处理Grafana告警消息转发到阿里云电话接口
+/grafana/rlydh     处理Grafana告警消息转发到容联云电话接口
 ```
 
  - `graylog2接口`
@@ -37,11 +39,13 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /graylog2/phone     处理Graylog2告警消息转发到腾讯云电话接口(v3.0版本将废弃)
 /graylog2/dingding  处理Graylog2告警消息转发到钉钉接口
 /graylog2/weixin    处理Graylog2告警消息转发到微信接口
+/graylog2/feishu    处理Graylog2告警消息转发到飞书接口
 /graylog2/txdx      处理Graylog2告警消息转发到腾讯云短信接口
 /graylog2/txdh      处理Graylog2告警消息转发到腾讯云电话接口
 /graylog2/hwdx      处理Graylog2告警消息转发到华为云短信接口
 /graylog2/alydx     处理Graylog2告警消息转发到阿里云短信接口
 /graylog2/alydh     处理Graylog2告警消息转发到阿里云电话接口
+/graylog2/rlydh     处理Graylog2告警消息转发到容联云电话接口
 ```
 
  - `graylog3接口`
@@ -52,11 +56,13 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /graylog3/phone     处理Graylog3告警消息转发到腾讯云电话接口(v3.0版本将废弃)
 /graylog3/dingding  处理Graylog3告警消息转发到钉钉接口
 /graylog3/weixin    处理Graylog3告警消息转发到微信接口
+/graylog3/feishu    处理Graylog3告警消息转发到微信接口
 /graylog3/txdx      处理Graylog3告警消息转发到腾讯云短信接口
 /graylog3/txdh      处理Graylog3告警消息转发到腾讯云电话接口
 /graylog3/hwdx      处理Graylog3告警消息转发到华为云短信接口
 /graylog3/alydx     处理Graylog3告警消息转发到阿里云短信接口
 /graylog3/alydh     处理Graylog3告警消息转发到阿里云电话接口
+/graylog3/rlydh     处理Graylog3告警消息转发到容联云电话接口
 ```
 
  - `语音短信回调接口`
