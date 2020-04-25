@@ -31,6 +31,10 @@ func (c *MainController)AlertTest()  {
 		ddtext:="## [PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n"+"#### 测试告警\n\n"+"###### 告警级别：测试\n\n##### PrometheusAlert\n\n"+"![PrometheusAlert]("+beego.AppConfig.String("logourl")+")"
 	    ret:=PostToDingDing("PrometheusAlert",ddtext,beego.AppConfig.String("ddurl"),logsign)
 		c.Data["json"]=ret
+	case "fs":
+		fstext:="[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n"+"测试告警\n\n"+"告警级别：测试\n\nPrometheusAlert\n\n"+"![PrometheusAlert]("+beego.AppConfig.String("logourl")+")"
+		ret:=PostToFeiShu("PrometheusAlert",fstext,beego.AppConfig.String("fsurl"),logsign)
+		c.Data["json"]=ret
 	case "txdx":
 		MobileMessage:="PrometheusAlertCenter测试告警"
 		ret:=PostTXmessage(MobileMessage,beego.AppConfig.String("defaultphone"),logsign)
@@ -49,6 +53,10 @@ func (c *MainController)AlertTest()  {
 	case "alydh":
 		MobileMessage:="PrometheusAlertCenter测试告警"
 		ret:=PostALYphonecall(MobileMessage,beego.AppConfig.String("defaultphone"),logsign)
+		c.Data["json"]=ret
+	case "rlydh":
+		MobileMessage:="PrometheusAlertCenter测试告警"
+		ret:=PostRLYphonecall(MobileMessage,beego.AppConfig.String("defaultphone"),logsign)
 		c.Data["json"]=ret
 	default:
 		c.Data["json"]="hahaha!"

@@ -87,8 +87,9 @@
          <td><p><button class="btn btn-primary" data-toggle='modal' id="alydh">阿里云电话告警测试</button></p></td>
        </tr>
        <tr>
-         <td></td>
+         <td><p><button class="btn btn-primary" data-toggle='modal' id="fs">飞书告警测试</button></td>
          <td><p><button class="btn btn-primary" data-toggle='modal' id="alydx">阿里云短信告警测试</button></p></td>
+         <td><p><button class="btn btn-primary" data-toggle='modal' id="rlydh">容联云电话告警测试</button></p></td>
          <td></td>
        </tr>
        <tr>
