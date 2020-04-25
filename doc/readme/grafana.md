@@ -10,11 +10,12 @@
 /grafana/phone     处理Grafana告警消息转发到腾讯云电话接口(v3.0版本将废弃)
 /grafana/dingding  处理Grafana告警消息转发到钉钉接口
 /grafana/weixin    处理Grafana告警消息转发到微信接口
+/grafana/feishu    处理Grafana告警消息转发到飞书接口
 /grafana/txdx      处理Grafana告警消息转发到腾讯云短信接口
 /grafana/txdh      处理Grafana告警消息转发到腾讯云电话接口
 /grafana/hwdx      处理Grafana告警消息转发到华为云短信接口
 /grafana/alydx     处理Grafana告警消息转发到阿里云短信接口
-/grafana/alydh     处理Grafana告警消息转发到阿里云电话接口
+/grafana/rlydh     处理Grafana告警消息转发到容联云电话接口
 ```
 
 ![grafana2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/addchannel2.png)
