@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"PrometheusAlert/model"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
@@ -72,6 +73,7 @@ func PostToDingDing(title,text,Ddurl,logsign string)(string)  {
 	if err != nil {
 		logs.Error(logsign,"[dingding]",err.Error())
 	}
+	model.AlertToCounter.WithLabelValues("dingding",text,"").Add(1)
 	logs.Info(logsign,"[dingding]",string(result))
 	return string(result)
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"PrometheusAlert/model"
 	"crypto/tls"
 	"encoding/base64"
 	"github.com/astaxie/beego"
@@ -63,6 +64,7 @@ func PostHWmessage(Messages string,PhoneNumbers,logsign string)(string) {
 	if err != nil {
 		logs.Error(logsign,"[hwmessage]",err.Error())
 	}
+	model.AlertToCounter.WithLabelValues("hwdx",Messages,PhoneNumbers).Add(1)
 	logs.Info(logsign,"[hwmessage]",string(result))
 	return string(result)
 }

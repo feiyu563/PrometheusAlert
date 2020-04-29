@@ -55,8 +55,37 @@ route:
   group_interval: 10s
   repeat_interval: 10m
   receiver: 'web.hook.prometheusalert'
+  routes:
+  - receiver: 'prometheusalert-weixin'
+    group_wait: 10s
+    match:
+      level: '1'
+  - receiver: 'prometheusalert-dingding'
+    group_wait: 10s
+    match:
+      level: '2'
+  - receiver: 'prometheusalert-feishu'
+    group_wait: 10s
+    match:
+      level: '3'
+  - receiver: 'prometheusalert-all'
+    group_wait: 10s
+    match:
+      level: '4'
 receivers:
 - name: 'web.hook.prometheusalert'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheus/alert'
+- name: 'prometheusalert-weixin'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheus/router?wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx'
+- name: 'prometheusalert-dingding'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheus/router?ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx'
+- name: 'prometheusalert-feishu'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheus/router?fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx'
+- name: 'prometheusalert-all'
   webhook_configs:
   - url: 'http://[prometheusalert_url]:8080/prometheus/router?wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx&phone=15395105573'
 ```

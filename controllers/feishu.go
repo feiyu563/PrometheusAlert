@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"PrometheusAlert/model"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
@@ -52,6 +53,7 @@ func PostToFeiShu(title,text,Fsurl,logsign string)(string)  {
 	if err != nil {
 		logs.Error(logsign,"[feishu]",err.Error())
 	}
+	model.AlertToCounter.WithLabelValues("feishu",text,"").Add(1)
 	logs.Info(logsign,"[feishu]",string(result))
 	return string(result)
 }

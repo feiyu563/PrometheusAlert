@@ -7,26 +7,34 @@
  - `grafana接口`
 
 ```
-/grafana/phone     处理Grafana告警消息转发到腾讯云电话接口(v3.0版本将废弃)
-/grafana/dingding  处理Grafana告警消息转发到钉钉接口
-/grafana/weixin    处理Grafana告警消息转发到微信接口
-/grafana/feishu    处理Grafana告警消息转发到飞书接口
-/grafana/txdx      处理Grafana告警消息转发到腾讯云短信接口
-/grafana/txdh      处理Grafana告警消息转发到腾讯云电话接口
-/grafana/hwdx      处理Grafana告警消息转发到华为云短信接口
-/grafana/alydx     处理Grafana告警消息转发到阿里云短信接口
-/grafana/rlydh     处理Grafana告警消息转发到容联云电话接口
+/grafana/dingding  处理Grafana告警消息转发到钉钉接口，可选参数(ddurl)
+/grafana/weixin    处理Grafana告警消息转发到微信接口，可选参数(wxurl)
+/grafana/feishu    处理Grafana告警消息转发到飞书接口，可选参数(fsurl)
+/grafana/txdx      处理Grafana告警消息转发到腾讯云短信接口，可选参数(phone)
+/grafana/txdh      处理Grafana告警消息转发到腾讯云电话接口，可选参数(phone)
+/grafana/hwdx      处理Grafana告警消息转发到华为云短信接口，可选参数(phone)
+/grafana/alydx     处理Grafana告警消息转发到阿里云短信接口，可选参数(phone)
+/grafana/rlydh     处理Grafana告警消息转发到容联云电话接口，可选参数(phone)
+```
+
+关于接口说明：grafana的所有接口均支持传参,如直接使用接口，未在接口后加入参数，默认会优先使用配置文件中的参数作为告警渠道的配置。如果接口中加入了参数，将默认使用url中的参数作为告警渠道的配置。如下：
+
+```
+/grafana/dingding?ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx
+/grafana/weixin?wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
+/grafana/feishu?fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
+/grafana/txdx?phone=15395105573
+/grafana/txdh?phone=15395105573
+/grafana/hwdx?phone=15395105573
+/grafana/alydx?phone=15395105573
+/grafana/alydh?phone=15395105573
+/grafana/rlydh?phone=15395105573
 ```
 
 ![grafana2](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/addchannel2.png)
 配置完成后保存即可.继续进行告警消息配置,选择任意一个折线图,点击编辑,进入aler配置,配置参考下图:
 ![grafana3](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/grafanaalert1.png)
 ![grafana4](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/grafanaalert2.png)
-
-Notifications配置格式参考,支持配置多个告警机器人url:
-```
-告警消息内容&&url[钉钉或微信机器人url,钉钉或微信机器人url....]
-```
 
 最终告警效果:
 

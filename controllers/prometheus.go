@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"PrometheusAlert/model"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -106,6 +107,7 @@ func SendMessageP(message Prometheus,logsign string)(string)  {
 		}
 		if RMessage.Status=="resolved" {
 			titleend="故障恢复信息"
+			model.AlertsFromCounter.WithLabelValues("prometheus",RMessage.Annotations.Description,RMessage.Labels.Level,RMessage.Labels.Instance,"resolved").Add(1)
 			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
 			fstext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"告警级别："+AlertLevel[nLevel]+"\n\n"+"开始时间："+At+"\n\n"+"结束时间："+Et+"\n\n"+"故障主机IP："+RMessage.Labels.Instance+"\n\n"+""+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
 			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
@@ -113,6 +115,7 @@ func SendMessageP(message Prometheus,logsign string)(string)  {
 			PhoneCallMessage="故障主机IP "+RMessage.Labels.Instance+RMessage.Annotations.Description+"已经恢复"
 		}else {
 			titleend="故障告警信息"
+			model.AlertsFromCounter.WithLabelValues("prometheus",RMessage.Annotations.Description,RMessage.Labels.Level,RMessage.Labels.Instance,"firing").Add(1)
 			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
 			fstext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"告警级别："+AlertLevel[nLevel]+"\n\n"+"开始时间："+At+"\n\n"+"结束时间："+Et+"\n\n"+"故障主机IP："+RMessage.Labels.Instance+"\n\n"+""+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
 			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
@@ -229,6 +232,7 @@ func SendMessageR(message Prometheus,rwxurl,rddurl,rfsurl,rphone,logsign string)
 		}
 		if RMessage.Status=="resolved" {
 			titleend="故障恢复信息"
+			model.AlertsFromCounter.WithLabelValues("prometheus",RMessage.Annotations.Description,RMessage.Labels.Level,RMessage.Labels.Instance,"resolved").Add(1)
 			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
 			fstext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
 			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
@@ -236,6 +240,7 @@ func SendMessageR(message Prometheus,rwxurl,rddurl,rfsurl,rphone,logsign string)
 			PhoneCallMessage="故障主机IP "+RMessage.Labels.Instance+RMessage.Annotations.Description+"已经恢复"
 		}else {
 			titleend="故障告警信息"
+			model.AlertsFromCounter.WithLabelValues("prometheus",RMessage.Annotations.Description,RMessage.Labels.Level,RMessage.Labels.Instance,"firing").Add(1)
 			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
 			fstext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
 			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
@@ -301,4 +306,3 @@ func SendMessageR(message Prometheus,rwxurl,rddurl,rfsurl,rphone,logsign string)
 	}
 	return "告警消息发送完成."
 }
-

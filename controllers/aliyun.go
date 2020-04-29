@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"PrometheusAlert/model"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dyvmsapi"
@@ -33,6 +34,7 @@ func PostALYmessage(Messages,PhoneNumbers,logsign string)(string) {
 		logs.Error(logsign,"[alymessage]",err.Error())
 	}
 	logs.Info(logsign,"[alymessage]",response)
+	model.AlertToCounter.WithLabelValues("alydx",Messages,PhoneNumbers).Add(1)
 	return response.Message
 }
 func PostALYphonecall(Messages string,PhoneNumbers,logsign string)(string) {
@@ -63,5 +65,6 @@ func PostALYphonecall(Messages string,PhoneNumbers,logsign string)(string) {
 		}
 		logs.Info(logsign,"[alyphonecall]",response)
 	}
+	model.AlertToCounter.WithLabelValues("alydh",Messages,PhoneNumbers).Add(1)
 	return PhoneNumbers+"Called Over."
 }

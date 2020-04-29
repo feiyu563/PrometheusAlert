@@ -11,6 +11,15 @@ func init() {
 	//prometheus
 	beego.Router("/prometheus/alert", &controllers.PrometheusController{},"post:PrometheusAlert")
 	beego.Router("/prometheus/router", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/dingding", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/weixin", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/feishu", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/txdx", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/txdh", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/hwdx", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/alydx", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/alydh", &controllers.PrometheusController{},"post:PrometheusRouter")
+	//beego.Router("/prometheus/rlydh", &controllers.PrometheusController{},"post:PrometheusRouter")
     //graylog2
 	//beego.Router("/graylog2/phone", &controllers.Graylog2Controller{},"post:GraylogTxdh")
 	beego.Router("/graylog2/dingding", &controllers.Graylog2Controller{},"post:GraylogDingding")

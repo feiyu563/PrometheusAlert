@@ -15,7 +15,7 @@ chmod 755 /usr/lib/zabbix/alertscripts/zabbixclient
  
  ```
 [root@k8s-master01 linux]# zabbixclient -h
-Version 1.0 If you need help contact 244217140@qq.com or visit https://github.com/feiyu563/PrometheusAlert
+Version 1.1 If you need help contact 244217140@qq.com or visit https://github.com/feiyu563/PrometheusAlert
 Usage: zabbixclient [-h] [-t SendTarget] [-m SendMessage] [-type SendType] [-d PrometheusAlertUrl]
 Example(发送告警到钉钉)：zabbixclent -t https://oapi.dingtalk.com/robot/send?access_token=xxxxx -m zabbix告警测试 -type dh -d http://127.0.0.1:8080/zabbix
 
@@ -25,10 +25,10 @@ Options:
   -h	显示帮助
   -m 告警消息内容
     	需要发送的告警消息内容 (default "zabbix告警测试")
-  -t 手机号/钉钉url/微信url
+  -t 手机号/钉钉url/微信url/飞书url
     	指定告警消息的接收目标的手机号/钉钉url/微信url (default "https://oapi.dingtalk.com/robot/send?access_token=xxxxx")
-  -type dx(短信)、dh(电话)、dd(钉钉)、wx(微信)
-    	告警消息的目标类型,支持dx(短信)、dh(电话)、dd(钉钉)、wx(微信) (default "dd")
+  -type txdx(腾讯云短信)、txdh(腾讯云电话)、alydx(阿里云短信)、alydh(阿里云电话)、hwdx(华为云短信)、rlydh(荣联云电话)、dd(钉钉)、wx(微信)、fs(飞书)
+    	告警消息的目标类型,支持txdx(腾讯云短信)、txdh(腾讯云电话)、alydx(阿里云短信)、alydh(阿里云电话)、hwdx(华为云短信)、rlydh(荣联云电话)、dd(钉钉)、wx(微信)、fs(飞书) (default "dd")
  ```
 
 Zabbix后台配置
@@ -43,7 +43,7 @@ Zabbix后台配置
     -m
     {ALERT.MESSAGE}   #这事zabbix内置消息变量名
     -type
-    dd                #告警消息的目标类型,支持dx(短信)、dh(电话)、dd(钉钉)、wx(微信) (default "dd")
+    dd                #告警消息的目标类型,支持txdx(腾讯云短信)、txdh(腾讯云电话)、alydx(阿里云短信)、alydh(阿里云电话)、hwdx(华为云短信)、rlydh(荣联云电话)、dd(钉钉)、wx(微信)、fs(飞书) (default "dd")
     -d
     http://[prometheusalert-url]/zabbix/alert  #PrometheusAlert的地址
 ```
