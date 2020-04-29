@@ -23,11 +23,11 @@ data:
     #电话告警级别(等于4就进行语音告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
     phonecalllevel=4
     #默认拨打号码
-    defaultphone=15395105573
+    defaultphone=xxxxxxxx
     #故障恢复是否启用电话通知0为关闭,1为开启
-    phonecallresolved=1
+    phonecallresolved=0
     #自动告警抑制(自动告警抑制是默认同一个告警源的告警信息只发送告警级别最高的第一条告警信息,其他消息默认屏蔽,这么做的目的是为了减少相同告警来源的消息数量,防止告警炸弹,0为关闭,1为开启)
-    silent=1
+    silent=0
     #是否前台输出file or console
     logtype=file
     #日志文件路径
@@ -47,13 +47,13 @@ data:
     open-weixin=0
     #默认企业微信机器人地址
     wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
-
+    
     #是否开启飞书告警通道,可同时开始多个通道0为关闭,1为开启
-    open-feishu=1
+    open-feishu=0
     #默认飞书机器人地址
-    fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxx
-
-
+    fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
+    
+    
     #---------------------↓腾讯云接口-----------------------
     #是否开启腾讯云短信告警通道,可同时开始多个通道0为关闭,1为开启
     open-txdx=0
@@ -113,18 +113,18 @@ data:
     ALY_DX_CalledShowNumber=xxxxxxxxx
     #阿里云电话文本转语音（TTS）模板ID
     ALY_DH_TtsCode=xxxxxxxx
-
+    
     #---------------------↓容联云接口-----------------------
     #是否开启容联云电话告警通道,可同时开始多个通道0为关闭,1为开启
-    RLY_DH_open-rlydh=1
+    RLY_DH_open-rlydh=0
     #容联云基础接口地址
     RLY_URL=https://app.cloopen.com:8883/2013-12-26/Accounts/
     #容联云后台SID
-    RLY_ACCOUNT_SID=xxxxxxxxx
+    RLY_ACCOUNT_SID=xxxxxxxxxxx
     #容联云api-token
-    RLY_ACCOUNT_TOKEN=xxxxxxxxxxx
+    RLY_ACCOUNT_TOKEN=xxxxxxxxxx
     #容联云app_id
-    RLY_APP_ID=xxxxxxxx
+    RLY_APP_ID=xxxxxxxxxxxxx
 
 kind: ConfigMap
 metadata:

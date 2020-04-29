@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"PrometheusAlert/model"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -29,6 +30,7 @@ func (c *ZabbixController) ZabbixAlert() {
 
 func SendMessageZabbix(message ZabbixMessage,logsign string) (string){
 	ret:=""
+	model.AlertsFromCounter.WithLabelValues("zabbix",message.ZabbixMessage,"","","").Add(1)
 	switch message.ZabbixType {
 	//微信渠道
 	case "wx":
@@ -39,21 +41,23 @@ func SendMessageZabbix(message ZabbixMessage,logsign string) (string){
 	//飞书渠道
 	case "fs":
 		ret=PostToFeiShu("Zabbix告警消息",message.ZabbixMessage,message.ZabbixTarget,logsign)
-	//短信渠道
-	case "dx":
-		//腾讯云短信
+	//腾讯云短信
+	case "txdx":
 		ret=PostTXmessage(message.ZabbixMessage,message.ZabbixTarget,logsign)
-		//华为云短信
+	//华为云短信
+	case "hwdx":
 		ret=ret+PostHWmessage(message.ZabbixMessage,message.ZabbixTarget,logsign)
-		//阿里云短信
+	//阿里云短信
+	case "alydx":
 		ret=ret+PostALYmessage(message.ZabbixMessage,message.ZabbixTarget,logsign)
-	//电话渠道
-	case "dh":
-		//腾讯云电话
+	//腾讯云电话
+	case "txdh":
 		ret=PostTXphonecall(message.ZabbixMessage,message.ZabbixTarget,logsign)
-		//阿里云电话
+	//阿里云电话
+	case "alydh":
 		ret=ret+PostALYphonecall(message.ZabbixMessage,message.ZabbixTarget,logsign)
-		//容联云电话
+	//容联云电话
+	case "rlydh":
 		ret=ret+PostRLYphonecall(message.ZabbixMessage,message.ZabbixTarget,logsign)
 	//异常参数
 	default:
