@@ -25,9 +25,9 @@ Prometheus Server 的告警rules配置，可参考如下模板：
 
 ```
 groups:
-  name: node_alert
+- name: node_alert
   rules:
-    alert: 主机CPU告警
+  - alert: 主机CPU告警
     expr: node_load1 > 1
     labels:
       name: prometheusalertcenter
