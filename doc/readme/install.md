@@ -42,10 +42,10 @@ cd PrometheusAlert/example/windows/
 ```
 - 在kubernetes中运行
 ```
-#Kubernetes中运行可以直接执行以下命令行即可
+#Kubernetes中运行可以直接执行以下命令行即可(注意默认的部署模版中未挂载模版数据库文件 db/PrometheusAlertDB.db，为防止模版数据丢失，请自行增加挂载配置 )
 kubectl app -n monitoring -f https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/example/kubernetes/PrometheusAlert-Deployment.yaml
 
-#启动后可使用浏览器打开以下地址查看：http://[prometheus-alert-center]:8080
+#启动后可使用浏览器打开以下地址查看：http://[YOUR-PrometheusAlert-URL]:8080
 ```
 - 使用helm部署
 ```
@@ -55,7 +55,7 @@ cd PrometheusAlert/example/helm/prometheusalert
 
 #如需修改配置文件,请更新config中的app.conf
 #helm部署模版支持配置Ingress域名，可在values.yaml中进行配置
-#配置修改完成后，通过以下命令启动即可
+#配置修改完成后，通过以下命令启动即可(注意默认的部署模版中未挂载模版数据库文件 db/PrometheusAlertDB.db，为防止模版数据丢失，请自行增加挂载配置 )
 helm install -n monitoring .
 
 #启动后可使用浏览器打开以下地址查看: http://[Ingress_url]:[Ingress_port]

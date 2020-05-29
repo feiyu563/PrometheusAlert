@@ -129,7 +129,7 @@ kind: ConfigMap
 metadata:
   name: prometheus-alert-center-conf
 ---
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:

@@ -1,0 +1,76 @@
+{{template "main"}}
+  <title>PrometheusAlert</title>
+</head>
+
+<body>
+{{template "head" .}}
+        <div class="bs-docs-header">
+            <div class="container">
+                    <label class="col-sm-2">模版编辑</label>
+			</div>
+        </div>
+            <div class="container">
+					<div class="bs-example" >
+                    <form class="form-horizontal" method="POST" action="/template/addtpl" enctype="multipart/form-data">
+					<input type="hidden" name="id" value="{{.Template.Id}}">
+					<div class="input-group">
+					<span class="input-group-addon">模版名称</span>
+					<input type="text" id="name" class="form-control" name="name" value="{{.Template.Tplname}}">
+					</div>
+					<br />
+						<div class="input-group">
+						  <span class="input-group-addon">模版类型</span>
+                          <select class="form-control" name="type" id="type">
+                            <option value="dd" {{if eq .Template.Tpltype "dd"}}selected="selected"{{end}}>钉钉</option>
+                            <option value="wx" {{if eq .Template.Tpltype "wx"}}selected="selected"{{end}}>企业微信</option>
+                            <option value="fs" {{if eq .Template.Tpltype "fs"}}selected="selected"{{end}}>飞书</option>
+                            <option value="txdx" {{if eq .Template.Tpltype "txdx"}}selected="selected"{{end}}>腾讯云短信</option>
+                            <option value="txdh" {{if eq .Template.Tpltype "txdh"}}selected="selected"{{end}}>腾讯云电话</option>
+                            <option value="alydx" {{if eq .Template.Tpltype "alydx"}}selected="selected"{{end}}>阿里云短信</option>
+                            <option value="alydh" {{if eq .Template.Tpltype "alydh"}}selected="selected"{{end}}>阿里云电话</option>
+                            <option value="hwdx" {{if eq .Template.Tpltype "hwdx"}}selected="selected"{{end}}>华为云短信</option>
+                            <option value="rlydh" {{if eq .Template.Tpltype "rlydh"}}selected="selected"{{end}}>容联云电话</option>
+                          </select>
+						</div>
+					<br />
+						<div class="input-group">
+						  <span class="input-group-addon">模版用途</span>
+                          <select class="form-control" name="use" id="use">
+                            <option value="Prometheus" {{if eq .Template.Tpluse "Prometheus"}}selected="selected"{{end}}>Prometheus</option>
+                            <option value="Graylog2" {{if eq .Template.Tpluse "Graylog2"}}selected="selected"{{end}}>Graylog2</option>
+                            <option value="Graylog3" {{if eq .Template.Tpluse "Graylog3"}}selected="selected"{{end}}>Graylog3</option>
+                            <option value="Grafana" {{if eq .Template.Tpluse "Grafana"}}selected="selected"{{end}}>Grafana</option>
+                            <option value="SonarQube" {{if eq .Template.Tpluse "SonarQube"}}selected="selected"{{end}}>SonarQube</option>
+                            <option value="SonarQube" {{if eq .Template.Tpluse "Other"}}selected="selected"{{end}}>Other</option>
+                          </select>
+						</div>
+					<br />
+					<label>模版内容:</label>
+					<br />
+					<textarea id="content" name="content" cols="30" rows="10" class="form-control">{{.Template.Tpl}}</textarea>
+					<br />
+					
+					<div class="text-right">
+					<button type="submit" class="btn btn-primary" onclick="return checkinput();">提交修改</button>
+					</div>
+					
+                    </form>
+					</div>
+					<script type="text/javascript">
+						function checkinput(){
+							var uname=document.getElementById("name");
+							if (uname.value.length==0){
+								alert('模版名称不能为空');
+								return false
+							};
+							var ucontent=document.getElementById("content");
+							if (ucontent.value.length==0){
+								alert('模版内容不能为空');
+								return false
+							};
+							return true
+							
+							}
+					</script>
+            </div>
+{{template "endhtml"}}

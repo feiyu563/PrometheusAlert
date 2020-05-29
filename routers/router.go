@@ -6,8 +6,17 @@ import (
 )
 
 func init() {
+	//page
     beego.Router("/", &controllers.MainController{})
+	beego.Router("/test", &controllers.MainController{},"get:Test")
+	beego.Router("/template", &controllers.MainController{},"get:Template")
+	beego.Router("/template/add", &controllers.MainController{},"get:TemplateAdd")
+	beego.Router("/template/addtpl", &controllers.MainController{},"post:AddTpl")
+	beego.Router("/template/edit", &controllers.MainController{},"get,post:TemplateEdit")
+	beego.Router("/template/test", &controllers.MainController{},"get,post:TemplateTest")
+	beego.Router("/template/del", &controllers.MainController{},"get:TemplateDel")
     beego.Router("/alerttest", &controllers.MainController{},"post:AlertTest")
+
 	//prometheus
 	beego.Router("/prometheus/alert", &controllers.PrometheusController{},"post:PrometheusAlert")
 	beego.Router("/prometheus/router", &controllers.PrometheusController{},"post:PrometheusRouter")
@@ -56,4 +65,6 @@ func init() {
 	beego.Router("/tengxun/status", &controllers.TengXunStatusController{},"post:TengXunStatus")
     //zabbix
 	beego.Router("/zabbix/alert", &controllers.ZabbixController{},"post:ZabbixAlert")
+    //webhook
+	beego.Router("/prometheusalert", &controllers.PrometheusAlertController{},"get,post:PrometheusAlert")
 }

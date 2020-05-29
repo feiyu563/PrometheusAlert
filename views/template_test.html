@@ -1,0 +1,81 @@
+{{template "main"}}
+  <title>PrometheusAlert</title>
+</head>
+
+<body>
+{{template "head" .}}
+        <div class="bs-docs-header">
+            <div class="container">
+                    <label class="col-sm-2">模版测试</label>
+			</div>
+        </div>
+            <div class="container">
+					<div class="bs-example" >
+					    <div class="input-group">
+					    <span class="input-group-addon">模版名称</span>
+					    <input type="text" id="name" class="form-control" name="name" value="{{.Template.Tplname}}" readonly>
+					    </div>
+					    <br />
+						
+					    <div class="input-group">
+					    <span class="input-group-addon">模版类型</span>
+					    <input type="text" id="type" class="form-control" name="type" value="{{.Template.Tpltype}}" readonly>
+					    </div>
+						
+					    <br />
+					    <label>模版内容:</label>
+					    <br />
+					    <textarea id="content" name="content" cols="30" rows="10" class="form-control" readonly>{{.Template.Tpl}}</textarea>
+					    <br />
+
+					    <label>消息协议JSON内容:</label>
+					    <br />
+					    <textarea id="pjson" name="pjson" cols="30" rows="10" class="form-control" placeholder="可在PrometheusAlert日志中查找"></textarea>
+					    <br />
+
+					    <div class="input-group">
+					    <span class="input-group-addon">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}手机号{{end}}{{end}}{{end}}</span>
+					    <input type="text" id="purl" class="form-control" name="purl" value="">
+					    </div>
+					    <br />
+						
+					    <div class="text-right">
+					    <button type="button" class="btn btn-primary" onclick="sendtest();">模版测试</button>
+					    </div>
+					    
+					</div>
+					<script type="text/javascript">
+						function sendtest(){
+							var uname=document.getElementById("name");
+							var utype=document.getElementById("type");
+							var upjson=document.getElementById("pjson");
+							var upurl=document.getElementById("purl");
+							var sendurl="";
+							if (utype.value=="dd"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&ddurl='+upurl.value;
+							} else if(utype.value=="wx"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value;
+							} else if(utype.value=="fs"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
+							} else{
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&phone='+upurl.value;
+							}
+							if (upjson.value.length==0){
+								alert('消息协议JSON内容不能为空');
+							}else{
+                    			var json_data = JSON.stringify(upjson.value);
+                        		$.ajax({
+                        			url: sendurl,
+                        			async: false,
+                        			type: "post",
+                        			data: upjson.value,
+                        			success: function (data, status) {
+                        				alert(data);
+                        			},
+                        		});
+								
+							};
+						}
+					</script>
+            </div>
+{{template "endhtml"}}
