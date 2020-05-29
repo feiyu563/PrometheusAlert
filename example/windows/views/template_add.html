@@ -1,0 +1,76 @@
+{{template "main"}}
+  <title>PrometheusAlert</title>
+</head>
+
+<body>
+{{template "head" .}}
+        <div class="bs-docs-header">
+            <div class="container">
+                    <label class="col-sm-2">添加模版</label>
+			</div>
+        </div>
+            <div class="container">
+				<div class="bs-example" >
+					<form class="form-horizontal" method="POST" action="/template/addtpl" enctype="multipart/form-data">
+						<div class="input-group">
+						<span class="input-group-addon">模版名称</span>
+						<input type="text" id="name" class="form-control" name="name"  placeholder="模版名称不可重复且必须为英文字母，如prometheustpl">
+						</div>
+					<br />
+						<div class="input-group">
+						  <span class="input-group-addon">模版类型</span>
+                          <select class="form-control" name="type" id="type">
+                            <option value="dd">钉钉</option>
+                            <option value="wx">企业微信</option>
+                            <option value="fs">飞书</option>
+                            <option value="txdx">腾讯云短信</option>
+                            <option value="txdh">腾讯云电话</option>
+                            <option value="alydx">阿里云短信</option>
+                            <option value="alydh">阿里云电话</option>
+                            <option value="hwdx">华为云短信</option>
+                            <option value="rlydh">容联云电话</option>
+                          </select>
+						</div>
+					<br />
+						<div class="input-group">
+						  <span class="input-group-addon">模版用途</span>
+                          <select class="form-control" name="use" id="use">
+                            <option value="Prometheus">Prometheus</option>
+                            <option value="Graylog2">Graylog2</option>
+                            <option value="Graylog3">Graylog3</option>
+                            <option value="Grafana">Grafana</option>
+                            <option value="SonarQube">SonarQube</option>
+                            <option value="Other">Other</option>
+                          </select>
+						</div>
+					<br />
+					<label>模版内容:</label>
+					<br />
+					<textarea id="content" name="content" cols="30" rows="10" class="form-control"  placeholder="模版内容请参照go语言模版进行填写，匹配的JSON内容可在PrometheusAlert的日志中寻找对应监控告警系统发来的消息"></textarea>
+					<br />
+	
+						<div class="text-right">
+						<button type="submit" class="btn btn-primary" onclick="return checkinput();">添加模版</button>
+						</div>
+				   
+					</form>
+				</div>
+				
+				<script type="text/javascript">
+					function checkinput(){
+						var uname=document.getElementById("name");
+						if (uname.value.length==0){
+							alert('模版名称不能为空');
+							return false
+						};
+						var ucontent=document.getElementById("content");
+						if (ucontent.value.length==0){
+							alert('模版内容不能为空');
+							return false
+						};
+						return true
+						
+						}
+				</script>
+            </div>
+{{template "endhtml"}}

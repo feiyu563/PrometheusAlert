@@ -1,18 +1,87 @@
 package controllers
 
 import (
+	"PrometheusAlert/models"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"strconv"
 	"time"
 )
+
+//取到tpl路径
+//fmt.Println(filepath.Join(beego.AppPath,"tpl"))
 
 type MainController struct {
 	beego.Controller
 }
 //main page
 func (c *MainController) Get() {
-	c.Data["Email"] = "244217140@qq.com"
-	c.TplName = "index.tpl"
+	c.Data["IsIndex"]=true
+	c.TplName = "index.html"
+}
+//test page
+func (c *MainController) Test() {
+	c.Data["IsTest"]=true
+	c.TplName = "test.html"
+}
+//template page
+func (c *MainController) Template() {
+	c.Data["IsTemplate"]=true
+	c.TplName = "template.html"
+	Template, err := models.GetAllTpl()
+	if err != nil {
+		logs.Error(err)
+	}
+	c.Data["Template"] = Template
+}
+//template add
+func (c *MainController) TemplateAdd() {
+	c.Data["IsTemplate"]=true
+	c.TplName = "template_add.html"
+}
+func (c *MainController) AddTpl()  {
+	//获取表单信息
+	tid:=c.Input().Get("id")
+	name:=c.Input().Get("name")
+	t_tpye:=c.Input().Get("type")
+	t_use:=c.Input().Get("use")
+	content:=c.Input().Get("content")
+	if len(tid)==0 {
+		id,_:=strconv.Atoi(tid)
+		models.AddTpl(id,name,t_tpye,t_use,content)
+	}else {
+		id,_:=strconv.Atoi(tid)
+		models.UpdateTpl(id,name,t_tpye,t_use,content)
+	}
+	c.Redirect("/template",302)
+}
+func (c *MainController) TemplateEdit() {
+	c.Data["IsTemplate"]=true
+	c.TplName = "template_edit.html"
+	s_id,_:=strconv.Atoi(c.Input().Get("id"))
+	Template, err := models.GetTpl(s_id)
+	if err != nil {
+		logs.Error(err)
+	}
+	c.Data["Template"] = Template
+}
+func (c *MainController) TemplateTest() {
+	c.Data["IsTemplate"]=true
+	c.TplName = "template_test.html"
+	s_id,_:=strconv.Atoi(c.Input().Get("id"))
+	Template, err := models.GetTpl(s_id)
+	if err != nil {
+		logs.Error(err)
+	}
+	c.Data["Template"] = Template
+}
+func (c *MainController) TemplateDel() {
+	s_id,_:=strconv.Atoi(c.Input().Get("id"))
+	err := models.DelTpl(s_id)
+	if err != nil {
+		logs.Error(err)
+	}
+	c.Redirect("/template", 302)
 }
 
 func LogsSign()string  {

@@ -88,7 +88,6 @@ func (request *RoaRequest) buildQueries() string {
 		}
 	}
 	result := urlBuilder.String()
-	result = popStandardUrlencode(result)
 	return result
 }
 
@@ -100,13 +99,6 @@ func (request *RoaRequest) buildQueryString() string {
 		q.Add(key, value)
 	}
 	return q.Encode()
-}
-
-func popStandardUrlencode(stringToSign string) (result string) {
-	result = strings.Replace(stringToSign, "+", "%20", -1)
-	result = strings.Replace(result, "*", "%2A", -1)
-	result = strings.Replace(result, "%7E", "~", -1)
-	return
 }
 
 func (request *RoaRequest) BuildUrl() string {
