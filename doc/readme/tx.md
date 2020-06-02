@@ -10,7 +10,7 @@
 
 * 注意事项：开通腾讯云短信和语音需要配置的模版请使用如下：`prometheus告警:{1}`
 
-![tengxun1](../tengxun1.png)
+![tengxun1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/tengxun1.png)
 
 启用电话告警失败重试功能需要在腾讯云上配置:
 
@@ -18,7 +18,7 @@
 
 ps:回调接口需对公网开放,否则云平台无法访问到接口.开启回调之后请务必创建user.csv文件
 
-![tengxun2](../tengxun2.png)
+![tengxun2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/tengxun2.png)
 
 腾讯云短信和语音相关配置：
 

@@ -2,8 +2,8 @@
 
 PrometheusAlert For zabbix采用C/S方式。需要现在zabbix-server上部署zabbixclient客户端。
 
- - 部署zabbixclient客户端，zabbixclient需要部署在和zabbix-server一起。
- 
+- 部署zabbixclient客户端，zabbixclient需要部署在和zabbix-server一起。
+
 ```
 #进入到zabbix-server所在服务器
 git clone https://github.com/feiyu563/PrometheusAlert.git
@@ -11,9 +11,10 @@ cp PrometheusAlert/example/linux/zabbixclient /usr/lib/zabbix/alertscripts/
 chown zabbix:zabbix /usr/lib/zabbix/alertscripts/zabbixclient
 chmod 755 /usr/lib/zabbix/alertscripts/zabbixclient
 ```
- - zabbixclient支持参数。
- 
- ```
+
+- zabbixclient支持参数。
+
+```
 [root@k8s-master01 linux]# zabbixclient -h
 Version 1.1 If you need help contact 244217140@qq.com or visit https://github.com/feiyu563/PrometheusAlert
 Usage: zabbixclient [-h] [-t SendTarget] [-m SendMessage] [-type SendType] [-d PrometheusAlertUrl]
@@ -29,12 +30,13 @@ Options:
     	指定告警消息的接收目标的手机号/钉钉url/微信url (default "https://oapi.dingtalk.com/robot/send?access_token=xxxxx")
   -type txdx(腾讯云短信)、txdh(腾讯云电话)、alydx(阿里云短信)、alydh(阿里云电话)、hwdx(华为云短信)、rlydh(荣联云电话)、dd(钉钉)、wx(微信)、fs(飞书)
     	告警消息的目标类型,支持txdx(腾讯云短信)、txdh(腾讯云电话)、alydx(阿里云短信)、alydh(阿里云电话)、hwdx(华为云短信)、rlydh(荣联云电话)、dd(钉钉)、wx(微信)、fs(飞书) (default "dd")
- ```
+```
 
 Zabbix后台配置
 
 1) 首先需要在zabbix后台新增报警媒介，进入 管理-->报警媒介-->创建媒介类型，配置如图：
-![zabbix1](../zabbix1.png)
+
+![zabbix1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix1.png)
 
 ```
 #脚本参数
@@ -49,11 +51,14 @@ Zabbix后台配置
 ```
 
 2) 将报警媒介分配给用户，进入 用户-->点击需要分配的用户名-->报警媒介-->添加。如图：
-![zabbix2](../zabbix2.png)
+
+![zabbix2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix2.png)
 
 3) 继续添加告警动作，进入 配置-->动作-->创建动作。如图：
-![zabbix3](../zabbix3.png)
-![zabbix4](../zabbix4.png)
+
+![zabbix3](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix3.png)
+
+![zabbix4](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix4.png)
 
 最关键的配置就是消息内容的部分，可以参考以下消息模版：
 
@@ -190,7 +195,7 @@ Zabbix后台配置
 
 4) 最终告警效果:
 
-![zabbix5](../zabbix5.png)
+![zabbix5](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix5.png)
 
 5) zabbixclient其他用法
 

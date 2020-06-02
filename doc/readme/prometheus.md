@@ -92,4 +92,4 @@ receivers:
 
 最终告警效果:
 
-![prometheus1](../prometheus.png)
+![prometheus1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/prometheus.png)

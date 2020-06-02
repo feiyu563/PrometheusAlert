@@ -5,12 +5,12 @@
 如需开通请联系云通讯商务人员或拨打400-610-1019
 
 * 语音（电话）：https://doc.yuntongxun.com/p/5a5342c73b8496dd00dce139
+
 * 注意事项：开通容联云需要配置的模版请使用如下：`prometheus告警:{9}`
 
 所需配置信息：
 
-![rly](../ronglianyun.png)
-
+![rly](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/ronglianyun.png)
 
 容联云语音相关配置：
 
