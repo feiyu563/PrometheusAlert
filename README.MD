@@ -17,15 +17,15 @@
 * PrometheusAlert的成长离不开所有爱好运维和开发的朋友们的支持！如果您也对这个项目感兴趣，请点击一下 Star 以示鼓励，谢谢
 -----------------
 
-![dashboard](doc/dashboard.png)
-![dashboard-test](doc/dashboard-test.png)
-![dashboard-tpl-list](doc/dashboard-tpl-list.png)
+![dashboard](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard.png)
+![dashboard-test](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-test.png)
+![dashboard-tpl-list](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-tpl-list.png)
 
 -----------------
 
 PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube等支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，容联云电话等。
 
-![it](doc/it.png)
+![it](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/it.png)
 
 --------------------------------------
 
@@ -46,19 +46,22 @@ PrometheusAlert具备如下特性
 
 ## PrometheusAlert全家桶新手入门
 
-* [PrometheusAlert配置]
+* [PrometheusAlert GitBook](https://feiyu563.gitbook.io/prometheusalert)
+
+* [PrometheusAlert配置](https://feiyu563.gitbook.io/prometheusalert)
   * [安装部署PrometheusAlert](doc/readme/install.md)
   * [接口说明](doc/readme/restful.md)
   * [Metrics指标](doc/readme/metrics.md)
   * [配置文件说明](doc/readme/setup.md)
   * [其他配置](doc/readme/other.md)
-* [告警源配置]
+  * [使用Dashboard对配置进行测试](doc/readme/dashboard.md)
+* [告警源配置](https://feiyu563.gitbook.io/prometheusalert)
   * [Prometheus配置](doc/readme/prometheus.md)
   * [graylog配置](doc/readme/graylog.md)
   * [grafana配置](doc/readme/grafana.md)
   * [zabbix配置](doc/readme/zabbix.md)
   * [sonarqube配置](doc/readme/sonarqube.md)
-* [告警接收目标配置]
+* [告警接收目标配置](https://feiyu563.gitbook.io/prometheusalert)
   * [钉钉告警配置](doc/readme/dingding.md)
   * [飞书告警配置](doc/readme/feishu.md)
   * [企业微信告警配置](doc/readme/wechat.md)
@@ -66,7 +69,7 @@ PrometheusAlert具备如下特性
   * [腾讯云短信和电话告警配置](doc/readme/tx.md)
   * [容联云电话告警配置](doc/readme/rly.md)
   * [华为云短信配置](doc/readme/hw.md)
-* [PrometheusAlert高级自定义消息模版玩法]
+* [PrometheusAlert高级自定义消息模版玩法](https://feiyu563.gitbook.io/prometheusalert)
   * [添加自定义告警消息模版](doc/readme/tpladd.md)
   * [自定义告警消息模版测试](doc/readme/tpltest.md)
   * [使用自定义告警消息模版](doc/readme/tpluse.md)
@@ -79,11 +82,11 @@ PrometheusAlert具备如下特性
 项目源码
 ----
 
- - [GitHub: PrometheusAlert]https://github.com/feiyu563/PrometheusAlert
- - [码云: PrometheusAlert]https://gitee.com/feiyu563/PrometheusAlert
+ - [GitHub: PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)
+ - [码云: PrometheusAlert](https://gitee.com/feiyu563/PrometheusAlert)
 
 FOR HELP
 ----
 Email: 244217140@qq.com
 
-![me](doc/wx.png)
+![me](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/wx.png)

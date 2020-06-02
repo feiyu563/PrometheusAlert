@@ -5,7 +5,8 @@
 
 PrometheusAlert可以部署在本地和云平台上，支持windows、linux、公有云、私有云、混合云、容器和kubernetes。你可以根据实际场景或需求，选择相应的方式来部署PrometheusAlert：
 
- - 使用容器部署
+- 使用容器部署
+
 ```
 #clone项目源代码
 git clone https://github.com/feiyu563/PrometheusAlert.git
@@ -19,7 +20,9 @@ docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prome
 
 #启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
 ```
- - 在linux系统中部署
+
+- 在linux系统中部署
+
 ```
 #clone项目源代码
 git clone https://github.com/feiyu563/PrometheusAlert.git
@@ -30,7 +33,9 @@ cd PrometheusAlert/example/linux/
 
 #启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
 ```
+
 - 在windows系统中运行
+
 ```
 #clone项目源代码
 git clone https://github.com/feiyu563/PrometheusAlert.git
@@ -40,14 +45,18 @@ cd PrometheusAlert/example/windows/
 
 #启动后可使用浏览器打开测试地址：http://127.0.0.1:8080
 ```
+
 - 在kubernetes中运行
+
 ```
 #Kubernetes中运行可以直接执行以下命令行即可(注意默认的部署模版中未挂载模版数据库文件 db/PrometheusAlertDB.db，为防止模版数据丢失，请自行增加挂载配置 )
 kubectl app -n monitoring -f https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/example/kubernetes/PrometheusAlert-Deployment.yaml
 
 #启动后可使用浏览器打开以下地址查看：http://[YOUR-PrometheusAlert-URL]:8080
 ```
+
 - 使用helm部署
+
 ```
 #clone项目源代码
 git clone https://github.com/feiyu563/PrometheusAlert.git

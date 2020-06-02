@@ -6,13 +6,18 @@ PrometheusAlert全家桶钉钉配置说明
 
 打开钉钉,进入钉钉群中,选择群设置-->群机器人-->自定义，可参下图：
 
-![ding](../dingding1.png)
-![ding2](../dingding2.png)
+![ding](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dingding1.png)
+
+![ding2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dingding2.png)
 
 新版本的钉钉加了安全设置,只需选择安全设置中的 自定义关键词 即可,并将关键词设置为 Prometheus或者app.conf中设置的title值均可,参考下图
-![ding3](../dingding3.png)
-![ding4](../dingding4.png)
+
+![ding3](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dingding3.png)
+
+![ding4](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dingding4.png)
+
 复制图中的Webhook地址，并填入PrometheusAlert配置文件app.conf中对应配置项即可。
+
 钉钉相关配置：
 
 ```

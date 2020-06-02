@@ -4,32 +4,32 @@
 
 PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，负责解析各自接口传入或者传出的消息。
 
- - `prometheusalert接口`
+- `prometheusalert接口`
 
 ```
 /prometheusalert?type=${type}&tpl=${template}&[ddurl=${ddur}][wxurl=${wxurl}][fsurl=${fsurl}][phone=${phonenumber}]   自定义模版接口，可通过Dashboard自定义模版后，支持任意WebHook接入
 ```
 
- - `metrics接口`
+- `metrics接口`
 
 ```
 /metrics           展示PrometheusAlert指标信息
 ```
 
- - `prometheus接口`
+- `prometheus接口`
 
 ```
 /prometheus/alert   处理Prometheus告警消息转发到默认接口
 /prometheus/router  处理Prometheus AlertManager router消息指定接收端接口
 ```
 
- - `zabbix接口`
+- `zabbix接口`
 
 ```
 /zabbix/alert  处理Zabbix告警消息转发默认接口
 ```
 
- - `grafana接口`
+- `grafana接口`
 
 ```
 /grafana/phone     处理Grafana告警消息转发到腾讯云电话接口(v3.0版本将废弃)
@@ -44,7 +44,7 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /grafana/rlydh     处理Grafana告警消息转发到容联云电话接口
 ```
 
- - `graylog2接口`
+- `graylog2接口`
 
 ```
 特别说明: graylog2接口针对 graylog版本 <= 3.0.x
@@ -61,7 +61,7 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /graylog2/rlydh     处理Graylog2告警消息转发到容联云电话接口
 ```
 
- - `graylog3接口`
+- `graylog3接口`
 
 ```
 特别说明: graylog3接口针对 graylog版本 >= 3.1.x
@@ -78,7 +78,7 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /graylog3/rlydh     处理Graylog3告警消息转发到容联云电话接口
 ```
 
- - `语音短信回调接口`
+- `语音短信回调接口`
 
 ```
 /tengxun/status     处理腾讯云语音短信回调接口，负责失败后重试
