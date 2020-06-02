@@ -8,7 +8,7 @@
 
    * 找到刚刚创建的自定义模版，点击右侧的模版测试按钮，进入模版测试页面
 
-![tpladd1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tpltest1.png)
+![tpladd1](../tpltest1.png)
 
   - 将之前从PrometheusAlert日志中提取的JSON填入`消息协议JSON内容`文本框中，且输入钉钉机器人地址(如模版的类型不是钉钉，模版测试页面的地址输入框显示会不同名称，如微信机器人地址等)
 

@@ -102,6 +102,6 @@ receivers:
 
    * 添加到Dashboard中，并选择对应模版类型和用途等信息，注意模版名称一定不要重复,且一定要是英文字符。
 
-![tpladd1](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/tpladd1.png)
+![tpladd1](../tpladd1.png)
 
    * 继续对新添加的模版进行测试即可
