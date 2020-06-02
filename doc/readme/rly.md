@@ -9,7 +9,7 @@
 
 所需配置信息：
 
-![rly](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/ronglianyun.png)
+![rly](../ronglianyun.png)
 
 
 容联云语音相关配置：

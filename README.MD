@@ -17,15 +17,15 @@
 * PrometheusAlert的成长离不开所有爱好运维和开发的朋友们的支持！如果您也对这个项目感兴趣，请点击一下 Star 以示鼓励，谢谢
 -----------------
 
-![dashboard](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dashboard.png)
-![dashboard-test](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dashboard-test.png)
-![dashboard-tpl-list](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/dashboard-tpl-list.png)
+![dashboard](doc/dashboard.png)
+![dashboard-test](doc/dashboard-test.png)
+![dashboard-tpl-list](doc/dashboard-tpl-list.png)
 
 -----------------
 
 PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube等支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，容联云电话等。
 
-![it](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/it.png)
+![it](doc/it.png)
 
 --------------------------------------
 
@@ -79,13 +79,11 @@ PrometheusAlert具备如下特性
 项目源码
 ----
 
- - [PrometheusAlert][1]
-
-
-  [1]: https://github.com/feiyu563/PrometheusAlert
+ - [GitHub: PrometheusAlert]https://github.com/feiyu563/PrometheusAlert
+ - [码云: PrometheusAlert]https://gitee.com/feiyu563/PrometheusAlert
 
 FOR HELP
 ----
 Email: 244217140@qq.com
 
-![me](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/wx.png)
+![me](doc/wx.png)
