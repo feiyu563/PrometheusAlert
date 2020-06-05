@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"strings"
 	"text/template"
 	"encoding/json"
 )
@@ -17,7 +18,7 @@ type PrometheusAlertController struct {
 func (c *PrometheusAlertController) PrometheusAlert() {
 	logsign:="["+LogsSign()+"]"
 	var p_json interface{}
-	logs.Debug(logsign,c.Ctx.Input.RequestBody)
+	logs.Debug(logsign,strings.Replace(string(c.Ctx.Input.RequestBody),"\n","",-1))
 	json.Unmarshal(c.Ctx.Input.RequestBody,&p_json)
 	P_type:=c.Input().Get("type")
 	P_tpl:=c.Input().Get("tpl")
