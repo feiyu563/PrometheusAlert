@@ -27,7 +27,7 @@ type Annotations struct{
 	Mobile string `json:"mobile"` //2019年2月25日 19:09:23 增加手机号支持
 	Ddurl string `json:"ddurl"` //2019年3月12日 20:33:38 增加多个钉钉告警支持
 	Wxurl string `json:"wxurl"` //2019年3月12日 20:33:38 增加多个钉钉告警支持
-	Fsurl string `json:"wxurl"` //2020年4月25日 17:33:38 增加多个飞书告警支持
+	Fsurl string `json:"fsurl"` //2020年4月25日 17:33:38 增加多个飞书告警支持
 }
 type Alerts struct {
 	Status string
