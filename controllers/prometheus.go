@@ -75,118 +75,9 @@ func (c *PrometheusController) PrometheusAlert() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageP(alert,logsign)
+	c.Data["json"]=SendMessageR(alert,"","","","",logsign)
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
-}
-
-
-func SendMessageP(message Prometheus,logsign string)(string)  {
-	Title:=beego.AppConfig.String("title")
-	Logourl:=beego.AppConfig.String("logourl")
-	Rlogourl:=beego.AppConfig.String("rlogourl")
-	Messagelevel,_:=beego.AppConfig.Int("messagelevel")
-	PhoneCalllevel,_:=beego.AppConfig.Int("phonecalllevel")
-	PhoneCallResolved,_:=beego.AppConfig.Int("phonecallresolved")
-	Silent,_:=beego.AppConfig.Int("silent")
-	PCstTime,_:=beego.AppConfig.Int("prometheus_cst_time")
-	var ddtext,fstext,wxtext,MobileMessage,PhoneCallMessage,titleend string
-	//对分组消息进行排序
-	AlerMessage:=message.Alerts
-	sort.Sort(AlerMessages(AlerMessage))
-	//告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
-	AlertLevel:=[]string{"信息","警告","一般严重","严重","灾难"}
-    //遍历消息
-	for _, RMessage := range AlerMessage {
-		nLevel,_:=strconv.Atoi(RMessage.Labels.Level)
-		At:=RMessage.StartsAt
-		Et:=RMessage.EndsAt
-		if PCstTime==1 {
-			At=GetPrometheusCSTtime(RMessage.StartsAt)
-			Et=GetPrometheusCSTtime(RMessage.EndsAt)
-		}
-		if RMessage.Status=="resolved" {
-			titleend="故障恢复信息"
-			model.AlertsFromCounter.WithLabelValues("prometheus",RMessage.Annotations.Description,RMessage.Labels.Level,RMessage.Labels.Instance,"resolved").Add(1)
-			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
-			fstext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"告警级别："+AlertLevel[nLevel]+"\n\n"+"开始时间："+At+"\n\n"+"结束时间："+Et+"\n\n"+"故障主机IP："+RMessage.Labels.Instance+"\n\n"+""+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Rlogourl+")"
-			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
-			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
-			PhoneCallMessage="故障主机IP "+RMessage.Labels.Instance+RMessage.Annotations.Description+"已经恢复"
-		}else {
-			titleend="故障告警信息"
-			model.AlertsFromCounter.WithLabelValues("prometheus",RMessage.Annotations.Description,RMessage.Labels.Level,RMessage.Labels.Instance,"firing").Add(1)
-			ddtext="## ["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"#### ["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"###### 告警级别："+AlertLevel[nLevel]+"\n\n"+"###### 开始时间："+At+"\n\n"+"###### 结束时间："+Et+"\n\n"+"###### 故障主机IP："+RMessage.Labels.Instance+"\n\n"+"##### "+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
-			fstext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n\n"+"["+RMessage.Labels.Alertname+"]("+message.Externalurl+")\n\n"+"告警级别："+AlertLevel[nLevel]+"\n\n"+"开始时间："+At+"\n\n"+"结束时间："+Et+"\n\n"+"故障主机IP："+RMessage.Labels.Instance+"\n\n"+""+RMessage.Annotations.Description+"\n\n"+"!["+Title+"]("+Logourl+")"
-			wxtext="["+Title+"Prometheus"+titleend+"]("+RMessage.GeneratorUrl+")\n>**["+RMessage.Labels.Alertname+"]("+message.Externalurl+")**\n>`告警级别:`"+AlertLevel[nLevel]+"\n`开始时间:`"+At+"\n`结束时间:`"+Et+"\n`故障主机IP:`"+RMessage.Labels.Instance+"\n**"+RMessage.Annotations.Description+"**"
-			MobileMessage="\n["+Title+"Prometheus"+titleend+"]\n"+RMessage.Labels.Alertname+"\n"+"告警级别："+AlertLevel[nLevel]+"\n"+"故障主机IP："+RMessage.Labels.Instance+"\n"+RMessage.Annotations.Description
-			PhoneCallMessage="故障主机IP "+RMessage.Labels.Instance+RMessage.Annotations.Description
-		}
-		//发送消息到钉钉
-		if RMessage.Annotations.Ddurl==""{
-			url:=beego.AppConfig.String("ddurl")
-			PostToDingDing(Title+titleend, ddtext, url,logsign)
-		}else {
-			Ddurl := strings.Split(RMessage.Annotations.Ddurl, ",")
-			for _, url := range Ddurl {
-				PostToDingDing(Title+titleend, ddtext, url,logsign)
-			}
-		}
-		//发送消息到微信
-		if RMessage.Annotations.Wxurl=="" {
-			url := beego.AppConfig.String("wxurl")
-			PostToWeiXin(wxtext, url,logsign)
-		}else {
-			Wxurl := strings.Split(RMessage.Annotations.Wxurl, ",")
-			for _, url := range Wxurl {
-				PostToWeiXin(wxtext, url,logsign)
-			}
-		}
-		//发送消息到飞书
-		if RMessage.Annotations.Fsurl==""{
-			url:=beego.AppConfig.String("fsurl")
-			PostToFeiShu(Title+titleend, fstext, url,logsign)
-		}else {
-			Fsurl := strings.Split(RMessage.Annotations.Fsurl, ",")
-			for _, url := range Fsurl {
-				PostToFeiShu(Title+titleend, fstext, url,logsign)
-			}
-		}
-		//发送消息到短信
-		if (nLevel==Messagelevel) {
-			if RMessage.Annotations.Mobile=="" {
-				phone:=GetUserPhone(1)
-				PostTXmessage(MobileMessage, phone,logsign)
-				PostHWmessage(MobileMessage, phone,logsign)
-				PostALYmessage(MobileMessage, phone,logsign)
-			}else {
-				PostTXmessage(MobileMessage, RMessage.Annotations.Mobile,logsign)
-				PostHWmessage(MobileMessage, RMessage.Annotations.Mobile,logsign)
-				PostALYmessage(MobileMessage, RMessage.Annotations.Mobile,logsign)
-			}
-		}
-		//发送消息到语音
-		if (nLevel==PhoneCalllevel) {
-			//判断如果是恢复信息且PhoneCallResolved
-			if (RMessage.Status=="resolved" && PhoneCallResolved!=1) {
-				logs.Info(logsign,"告警恢复消息已经关闭")
-			}else {
-				if RMessage.Annotations.Mobile=="" {
-					phone:=GetUserPhone(1)
-					PostTXphonecall(PhoneCallMessage, phone,logsign)
-					PostALYphonecall(PhoneCallMessage, phone,logsign)
-				}else {
-					PostTXphonecall(PhoneCallMessage, RMessage.Annotations.Mobile,logsign)
-					PostALYphonecall(PhoneCallMessage, RMessage.Annotations.Mobile,logsign)
-				}
-			}
-		}
-		//告警抑制开启就直接跳出循环
-		if Silent==1 {
-			break
-		}
-	}
-	return "告警消息发送完成."
 }
 
 func (c *PrometheusController) PrometheusRouter() {
@@ -248,37 +139,68 @@ func SendMessageR(message Prometheus,rwxurl,rddurl,rfsurl,rphone,logsign string)
 			PhoneCallMessage="故障主机IP "+RMessage.Labels.Instance+RMessage.Annotations.Description
 		}
 		//发送消息到钉钉
-		if rddurl==""{
+		if rddurl=="" && RMessage.Annotations.Ddurl == ""{
 			url:=beego.AppConfig.String("ddurl")
 			PostToDingDing(Title+titleend, ddtext, url,logsign)
 		}else {
-			PostToDingDing(Title+titleend, ddtext, rddurl,logsign)
+			if rddurl!=""{
+				PostToDingDing(Title+titleend, ddtext, rddurl,logsign)
+			}
+			if RMessage.Annotations.Ddurl != ""{
+				Ddurl := strings.Split(RMessage.Annotations.Ddurl, ",")
+				for _, url := range Ddurl {
+					PostToDingDing(Title+titleend, ddtext, url,logsign)
+				}
+			}
 		}
 		//发送消息到微信
-		if rwxurl=="" {
+		if rwxurl=="" &&  RMessage.Annotations.Wxurl==""{
 			url := beego.AppConfig.String("wxurl")
 			PostToWeiXin(wxtext, url,logsign)
 		}else {
-			PostToWeiXin(wxtext, rwxurl,logsign)
+			if rwxurl!=""{
+				PostToWeiXin(wxtext, rwxurl,logsign)
+			}
+			if RMessage.Annotations.Wxurl != ""{
+				Wxurl := strings.Split(RMessage.Annotations.Wxurl, ",")
+				for _, url := range Wxurl {
+					PostToWeiXin(wxtext, url,logsign)
+				}
+			}
 		}
 		//发送消息到飞书
-		if rfsurl==""{
+		if rfsurl=="" && RMessage.Annotations.Fsurl == ""{
 			url:=beego.AppConfig.String("fsurl")
 			PostToFeiShu(Title+titleend, fstext, url,logsign)
 		}else {
-			PostToFeiShu(Title+titleend, fstext, rfsurl,logsign)
+			if rfsurl != ""{
+				PostToFeiShu(Title+titleend, fstext, rfsurl,logsign)
+			}
+			if RMessage.Annotations.Fsurl != ""{
+				Fsurl := strings.Split(RMessage.Annotations.Fsurl, ",")
+				for _, url := range Fsurl {
+					PostToFeiShu(Title+titleend, fstext, url,logsign)
+				}
+			}
 		}
 		//发送消息到短信
-		if (nLevel==Messagelevel) {
-			if rphone=="" {
+		if nLevel==Messagelevel {
+			if rphone=="" && RMessage.Annotations.Mobile == "" {
 				phone:=GetUserPhone(1)
 				PostTXmessage(MobileMessage, phone,logsign)
 				PostHWmessage(MobileMessage, phone,logsign)
 				PostALYmessage(MobileMessage, phone,logsign)
 			}else {
-				PostTXmessage(MobileMessage, rphone,logsign)
-				PostHWmessage(MobileMessage, rphone,logsign)
-				PostALYmessage(MobileMessage, rphone,logsign)
+				if rphone==""{
+					PostTXmessage(MobileMessage, rphone,logsign)
+					PostHWmessage(MobileMessage, rphone,logsign)
+					PostALYmessage(MobileMessage, rphone,logsign)
+				}
+				if RMessage.Annotations.Mobile != ""{
+					PostTXmessage(MobileMessage, RMessage.Annotations.Mobile,logsign)
+					PostHWmessage(MobileMessage, RMessage.Annotations.Mobile,logsign)
+					PostALYmessage(MobileMessage, RMessage.Annotations.Mobile,logsign)
+				}
 			}
 		}
 		//发送消息到语音
@@ -287,15 +209,22 @@ func SendMessageR(message Prometheus,rwxurl,rddurl,rfsurl,rphone,logsign string)
 			if (RMessage.Status=="resolved" && PhoneCallResolved!=1) {
 				logs.Info(logsign,"告警恢复消息已经关闭")
 			}else {
-				if rphone=="" {
+				if rphone=="" && RMessage.Annotations.Mobile == ""{
 					phone:=GetUserPhone(1)
 					PostTXphonecall(PhoneCallMessage, phone,logsign)
 					PostALYphonecall(PhoneCallMessage, phone,logsign)
 					PostRLYphonecall(PhoneCallMessage, phone,logsign)
 				}else {
-					PostTXphonecall(PhoneCallMessage, rphone,logsign)
-					PostALYphonecall(PhoneCallMessage, rphone,logsign)
-					PostRLYphonecall(PhoneCallMessage, rphone,logsign)
+					if rphone!="" {
+						PostTXphonecall(PhoneCallMessage, rphone, logsign)
+						PostALYphonecall(PhoneCallMessage, rphone, logsign)
+						PostRLYphonecall(PhoneCallMessage, rphone, logsign)
+					}
+					if RMessage.Annotations.Mobile != "" {
+						PostTXphonecall(PhoneCallMessage, RMessage.Annotations.Mobile,logsign)
+						PostALYphonecall(PhoneCallMessage, RMessage.Annotations.Mobile,logsign)
+						PostRLYphonecall(PhoneCallMessage, RMessage.Annotations.Mobile,logsign)
+					}
 				}
 			}
 		}
