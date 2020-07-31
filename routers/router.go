@@ -13,7 +13,7 @@ func init() {
 	beego.Router("/template/add", &controllers.MainController{},"get:TemplateAdd")
 	beego.Router("/template/addtpl", &controllers.MainController{},"post:AddTpl")
 	beego.Router("/template/edit", &controllers.MainController{},"get,post:TemplateEdit")
-	beego.Router("/template/test", &controllers.MainController{},"get,post:TemplateTest")
+	//beego.Router("/template/test", &controllers.MainController{},"get,post:TemplateTest")
 	beego.Router("/template/del", &controllers.MainController{},"get:TemplateDel")
     beego.Router("/alerttest", &controllers.MainController{},"post:AlertTest")
 
@@ -40,6 +40,7 @@ func init() {
 	beego.Router("/graylog2/alydx", &controllers.Graylog2Controller{},"post:GraylogALYdx")
 	beego.Router("/graylog2/alydh", &controllers.Graylog2Controller{},"post:GraylogALYdh")
 	beego.Router("/graylog2/rlydh", &controllers.Graylog2Controller{},"post:GraylogRLYdh")
+	beego.Router("/graylog2/email", &controllers.Graylog2Controller{},"post:GraylogEmail")
 	//graylog3
 	//beego.Router("/graylog3/phone", &controllers.Graylog3Controller{},"post:GraylogTxdh")
 	beego.Router("/graylog3/dingding", &controllers.Graylog3Controller{},"post:GraylogDingding")
@@ -51,6 +52,7 @@ func init() {
 	beego.Router("/graylog3/alydx", &controllers.Graylog3Controller{},"post:GraylogALYdx")
 	beego.Router("/graylog3/alydh", &controllers.Graylog3Controller{},"post:GraylogALYdh")
 	beego.Router("/graylog3/rlydh", &controllers.Graylog3Controller{},"post:GraylogRLYdh")
+	beego.Router("/graylog3/email", &controllers.Graylog3Controller{},"post:GraylogEmail")
     //grafana
 	//beego.Router("/grafana/phone", &controllers.GrafanaController{},"post:GrafanaTxdh")
 	beego.Router("/grafana/dingding", &controllers.GrafanaController{},"post:GrafanaDingding")
@@ -62,6 +64,7 @@ func init() {
 	beego.Router("/grafana/alydx", &controllers.GrafanaController{},"post:GrafanaALYdx")
 	beego.Router("/grafana/alydh", &controllers.GrafanaController{},"post:GrafanaALYdh")
 	beego.Router("/grafana/rlydh", &controllers.GrafanaController{},"post:GrafanaRlydh")
+	beego.Router("/grafana/email", &controllers.GrafanaController{},"post:GrafanaEmail")
 	beego.Router("/tengxun/status", &controllers.TengXunStatusController{},"post:TengXunStatus")
     //zabbix
 	beego.Router("/zabbix/alert", &controllers.ZabbixController{},"post:ZabbixAlert")

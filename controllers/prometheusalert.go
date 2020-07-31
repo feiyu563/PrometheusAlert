@@ -4,11 +4,11 @@ import (
 	"PrometheusAlert/model"
 	"PrometheusAlert/models"
 	"bytes"
+	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"strings"
 	"text/template"
-	"encoding/json"
 )
 
 type PrometheusAlertController struct {
@@ -26,6 +26,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_wxurl:=c.Input().Get("wxurl")
 	P_fsurl:=c.Input().Get("fsurl")
 	P_phone:=c.Input().Get("phone")
+	P_email:=c.Input().Get("email")
 	//get tpl
 	message:=""
 	if P_tpl!="" && P_type!="" {
@@ -34,9 +35,14 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 			logs.Error(logsign,err)
 		}
 		buf := new(bytes.Buffer)
-		tpl,_:=template.New("").Parse(tpltext.Tpl)
-		tpl.Execute(buf,p_json)
-		message=SendMessagePrometheusAlert(buf.String(),P_type,P_ddurl,P_wxurl,P_fsurl,P_phone,logsign)
+		tpl,err:=template.New("").Funcs(template.FuncMap{"GetCSTtime": GetCSTtime}).Parse(tpltext.Tpl)
+		if err!=nil {
+			logs.Error(logsign,err.Error())
+			message=err.Error()
+		} else {
+			tpl.Execute(buf,p_json)
+			message=SendMessagePrometheusAlert(buf.String(),P_type,P_ddurl,P_wxurl,P_fsurl,P_phone,P_email,logsign)
+		}
 	} else {
 		message="接口参数缺失！"
 		logs.Error(logsign,message)
@@ -45,19 +51,32 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-func SendMessagePrometheusAlert(message,ptype,pddurl,pwxurl,pfsurl,pphone,logsign string) (string){
+func SendMessagePrometheusAlert(message,ptype,pddurl,pwxurl,pfsurl,pphone,email,logsign string) (string){
+	Title:=beego.AppConfig.String("title")
 	ret:=""
 	model.AlertsFromCounter.WithLabelValues("PrometheusAlert",message,"","","").Add(1)
 	switch ptype {
 	//微信渠道
 	case "wx":
-		ret=PostToWeiXin(message,pwxurl,logsign)
+		Wxurl := strings.Split(pwxurl, ",")
+		for _, url := range Wxurl {
+			ret+=PostToWeiXin(message,url,logsign)
+		}
+
 	//钉钉渠道
 	case "dd":
-		ret=PostToDingDing("告警消息",message,pddurl,logsign)
+		Ddurl := strings.Split(pddurl, ",")
+		for _, url := range Ddurl {
+			ret+=PostToDingDing(Title+"告警消息",message,url,logsign)
+		}
+
 	//飞书渠道
 	case "fs":
-		ret=PostToFeiShu("告警消息",message,pfsurl,logsign)
+		Fsurl := strings.Split(pfsurl, ",")
+		for _, url := range Fsurl {
+			ret+=PostToFeiShu(Title+"告警消息",message,url,logsign)
+		}
+
 	//腾讯云短信
 	case "txdx":
 		ret=PostTXmessage(message,pphone,logsign)
@@ -76,6 +95,9 @@ func SendMessagePrometheusAlert(message,ptype,pddurl,pwxurl,pfsurl,pphone,logsig
 	//容联云电话
 	case "rlydh":
 		ret=ret+PostRLYphonecall(message,pphone,logsign)
+	//邮件
+	case "email":
+		ret=ret+SendEmail(message,email,logsign)
 	//异常参数
 	default:
 		ret="参数错误"

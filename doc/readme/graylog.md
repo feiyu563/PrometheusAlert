@@ -10,7 +10,7 @@
 
 在弹出的窗口中填入名称和对应的PrometheusAlert的接口地址即可,配置参考下图:
 
-- `graylog2接口`
+- `graylog2固定模版接口`
 
 ```
 特别说明: graylog2接口针对 graylog版本 <= 3.0.x
@@ -24,9 +24,10 @@
 /graylog2/alydx     处理Graylog2告警消息转发到阿里云短信接口，可选参数(phone)
 /graylog2/alydh     处理Graylog2告警消息转发到阿里云电话接口，可选参数(phone)
 /graylog2/rlydh     处理Graylog2告警消息转发到容联云电话接口，可选参数(phone)
+/graylog2/email     处理Graylog2告警消息转发到Email接口，可选参数(email)
 ```
 
-- `graylog3接口`
+- `graylog3固定模版接口`
 
 ```
 特别说明: graylog3接口针对 graylog版本 >= 3.1.x
@@ -40,6 +41,7 @@
 /graylog3/alydx     处理Graylog3告警消息转发到阿里云短信接口，可选参数(phone)
 /graylog3/alydh     处理Graylog3告警消息转发到阿里云电话接口，可选参数(phone)
 /graylog3/rlydh     处理Graylog3告警消息转发到容联云电话接口，可选参数(phone)
+/graylog3/email     处理Graylog3告警消息转发到Email口，可选参数(email)
 ```
 
 关于接口说明：graylog的所有接口均支持传参,如直接使用接口，未在接口后加入参数，默认会优先使用配置文件中的参数作为告警渠道的配置。如果接口中加入了参数，将默认使用url中的参数作为告警渠道的配置。如下：
@@ -54,6 +56,7 @@
 /graylog3/alydx?phone=15395105573
 /graylog3/alydh?phone=15395105573
 /graylog3/rlydh?phone=15395105573
+/graylog3/email?email=123@qq.com
 ```
 
 ![graylog3](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/graylog3.png)

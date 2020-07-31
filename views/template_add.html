@@ -6,20 +6,28 @@
 {{template "head" .}}
         <div class="bs-docs-header">
             <div class="container">
-                    <label class="col-sm-2">添加模版</label>
+                    <label class="col-sm-2">自定义模版管理</label>
 			</div>
         </div>
+		<div class="container">
+			<div class="page-header text-right">
+				<div class="form-group" style="text-align:center">
+				<!--<h4 style='color:red;'>特别提醒：自定义模板仅支持 /prometheusalert 接口，其他接口均为固定模版接口，不支持自定义模板</h4>-->
+				</div>
+			</div>
+		</div>
             <div class="container">
-				<div class="bs-example" >
-					<form class="form-horizontal" method="POST" action="/template/addtpl" enctype="multipart/form-data">
+					<div class="bs-example" >
+					    <form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
+					    <div class="input-group">
+					    <span class="input-group-addon">*模版名称</span>
+					    <input type="text" id="name" class="form-control" name="name" placeholder="模版名称不可重复且必须为英文字母，如prometheustpl">
+					    </div>
+					    <br />
+						
 						<div class="input-group">
-						<span class="input-group-addon">模版名称</span>
-						<input type="text" id="name" class="form-control" name="name"  placeholder="模版名称不可重复且必须为英文字母，如prometheustpl">
-						</div>
-					<br />
-						<div class="input-group">
-						  <span class="input-group-addon">模版类型</span>
-                          <select class="form-control" name="type" id="type">
+						  <span class="input-group-addon">*模版类型</span>
+                          <select class="form-control" name="type" id="type" onchange="typeChange()">
                             <option value="dd">钉钉</option>
                             <option value="wx">企业微信</option>
                             <option value="fs">飞书</option>
@@ -29,48 +37,130 @@
                             <option value="alydh">阿里云电话</option>
                             <option value="hwdx">华为云短信</option>
                             <option value="rlydh">容联云电话</option>
+                            <option value="email">Email</option>
                           </select>
 						</div>
-					<br />
+						<br />
 						<div class="input-group">
-						  <span class="input-group-addon">模版用途</span>
+						  <span class="input-group-addon">*模版用途</span>
                           <select class="form-control" name="use" id="use">
                             <option value="Prometheus">Prometheus</option>
                             <option value="Graylog2">Graylog2</option>
                             <option value="Graylog3">Graylog3</option>
                             <option value="Grafana">Grafana</option>
                             <option value="SonarQube">SonarQube</option>
+                            <option value="Jenkins">Jenkins</option>
                             <option value="Other">Other</option>
                           </select>
 						</div>
-					<br />
-					<label>模版内容:</label>
-					<br />
-					<textarea id="content" name="content" cols="30" rows="10" class="form-control"  placeholder="模版内容请参照go语言模版进行填写，匹配的JSON内容可在PrometheusAlert的日志中寻找对应监控告警系统发来的消息"></textarea>
-					<br />
-	
-						<div class="text-right">
-						<button type="submit" class="btn btn-primary" onclick="return checkinput();">添加模版</button>
-						</div>
-				   
-					</form>
-				</div>
-				
-				<script type="text/javascript">
-					function checkinput(){
+						
+					    <br />
+					    <label>*模版内容:</label>
+					    <br />
+					    <textarea id="content" name="content" cols="30" rows="10" class="form-control" placeholder="模版内容请参照go语言模版进行填写，匹配的JSON内容可在PrometheusAlert的日志中寻找对应监控告警系统发来的消息"></textarea>
+					    <br />
+
+					    <label>消息协议JSON内容:</label>
+					    <br />
+					    <textarea id="pjson" name="pjson" cols="30" rows="10" class="form-control" placeholder="可在PrometheusAlert日志中查找"></textarea>
+					    <br />
+
+					    <div class="input-group">
+					    <span class="input-group-addon" id="typestr">钉钉机器人地址</span>
+					    <input type="text" id="purl" class="form-control" name="purl" value="">
+					    </div>
+					    <br />
+						
+					    <div class="text-right">
+						<span style="color:red;font-weight:bold">进行模版测试前请先点击保存模版</span>
+					    <button type="button" class="btn btn-primary" onclick="savetpl();">保存模版</button>
+					    <button type="button" class="btn btn-primary" onclick="sendtest();">模版测试</button>
+					    </div>
+					    </form>
+					</div>
+					<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+					<script type="text/javascript">
+                        function typeChange(){
+                         var objS = document.getElementById("type");
+						 var typeStr = document.getElementById("typestr");
+                         var typeSelect = objS.options[objS.selectedIndex].value;
+						 
+					     if (typeSelect=="dd"){
+					        typeStr.innerText="钉钉机器人地址";
+					     } else if(typeSelect=="wx"){
+					        typeStr.innerText="微信机器人地址";
+					     } else if(typeSelect=="fs"){
+					        typeStr.innerText="飞书机器人地址";
+					     } else if(typeSelect=="email"){
+					        typeStr.innerText="邮箱(多个请以,隔开)";
+					     } else{
+					        typeStr.innerText="手机号";
+					     }
+						 
+                        }
+					
+					    function savetpl(){
 						var uname=document.getElementById("name");
 						if (uname.value.length==0){
 							alert('模版名称不能为空');
-							return false
+							return
 						};
 						var ucontent=document.getElementById("content");
 						if (ucontent.value.length==0){
 							alert('模版内容不能为空');
-							return false
+							return
 						};
-						return true
+
+                        $.ajax({
+                            type: "POST",
+                            dataType: "json",
+                            url: '{{ urlfor "MainController.AddTpl"}}',
+                            data: $('#formtpl').serialize(),
+                            success: function (result) {
+                                console.log(result);
+                                if (result == null) {
+                                    alert("模版保存成功!");
+                                } else {
+                                    alert(result);
+								};
+                            },
+                        });
 						
 						}
-				</script>
+						
+						function sendtest(){
+							var uname=document.getElementById("name");
+							var utype=document.getElementById("type");
+							var upjson=document.getElementById("pjson");
+							var upurl=document.getElementById("purl");
+							var sendurl="";
+							if (utype.value=="dd"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&ddurl='+upurl.value;
+							} else if(utype.value=="wx"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value;
+							} else if(utype.value=="fs"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
+							} else if(utype.value=="email"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
+							} else{
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&phone='+upurl.value;
+							}
+							if (upjson.value.length==0){
+								alert('消息协议JSON内容不能为空');
+							}else{
+                    			var json_data = JSON.stringify(upjson.value);
+                        		$.ajax({
+                        			url: sendurl,
+                        			async: false,
+                        			type: "post",
+                        			data: upjson.value,
+                        			success: function (data, status) {
+                        				alert(data);
+                        			},
+                        		});
+								
+							};
+						}
+					</script>
             </div>
 {{template "endhtml"}}

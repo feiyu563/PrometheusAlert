@@ -1,8 +1,9 @@
 package models
 
 import (
-	"time"
+	"errors"
 	"github.com/astaxie/beego/orm"
+	"time"
 )
 // 分类
 type PrometheusAlertDB struct {
@@ -53,6 +54,13 @@ func DelTpl(id int)error  {
 
 func AddTpl(id int,tplname,t_type,t_use,tpl string)error  {
 	o := orm.NewOrm()
+	qs := o.QueryTable("PrometheusAlertDB")
+	bExist := qs.Filter("Tplname", tplname).Exist()
+	var err error
+	if bExist {
+		err = errors.New("模版名称已经存在！")
+		return err
+	}
 	Template_table := &PrometheusAlertDB{
 		Id:       id,
 		Tplname:  tplname,
@@ -62,15 +70,15 @@ func AddTpl(id int,tplname,t_type,t_use,tpl string)error  {
 		Created:  time.Now(),
 	}
 	// 插入数据
-	_, err := o.Insert(Template_table)
+	_, err = o.Insert(Template_table)
 	return err
 }
 
 func UpdateTpl(id int,tplname,t_type,t_use,tpl string)error  {
 	o := orm.NewOrm()
 	tpl_update := &PrometheusAlertDB{Id: id}
-	Is_tpl:=o.Read(tpl_update)
-	if  Is_tpl == nil {
+	err:=o.Read(tpl_update)
+	if  err == nil {
 		tpl_update.Id=id
 		tpl_update.Tplname = tplname
 		tpl_update.Tpltype = t_type
@@ -79,7 +87,6 @@ func UpdateTpl(id int,tplname,t_type,t_use,tpl string)error  {
 		tpl_update.Created = time.Now()
 		_,err:=o.Update(tpl_update)
 		return err
-	} else {
-		return Is_tpl
 	}
+	return err
 }
