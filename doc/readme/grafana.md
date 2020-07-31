@@ -6,7 +6,7 @@
 
 注意这里的url地址填写上自己部署所在的url
 
-- `grafana接口`
+- `grafana固定模版接口`
 
 ```
 /grafana/dingding  处理Grafana告警消息转发到钉钉接口，可选参数(ddurl)
@@ -17,6 +17,7 @@
 /grafana/hwdx      处理Grafana告警消息转发到华为云短信接口，可选参数(phone)
 /grafana/alydx     处理Grafana告警消息转发到阿里云短信接口，可选参数(phone)
 /grafana/rlydh     处理Grafana告警消息转发到容联云电话接口，可选参数(phone)
+/grafana/email     处理Grafana告警消息转发到容联云电话接口，可选参数(email)
 ```
 
 关于接口说明：grafana的所有接口均支持传参,如直接使用接口，未在接口后加入参数，默认会优先使用配置文件中的参数作为告警渠道的配置。如果接口中加入了参数，将默认使用url中的参数作为告警渠道的配置。如下：
@@ -31,6 +32,7 @@
 /grafana/alydx?phone=15395105573
 /grafana/alydh?phone=15395105573
 /grafana/rlydh?phone=15395105573
+/grafana/email?email=123@qq.com
 ```
 
 ![grafana2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/addchannel2.png)

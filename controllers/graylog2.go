@@ -6,7 +6,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"strconv"
-	"time"
 )
 
 type Graylog2Controller struct {
@@ -31,13 +30,23 @@ type G2Field struct {
 	Gl2RemotePort int `json:"gl_2_remote_port"`
 }
 //for graylog alert
+func (c *Graylog2Controller) GraylogEmail() {
+	alert:=Graylog2{}
+	email:=c.GetString("email")
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageG(alert,1,logsign,"","","","","","","","","",email)
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
 func (c *Graylog2Controller) GraylogDingding() {
 	alert:=Graylog2{}
 	ddurl:=c.GetString("ddurl")
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,2,logsign,ddurl,"","","","","","","","")
+	c.Data["json"]=SendMessageG(alert,2,logsign,ddurl,"","","","","","","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -47,27 +56,7 @@ func (c *Graylog2Controller) GraylogWeixin() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,3,logsign,"",wxurl,"","","","","","","")
-	logs.Info(logsign,c.Data["json"])
-	c.ServeJSON()
-}
-func (c *Graylog2Controller) GraylogTxdx() {
-	alert:=Graylog2{}
-	phone:=c.GetString("phone")
-	logsign:="["+LogsSign()+"]"
-	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
-	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,5,logsign,"","","",phone,"","","","","")
-	logs.Info(logsign,c.Data["json"])
-	c.ServeJSON()
-}
-func (c *Graylog2Controller) GraylogHwdx() {
-	alert:=Graylog2{}
-	phone:=c.GetString("phone")
-	logsign:="["+LogsSign()+"]"
-	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
-	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,6,logsign,"","","","","",phone,"","","")
+	c.Data["json"]=SendMessageG(alert,3,logsign,"",wxurl,"","","","","","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -77,7 +66,27 @@ func (c *Graylog2Controller) GraylogTxdh() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,4,logsign,"","","","",phone,"","","","")
+	c.Data["json"]=SendMessageG(alert,4,logsign,"","","","",phone,"","","","","")
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
+func (c *Graylog2Controller) GraylogTxdx() {
+	alert:=Graylog2{}
+	phone:=c.GetString("phone")
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageG(alert,5,logsign,"","","",phone,"","","","","","")
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
+func (c *Graylog2Controller) GraylogHwdx() {
+	alert:=Graylog2{}
+	phone:=c.GetString("phone")
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageG(alert,6,logsign,"","","","","",phone,"","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -87,7 +96,7 @@ func (c *Graylog2Controller) GraylogALYdx() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,7,logsign,"","","","","","","",phone,"")
+	c.Data["json"]=SendMessageG(alert,7,logsign,"","","","","","","",phone,"","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -97,7 +106,7 @@ func (c *Graylog2Controller) GraylogALYdh() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,8,logsign,"","","","","","","","",phone)
+	c.Data["json"]=SendMessageG(alert,8,logsign,"","","","","","","","",phone,"")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -107,7 +116,7 @@ func (c *Graylog2Controller) GraylogRLYdh() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,9,logsign,"","","","","","",phone,"","")
+	c.Data["json"]=SendMessageG(alert,9,logsign,"","","","","","",phone,"","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -118,27 +127,16 @@ func (c *Graylog2Controller) GraylogFeishu() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageG(alert,10,logsign,"","",fsurl,"","","","","","")
+	c.Data["json"]=SendMessageG(alert,10,logsign,"","",fsurl,"","","","","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 
-//强制转换时间为cst  2019-09-26T15:27:49.644Z
-func GetGraylogCSTtime(date string)(string)  {
-	T1:=date[0:10] //取日期
-	T2:=date[11:23] //取时间
-	T3:=T1+" "+T2
-	tm2, _ := time.Parse("2006-01-02 15:04:05.000", T3)
-	h, _ := time.ParseDuration("-1h")
-	tm3:=tm2.Add(-8*h)
-	tm:=tm3.Format("2006-01-02 15:04:05.000")
-	return tm
-}
-
-func SendMessageG(message Graylog2,typeid int,logsign,ddurl,wxurl,fsurl,txdx,txdh,hwdx,rlydh,alydx,alydh string)(string)  {
+func SendMessageG(message Graylog2,typeid int,logsign,ddurl,wxurl,fsurl,txdx,txdh,hwdx,rlydh,alydx,alydh,email string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Alerturl:=beego.AppConfig.String("GraylogAlerturl")
 	Logourl:=beego.AppConfig.String("logourl")
+	PCstTime,_:=beego.AppConfig.Int("prometheus_cst_time")
 	if len(message.Check_result.MatchingMessages)==0 {
 		model.AlertsFromCounter.WithLabelValues("graylog2",message.Check_result.Result_description,"4","","").Add(1)
 		if ddurl=="" {
@@ -153,14 +151,39 @@ func SendMessageG(message Graylog2,typeid int,logsign,ddurl,wxurl,fsurl,txdx,txd
 			wxurl=beego.AppConfig.String("wxurl")
 		}
 		PostToWeiXin("["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**", wxurl,logsign)
+		if email=="" {
+			email=beego.AppConfig.String("Default_emails")
+		}
+		EmailMessage:=`<h1><a href =`+Alerturl+`>`+Title+"Graylog2告警信息"+`</a></h1>
+				<h2>`+message.Check_result.Result_description+`</h2>
+				<img src=`+Logourl+` />`
+		SendEmail(EmailMessage, email,logsign)
 		return "告警消息发送完成."
 	}
 	for _, m := range message.Check_result.MatchingMessages{
+		GraylogTime:=m.Timestamp
+		if PCstTime==1 {
+			GraylogTime=GetCSTtime(m.Timestamp)
+		}
 		model.AlertsFromCounter.WithLabelValues("graylog2",message.Check_result.Result_description,"4",m.Fields.Gl2RemoteIp,"firing").Add(1)
-		DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警索引："+m.Index+"\n\n"+"###### 开始时间："+GetGraylogCSTtime(m.Timestamp)+" \n\n"+"###### 告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+"##### "+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
-		FStext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+""+message.Check_result.Result_description+"\n\n"+"告警索引："+m.Index+"\n\n"+"开始时间："+GetGraylogCSTtime(m.Timestamp)+" \n\n"+"告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+""+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
-		WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警索引:`"+m.Index+"\n`开始时间:`"+GetGraylogCSTtime(m.Timestamp)+" \n`告警主机:`"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n**"+m.Message+"**"
+		DDtext:="## ["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+"#### "+message.Check_result.Result_description+"\n\n"+"###### 告警索引："+m.Index+"\n\n"+"###### 开始时间："+GraylogTime+" \n\n"+"###### 告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+"##### "+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
+		FStext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n\n"+""+message.Check_result.Result_description+"\n\n"+"告警索引："+m.Index+"\n\n"+"开始时间："+GraylogTime+" \n\n"+"告警主机："+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n\n"+""+m.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
+		WXtext:="["+Title+"Graylog2告警信息]("+Alerturl+")\n>**"+message.Check_result.Result_description+"**\n>`告警索引:`"+m.Index+"\n`开始时间:`"+GraylogTime+" \n`告警主机:`"+m.Fields.Gl2RemoteIp+":"+strconv.Itoa(m.Fields.Gl2RemotePort)+"\n**"+m.Message+"**"
 		PhoneCallMessage="告警主机 "+m.Fields.Gl2RemoteIp+"端口 "+strconv.Itoa(m.Fields.Gl2RemotePort)+"告警消息 "+m.Message
+		EmailMessage:=`<h1><a href =`+Alerturl+`>`+Title+"Graylog2告警信息"+`</a></h1>
+				<h2>`+message.Check_result.Result_description+`</h2>
+				<h5>告警索引：`+m.Index+`</h5>
+				<h5>开始时间：`+GraylogTime+`</h5>
+				<h5>告警主机：`+m.Fields.Gl2RemoteIp+`:`+strconv.Itoa(m.Fields.Gl2RemotePort)+`</h5>
+				<h3>`+m.Message+`</h3>
+				<img src=`+Logourl+` />`
+		//触发邮件
+		if typeid==1 {
+			if email=="" {
+				email=beego.AppConfig.String("Default_emails")
+			}
+			SendEmail(EmailMessage, email,logsign)
+		}
 		//触发钉钉
 		if typeid==2 {
 			if ddurl=="" {
@@ -174,13 +197,6 @@ func SendMessageG(message Graylog2,typeid int,logsign,ddurl,wxurl,fsurl,txdx,txd
 				wxurl=beego.AppConfig.String("wxurl")
 			}
 			PostToWeiXin(WXtext, wxurl,logsign)
-		}
-		//出发飞书
-		if typeid==10 {
-			if fsurl=="" {
-				fsurl=beego.AppConfig.String("fsurl")
-			}
-			PostToFeiShu(Title+"告警信息", FStext, fsurl,logsign)
 		}
 		//触发电话告警
 		if typeid==4 {
@@ -223,6 +239,13 @@ func SendMessageG(message Graylog2,typeid int,logsign,ddurl,wxurl,fsurl,txdx,txd
 				rlydh=GetUserPhone(1)
 			}
 			PostRLYphonecall(PhoneCallMessage,rlydh,logsign)
+		}
+		//出发飞书
+		if typeid==10 {
+			if fsurl=="" {
+				fsurl=beego.AppConfig.String("fsurl")
+			}
+			PostToFeiShu(Title+"告警信息", FStext, fsurl,logsign)
 		}
 
 	}

@@ -2,12 +2,9 @@ package controllers
 
 import (
 	"PrometheusAlert/model"
-	"bufio"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"os"
-	"strings"
 	"time"
 )
 
@@ -25,36 +22,23 @@ type Grafana struct {
 	RuleUrl string `json:"ruleUrl"`
 	State string `json:"state"`
 }
-
-func (c *GrafanaController) GrafanaTxdh() {
+func (c *GrafanaController) GrafanaEmail() {
 	alert:=Grafana{}
-	phone:=c.GetString("phone")
+	email:=c.GetString("email")
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,4,logsign,"","","","",phone,"","","","")
+	c.Data["json"]=SendMessageGrafana(alert,1,logsign,"","","","","","","","","",email)
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
-
-func (c *GrafanaController) GrafanaFeishu() {
-	alert:=Grafana{}
-	fsurl:=c.GetString("fsurl")
-	logsign:="["+LogsSign()+"]"
-	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
-	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,10,logsign,"","",fsurl,"","","","","","")
-	logs.Info(logsign,c.Data["json"])
-	c.ServeJSON()
-}
-
 func (c *GrafanaController) GrafanaDingding() {
 	alert:=Grafana{}
 	ddurl:=c.GetString("ddurl")
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,2,logsign,ddurl,"","","","","","","","")
+	c.Data["json"]=SendMessageGrafana(alert,2,logsign,ddurl,"","","","","","","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -65,7 +49,18 @@ func (c *GrafanaController) GrafanaWeixin() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,3,logsign,"",wxurl,"","","","","","","")
+	c.Data["json"]=SendMessageGrafana(alert,3,logsign,"",wxurl,"","","","","","","","")
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
+
+func (c *GrafanaController) GrafanaTxdh() {
+	alert:=Grafana{}
+	phone:=c.GetString("phone")
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageGrafana(alert,4,logsign,"","","","",phone,"","","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -76,7 +71,7 @@ func (c *GrafanaController) GrafanaTxdx() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,5,logsign,"","","",phone,"","","","","")
+	c.Data["json"]=SendMessageGrafana(alert,5,logsign,"","","",phone,"","","","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -87,7 +82,7 @@ func (c *GrafanaController) GrafanaHwdx() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,6,logsign,"","","","","",phone,"","","")
+	c.Data["json"]=SendMessageGrafana(alert,6,logsign,"","","","","",phone,"","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -98,7 +93,7 @@ func (c *GrafanaController) GrafanaALYdx() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,7,logsign,"","","","","","","",phone,"")
+	c.Data["json"]=SendMessageGrafana(alert,7,logsign,"","","","","","","",phone,"","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -109,7 +104,7 @@ func (c *GrafanaController) GrafanaALYdh() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,8,logsign,"","","","","","","","",phone)
+	c.Data["json"]=SendMessageGrafana(alert,8,logsign,"","","","","","","","",phone,"")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
@@ -120,25 +115,43 @@ func (c *GrafanaController) GrafanaRlydh() {
 	logsign:="["+LogsSign()+"]"
 	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageGrafana(alert,9,logsign,"","","","","","",phone,"","")
+	c.Data["json"]=SendMessageGrafana(alert,9,logsign,"","","","","","",phone,"","","")
+	logs.Info(logsign,c.Data["json"])
+	c.ServeJSON()
+}
+
+func (c *GrafanaController) GrafanaFeishu() {
+	alert:=Grafana{}
+	fsurl:=c.GetString("fsurl")
+	logsign:="["+LogsSign()+"]"
+	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"]=SendMessageGrafana(alert,10,logsign,"","",fsurl,"","","","","","","")
 	logs.Info(logsign,c.Data["json"])
 	c.ServeJSON()
 }
 
 //typeid 为0,触发电话告警和钉钉告警, typeid 为1 仅触发dingding告警
-func SendMessageGrafana(message Grafana,typeid int,logsign,ddurl,wxurl,fsurl,txdx,txdh,hwdx,rlydh,alydx,alydh string)(string)  {
+func SendMessageGrafana(message Grafana,typeid int,logsign,ddurl,wxurl,fsurl,txdx,txdh,hwdx,rlydh,alydx,alydh,email string)(string)  {
 	Title:=beego.AppConfig.String("title")
 	Logourl:=beego.AppConfig.String("logourl")
-	var DDtext,FStext,WXtext,titleend  string
+	Rlogourl:=beego.AppConfig.String("rlogourl")
+	var DDtext,FStext,WXtext,EmailMessage,titleend  string
 	//告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 	AlertLevel:=[]string{"信息","警告","一般严重","严重","灾难"}
 	if message.State=="ok" {
 		titleend="故障恢复信息"
 		model.AlertsFromCounter.WithLabelValues("grafana",message.Message,"4","","resolved").Add(1)
-		DDtext="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n#### "+message.RuleName+"\n\n###### 告警级别："+AlertLevel[4]+"\n\n###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n##### "+message.Message+" 已经恢复正常\n\n"+"!["+Title+"]("+Logourl+")"
-		FStext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+message.RuleName+"\n\n告警级别："+AlertLevel[4]+"\n\n开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+message.Message+" 已经恢复正常\n\n"+"!["+Title+"]("+Logourl+")"
+		DDtext="## ["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n#### "+message.RuleName+"\n\n###### 告警级别："+AlertLevel[4]+"\n\n###### 开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n##### "+message.Message+" 已经恢复正常\n\n"+"!["+Title+"]("+Rlogourl+")"
+		FStext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+message.RuleName+"\n\n告警级别："+AlertLevel[4]+"\n\n开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+message.Message+" 已经恢复正常\n\n"+"!["+Title+"]("+Rlogourl+")"
 		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:`"+AlertLevel[4]+"\n`开始时间:`"+time.Now().Format("2006-01-02 15:04:05")+"\n"+message.Message+" 已经恢复正常\n"
 		PhoneCallMessage=message.Message+" 已经恢复正常"
+		EmailMessage=`<h1><a href =`+message.RuleUrl+`>`+Title+"Grafana"+titleend+`</a></h1>
+				<h2>`+message.RuleName+`</h2>
+				<h5>告警级别：`+AlertLevel[4]+`</h5>
+				<h5>开始时间：`+time.Now().Format("2006-01-02 15:04:05")+`</h5>
+				<h3>`+message.Message+`</h3>
+				<img src=`+Rlogourl+` />`
 	}else {
 		titleend="故障告警信息"
 		model.AlertsFromCounter.WithLabelValues("grafana",message.Message,"4","","firing").Add(1)
@@ -146,6 +159,19 @@ func SendMessageGrafana(message Grafana,typeid int,logsign,ddurl,wxurl,fsurl,txd
 		FStext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n\n"+""+message.RuleName+"\n\n"+"告警级别："+AlertLevel[4]+"\n\n"+"开始时间："+time.Now().Format("2006-01-02 15:04:05")+"\n\n"+""+message.Message+"\n\n"+"!["+Title+"]("+Logourl+")"
 		WXtext="["+Title+"Grafana"+titleend+"]("+message.RuleUrl+")\n>**"+message.RuleName+"**\n>`告警级别:`"+AlertLevel[4]+"\n`开始时间:`"+time.Now().Format("2006-01-02 15:04:05")+"\n"+message.Message+"\n"
 		PhoneCallMessage=message.Message
+		EmailMessage=`<h1><a href =`+message.RuleUrl+`>`+Title+"Grafana"+titleend+`</a></h1>
+				<h2>`+message.RuleName+`</h2>
+				<h5>告警级别：`+AlertLevel[4]+`</h5>
+				<h5>开始时间：`+time.Now().Format("2006-01-02 15:04:05")+`</h5>
+				<h3>`+message.Message+`</h3>
+				<img src=`+Logourl+` />`
+	}
+	//触发email
+	if typeid==1 {
+		if email=="" {
+			email=beego.AppConfig.String("Default_emails")
+		}
+		SendEmail(EmailMessage, email,logsign)
 	}
 	//触发钉钉
 	if typeid==2 {
@@ -160,14 +186,6 @@ func SendMessageGrafana(message Grafana,typeid int,logsign,ddurl,wxurl,fsurl,txd
 			wxurl=beego.AppConfig.String("wxurl")
 		}
 		PostToWeiXin(WXtext, wxurl,logsign)
-	}
-
-	//触发飞书
-	if typeid==10 {
-		if fsurl=="" {
-			fsurl=beego.AppConfig.String("fsurl")
-		}
-		PostToFeiShu(Title+titleend,FStext,fsurl,logsign)
 	}
 
 	//取到手机号
@@ -214,45 +232,12 @@ func SendMessageGrafana(message Grafana,typeid int,logsign,ddurl,wxurl,fsurl,txd
 		}
 		PostRLYphonecall(PhoneCallMessage,rlydh,logsign)
 	}
+	//触发飞书
+	if typeid==10 {
+		if fsurl=="" {
+			fsurl=beego.AppConfig.String("fsurl")
+		}
+		PostToFeiShu(Title+titleend,FStext,fsurl,logsign)
+	}
 	return "告警消息发送完成."
-}
-//获取用户号码
-func GetUserPhone(neednum int) string  {
-	//判断是否存在user.csv文件
-	Num:=beego.AppConfig.String("defaultphone")
-	Today:=time.Now()
-	//判断当前时间是否大于10点,大于10点取当天值班号码,小于10点取前一天值班号码
-	DayString:=""
-	if time.Now().Hour()>=10 {
-		//取当天值班号码
-		DayString=Today.Format("2006年1月2日")
-	} else {
-		//取前一天值班号码
-		DayString=Today.AddDate(0,0,-1).Format("2006年1月2日")
-	}
-	_, err := os.Stat("user.csv")
-	if err == nil {
-		f, err := os.Open("user.csv")
-		if err != nil {
-			logs.Error(err.Error())
-		}
-		defer f.Close()
-		rd := bufio.NewReader(f)
-		for {
-			line, err := rd.ReadString('\n') //以'\n'为结束符读入一行
-			if err!=nil {
-				if err.Error()!="EOF" {
-					logs.Error(err.Error())
-				}
-				break
-			}
-			if strings.Contains(line,DayString ) {
-				x:=strings.Split(line, ",")
-				Num=x[neednum]
-				break
-				}
-		}
-		f.Close()
-	}
-	return Num
 }

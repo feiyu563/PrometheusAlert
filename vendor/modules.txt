@@ -31,6 +31,9 @@ github.com/astaxie/beego/utils
 github.com/beorn7/perks/quantile
 # github.com/cespare/xxhash/v2 v2.1.1
 github.com/cespare/xxhash/v2
+# github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
+## explicit
+github.com/go-gomail/gomail
 # github.com/golang/protobuf v1.4.0
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
@@ -125,6 +128,9 @@ google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/known/anypb
 google.golang.org/protobuf/types/known/durationpb
 google.golang.org/protobuf/types/known/timestamppb
+# gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc
+## explicit
+gopkg.in/alexcesaro/quotedprintable.v3
 # gopkg.in/ini.v1 v1.42.0
 gopkg.in/ini.v1
 # gopkg.in/yaml.v2 v2.2.5

@@ -46,14 +46,21 @@ func (c *MainController) AddTpl()  {
 	t_tpye:=c.Input().Get("type")
 	t_use:=c.Input().Get("use")
 	content:=c.Input().Get("content")
+	var err error
 	if len(tid)==0 {
 		id,_:=strconv.Atoi(tid)
-		models.AddTpl(id,name,t_tpye,t_use,content)
+		err=models.AddTpl(id,name,t_tpye,t_use,content)
 	}else {
 		id,_:=strconv.Atoi(tid)
-		models.UpdateTpl(id,name,t_tpye,t_use,content)
+		err=models.UpdateTpl(id,name,t_tpye,t_use,content)
 	}
-	c.Redirect("/template",302)
+	var resp interface{}
+	resp=err
+	if err!=nil{
+		resp=err.Error()
+	}
+	c.Data["json"]=resp
+	c.ServeJSON()
 }
 func (c *MainController) TemplateEdit() {
 	c.Data["IsTemplate"]=true
@@ -65,16 +72,16 @@ func (c *MainController) TemplateEdit() {
 	}
 	c.Data["Template"] = Template
 }
-func (c *MainController) TemplateTest() {
-	c.Data["IsTemplate"]=true
-	c.TplName = "template_test.html"
-	s_id,_:=strconv.Atoi(c.Input().Get("id"))
-	Template, err := models.GetTpl(s_id)
-	if err != nil {
-		logs.Error(err)
-	}
-	c.Data["Template"] = Template
-}
+//func (c *MainController) TemplateTest() {
+//	c.Data["IsTemplate"]=true
+//	c.TplName = "template_test.html"
+//	s_id,_:=strconv.Atoi(c.Input().Get("id"))
+//	Template, err := models.GetTpl(s_id)
+//	if err != nil {
+//		logs.Error(err)
+//	}
+//	c.Data["Template"] = Template
+//}
 func (c *MainController) TemplateDel() {
 	s_id,_:=strconv.Atoi(c.Input().Get("id"))
 	err := models.DelTpl(s_id)
@@ -126,6 +133,13 @@ func (c *MainController)AlertTest()  {
 	case "rlydh":
 		MobileMessage:="PrometheusAlertCenter测试告警"
 		ret:=PostRLYphonecall(MobileMessage,beego.AppConfig.String("defaultphone"),logsign)
+		c.Data["json"]=ret
+	case "email":
+		TestEmailMessage:=`
+            <h3>PrometheusAlert邮件告警测试</h3>
+			欢迎使用<a href ="https://feiyu563.gitee.io">PrometheusAlert</a><br>
+			`
+		ret:=SendEmail(TestEmailMessage,beego.AppConfig.String("Default_emails"),logsign)
 		c.Data["json"]=ret
 	default:
 		c.Data["json"]="hahaha!"
