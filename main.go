@@ -16,7 +16,7 @@ import (
 
 func init() {
 	// 检查数据库文件
-	Db_name:= "./db/PrometheusAlertDB.db"
+	Db_name := "./db/PrometheusAlertDB.db"
 	if !com.IsExist(Db_name) {
 		os.MkdirAll(path.Dir(Db_name), os.ModePerm)
 		os.Create(Db_name)
@@ -31,16 +31,15 @@ func init() {
 }
 
 func main() {
-	orm.Debug=true
-	logtype:=beego.AppConfig.String("logtype")
-	if logtype=="console" {
+	orm.Debug = true
+	logtype := beego.AppConfig.String("logtype")
+	if logtype == "console" {
 		logs.SetLogger(logtype)
-	}else if logtype=="file" {
-		logpath:=beego.AppConfig.String("logpath")
+	} else if logtype == "file" {
+		logpath := beego.AppConfig.String("logpath")
 		logs.SetLogger(logtype, `{"filename":"`+logpath+`"}`)
 	}
 	model.MetricsInit()
 	beego.Handler("/metrics", promhttp.Handler())
 	beego.Run()
 }
-
