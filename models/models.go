@@ -5,25 +5,26 @@ import (
 	"github.com/astaxie/beego/orm"
 	"time"
 )
+
 // 分类
 type PrometheusAlertDB struct {
-	Id              int
-	Tpltype			string
-	Tpluse			string
-	Tplname         string `orm:"index"`
-	Tpl             string
-	Created         time.Time
+	Id      int
+	Tpltype string
+	Tpluse  string
+	Tplname string `orm:"index"`
+	Tpl     string
+	Created time.Time
 }
 
-func GetAllTpl()([]*PrometheusAlertDB, error)  {
+func GetAllTpl() ([]*PrometheusAlertDB, error) {
 	o := orm.NewOrm()
-	Tpl_all:=make([]*PrometheusAlertDB, 0)
+	Tpl_all := make([]*PrometheusAlertDB, 0)
 	qs := o.QueryTable("PrometheusAlertDB")
 	_, err := qs.All(&Tpl_all)
 	return Tpl_all, err
 }
 
-func GetTpl(id int)(*PrometheusAlertDB,error)  {
+func GetTpl(id int) (*PrometheusAlertDB, error) {
 	o := orm.NewOrm()
 	tpl_one := new(PrometheusAlertDB)
 	qs := o.QueryTable("PrometheusAlertDB")
@@ -34,7 +35,7 @@ func GetTpl(id int)(*PrometheusAlertDB,error)  {
 	return tpl_one, err
 }
 
-func GetTplOne(name string)(*PrometheusAlertDB,error)  {
+func GetTplOne(name string) (*PrometheusAlertDB, error) {
 	o := orm.NewOrm()
 	tpl_one := new(PrometheusAlertDB)
 	qs := o.QueryTable("PrometheusAlertDB")
@@ -45,14 +46,14 @@ func GetTplOne(name string)(*PrometheusAlertDB,error)  {
 	return tpl_one, err
 }
 
-func DelTpl(id int)error  {
+func DelTpl(id int) error {
 	o := orm.NewOrm()
 	tpl_one := &PrometheusAlertDB{Id: id}
 	_, err := o.Delete(tpl_one)
 	return err
 }
 
-func AddTpl(id int,tplname,t_type,t_use,tpl string)error  {
+func AddTpl(id int, tplname, t_type, t_use, tpl string) error {
 	o := orm.NewOrm()
 	qs := o.QueryTable("PrometheusAlertDB")
 	bExist := qs.Filter("Tplname", tplname).Exist()
@@ -62,30 +63,30 @@ func AddTpl(id int,tplname,t_type,t_use,tpl string)error  {
 		return err
 	}
 	Template_table := &PrometheusAlertDB{
-		Id:       id,
-		Tplname:  tplname,
-		Tpltype:  t_type,
-		Tpluse:   t_use,
-		Tpl:      tpl,
-		Created:  time.Now(),
+		Id:      id,
+		Tplname: tplname,
+		Tpltype: t_type,
+		Tpluse:  t_use,
+		Tpl:     tpl,
+		Created: time.Now(),
 	}
 	// 插入数据
 	_, err = o.Insert(Template_table)
 	return err
 }
 
-func UpdateTpl(id int,tplname,t_type,t_use,tpl string)error  {
+func UpdateTpl(id int, tplname, t_type, t_use, tpl string) error {
 	o := orm.NewOrm()
 	tpl_update := &PrometheusAlertDB{Id: id}
-	err:=o.Read(tpl_update)
-	if  err == nil {
-		tpl_update.Id=id
+	err := o.Read(tpl_update)
+	if err == nil {
+		tpl_update.Id = id
 		tpl_update.Tplname = tplname
 		tpl_update.Tpltype = t_type
 		tpl_update.Tpluse = t_use
 		tpl_update.Tpl = tpl
 		tpl_update.Created = time.Now()
-		_,err:=o.Update(tpl_update)
+		_, err := o.Update(tpl_update)
 		return err
 	}
 	return err

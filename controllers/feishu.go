@@ -14,13 +14,13 @@ import (
 
 type FSMessage struct {
 	Title string `json:"title"`
-	Text string `json:"text"`
+	Text  string `json:"text"`
 }
 
-func PostToFeiShu(title,text,Fsurl,logsign string)(string)  {
-	open:=beego.AppConfig.String("open-feishu")
-	if open=="0" {
-		logs.Info(logsign,"[dingding]","飞书接口未配置未开启状态,请先配置open-feishu为1")
+func PostToFeiShu(title, text, Fsurl, logsign string) string {
+	open := beego.AppConfig.String("open-feishu")
+	if open == "0" {
+		logs.Info(logsign, "[dingding]", "飞书接口未配置未开启状态,请先配置open-feishu为1")
 		return "飞书接口未配置未开启状态,请先配置open-feishu为1"
 	}
 
@@ -28,32 +28,32 @@ func PostToFeiShu(title,text,Fsurl,logsign string)(string)  {
 
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign,"[feishu]",b)
+	logs.Info(logsign, "[feishu]", b)
 	var tr *http.Transport
-	if proxyUrl := beego.AppConfig.String("proxy");proxyUrl != ""{
+	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
 		proxy := func(_ *http.Request) (*url.URL, error) {
 			return url.Parse(proxyUrl)
 		}
 		tr = &http.Transport{
-			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-			Proxy: proxy,
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			Proxy:           proxy,
 		}
-	}else{
+	} else {
 		tr = &http.Transport{
-			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
 	}
 	client := &http.Client{Transport: tr}
-	res,err  := client.Post(Fsurl, "application/json", b)
+	res, err := client.Post(Fsurl, "application/json", b)
 	if err != nil {
-		logs.Error(logsign,"[feishu]",err.Error())
+		logs.Error(logsign, "[feishu]", err.Error())
 	}
 	defer res.Body.Close()
-	result,err:=ioutil.ReadAll(res.Body)
+	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign,"[feishu]",err.Error())
+		logs.Error(logsign, "[feishu]", err.Error())
 	}
-	model.AlertToCounter.WithLabelValues("feishu",text,"").Add(1)
-	logs.Info(logsign,"[feishu]",string(result))
+	model.AlertToCounter.WithLabelValues("feishu", text, "").Add(1)
+	logs.Info(logsign, "[feishu]", string(result))
 	return string(result)
 }
