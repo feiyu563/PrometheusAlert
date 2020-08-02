@@ -11,57 +11,57 @@ type ZabbixController struct {
 	beego.Controller
 }
 
-type ZabbixMessage struct{
-	ZabbixTarget string `json:"zabbixtarget"` //告警目标
-	ZabbixMessage string `json:"zabbixmessage"`  //告警消息
-	ZabbixType string `json:"zabbixtype"`     //告警类型
+type ZabbixMessage struct {
+	ZabbixTarget  string `json:"zabbixtarget"`  //告警目标
+	ZabbixMessage string `json:"zabbixmessage"` //告警消息
+	ZabbixType    string `json:"zabbixtype"`    //告警类型
 }
 
 //zabbix告警消息入口
 func (c *ZabbixController) ZabbixAlert() {
-	alert:=ZabbixMessage{}
-	logsign:="["+LogsSign()+"]"
-	logs.Info(logsign,string(c.Ctx.Input.RequestBody))
+	alert := ZabbixMessage{}
+	logsign := "[" + LogsSign() + "]"
+	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"]=SendMessageZabbix(alert,logsign)
-	logs.Info(logsign,c.Data["json"])
+	c.Data["json"] = SendMessageZabbix(alert, logsign)
+	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
 
-func SendMessageZabbix(message ZabbixMessage,logsign string) (string){
-	ret:=""
-	model.AlertsFromCounter.WithLabelValues("zabbix",message.ZabbixMessage,"","","").Add(1)
+func SendMessageZabbix(message ZabbixMessage, logsign string) string {
+	ret := ""
+	model.AlertsFromCounter.WithLabelValues("zabbix", message.ZabbixMessage, "", "", "").Add(1)
 	switch message.ZabbixType {
 	//微信渠道
 	case "wx":
-		ret=PostToWeiXin(message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = PostToWeiXin(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//钉钉渠道
 	case "dd":
-		ret=PostToDingDing("Zabbix告警消息",message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = PostToDingDing("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//飞书渠道
 	case "fs":
-		ret=PostToFeiShu("Zabbix告警消息",message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = PostToFeiShu("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//腾讯云短信
 	case "txdx":
-		ret=PostTXmessage(message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = PostTXmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//华为云短信
 	case "hwdx":
-		ret=ret+PostHWmessage(message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = ret + PostHWmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//阿里云短信
 	case "alydx":
-		ret=ret+PostALYmessage(message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = ret + PostALYmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//腾讯云电话
 	case "txdh":
-		ret=PostTXphonecall(message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = PostTXphonecall(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//阿里云电话
 	case "alydh":
-		ret=ret+PostALYphonecall(message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = ret + PostALYphonecall(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//容联云电话
 	case "rlydh":
-		ret=ret+PostRLYphonecall(message.ZabbixMessage,message.ZabbixTarget,logsign)
+		ret = ret + PostRLYphonecall(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//异常参数
 	default:
-		ret="参数错误"
+		ret = "参数错误"
 	}
 	return ret
 }
