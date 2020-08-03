@@ -38,9 +38,17 @@ PrometheusAlert具备如下特性
  - 简化Prometheus分组配置，支持按照具体消息发送到单个或多个接收方。
  - 增加手机号码配置项和号码自动轮询配置，可固定发送给单一个人告警信息，也可以通过自动轮询的方式发送到多个人员且支持按照不同日期发送到不同人员。
  - 增加Dashboard，提供配置测试，告警消息模版自定义，告警模版测试等功能
- - 增加代理支持，感谢[@pzqu](https://github.com/pzqu)提交
- - 增加飞书，容联云告警方式，感谢[@bigdimple](https://github.com/bigdimple)提交
  - 增加自定义告警消息模版支持，可以通过自定义模版对任意服务WebHook进行支持
+ - 增加代理支持
+ 
+---------------------
+
+致谢以下伙伴对PrometheusAlert的贡献
+---------------------
+ - [@minibear2333](https://github.com/minibear2333)
+ - [@bigdimple](https://github.com/bigdimple)
+ - [@ysicing](https://github.com/ysicing)
+
 
 --------------------------------------
 
