@@ -6,14 +6,14 @@
 {{template "head" .}}
         <div class="bs-docs-header">
             <div class="container">
-				<label class="col-sm-2">模版管理</label>
+				<label class="col-sm-2">自定义模版管理</label>
 			</div>
         </div>
 
 		<div class="container">
 			<div class="page-header text-right">
 				<div class="form-group" style="text-align:center">
-				<label >已有模版</label>
+				<!--<h4 style='color:red;'>特别提醒：自定义模板仅支持 /prometheusalert 接口，其他接口均为固定模版接口，不支持自定义模板</h4>-->
 				</div>
 				<a type="submit" class="btn btn-primary" href="/template/add"><span class="glyphicon glyphicon-plus-sign"></span> 添加模版</a>
 			</div>
@@ -23,21 +23,21 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Id</th>
+						<!--<th>Id</th>-->
 						<th>名称</th>
 						<th>模版类型</th>
 						<th>模版用途</th>
 						<th>路径</th>
 						<th>创建时间</th>
-						<th>模版测试</th>
-						<th>编辑</th>
-						<th>删除</th>
+						<!--<th>模版测试</th>-->
+						<th>模版编辑</th>
+						<th>模版删除</th>
 					</tr>
 				</thead>
 				<tbody id="tpllist" >
 					{{range .Template}}
 					<tr>
-						<th>{{.Id}}</th>
+						<!--<th>{{.Id}}</th>-->
 						<th>{{.Tplname}}</th>
 						<th>
                            {{if eq .Tpltype "dd"}}钉钉{{end}}
@@ -49,13 +49,14 @@
                            {{if eq .Tpltype "alydh"}}阿里云电话{{end}}
                            {{if eq .Tpltype "hwdx"}}华为云短信{{end}}
                            {{if eq .Tpltype "rlydh"}}容联云电话{{end}}
+                           {{if eq .Tpltype "email"}}Email{{end}}
                         </th>
                         <th>{{.Tpluse}}</th>
 						<th>
-                        	/prometheusalert?type={{.Tpltype}}&tpl={{.Tplname}}&{{if eq .Tpltype "dd"}}ddurl=[钉钉机器人地址]{{else}}{{if eq .Tpltype "wx"}}wxurl=[微信机器人地址]{{else}}{{if eq .Tpltype "fs"}}fsurl=[飞书机器人地址]{{else}}phone=[手机号]{{end}}{{end}}{{end}}
+                        	/prometheusalert?type={{.Tpltype}}&tpl={{.Tplname}}&{{if eq .Tpltype "dd"}}ddurl=钉钉机器人地址{{else}}{{if eq .Tpltype "wx"}}wxurl=微信机器人地址{{else}}{{if eq .Tpltype "fs"}}fsurl=飞书机器人地址{{else}}{{if eq .Tpltype "email"}}email=Email地址{{else}}phone=手机号{{end}}{{end}}{{end}}{{end}}
 						</th>
-						<th>{{.Created.Format "2006-01-02 15:04:05.UTC"}}</th>
-						<th><a href="/template/test?id={{.Id}}" class="glyphicon glyphicon-send"></a></th>
+						<th>{{.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
+						<!--<th><a href="/template/test?id={{.Id}}" class="glyphicon glyphicon-send"></a></th>-->
 						<th><a href="/template/edit?id={{.Id}}" class="glyphicon glyphicon-edit"></a></th>
 						<th><a href="javascript:if(confirm('确实要删除吗?'))location='/template/del?id={{.Id}}'" class="glyphicon glyphicon-trash"></a></th>
 
@@ -94,7 +95,7 @@ var td_array=new Array();
 var td_length=document.getElementById("tpllist");
 var myurl=window.location.origin;
 for(var m=0;m<td_length.rows.length;m++){
-td_length.rows[m].cells[4].innerHTML=(myurl+td_length.rows[m].cells[4].innerHTML).replace(/\s/gi,'');
+td_length.rows[m].cells[3].innerHTML=(myurl+td_length.rows[m].cells[3].innerHTML).replace(/\s/gi,'');
 //uresturl.innerHTML=myurl+uresturl.innerHTML;
 }
 
