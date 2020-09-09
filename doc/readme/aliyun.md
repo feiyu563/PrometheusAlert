@@ -71,7 +71,7 @@ ALY_DH_TtsCode=xxxxxxxx
 receivers:
 - name: 'prometheusalert-phone-db'
   webhook_configs:
-  - url: 'http://localhost:8080/prometheusalert?type=alydh&tpl=ali-phone&phone=13671972199'
+  - url: 'http://localhost:8080/prometheusalert?type=alydh&tpl=ali-phone&phone=136xxxxxxx'
     send_resolved: false
 ```
 注意：
