@@ -218,7 +218,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, lo
 				PostHWmessage(MobileMessage, phone, logsign)
 				PostALYmessage(MobileMessage, phone, logsign)
 			} else {
-				if rphone == "" {
+				if rphone != "" {
 					PostTXmessage(MobileMessage, rphone, logsign)
 					PostHWmessage(MobileMessage, rphone, logsign)
 					PostALYmessage(MobileMessage, rphone, logsign)
