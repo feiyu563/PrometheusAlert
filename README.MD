@@ -15,6 +15,27 @@
 * 如果这个项目能为您带来帮助，我将感到非常荣幸！同时非常欢迎您加入PrometheusAlert全家桶的微信群一起探讨关于PrometheusAlert新一期的开发计划。
 
 * PrometheusAlert的成长离不开所有爱好运维和开发的朋友们的支持！如果您也对这个项目感兴趣，请点击一下 Star 以示鼓励，谢谢
+
+
+<br>
+<br>
+
+## 启动
+
+```
+sh build.sh
+
+Prometheus使用同目录下的conf/app.conf配置文件
+cp conf/app-example.conf conf/app.conf
+
+chmod a+x PrometheusAlert
+/path/dir/xxx/PrometheusAlert
+```
+
+
+<br>
+<br>
+
 -----------------
 
 ![dashboard](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard.png)
@@ -72,6 +93,7 @@ PrometheusAlert具备如下特性
   * [容联云电话告警配置](doc/readme/rly.md)
   * [华为云短信配置](doc/readme/hw.md)
   * [Email配置](doc/readme/email.md)
+  * [七陌短信和电话告警配置](doc/readme/7moor.md)
 * [告警源配置(内置固定消息模版)](https://feiyu563.gitbook.io/prometheusalert)
   * [Prometheus配置](doc/readme/prometheus.md)
   * [graylog配置](doc/readme/graylog.md)
