@@ -1,1 +1,3 @@
 *.log
+logs/*.log
+conf/app.conf

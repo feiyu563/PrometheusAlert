@@ -3,11 +3,12 @@ package controllers
 import (
 	"PrometheusAlert/model"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 type PrometheusController struct {
@@ -217,16 +218,19 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, lo
 				PostTXmessage(MobileMessage, phone, logsign)
 				PostHWmessage(MobileMessage, phone, logsign)
 				PostALYmessage(MobileMessage, phone, logsign)
+				Post7MOORmessage(MobileMessage, phone, logsign)
 			} else {
 				if rphone != "" {
 					PostTXmessage(MobileMessage, rphone, logsign)
 					PostHWmessage(MobileMessage, rphone, logsign)
 					PostALYmessage(MobileMessage, rphone, logsign)
+					Post7MOORmessage(MobileMessage, rphone, logsign)
 				}
 				if RMessage.Annotations.Mobile != "" {
 					PostTXmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
 					PostHWmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
 					PostALYmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
+					Post7MOORmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
 				}
 			}
 		}
@@ -241,16 +245,19 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, lo
 					PostTXphonecall(PhoneCallMessage, phone, logsign)
 					PostALYphonecall(PhoneCallMessage, phone, logsign)
 					PostRLYphonecall(PhoneCallMessage, phone, logsign)
+					Post7MOORphonecall(PhoneCallMessage, phone, logsign)
 				} else {
 					if rphone != "" {
 						PostTXphonecall(PhoneCallMessage, rphone, logsign)
 						PostALYphonecall(PhoneCallMessage, rphone, logsign)
 						PostRLYphonecall(PhoneCallMessage, rphone, logsign)
+						Post7MOORphonecall(PhoneCallMessage, rphone, logsign)
 					}
 					if RMessage.Annotations.Mobile != "" {
 						PostTXphonecall(PhoneCallMessage, RMessage.Annotations.Mobile, logsign)
 						PostALYphonecall(PhoneCallMessage, RMessage.Annotations.Mobile, logsign)
 						PostRLYphonecall(PhoneCallMessage, RMessage.Annotations.Mobile, logsign)
+						Post7MOORphonecall(PhoneCallMessage, RMessage.Annotations.Mobile, logsign)
 					}
 				}
 			}
