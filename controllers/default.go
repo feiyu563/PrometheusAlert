@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"strconv"
 	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 //取到tpl路径
@@ -145,6 +146,14 @@ func (c *MainController) AlertTest() {
 			欢迎使用<a href ="https://feiyu563.gitee.io">PrometheusAlert</a><br>
 			`
 		ret := SendEmail(TestEmailMessage, beego.AppConfig.String("Default_emails"), logsign)
+		c.Data["json"] = ret
+	case "7moordx":
+		MobileMessage := "PrometheusAlertCenter测试告警"
+		ret := Post7MOORmessage(MobileMessage, beego.AppConfig.String("defaultphone"), logsign)
+		c.Data["json"] = ret
+	case "7moordh":
+		MobileMessage := "PrometheusAlertCenter测试告警"
+		ret := Post7MOORphonecall(MobileMessage, beego.AppConfig.String("defaultphone"), logsign)
 		c.Data["json"] = ret
 	default:
 		c.Data["json"] = "hahaha!"
