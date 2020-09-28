@@ -106,6 +106,7 @@ PrometheusAlert具备如下特性
   * [添加自定义告警消息模版](doc/readme/tpladd.md)
   * [自定义告警消息模版测试](doc/readme/tpltest.md)
   * [使用自定义告警消息模版](doc/readme/tpluse.md)
+  * [自定义模版函数](doc/readme/tplfunc.md)
 * [版本更新说明](https://github.com/feiyu563/PrometheusAlert/releases)
 * [如何对PrometheusAlert进行二次开发](https://github.com/feiyu563/PrometheusAlert/wiki/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E3%80%90PrometheusAlert%E3%80%91%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91)
 
