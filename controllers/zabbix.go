@@ -3,6 +3,7 @@ package controllers
 import (
 	"PrometheusAlert/model"
 	"encoding/json"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 )
@@ -38,9 +39,12 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 	//钉钉渠道
 	case "dd":
 		ret = PostToDingDing("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, logsign)
-	//飞书渠道
+	//飞书v1渠道
 	case "fs":
 		ret = PostToFeiShu("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, logsign)
+	//飞书v2渠道
+	case "fsv2":
+		ret = PostToFeiShuv2(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//腾讯云短信
 	case "txdx":
 		ret = PostTXmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
@@ -59,6 +63,12 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 	//容联云电话
 	case "rlydh":
 		ret = ret + PostRLYphonecall(message.ZabbixMessage, message.ZabbixTarget, logsign)
+	//7mo短信
+	case "7moordx":
+		ret = ret + Post7MOORmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
+	//7mo电话
+	case "7moordh":
+		ret = ret + Post7MOORphonecall(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//异常参数
 	default:
 		ret = "参数错误"

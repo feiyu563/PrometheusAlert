@@ -53,11 +53,15 @@ data:
     #默认企业微信机器人地址
     wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
     
-    #是否开启飞书告警通道,可同时开始多个通道0为关闭,1为开启
+    #是否开启飞书v1告警通道,可同时开始多个通道0为关闭,1为开启
     open-feishu=0
     #默认飞书机器人地址
     fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
     
+    #是否开启飞书v2告警通道,可同时开始多个通道0为关闭,1为开启
+    open-feishuv2=0
+    #默认飞书机器人地址
+    fsv2url=https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxxxxxxxxx
     
     #---------------------↓腾讯云接口-----------------------
     #是否开启腾讯云短信告警通道,可同时开始多个通道0为关闭,1为开启
@@ -72,7 +76,7 @@ data:
     TXY_DX_sign=腾讯云
     
     #是否开启腾讯云电话告警通道,可同时开始多个通道0为关闭,1为开启
-    TXY_DH_open-txdh=0
+    open-txdh=0
     #腾讯云电话接口key
     TXY_DH_phonecallappkey=xxxxx
     #腾讯云电话模版ID
@@ -133,7 +137,7 @@ data:
     
     #---------------------↓邮件配置-----------------------
     #是否开启邮件
-    open-email=1
+    open-email=0
     #邮件发件服务器地址
     Email_host=smtp.qq.com
     #邮件发件服务器端口
@@ -146,6 +150,25 @@ data:
     Email_title=运维告警
     #默认发送邮箱
     Default_emails=xxxxx@qq.com,xxxxx@qq.com
+    
+    #---------------------↓七陌云接口-----------------------
+    #是否开启七陌短信告警通道,可同时开始多个通道0为关闭,1为开启
+    open-7moordx=0
+    #七陌账户ID
+    7MOOR_ACCOUNT_ID=Nxxx
+    #七陌账户APISecret
+    7MOOR_ACCOUNT_APISECRET=xxx
+    #七陌账户短信模板编号
+    7MOOR_DX_TEMPLATENUM=n
+    #注意：七陌短信变量这里只用一个var1，在代码里写死了。
+    #-----------
+    #是否开启七陌webcall语音通知告警通道,可同时开始多个通道0为关闭,1为开启
+    open-7moordh=0
+    #请在七陌平台添加虚拟服务号、文本节点
+    #七陌账户webcall的虚拟服务号
+    7MOOR_WEBCALL_SERVICENO=xxx
+    # 文本节点里被替换的变量，我配置的是text。如果被替换的变量不是text，请修改此配置
+    7MOOR_WEBCALL_VOICE_VAR=text
 kind: ConfigMap
 metadata:
   name: prometheus-alert-center-conf
