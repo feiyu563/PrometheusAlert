@@ -32,6 +32,7 @@
                             <option value="dd" {{if eq .Template.Tpltype "dd"}}selected="selected"{{end}}>钉钉</option>
                             <option value="wx" {{if eq .Template.Tpltype "wx"}}selected="selected"{{end}}>企业微信</option>
                             <option value="fs" {{if eq .Template.Tpltype "fs"}}selected="selected"{{end}}>飞书</option>
+                            <option value="fsv2" {{if eq .Template.Tpltype "fsv2"}}selected="selected"{{end}}>飞书v2</option>
                             <option value="txdx" {{if eq .Template.Tpltype "txdx"}}selected="selected"{{end}}>腾讯云短信</option>
                             <option value="txdh" {{if eq .Template.Tpltype "txdh"}}selected="selected"{{end}}>腾讯云电话</option>
                             <option value="alydx" {{if eq .Template.Tpltype "alydx"}}selected="selected"{{end}}>阿里云短信</option>
@@ -68,7 +69,7 @@
 					    <br />
 
 					    <div class="input-group">
-					    <span class="input-group-addon" id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}手机号{{end}}{{end}}{{end}}{{end}}</span>
+					    <span class="input-group-addon" id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "fsv2"}}飞书v2机器人地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}</span>
 					    <input type="text" id="purl" class="form-control" name="purl" value="">
 					    </div>
 					    <br />
@@ -93,6 +94,8 @@
 					        typeStr.innerText="微信机器人地址";
 					     } else if(typeSelect=="fs"){
 					        typeStr.innerText="飞书机器人地址";
+					     } else if(typeSelect=="fsv2"){
+					        typeStr.innerText="飞书v2机器人地址";
 					     } else if(typeSelect=="email"){
 					        typeStr.innerText="邮箱(多个请以,隔开)";
 					     } else{
@@ -141,6 +144,8 @@
 							} else if(utype.value=="wx"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value;
 							} else if(utype.value=="fs"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
+							} else if(utype.value=="fsv2"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
 							} else if(utype.value=="email"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;

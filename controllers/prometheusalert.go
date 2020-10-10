@@ -5,10 +5,11 @@ import (
 	"PrometheusAlert/models"
 	"bytes"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"strings"
 	"text/template"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 type PrometheusAlertController struct {
@@ -75,6 +76,13 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 		Fsurl := strings.Split(pfsurl, ",")
 		for _, url := range Fsurl {
 			ret += PostToFeiShu(Title+"告警消息", message, url, logsign)
+		}
+
+	//飞书渠道
+	case "fsv2":
+		Fsurl := strings.Split(pfsurl, ",")
+		for _, url := range Fsurl {
+			ret += PostToFeiShuv2(message, url, logsign)
 		}
 
 	//腾讯云短信
