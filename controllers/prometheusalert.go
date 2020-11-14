@@ -106,6 +106,9 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	//邮件
 	case "email":
 		ret = ret + SendEmail(message, email, logsign)
+	// Telegram
+	case "tg":
+		ret = ret + SendTG(message, logsign)
 	//异常参数
 	default:
 		ret = "参数错误"

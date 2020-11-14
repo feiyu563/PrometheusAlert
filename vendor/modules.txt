@@ -1,7 +1,7 @@
 # github.com/Unknwon/com v0.0.0-00010101000000-000000000000 => github.com/unknwon/com v1.0.1
 ## explicit
 github.com/Unknwon/com
-# github.com/aliyun/alibaba-cloud-sdk-go v1.61.215
+# github.com/aliyun/alibaba-cloud-sdk-go v1.61.641
 ## explicit
 github.com/aliyun/alibaba-cloud-sdk-go/sdk
 github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth
@@ -34,7 +34,10 @@ github.com/cespare/xxhash/v2
 # github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 ## explicit
 github.com/go-gomail/gomail
-# github.com/golang/protobuf v1.4.0
+# github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.0.0-rc1.0.20201106042948-366879b11047
+## explicit
+github.com/go-telegram-bot-api/telegram-bot-api/v5
+# github.com/golang/protobuf v1.4.3
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
@@ -44,7 +47,7 @@ github.com/golang/protobuf/ptypes/timestamp
 github.com/gopherjs/gopherjs/js
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
-# github.com/json-iterator/go v1.1.9
+# github.com/json-iterator/go v1.1.10
 github.com/json-iterator/go
 # github.com/jtolds/gls v4.20.0+incompatible
 github.com/jtolds/gls
@@ -57,18 +60,18 @@ github.com/matttproud/golang_protobuf_extensions/pbutil
 github.com/modern-go/concurrent
 # github.com/modern-go/reflect2 v1.0.1
 github.com/modern-go/reflect2
-# github.com/prometheus/client_golang v1.6.0
+# github.com/prometheus/client_golang v1.8.0
 ## explicit
 github.com/prometheus/client_golang/prometheus
 github.com/prometheus/client_golang/prometheus/internal
 github.com/prometheus/client_golang/prometheus/promhttp
 # github.com/prometheus/client_model v0.2.0
 github.com/prometheus/client_model/go
-# github.com/prometheus/common v0.9.1
+# github.com/prometheus/common v0.14.0
 github.com/prometheus/common/expfmt
 github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
 github.com/prometheus/common/model
-# github.com/prometheus/procfs v0.0.11
+# github.com/prometheus/procfs v0.2.0
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
@@ -84,20 +87,23 @@ github.com/smartystreets/assertions/internal/oglematchers
 github.com/smartystreets/goconvey/convey
 github.com/smartystreets/goconvey/convey/gotest
 github.com/smartystreets/goconvey/convey/reporting
-# golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
+# github.com/technoweenie/multipartstreamer v1.0.1
+github.com/technoweenie/multipartstreamer
+# golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 golang.org/x/crypto/acme
 golang.org/x/crypto/acme/autocert
-# golang.org/x/net v0.0.0-20190620200207-3b0461eec859
+# golang.org/x/net v0.0.0-20200625001655-4c5254603344
 golang.org/x/net/idna
-# golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
+# golang.org/x/sys v0.0.0-20201015000850-e3ed0017c211
+golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/text v0.3.0
+# golang.org/x/text v0.3.2
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
-# google.golang.org/protobuf v1.21.0
+# google.golang.org/protobuf v1.23.0
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
 google.golang.org/protobuf/internal/descfmt
@@ -133,6 +139,6 @@ google.golang.org/protobuf/types/known/timestamppb
 gopkg.in/alexcesaro/quotedprintable.v3
 # gopkg.in/ini.v1 v1.42.0
 gopkg.in/ini.v1
-# gopkg.in/yaml.v2 v2.2.5
+# gopkg.in/yaml.v2 v2.3.0
 gopkg.in/yaml.v2
 # github.com/Unknwon/com => github.com/unknwon/com v1.0.1

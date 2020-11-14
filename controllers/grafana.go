@@ -133,6 +133,16 @@ func (c *GrafanaController) GrafanaFeishu() {
 	c.ServeJSON()
 }
 
+func (c *GrafanaController) GrafanaTG() {
+	alert := Grafana{}
+	logsign := "[" + LogsSign() + "]"
+	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"] = SendMessageGrafana(alert, 11, logsign, "", "", "", "", "", "", "", "", "", "")
+	logs.Info(logsign, c.Data["json"])
+	c.ServeJSON()
+}
+
 //typeid 为0,触发电话告警和钉钉告警, typeid 为1 仅触发dingding告警
 func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsurl, txdx, txdh, hwdx, rlydh, alydx, alydh, email string) string {
 	Title := beego.AppConfig.String("title")
@@ -240,6 +250,10 @@ func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsur
 			fsurl = beego.AppConfig.String("fsurl")
 		}
 		PostToFeiShu(Title+titleend, FStext, fsurl, logsign)
+	}
+	//触发TG
+	if typeid == 11 {
+		SendTG(PhoneCallMessage, logsign)
 	}
 	return "告警消息发送完成."
 }
