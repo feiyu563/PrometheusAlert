@@ -262,6 +262,8 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, lo
 				}
 			}
 		}
+		// 发送消息到Telegram
+		SendTG(PhoneCallMessage, logsign)
 		//告警抑制开启就直接跳出循环
 		if Silent == 1 {
 			break

@@ -159,6 +159,10 @@ func (c *MainController) AlertTest() {
 		MobileMessage := "PrometheusAlertCenter测试告警"
 		ret := Post7MOORphonecall(MobileMessage, beego.AppConfig.String("defaultphone"), logsign)
 		c.Data["json"] = ret
+	case "tg":
+		TgMessage := "PrometheusAlertCenter测试告警"
+		ret := SendTG(TgMessage, logsign)
+		c.Data["json"] = ret
 	default:
 		c.Data["json"] = "hahaha!"
 	}
