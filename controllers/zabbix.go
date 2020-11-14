@@ -69,6 +69,9 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 	//7mo电话
 	case "7moordh":
 		ret = ret + Post7MOORphonecall(message.ZabbixMessage, message.ZabbixTarget, logsign)
+	//telegram
+	case "tg":
+		ret = ret + SendTG(message.ZabbixMessage, logsign)
 	//异常参数
 	default:
 		ret = "参数错误"

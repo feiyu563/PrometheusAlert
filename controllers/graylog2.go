@@ -134,6 +134,16 @@ func (c *Graylog2Controller) GraylogFeishu() {
 	c.ServeJSON()
 }
 
+func (c *Graylog2Controller) GraylogTG() {
+	alert := Graylog2{}
+	logsign := "[" + LogsSign() + "]"
+	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"] = SendMessageG(alert, 11, logsign, "", "", "", "", "", "", "", "", "", "")
+	logs.Info(logsign, c.Data["json"])
+	c.ServeJSON()
+}
+
 func SendMessageG(message Graylog2, typeid int, logsign, ddurl, wxurl, fsurl, txdx, txdh, hwdx, rlydh, alydx, alydh, email string) string {
 	Title := beego.AppConfig.String("title")
 	Alerturl := beego.AppConfig.String("GraylogAlerturl")
@@ -249,7 +259,10 @@ func SendMessageG(message Graylog2, typeid int, logsign, ddurl, wxurl, fsurl, tx
 			}
 			PostToFeiShu(Title+"告警信息", FStext, fsurl, logsign)
 		}
-
+		// 推送TG
+		if typeid == 11 {
+			SendTG(PhoneCallMessage, logsign)
+		}
 	}
 	return "告警消息发送完成."
 }
