@@ -42,7 +42,11 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 			message = err.Error()
 		} else {
 			tpl.Execute(buf, p_json)
-			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_phone, P_email, logsign)
+			status := ""
+			if strings.Contains(buf.String(), "resolved") {
+				status = "resolved"
+			}
+			message = SendMessagePrometheusAlert(status, buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_phone, P_email, logsign)
 		}
 	} else {
 		message = "接口参数缺失！"
@@ -52,7 +56,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, email, logsign string) string {
+func SendMessagePrometheusAlert(status, message, ptype, pddurl, pwxurl, pfsurl, pphone, email, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	ret := ""
 	model.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
@@ -82,7 +86,7 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	case "fsv2":
 		Fsurl := strings.Split(pfsurl, ",")
 		for _, url := range Fsurl {
-			ret += PostToFeiShuv2(message, url, logsign)
+			ret += PostToFeiShuv2(Title, status, message, url, logsign)
 		}
 
 	//腾讯云短信

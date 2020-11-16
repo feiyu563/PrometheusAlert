@@ -5,9 +5,11 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -69,13 +71,21 @@ type Te struct {
 	Tag     string `json:"tag"`
 }
 
+type Header struct {
+	Title    Te     `json:"title"`
+	Template string `json:"template"`
+}
+
 type Element struct {
-	Tag  string `json:"tag"`
-	Text Te     `json:"text"`
+	Tag      string    `json:"tag"`
+	Elements []Element `json:"elements"`
+	Content  string    `json:"content"`
+	Text     Te        `json:"text"`
 }
 
 type Cards struct {
 	Config   Conf      `json:"config"`
+	Header   Header    `json:"header"`
 	Elements []Element `json:"elements"`
 }
 
@@ -85,11 +95,21 @@ type FSMessagev2 struct {
 	Card    Cards  `json:"card"`
 }
 
-func PostToFeiShuv2(text, Fsurl, logsign string) string {
+func PostToFeiShuv2(title, status, text, Fsurl, logsign string) string {
 	open := beego.AppConfig.String("open-feishuv2")
 	if open == "0" {
 		logs.Info(logsign, "[feishuv2]", "飞书v2接口未配置未开启状态,请先配置open-feishuv2为1")
 		return "飞书v2接口未配置未开启状态,请先配置open-feishuv2为1"
+	}
+
+	loc, _ := time.LoadLocation("Asia/Chongqing")
+	tStr := fmt.Sprintln(time.Now().In(loc).Format("2006-01-02 15:04:05"))
+	var color string
+
+	if status == "resolved" {
+		color = "green"
+	} else {
+		color = "red"
 	}
 
 	u := FSMessagev2{
@@ -100,12 +120,35 @@ func PostToFeiShuv2(text, Fsurl, logsign string) string {
 				WideScreenMode: true,
 				EnableForward:  true,
 			},
+			Header: Header{
+				Title: Te{
+					Content: title,
+					Tag:     "plain_text",
+				},
+				Template: color,
+			},
 			Elements: []Element{
 				Element{
 					Tag: "div",
 					Text: Te{
 						Content: text,
 						Tag:     "lark_md",
+					},
+				},
+				{
+					Tag: "hr",
+				},
+				{
+					Tag: "note",
+					Elements: []Element{
+						{
+							Content: "PrometheusAlert    ",
+							Tag:     "lark_md",
+						},
+						{
+							Content: tStr,
+							Tag:     "lark_md",
+						},
 					},
 				},
 			},
