@@ -144,6 +144,16 @@ func (c *Graylog2Controller) GraylogTG() {
 	c.ServeJSON()
 }
 
+func (c *Graylog2Controller) GraylogWorkWechat() {
+	alert := Graylog2{}
+	logsign := "[" + LogsSign() + "]"
+	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"] = SendMessageG(alert, 12, logsign, "", "", "", "", "", "", "", "", "", "")
+	logs.Info(logsign, c.Data["json"])
+	c.ServeJSON()
+}
+
 func SendMessageG(message Graylog2, typeid int, logsign, ddurl, wxurl, fsurl, txdx, txdh, hwdx, rlydh, alydx, alydh, email string) string {
 	Title := beego.AppConfig.String("title")
 	Alerturl := beego.AppConfig.String("GraylogAlerturl")
@@ -252,16 +262,20 @@ func SendMessageG(message Graylog2, typeid int, logsign, ddurl, wxurl, fsurl, tx
 			}
 			PostRLYphonecall(PhoneCallMessage, rlydh, logsign)
 		}
-		//出发飞书
+		//触发飞书
 		if typeid == 10 {
 			if fsurl == "" {
 				fsurl = beego.AppConfig.String("fsurl")
 			}
 			PostToFeiShu(Title+"告警信息", FStext, fsurl, logsign)
 		}
-		// 推送TG
+		//触发TG
 		if typeid == 11 {
 			SendTG(PhoneCallMessage, logsign)
+		}
+		//触发企业微信应用消息
+		if typeid == 12 {
+			SendWorkWechat(WXtext, logsign)
 		}
 	}
 	return "告警消息发送完成."
