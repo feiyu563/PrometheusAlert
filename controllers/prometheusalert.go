@@ -109,6 +109,9 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	// Telegram
 	case "tg":
 		ret = ret + SendTG(message, logsign)
+	// Workwechat
+	case "workwechat":
+		ret = ret + SendWorkWechat(message, logsign)
 	//异常参数
 	default:
 		ret = "参数错误"

@@ -14,5 +14,6 @@ require (
 	github.com/prometheus/client_golang v1.8.0
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	github.com/smartystreets/goconvey v1.6.4
+	github.com/ysicing/workwxbot v1.0.1
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 )
