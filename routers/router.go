@@ -42,6 +42,7 @@ func init() {
 	beego.Router("/graylog2/rlydh", &controllers.Graylog2Controller{}, "post:GraylogRLYdh")
 	beego.Router("/graylog2/email", &controllers.Graylog2Controller{}, "post:GraylogEmail")
 	beego.Router("/graylog2/tg", &controllers.Graylog2Controller{}, "post:GraylogTG")
+	beego.Router("/graylog2/workwechat", &controllers.Graylog2Controller{}, "post:GraylogWorkWechat")
 
 	//graylog3
 	//beego.Router("/graylog3/phone", &controllers.Graylog3Controller{},"post:GraylogTxdh")
@@ -56,6 +57,7 @@ func init() {
 	beego.Router("/graylog3/rlydh", &controllers.Graylog3Controller{}, "post:GraylogRLYdh")
 	beego.Router("/graylog3/email", &controllers.Graylog3Controller{}, "post:GraylogEmail")
 	beego.Router("/graylog3/tg", &controllers.Graylog3Controller{}, "post:GraylogTG")
+	beego.Router("/graylog3/workwechat", &controllers.Graylog3Controller{}, "post:GraylogWorkWechat")
 
 	//grafana
 	//beego.Router("/grafana/phone", &controllers.GrafanaController{},"post:GrafanaTxdh")
@@ -70,6 +72,8 @@ func init() {
 	beego.Router("/grafana/rlydh", &controllers.GrafanaController{}, "post:GrafanaRlydh")
 	beego.Router("/grafana/email", &controllers.GrafanaController{}, "post:GrafanaEmail")
 	beego.Router("/grafana/tg", &controllers.GrafanaController{}, "post:GrafanaTG")
+	beego.Router("/grafana/workwechat", &controllers.GrafanaController{}, "post:GrafanaWorkWechat")
+
 
 	beego.Router("/tengxun/status", &controllers.TengXunStatusController{}, "post:TengXunStatus")
 	//zabbix

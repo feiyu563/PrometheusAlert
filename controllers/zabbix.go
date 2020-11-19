@@ -72,6 +72,9 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 	//telegram
 	case "tg":
 		ret = ret + SendTG(message.ZabbixMessage, logsign)
+	//workwechat
+	case "workwechat":
+		ret = ret + SendWorkWechat(message.ZabbixMessage, logsign)
 	//异常参数
 	default:
 		ret = "参数错误"
