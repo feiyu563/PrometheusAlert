@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -18,13 +19,22 @@ type FSMessage struct {
 	Text  string `json:"text"`
 }
 
-func PostToFeiShu(title, text, Fsurl, logsign string) string {
+func PostToFS(title, text, Fsurl, logsign string) string {
 	open := beego.AppConfig.String("open-feishu")
 	if open == "0" {
 		logs.Info(logsign, "[feishu]", "飞书接口未配置未开启状态,请先配置open-feishu为1")
 		return "飞书接口未配置未开启状态,请先配置open-feishu为1"
 	}
+	RTstring := ""
+	if strings.Contains(Fsurl, "/v2/") {
+		RTstring = PostToFeiShuv2(title, text, Fsurl, logsign)
+	} else {
+		RTstring = PostToFeiShu(title, text, Fsurl, logsign)
+	}
+	return RTstring
+}
 
+func PostToFeiShu(title, text, Fsurl, logsign string) string {
 	u := FSMessage{Title: title, Text: text}
 
 	b := new(bytes.Buffer)
@@ -85,13 +95,7 @@ type FSMessagev2 struct {
 	Card    Cards  `json:"card"`
 }
 
-func PostToFeiShuv2(text, Fsurl, logsign string) string {
-	open := beego.AppConfig.String("open-feishuv2")
-	if open == "0" {
-		logs.Info(logsign, "[feishuv2]", "飞书v2接口未配置未开启状态,请先配置open-feishuv2为1")
-		return "飞书v2接口未配置未开启状态,请先配置open-feishuv2为1"
-	}
-
+func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
 	u := FSMessagev2{
 		MsgType: "interactive",
 		Email:   "244217140@qq.com",
@@ -132,14 +136,14 @@ func PostToFeiShuv2(text, Fsurl, logsign string) string {
 	client := &http.Client{Transport: tr}
 	res, err := client.Post(Fsurl, "application/json", b)
 	if err != nil {
-		logs.Error(logsign, "[feishuv2]", err.Error())
+		logs.Error(logsign, "[feishuv2]", title+": "+err.Error())
 	}
 	defer res.Body.Close()
 	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign, "[feishuv2]", err.Error())
+		logs.Error(logsign, "[feishuv2]", title+": "+err.Error())
 	}
 	model.AlertToCounter.WithLabelValues("feishuv2", text, "").Add(1)
-	logs.Info(logsign, "[feishuv2]", string(result))
+	logs.Info(logsign, "[feishuv2]", title+": "+string(result))
 	return string(result)
 }

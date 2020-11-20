@@ -15,9 +15,12 @@
 /grafana/txdx      处理Grafana告警消息转发到腾讯云短信接口，可选参数(phone)
 /grafana/txdh      处理Grafana告警消息转发到腾讯云电话接口，可选参数(phone)
 /grafana/hwdx      处理Grafana告警消息转发到华为云短信接口，可选参数(phone)
+/grafana/bddx      处理Grafana告警消息转发到百度云短信接口，可选参数(phone)
 /grafana/alydx     处理Grafana告警消息转发到阿里云短信接口，可选参数(phone)
 /grafana/rlydh     处理Grafana告警消息转发到容联云电话接口，可选参数(phone)
-/grafana/email     处理Grafana告警消息转发到容联云电话接口，可选参数(email)
+/grafana/email     处理Grafana告警消息转发到email接口，可选参数(email)
+/grafana/tg        处理Grafana告警消息转发到telegram接口
+/grafana/workwechat处理Grafana告警消息转发到企业微信应用接口
 ```
 
 关于接口说明：grafana的所有接口均支持传参,如直接使用接口，未在接口后加入参数，默认会优先使用配置文件中的参数作为告警渠道的配置。如果接口中加入了参数，将默认使用url中的参数作为告警渠道的配置。如下：
@@ -29,10 +32,13 @@
 /grafana/txdx?phone=15395105573
 /grafana/txdh?phone=15395105573
 /grafana/hwdx?phone=15395105573
+/grafana/bddx?phone=15395105573
 /grafana/alydx?phone=15395105573
 /grafana/alydh?phone=15395105573
 /grafana/rlydh?phone=15395105573
 /grafana/email?email=123@qq.com
+/grafana/tg
+/grafana/workwechat
 ```
 
 ![grafana2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/addchannel2.png)

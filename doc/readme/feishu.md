@@ -19,17 +19,8 @@ PrometheusAlert全家桶飞书配置说明
 
 复制图中的Webhook地址，并填入PrometheusAlert配置文件app.conf中对应配置项即可。
 
-飞书V1相关配置：
 
-```
-#---------------------↓webhook-----------------------
-#是否开启飞书v1告警通道,可同时开始多个通道0为关闭,1为开启
-open-feishu=1
-#默认飞书机器人地址
-fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
-```
-
- **开启飞书机器人v2（v2接口目前仅支持自定义模板接口和zabbix）**
+ **开启飞书机器人v2**
 
 进入你的目标群组，打开会话设置，找到群机器人，并点击添加机器人。选择通知机器人，添加Custom Bot（自定义机器人）加入群聊。
 ![fei4](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/feishu4.png)
@@ -39,12 +30,12 @@ fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
 消息格式参考：
 https://open.feishu.cn/document/ukTMukTMukTM/uADOwUjLwgDM14CM4ATN
 
-飞书V2相关配置：
+飞书相关配置：
 
 ```
 #---------------------↓webhook-----------------------
-#是否开启飞书v2告警通道,可同时开始多个通道0为关闭,1为开启
-open-feishuv2=1
+#是否开启飞书告警通道,可同时开始多个通道0为关闭,1为开启
+open-feishu=1
 #默认飞书机器人地址
 fsv2url=https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxxxxxxxxx
 ```

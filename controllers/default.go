@@ -115,11 +115,7 @@ func (c *MainController) AlertTest() {
 		c.Data["json"] = ret
 	case "fs":
 		fstext := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "测试告警\n\n" + "告警级别：测试\n\nPrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToFeiShu("PrometheusAlert", fstext, beego.AppConfig.String("fsurl"), logsign)
-		c.Data["json"] = ret
-	case "fsv2":
-		fsv2text := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n" + "测试告警\n" + "告警级别：测试\nPrometheusAlert\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToFeiShuv2(fsv2text, beego.AppConfig.String("fsv2url"), logsign)
+		ret := PostToFS("PrometheusAlert", fstext, beego.AppConfig.String("fsurl"), logsign)
 		c.Data["json"] = ret
 	case "txdx":
 		MobileMessage := "PrometheusAlertCenter测试告警"

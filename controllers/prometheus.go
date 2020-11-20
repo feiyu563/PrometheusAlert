@@ -183,18 +183,18 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, lo
 		//发送消息到飞书
 		if rfsurl == "" && RMessage.Annotations.Fsurl == "" {
 			url := beego.AppConfig.String("fsurl")
-			PostToFeiShu(Title+titleend, fstext, url, logsign)
+			PostToFS(Title+titleend, fstext, url, logsign)
 		} else {
 			if rfsurl != "" {
 				Fsurl := strings.Split(rfsurl, ",")
 				for _, url := range Fsurl {
-					PostToFeiShu(Title+titleend, fstext, url, logsign)
+					PostToFS(Title+titleend, fstext, url, logsign)
 				}
 			}
 			if RMessage.Annotations.Fsurl != "" {
 				Fsurl := strings.Split(RMessage.Annotations.Fsurl, ",")
 				for _, url := range Fsurl {
-					PostToFeiShu(Title+titleend, fstext, url, logsign)
+					PostToFS(Title+titleend, fstext, url, logsign)
 				}
 			}
 		}
@@ -219,18 +219,21 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, lo
 				PostHWmessage(MobileMessage, phone, logsign)
 				PostALYmessage(MobileMessage, phone, logsign)
 				Post7MOORmessage(MobileMessage, phone, logsign)
+				PostBDYmessage(MobileMessage, phone, logsign)
 			} else {
 				if rphone != "" {
 					PostTXmessage(MobileMessage, rphone, logsign)
 					PostHWmessage(MobileMessage, rphone, logsign)
 					PostALYmessage(MobileMessage, rphone, logsign)
 					Post7MOORmessage(MobileMessage, rphone, logsign)
+					PostBDYmessage(MobileMessage, rphone, logsign)
 				}
 				if RMessage.Annotations.Mobile != "" {
 					PostTXmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
 					PostHWmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
 					PostALYmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
 					Post7MOORmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
+					PostBDYmessage(MobileMessage, RMessage.Annotations.Mobile, logsign)
 				}
 			}
 		}

@@ -2,11 +2,12 @@ package controllers
 
 import (
 	"bufio"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 //转换UTC时区到CST
@@ -63,6 +64,8 @@ func GetUserPhone(neednum int) string {
 			}
 		}
 		f.Close()
+	} else {
+		logs.Error(err.Error())
 	}
 	return Num
 }

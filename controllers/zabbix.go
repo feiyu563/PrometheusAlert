@@ -41,16 +41,16 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 		ret = PostToDingDing("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//飞书v1渠道
 	case "fs":
-		ret = PostToFeiShu("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, logsign)
-	//飞书v2渠道
-	case "fsv2":
-		ret = PostToFeiShuv2(message.ZabbixMessage, message.ZabbixTarget, logsign)
+		ret = PostToFS("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//腾讯云短信
 	case "txdx":
 		ret = PostTXmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//华为云短信
 	case "hwdx":
 		ret = ret + PostHWmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
+	//百度云短信
+	case "bddx":
+		ret = ret + PostBDYmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//阿里云短信
 	case "alydx":
 		ret = ret + PostALYmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
