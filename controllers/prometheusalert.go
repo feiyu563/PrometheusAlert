@@ -27,6 +27,9 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_wxurl := c.Input().Get("wxurl")
 	P_fsurl := c.Input().Get("fsurl")
 	P_phone := c.Input().Get("phone")
+	if P_phone == "" {
+		P_phone = GetUserPhone(1)
+	}
 	P_email := c.Input().Get("email")
 	//get tpl
 	message := ""
@@ -75,14 +78,7 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	case "fs":
 		Fsurl := strings.Split(pfsurl, ",")
 		for _, url := range Fsurl {
-			ret += PostToFeiShu(Title+"告警消息", message, url, logsign)
-		}
-
-	//飞书渠道
-	case "fsv2":
-		Fsurl := strings.Split(pfsurl, ",")
-		for _, url := range Fsurl {
-			ret += PostToFeiShuv2(message, url, logsign)
+			ret += PostToFS(Title+"告警消息", message, url, logsign)
 		}
 
 	//腾讯云短信
@@ -91,6 +87,9 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	//华为云短信
 	case "hwdx":
 		ret = ret + PostHWmessage(message, pphone, logsign)
+	//百度云短信
+	case "bddx":
+		ret = ret + PostBDYmessage(message, pphone, logsign)
 	//阿里云短信
 	case "alydx":
 		ret = ret + PostALYmessage(message, pphone, logsign)

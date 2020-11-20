@@ -3,9 +3,10 @@ package controllers
 import (
 	"PrometheusAlert/model"
 	"encoding/json"
+	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"time"
 )
 
 type GrafanaController struct {
@@ -30,7 +31,7 @@ func (c *GrafanaController) GrafanaEmail() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 1, logsign, "", "", "", "", "", "", "", "", "", email)
+	c.Data["json"] = SendMessageGrafana(alert, 1, logsign, "", "", "", "", "", "", "", "", "", email, "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -40,7 +41,7 @@ func (c *GrafanaController) GrafanaDingding() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 2, logsign, ddurl, "", "", "", "", "", "", "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 2, logsign, ddurl, "", "", "", "", "", "", "", "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -51,7 +52,7 @@ func (c *GrafanaController) GrafanaWeixin() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 3, logsign, "", wxurl, "", "", "", "", "", "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 3, logsign, "", wxurl, "", "", "", "", "", "", "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -62,7 +63,7 @@ func (c *GrafanaController) GrafanaTxdh() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 4, logsign, "", "", "", "", phone, "", "", "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 4, logsign, "", "", "", "", phone, "", "", "", "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -73,7 +74,7 @@ func (c *GrafanaController) GrafanaTxdx() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 5, logsign, "", "", "", phone, "", "", "", "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 5, logsign, "", "", "", phone, "", "", "", "", "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -84,7 +85,7 @@ func (c *GrafanaController) GrafanaHwdx() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 6, logsign, "", "", "", "", "", phone, "", "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 6, logsign, "", "", "", "", "", phone, "", "", "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -95,7 +96,7 @@ func (c *GrafanaController) GrafanaALYdx() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 7, logsign, "", "", "", "", "", "", "", phone, "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 7, logsign, "", "", "", "", "", "", "", phone, "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -106,7 +107,7 @@ func (c *GrafanaController) GrafanaALYdh() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 8, logsign, "", "", "", "", "", "", "", "", phone, "")
+	c.Data["json"] = SendMessageGrafana(alert, 8, logsign, "", "", "", "", "", "", "", "", phone, "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -117,7 +118,7 @@ func (c *GrafanaController) GrafanaRlydh() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 9, logsign, "", "", "", "", "", "", phone, "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 9, logsign, "", "", "", "", "", "", phone, "", "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -128,7 +129,7 @@ func (c *GrafanaController) GrafanaFeishu() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 10, logsign, "", "", fsurl, "", "", "", "", "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 10, logsign, "", "", fsurl, "", "", "", "", "", "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -138,7 +139,7 @@ func (c *GrafanaController) GrafanaTG() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 11, logsign, "", "", "", "", "", "", "", "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 11, logsign, "", "", "", "", "", "", "", "", "", "", "")
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
@@ -148,13 +149,24 @@ func (c *GrafanaController) GrafanaWorkWechat() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageGrafana(alert, 12, logsign, "", "", "", "", "", "", "", "", "", "")
+	c.Data["json"] = SendMessageGrafana(alert, 12, logsign, "", "", "", "", "", "", "", "", "", "", "")
+	logs.Info(logsign, c.Data["json"])
+	c.ServeJSON()
+}
+
+func (c *GrafanaController) GrafanaBddx() {
+	alert := Grafana{}
+	phone := c.GetString("phone")
+	logsign := "[" + LogsSign() + "]"
+	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+	c.Data["json"] = SendMessageGrafana(alert, 13, logsign, "", "", "", "", "", "", "", "", "", "", phone)
 	logs.Info(logsign, c.Data["json"])
 	c.ServeJSON()
 }
 
 //typeid 为0,触发电话告警和钉钉告警, typeid 为1 仅触发dingding告警
-func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsurl, txdx, txdh, hwdx, rlydh, alydx, alydh, email string) string {
+func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsurl, txdx, txdh, hwdx, rlydh, alydx, alydh, email, bddx string) string {
 	Title := beego.AppConfig.String("title")
 	Logourl := beego.AppConfig.String("logourl")
 	Rlogourl := beego.AppConfig.String("rlogourl")
@@ -268,6 +280,13 @@ func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsur
 	//触发企业微信消息
 	if typeid == 12 {
 		SendWorkWechat(WXtext, logsign)
+	}
+	//触发百度云短信告警
+	if typeid == 13 {
+		if bddx == "" {
+			bddx = GetUserPhone(1)
+		}
+		PostBDYmessage(PhoneCallMessage, bddx, logsign)
 	}
 	return "告警消息发送完成."
 }

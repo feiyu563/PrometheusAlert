@@ -30,15 +30,17 @@
                           <select class="form-control" name="type" id="type" onchange="typeChange()">
                             <option value="dd">钉钉</option>
                             <option value="wx">企业微信</option>
+                            <option value="workwechat">企业微信应用</option>
                             <option value="fs">飞书</option>
-                            <option value="fsv2">飞书v2</option>
                             <option value="txdx">腾讯云短信</option>
                             <option value="txdh">腾讯云电话</option>
                             <option value="alydx">阿里云短信</option>
                             <option value="alydh">阿里云电话</option>
                             <option value="hwdx">华为云短信</option>
+                            <option value="bddx">百度云短信</option>
                             <option value="rlydh">容联云电话</option>
                             <option value="email">Email</option>
+							<option value="tg">Telegram</option>
                           </select>
 						</div>
 						<br />
@@ -92,8 +94,6 @@
 					        typeStr.innerText="微信机器人地址";
 					     } else if(typeSelect=="fs"){
 					        typeStr.innerText="飞书机器人地址";
-					     } else if(typeSelect=="fsv2"){
-					        typeStr.innerText="飞书v2机器人地址";
 					     } else if(typeSelect=="email"){
 					        typeStr.innerText="邮箱(多个请以,隔开)";
 					     } else{
@@ -142,8 +142,6 @@
 							} else if(utype.value=="wx"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value;
 							} else if(utype.value=="fs"){
-							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
-							} else if(utype.value=="fsv2"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
 							} else if(utype.value=="email"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;

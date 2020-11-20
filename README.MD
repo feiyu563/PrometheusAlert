@@ -44,7 +44,7 @@ chmod a+x PrometheusAlert
 
 -----------------
 
-PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube等支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，容联云电话，七陌短信，七陌语音等。
+PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram等。
 
 ![it](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/it.png)
 
@@ -54,7 +54,7 @@ PrometheusAlert具备如下特性
 ---------------------
 
  - 支持任意包含WebHook接口系统的消息作为消息来源，常见的如Prometheus，Zabbix，Graylog2，Graylog3，Grafana，SonarQube和其他WebHook接口的系统。
- - 支持多种类型的发送目标，支持钉钉，微信，email，飞书，腾讯短信，腾讯语音，阿里云短信，阿里云语音，华为短信，容联云电话，七陌短信，七陌语音。
+ - 支持多种类型的发送目标，支持钉钉，企业微信，email，飞书，腾讯短信，腾讯语音，阿里云短信，阿里云语音，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram。
  - 针对Prometheus增加了告警级别，并且支持按照不同级别发送消息到不同目标对象。
  - 简化Prometheus分组配置，支持按照具体消息发送到单个或多个接收方。
  - 增加手机号码配置项和号码自动轮询配置，可固定发送给单一个人告警信息，也可以通过自动轮询的方式发送到多个人员且支持按照不同日期发送到不同人员。
@@ -89,12 +89,15 @@ PrometheusAlert具备如下特性
   * [钉钉告警配置](doc/readme/dingding.md)
   * [飞书告警配置](doc/readme/feishu.md)
   * [企业微信告警配置](doc/readme/wechat.md)
+  * [企业微信应用告警配置](doc/readme/workwechat.md)
   * [阿里云短信和电话告警配置](doc/readme/aliyun.md)
   * [腾讯云短信和电话告警配置](doc/readme/tx.md)
   * [容联云电话告警配置](doc/readme/rly.md)
   * [华为云短信配置](doc/readme/hw.md)
+  * [百度云短信配置](doc/readme/bd.md)
   * [Email配置](doc/readme/email.md)
   * [七陌短信和电话告警配置](doc/readme/7moor.md)
+  * [TeleGram告警配置](doc/readme/tg.md)
 * [告警源配置(内置固定消息模版)](https://feiyu563.gitbook.io/prometheusalert)
   * [Prometheus配置](doc/readme/prometheus.md)
   * [graylog配置](doc/readme/graylog.md)
