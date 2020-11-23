@@ -145,3 +145,4 @@ gopkg.in/ini.v1
 # gopkg.in/yaml.v2 v2.3.0
 gopkg.in/yaml.v2
 # github.com/Unknwon/com => github.com/unknwon/com v1.0.1
+github.com/baidubce/bce-sdk-go
