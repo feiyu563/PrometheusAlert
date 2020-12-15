@@ -4,7 +4,7 @@ PrometheusAlert全家桶钉钉配置说明
 
  **开启钉钉机器人**
 
-打开钉钉,进入钉钉群中,选择群设置-->群机器人-->自定义，可参下图：
+打开钉钉,进入钉钉群中,选择群设置-->智能群助手-->添加机器人-->自定义，可参下图：
 
 ![ding](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dingding1.png)
 
