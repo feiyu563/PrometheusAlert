@@ -27,6 +27,15 @@ github.com/astaxie/beego/orm
 github.com/astaxie/beego/session
 github.com/astaxie/beego/toolbox
 github.com/astaxie/beego/utils
+# github.com/baidubce/bce-sdk-go v0.9.32
+## explicit
+github.com/baidubce/bce-sdk-go/auth
+github.com/baidubce/bce-sdk-go/bce
+github.com/baidubce/bce-sdk-go/http
+github.com/baidubce/bce-sdk-go/services/sms
+github.com/baidubce/bce-sdk-go/services/sms/api
+github.com/baidubce/bce-sdk-go/util
+github.com/baidubce/bce-sdk-go/util/log
 # github.com/beorn7/perks v1.0.1
 github.com/beorn7/perks/quantile
 # github.com/cespare/xxhash/v2 v2.1.1
@@ -145,4 +154,3 @@ gopkg.in/ini.v1
 # gopkg.in/yaml.v2 v2.3.0
 gopkg.in/yaml.v2
 # github.com/Unknwon/com => github.com/unknwon/com v1.0.1
-github.com/baidubce/bce-sdk-go
