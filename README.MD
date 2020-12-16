@@ -23,13 +23,16 @@
 ## 启动
 
 ```
-sh build.sh
+#clone项目源代码
+git clone https://github.com/feiyu563/PrometheusAlert.git
 
-Prometheus使用同目录下的conf/app.conf配置文件
-cp conf/app-example.conf conf/app.conf
+#进入程序目录并运行PrometheusAlert
+cd PrometheusAlert/example/linux/
 
-chmod a+x PrometheusAlert
-/path/dir/xxx/PrometheusAlert
+#运行PrometheusAlert
+./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
+
+#启动后可使用浏览器打开以下地址查看：http://xxx.xxx.xxx.xxx:8080
 ```
 
 
