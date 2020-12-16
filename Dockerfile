@@ -14,9 +14,11 @@ RUN go mod vendor && go build
 
 # -----------------------------------------------------------------------------
 
-FROM golang:1.14-alpine3.12
+FROM alpine:3.12
 
 LABEL maintainer="jikun.zhang"
+
+RUN apk update && apk upgrade && apk add --no-cache sqlite-libs
 
 WORKDIR /app
 
