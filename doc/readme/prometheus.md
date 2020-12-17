@@ -93,7 +93,7 @@ receivers:
 
 3)通过自定义告警消息模版的方式
 
-具体参考：[PrometheusAlert高级自定义消息模版玩法](https://feiyu563.gitbook.io/prometheusalert)
+具体参考：[PrometheusAlert高级自定义消息模版玩法](customtpl.md)
 
 最终告警效果:
 
