@@ -69,3 +69,28 @@ helm install -n monitoring .
 
 #启动后可使用浏览器打开以下地址查看: http://[Ingress_url]:[Ingress_port]
 ```
+--------------------------------------------------------------------
+
+配置PrometheusAlert使用mysql作为后端数据存储
+----
+- PrometheusAlert默认使用sqlite3作为后端自定义模板的存储，这种方式适合于单机部署，满足绝大部分生产场景使用。考虑到部分企业对于服务的高可用要求较高，同时也为了让PrometheusAlert更易于横向扩展，用户可以更改PrometheusAlert的默认存储为mysql。（推荐使用mysql 5.7及以上版本）
+- 1.创建数据库
+    ```
+    CREATE DATABASE prometheusalert CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    ```
+- 2.利用`Navicat`或命令行将`db目录`中的 `prometheusalert.sql` 导入数据库`prometheusalert`
+    ```
+    use prometheusalert
+    source prometheusalert.sql
+    ```
+- 3.开启PrometheusAlert配置文件中关于mysql的配置 conf/app.conf，数据库名称与上面创建的数据一致
+
+    ```
+    #数据库驱动，支持sqlite3，mysql,如使用mysql，请开启db_host,db_user,db_password,db_name的注释
+    db_driver=mysql
+    db_host=127.0.0.1:3306
+    db_user=root
+    db_password=root
+    db_name=prometheusalert
+    ```
+- 重启PrometheusAlert，这样即完成配置PrometheusAlert使用mysql数据库作为默认后端存储。

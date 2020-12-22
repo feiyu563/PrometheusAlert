@@ -84,9 +84,19 @@ type Element struct {
 	Text Te     `json:"text"`
 }
 
+type Titles struct {
+	Content  string `json:"content"`
+	Tag string `json:"tag"`
+}
+
+type Headers struct {
+	Title  Titles `json:"title"`
+}
+
 type Cards struct {
 	Config   Conf      `json:"config"`
 	Elements []Element `json:"elements"`
+	Header Headers `json:"header"`
 }
 
 type FSMessagev2 struct {
@@ -103,6 +113,12 @@ func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
 			Config: Conf{
 				WideScreenMode: true,
 				EnableForward:  true,
+			},
+			Header:Headers{
+				Title:Titles{
+					Content:title,
+					Tag:"plain_text",
+				},
 			},
 			Elements: []Element{
 				Element{
