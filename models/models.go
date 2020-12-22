@@ -12,7 +12,7 @@ type PrometheusAlertDB struct {
 	Tpltype string
 	Tpluse  string
 	Tplname string `orm:"index"`
-	Tpl     string
+	Tpl     string `orm:"type(text)"`
 	Created time.Time
 }
 

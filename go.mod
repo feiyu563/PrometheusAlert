@@ -10,6 +10,7 @@ require (
 	github.com/astaxie/beego v1.12.1
 	github.com/baidubce/bce-sdk-go v0.9.32
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.0.0-rc1.0.20201106042948-366879b11047
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/prometheus/client_golang v1.8.0
