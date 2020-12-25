@@ -24,6 +24,8 @@ WORKDIR /app
 
 COPY --from=builder /go/src/github.com/feiyu563/PrometheusAlert/PrometheusAlert .
 
+COPY db/PrometheusAlertDB.db /opt/PrometheusAlertDB.db
+
 COPY conf/app-example.conf conf/app.conf
 
 COPY db db
@@ -34,4 +36,6 @@ COPY static static
 
 COPY views views
 
-ENTRYPOINT [ "/app/PrometheusAlert" ]
+#ENTRYPOINT [ "/app/PrometheusAlert" ]
+
+CMD if [ ! -f /app/db/PrometheusAlertDB.db ];then cp /opt/PrometheusAlertDB.db /app/db/PrometheusAlertDB.db;echo 'init ok!';else echo 'pass!';fi && /app/PrometheusAlert
