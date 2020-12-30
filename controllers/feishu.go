@@ -80,23 +80,26 @@ type Te struct {
 }
 
 type Element struct {
-	Tag  string `json:"tag"`
-	Text Te     `json:"text"`
+	Tag      string    `json:"tag"`
+	Text     Te        `json:"text"`
+	Content  string    `json:"content"`
+	Elements []Element `json:"elements"`
 }
 
 type Titles struct {
-	Content  string `json:"content"`
-	Tag string `json:"tag"`
+	Content string `json:"content"`
+	Tag     string `json:"tag"`
 }
 
 type Headers struct {
-	Title  Titles `json:"title"`
+	Title    Titles `json:"title"`
+	Template string `json:"template"`
 }
 
 type Cards struct {
 	Config   Conf      `json:"config"`
 	Elements []Element `json:"elements"`
-	Header Headers `json:"header"`
+	Header   Headers   `json:"header"`
 }
 
 type FSMessagev2 struct {
@@ -106,6 +109,14 @@ type FSMessagev2 struct {
 }
 
 func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
+	var color string
+	if strings.Count(text, "resolved") > 0 && strings.Count(text, "firing") > 0 {
+		color = "orange"
+	} else if strings.Count(text, "resolved") > 0 {
+		color = "green"
+	} else {
+		color = "red"
+	}
 	u := FSMessagev2{
 		MsgType: "interactive",
 		Email:   "244217140@qq.com",
@@ -114,11 +125,12 @@ func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
 				WideScreenMode: true,
 				EnableForward:  true,
 			},
-			Header:Headers{
-				Title:Titles{
-					Content:title,
-					Tag:"plain_text",
+			Header: Headers{
+				Title: Titles{
+					Content: title,
+					Tag:     "plain_text",
 				},
+				Template: color,
 			},
 			Elements: []Element{
 				Element{
@@ -126,6 +138,18 @@ func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
 					Text: Te{
 						Content: text,
 						Tag:     "lark_md",
+					},
+				},
+				{
+					Tag: "hr",
+				},
+				{
+					Tag: "note",
+					Elements: []Element{
+						{
+							Content: "PrometheusAlert    ",
+							Tag:     "lark_md",
+						},
 					},
 				},
 			},
