@@ -27,7 +27,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_wxurl := c.Input().Get("wxurl")
 	P_fsurl := c.Input().Get("fsurl")
 	P_phone := c.Input().Get("phone")
-	if P_phone == "" {
+	if P_phone == "" && P_type == "txdx" || P_type == "hwdx" || P_type == "bddx" || P_type == "alydx" || P_type == "txdh" || P_type == "alydh" || P_type == "rlydh" {
 		P_phone = GetUserPhone(1)
 	}
 	P_email := c.Input().Get("email")
