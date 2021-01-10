@@ -196,7 +196,9 @@ receivers:
 ```
 
 4.2 `TimeFormat` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于格式化时间显示
+
 如下示例将prmetheus的告警时间格式改为：2006-01-02T15:04:05
+
 ```
 {{ $var := .externalURL}}{{ range $k,$v:=.alerts }}
 {{if eq $v.status "resolved"}}
