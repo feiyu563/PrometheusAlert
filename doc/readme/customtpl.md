@@ -139,7 +139,7 @@ receivers:
 ----------------------------------------------------------------------
 4.关于自定义模版函数
 
-`GetCSTtime` 自定义函数仅支持在PrometheusAlert的自定义模版中使用
+4.1 `GetCSTtime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于强制将时间字段时区从UTC转换到CST
 
 目前支持两种使用方式：
 
@@ -188,6 +188,32 @@ receivers:
 ###### 告警级别：{{$v.labels.level}}
 ###### 开始时间：{{GetCSTtime $v.startsAt}}
 ###### 结束时间：{{GetCSTtime $v.endsAt}}
+###### 故障主机IP：{{$v.labels.instance}}
+##### {{$v.annotations.description}}
+![Prometheus](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png)
+{{end}}
+{{ end }}
+```
+
+4.2 `TimeFormat` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于格式化时间显示
+如下示例将prmetheus的告警时间格式改为：2006-01-02T15:04:05
+```
+{{ $var := .externalURL}}{{ range $k,$v:=.alerts }}
+{{if eq $v.status "resolved"}}
+## [Prometheus恢复信息]({{$v.generatorURL}})
+#### [{{$v.labels.alertname}}]({{$var}})
+###### 告警级别：{{$v.labels.level}}
+###### 开始时间：{{TimeFormat $v.startsAt "2006-01-02T15:04:05"}}  
+###### 结束时间：{{TimeFormat $v.endsAt "2006-01-02T15:04:05"}}
+###### 故障主机IP：{{$v.labels.instance}}
+##### 当前时间 {{GetCSTtime ""}} {{$v.annotations.description}}  #{{GetCSTtime ""}} 即会自动获取当前的时间嵌入到消息中
+![Prometheus](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png)
+{{else}}
+## [Prometheus告警信息]({{$v.generatorURL}})
+#### [{{$v.labels.alertname}}]({{$var}})
+###### 告警级别：{{$v.labels.level}}
+###### 开始时间：{{TimeFormat $v.startsAt "2006-01-02T15:04:05"}}
+###### 结束时间：{{TimeFormat $v.endsAt "2006-01-02T15:04:05"}}
 ###### 故障主机IP：{{$v.labels.instance}}
 ##### {{$v.annotations.description}}
 ![Prometheus](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png)
