@@ -33,13 +33,18 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_email := c.Input().Get("email")
 	//get tpl
 	message := ""
+	funcMap := template.FuncMap{
+		"GetCSTtime": GetCSTtime,
+		"TimeFormat": TimeFormat,
+	}
 	if P_tpl != "" && P_type != "" {
 		tpltext, err := models.GetTplOne(P_tpl)
 		if err != nil {
 			logs.Error(logsign, err)
 		}
 		buf := new(bytes.Buffer)
-		tpl, err := template.New("").Funcs(template.FuncMap{"GetCSTtime": GetCSTtime}).Parse(tpltext.Tpl)
+		//tpl, err := template.New("").Funcs(template.FuncMap{"GetCSTtime": GetCSTtime}).Parse(tpltext.Tpl)
+		tpl, err := template.New("").Funcs(funcMap).Parse(tpltext.Tpl)
 		if err != nil {
 			logs.Error(logsign, err.Error())
 			message = err.Error()
