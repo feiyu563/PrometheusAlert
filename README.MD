@@ -74,6 +74,7 @@ PrometheusAlert具备如下特性
  - [@bigdimple](https://github.com/bigdimple)
  - [@ysicing](https://github.com/ysicing)
  - [@Zhang21](https://github.com/Zhang21)
+ - [@jicki](https://github.com/jicki)
 
 
 --------------------------------------
