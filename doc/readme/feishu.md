@@ -37,5 +37,5 @@ https://open.feishu.cn/document/ukTMukTMukTM/uADOwUjLwgDM14CM4ATN
 #是否开启飞书告警通道,可同时开始多个通道0为关闭,1为开启
 open-feishu=1
 #默认飞书机器人地址
-fsv2url=https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxxxxxxxxx
+fsurl=https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxxxxxxxxx
 ```
