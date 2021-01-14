@@ -202,7 +202,11 @@ data:
     WorkWechat_ToTag=""
     # 消息类型, 暂时只支持markdown
     # WorkWechat_Msgtype = "markdown"
-
+  user.csv: |
+    2019年4月10日,15888888881,小张,15999999999,备用联系人小陈,15999999998,备用联系人小赵
+    2019年4月11日,15888888882,小李,15999999999,备用联系人小陈,15999999998,备用联系人小赵
+    2019年4月12日,15888888883,小王,15999999999,备用联系人小陈,15999999998,备用联系人小赵
+    2019年4月13日,15888888884,小宋,15999999999,备用联系人小陈,15999999998,备用联系人小赵
 kind: ConfigMap
 metadata:
   name: prometheus-alert-center-conf
@@ -217,7 +221,7 @@ metadata:
   name: prometheus-alert-center
 #   namespace: monitoring  
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: prometheus-alert-center
@@ -248,6 +252,9 @@ spec:
         - name: prometheus-alert-center-conf-map
           mountPath: /app/conf/app.conf
           subPath: app.conf
+        - name: prometheus-alert-center-conf
+          mountPath: /app/user.csv
+          subPath: user.csv
       volumes:
       - name: prometheus-alert-center-conf-map
         configMap:
@@ -255,6 +262,8 @@ spec:
           items:
           - key: app.conf
             path: app.conf
+          - key: user.csv
+            path: user.csv
 ---
 apiVersion: v1
 kind: Service
