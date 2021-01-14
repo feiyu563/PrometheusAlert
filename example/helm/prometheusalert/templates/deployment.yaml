@@ -31,6 +31,9 @@ spec:
           - name: prometheus-alert-center-conf
             mountPath: /app/conf/app.conf
             subPath: app.conf
+          - name: prometheus-alert-center-conf
+            mountPath: /app/user.csv
+            subPath: user.csv
           livenessProbe:
             httpGet:
               path: /
@@ -60,3 +63,5 @@ spec:
           items:
           - key: app.conf
             path: app.conf
+          - key: user.csv
+            path: user.csv

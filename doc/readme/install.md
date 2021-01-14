@@ -60,12 +60,12 @@ kubectl app -n monitoring -f https://raw.githubusercontent.com/feiyu563/Promethe
 ```
 #clone项目源代码
 git clone https://github.com/feiyu563/PrometheusAlert.git
-cd PrometheusAlert/example/helm/prometheusalert
+cd PrometheusAlert/example/helm
 
 #如需修改配置文件,请更新config中的app.conf
 #helm部署模版支持配置Ingress域名，可在values.yaml中进行配置
 #配置修改完成后，通过以下命令启动即可(注意默认的部署模版中未挂载模版数据库文件 db/PrometheusAlertDB.db，为防止模版数据丢失，请自行增加挂载配置 )
-helm install -n monitoring .
+helm upgrade --install monitor prometheusalert -n monitoring
 
 #启动后可使用浏览器打开以下地址查看: http://[Ingress_url]:[Ingress_port]
 ```
