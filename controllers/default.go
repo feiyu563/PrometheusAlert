@@ -161,7 +161,7 @@ func (c *MainController) AlertTest() {
 		c.Data["json"] = ret
 	case "workwechat":
 		WorkwechatMessage := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n" + "测试告警\n" + "告警级别：测试\nPrometheusAlert\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := SendWorkWechat(WorkwechatMessage, logsign)
+		ret := SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"),beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"),WorkwechatMessage, logsign)
 		c.Data["json"] = ret
 	default:
 		c.Data["json"] = "hahaha!"

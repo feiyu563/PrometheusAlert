@@ -21,3 +21,7 @@ WorkWechat_ToTag=""
 # 消息类型, 暂时只支持markdown
 # WorkWechat_Msgtype = "markdown"
 ```
+
+特别提醒，目前仅自定义模板接口（`/prometheusalert`）支持动态定义 `接受用户`,`接受部门`,`接受标签`.其他接口均默认使用配置文件中的固定配置。
+
+![workwechat1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/workwechat1.png)
