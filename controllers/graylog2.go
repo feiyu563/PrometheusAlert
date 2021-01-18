@@ -285,7 +285,7 @@ func SendMessageG(message Graylog2, typeid int, logsign, ddurl, wxurl, fsurl, tx
 		}
 		//触发企业微信应用消息
 		if typeid == 12 {
-			SendWorkWechat(WXtext, logsign)
+			SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"),beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"),WXtext, logsign)
 		}
 		//触发百度云短信告警
 		if typeid == 13 {

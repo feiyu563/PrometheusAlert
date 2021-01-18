@@ -268,7 +268,8 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, lo
 		// 发送消息到Telegram
 		SendTG(PhoneCallMessage, logsign)
 		// 推送消息到企业微信
-		SendWorkWechat(wxtext, logsign)
+		SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"),beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"),wxtext, logsign)
+
 		//告警抑制开启就直接跳出循环
 		if Silent == 1 {
 			break

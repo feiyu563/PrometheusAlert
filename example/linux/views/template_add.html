@@ -74,6 +74,18 @@
 					    </div>
 					    <br />
 						
+					    <div id="Party" class="input-group" style="display:none">
+					    <span class="input-group-addon" id="typestr">接受部门</span>
+					    <input type="text" id="purl" class="form-control" name="purl" value="">
+					    </div>
+					    <br />
+						
+					    <div id="Tag" class="input-group" style="display:none">
+					    <span class="input-group-addon" id="typestr">接受标签</span>
+					    <input type="text" id="purl" class="form-control" name="purl" value="">
+					    </div>
+					    <br />
+						
 					    <div class="text-right">
 						<span style="color:red;font-weight:bold">进行模版测试前请先点击保存模版</span>
 					    <button type="button" class="btn btn-primary" onclick="savetpl();">保存模版</button>
@@ -90,14 +102,28 @@
 						 
 					     if (typeSelect=="dd"){
 					        typeStr.innerText="钉钉机器人地址";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="wx"){
 					        typeStr.innerText="微信机器人地址";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="fs"){
 					        typeStr.innerText="飞书机器人地址";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="email"){
 					        typeStr.innerText="邮箱(多个请以,隔开)";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="workwechat"){
+					        typeStr.innerText="接受用户";
+							document.getElementById("Party").style.display="";
+							document.getElementById("Tag").style.display="";
 					     } else{
 					        typeStr.innerText="手机号";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
 					     }
 						 
                         }
@@ -136,6 +162,8 @@
 							var utype=document.getElementById("type");
 							var upjson=document.getElementById("pjson");
 							var upurl=document.getElementById("purl");
+							var upparty=document.getElementById("pparty");
+							var uptag=document.getElementById("ptag");
 							var sendurl="";
 							if (utype.value=="dd"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&ddurl='+upurl.value;
@@ -145,6 +173,8 @@
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
 							} else if(utype.value=="email"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
+							} else if(utype.value=="workwechat"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxuser='+upurl.value+'&wxparty='+upparty.value+'&wxtag='+uptag.value;
 							} else{
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&phone='+upurl.value;
 							}
