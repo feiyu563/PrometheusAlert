@@ -252,7 +252,7 @@ spec:
         - name: prometheus-alert-center-conf-map
           mountPath: /app/conf/app.conf
           subPath: app.conf
-        - name: prometheus-alert-center-conf
+        - name: prometheus-alert-center-conf-map
           mountPath: /app/user.csv
           subPath: user.csv
       volumes:
