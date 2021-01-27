@@ -22,7 +22,7 @@ type WXMessage struct {
 
 func PostToWeiXin(text, WXurl, logsign string) string {
 	open := beego.AppConfig.String("open-weixin")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[weixin]", "企业微信接口未配置未开启状态,请先配置open-weixin为1")
 		return "企业微信接口未配置未开启状态,请先配置open-weixin为1"
 	}

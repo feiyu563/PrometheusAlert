@@ -26,7 +26,7 @@ type DDMessage struct {
 
 func PostToDingDing(title, text, Ddurl, logsign string) string {
 	open := beego.AppConfig.String("open-dingding")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[dingding]", "钉钉接口未配置未开启状态,请先配置open-dingding为1")
 		return "钉钉接口未配置未开启状态,请先配置open-dingding为1"
 	}

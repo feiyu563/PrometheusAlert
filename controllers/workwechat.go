@@ -13,7 +13,7 @@ import (
 // SendWorkWechat 发送微信企业应用消息
 func SendWorkWechat(touser,toparty,totag,msg, logsign string) string {
 	open := beego.AppConfig.String("open-workwechat")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[workwechat]", "workwechat未配置未开启状态,请先配置open-workwechat为1")
 		return "workwechat未配置未开启状态,请先配置open-workwechat为1"
 	}
