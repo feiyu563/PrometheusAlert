@@ -12,7 +12,7 @@ import (
 
 func PostALYmessage(Messages, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-alydx")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[alymessage]", "阿里云短信接口未配置未开启状态,请先配置open-alydx为1")
 		return "阿里云短信接口未配置未开启状态,请先配置open-alydx为1"
 	}
@@ -39,7 +39,7 @@ func PostALYmessage(Messages, PhoneNumbers, logsign string) string {
 }
 func PostALYphonecall(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-alydh")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[alyphonecall]", "阿里云电话接口未配置未开启状态,请先配置open-alydh为1")
 		return "阿里云电话接口未配置未开启状态,请先配置open-alydh为1"
 	}

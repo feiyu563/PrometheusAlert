@@ -57,7 +57,7 @@ func Get7MoorSigAuth() (string, string) {
 // Post7MOORmessage sends sms message by 7moor
 func Post7MOORmessage(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-7moordx")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[7moordx]", "七陌短信接口未配置为开启状态，请先配置open-7moordx为1")
 		return "陌短信接口未配置为开启状态，请先配置open-7moordx为1"
 	}
@@ -130,7 +130,7 @@ func Post7MOORphonecall(Messages string, PhoneNumbers, logsign string) string {
 // webcallPost makes phonecall by 7moor webcall
 func webcallPost(Messages string, PhoneNumber, logsign string) string {
 	open := beego.AppConfig.String("open-7moordh")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[7moorphonecall]", "七陌语音通知接口未配置为开启状态，请先配置open-7moordh为1")
 		return "七陌语音通知接口未配置为开启状态，请先配置open-7moordh为1"
 	}

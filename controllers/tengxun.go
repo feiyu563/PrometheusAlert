@@ -44,7 +44,7 @@ type TXmessage struct {
 //腾讯短信子程序
 func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-txdx")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[txmessage]", "腾讯短信接口未配置未开启状态,请先配置open-txdx为1")
 		return "腾讯短信接口未配置未开启状态,请先配置open-txdx为1"
 	}
@@ -130,7 +130,7 @@ type TXphonecall struct {
 //腾讯语音子程序
 func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-txdh")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[txphonecall]", "腾讯语音接口未配置未开启状态,请先配置open-txdh为1")
 		return "腾讯语音接口未配置未开启状态,请先配置open-txdh为1"
 	}

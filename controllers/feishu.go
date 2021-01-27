@@ -21,7 +21,7 @@ type FSMessage struct {
 
 func PostToFS(title, text, Fsurl, logsign string) string {
 	open := beego.AppConfig.String("open-feishu")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[feishu]", "飞书接口未配置未开启状态,请先配置open-feishu为1")
 		return "飞书接口未配置未开启状态,请先配置open-feishu为1"
 	}

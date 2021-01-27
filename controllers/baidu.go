@@ -12,7 +12,7 @@ import (
 
 func PostBDYmessage(Messages, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-baidudx")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[bdymessage]", "百度云短信接口未配置未开启状态,请先配置open-baidudx为1")
 		return "百度云短信接口未配置未开启状态,请先配置open-baidudx为1"
 	}

@@ -15,7 +15,7 @@ import (
 // SendTG 发送电报消息
 func SendTG(msg, logsign string) string {
 	open := beego.AppConfig.String("open-tg")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[tg]", "telegram未配置未开启状态,请先配置open-tg为1")
 		return "telegram未配置未开启状态,请先配置open-tg为1"
 	}
