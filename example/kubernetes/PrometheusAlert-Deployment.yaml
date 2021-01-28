@@ -210,7 +210,7 @@ data:
 kind: ConfigMap
 metadata:
   name: prometheus-alert-center-conf
-  namespace: monitoring
+  # namespace: monitoring
 ---
 apiVersion: apps/v1
 kind: Deployment
