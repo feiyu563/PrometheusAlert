@@ -169,7 +169,7 @@ func (c *MainController) AlertTest() {
 		c.Data["json"] = ret
 	case "bdrl":
 		RLMessage := "## [PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "#### 测试告警\n\n" + "###### 告警级别：测试\n\n##### PrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToRuLiu(beego.AppConfig.String("BDRL_ID"),RLMessage,beego.AppConfig.String("BDRL_ID"), logsign)
+		ret := PostToRuLiu(beego.AppConfig.String("BDRL_ID"),RLMessage,beego.AppConfig.String("BDRL_URL"), logsign)
 		c.Data["json"] = ret
 	default:
 		c.Data["json"] = "hahaha!"

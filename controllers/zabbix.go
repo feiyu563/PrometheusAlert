@@ -75,6 +75,9 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 	//workwechat
 	case "workwechat":
 		ret = ret + SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"),beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"),message.ZabbixMessage, logsign)
+	//百度Hi(如流)
+	case "rl":
+		ret = PostToRuLiu(beego.AppConfig.String("BDRL_ID"), message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//异常参数
 	default:
 		ret = "参数错误"
