@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -25,31 +26,44 @@ type RuLiuMessage struct {
 	} `json:"message"`
 }
 
-func PostToRuLiu(Gids,text, RLurl, logsign string) string {
+type RuLiuMessagex struct {
+	Header struct{
+		Toid []int `json:"toid"`
+	} `json:"header"`
+	Body []struct{
+		Type string `json:"type"`
+		Content string `json:"content"`
+	} `json:"body"`
+}
+
+func PostToRuLiu(ids, text, RLurl, logsign string) string {
 	open := beego.AppConfig.String("open-ruliu")
 	if open != "1" {
 		logs.Info(logsign, "[ruliu]", "钉钉接口未配置未开启状态,请先配置open-ruliu为1")
 		return "如流接口未配置未开启状态,请先配置open-ruliu为1"
 	}
 	GroupIds:=[]int{}
-	sGid := strings.Split(Gids, ",")
-	for Gid:=range sGid{
-		GroupIds=append(GroupIds, Gid)
+	sGid := strings.Split(ids, ",")
+	for _,Gid:=range sGid{
+		id,_:=strconv.Atoi(Gid)
+		GroupIds=append(GroupIds, id)
 	}
+
 	u := RuLiuMessage{
 		Message: struct {
-			Header struct{ Toid []int `json:"toid"` }
+			Header struct{ Toid []int `json:"toid"`} `json:"header"`
 			Body []struct {
 				Type    string `json:"type"`
 				Content string `json:"content"`
-			}
-		}{Header: struct {
-			Toid []int `json:"toid"`
-		}{GroupIds}, Body: []struct {
-			Type    string `json:"type"`
-			Content string `json:"content"`
-		}{{"MD",text}}},
+			} `json:"body"`
+		}{
+			Header: struct {Toid []int `json:"toid"`}{GroupIds},
+			Body: []struct {
+				Type    string `json:"type"`
+				Content string `json:"content"`
+			}{{"MD",text}}},
 	}
+
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
 	logs.Info(logsign, "[ruliu]", b)

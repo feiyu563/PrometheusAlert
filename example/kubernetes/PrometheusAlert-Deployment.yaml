@@ -202,6 +202,28 @@ data:
     WorkWechat_ToTag=""
     # 消息类型, 暂时只支持markdown
     # WorkWechat_Msgtype = "markdown"
+    
+    #---------------------↓百度云接口-----------------------
+    #是否开启百度云短信告警通道,可同时开始多个通道0为关闭,1为开启
+    open-baidudx=0
+    #百度云短信接口AK(ACCESS_KEY_ID)
+    BDY_DX_AK=xxxxx
+    #百度云短信接口SK(SECRET_ACCESS_KEY)
+    BDY_DX_SK=xxxxx
+    #百度云短信ENDPOINT（ENDPOINT参数需要用指定区域的域名来进行定义，如服务所在区域为北京，则为）
+    BDY_DX_ENDPOINT=http://smsv3.bj.baidubce.com
+    #百度云短信模版ID,根据自己审核通过的模版来填写(模版支持一个参数code：如prometheus告警:{code})
+    BDY_DX_TEMPLATE_ID=xxxxx
+    #百度云短信签名ID，根据自己审核通过的签名来填写
+    TXY_DX_SIGNATURE_ID=xxxxx
+    
+    #---------------------↓百度Hi(如流)-----------------------
+    #是否开启百度Hi(如流)告警通道,可同时开始多个通道0为关闭,1为开启
+    open-ruliu=0
+    #默认百度Hi(如流)机器人地址
+    BDRL_URL=https://api.im.baidu.com/api/msg/groupmsgsend?access_token=xxxxxxxxxxxxxx
+    #百度Hi(如流)群ID
+    BDRL_ID=123456
   user.csv: |
     2019年4月10日,15888888881,小张,15999999999,备用联系人小陈,15999999998,备用联系人小赵
     2019年4月11日,15888888882,小李,15999999999,备用联系人小陈,15999999998,备用联系人小赵

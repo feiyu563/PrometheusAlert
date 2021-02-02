@@ -34,6 +34,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_touser:=c.Input().Get("wxuser")
 	P_toparty:=c.Input().Get("wxparty")
 	P_totag:=c.Input().Get("wxtag")
+	P_groupid := c.Input().Get("groupid")
 	//get tpl
 	message := ""
 	funcMap := template.FuncMap{
@@ -53,7 +54,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 			message = err.Error()
 		} else {
 			tpl.Execute(buf, p_json)
-			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_phone, P_email,P_touser,P_toparty,P_totag,logsign)
+			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_phone, P_email,P_touser,P_toparty,P_totag,P_groupid,logsign)
 		}
 	} else {
 		message = "接口参数缺失！"
@@ -63,7 +64,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, email,ptouser,ptoparty,ptotag, logsign string) string {
+func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, email,ptouser,ptoparty,ptotag,pgroupid, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	ret := ""
 	model.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
@@ -119,6 +120,9 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	// Workwechat
 	case "workwechat":
 		ret = ret + SendWorkWechat(ptouser,ptoparty,ptotag,message, logsign)
+	//百度Hi(如流)
+	case "rl":
+		ret += PostToRuLiu(pgroupid, message, beego.AppConfig.String("BDRL_URL"), logsign)
 	//异常参数
 	default:
 		ret = "参数错误"

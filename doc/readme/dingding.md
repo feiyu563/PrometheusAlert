@@ -18,6 +18,39 @@ PrometheusAlert全家桶钉钉配置说明
 
 复制图中的Webhook地址，并填入PrometheusAlert配置文件app.conf中对应配置项即可。
 
+钉钉目前支持只支持markdown语法的子集，具体支持的元素如下：
+
+```
+标题
+# 一级标题
+## 二级标题
+### 三级标题
+#### 四级标题
+##### 五级标题
+###### 六级标题
+
+引用
+> A man who stands for nothing will fall for anything.
+
+文字加粗、斜体
+**bold**
+*italic*
+
+链接
+[this is a link](http://name.com)
+
+图片
+![](http://name.com/pic.jpg)
+
+无序列表
+- item1
+- item2
+
+有序列表
+1. item1
+2. item2
+```
+
 钉钉相关配置：
 
 ```

@@ -39,6 +39,7 @@ groups:
       fsurl: "https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx,https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx" #支持添加多个飞书机器人告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的飞书器人地址
       wxurl: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx-xxxxxx-xxxxxx-xxxxxx,https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx-xxxx-xxxxxxx-xxxxx" #支持添加多个企业微信机器人告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的企业微信机器人地址
       email: "12345@qq.com,45678@baidu.com,91011@aliyun.com" #支持添加多个邮箱告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的邮箱地址
+      groupid: "12345,678910" #支持添加多个如流群id,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的如流群id
 ```
 
 2)通过Prometheus AlertManager router方式
@@ -69,6 +70,10 @@ route:
     group_wait: 10s
     match:
       level: '3'
+  - receiver: 'prometheusalert-ruliu'
+    group_wait: 10s
+    match:
+      level: '3'
   - receiver: 'prometheusalert-all'
     group_wait: 10s
     match:
@@ -86,6 +91,9 @@ receivers:
 - name: 'prometheusalert-feishu'
   webhook_configs:
   - url: 'http://[prometheusalert_url]:8080/prometheus/router?fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx'
+- name: 'prometheusalert-ruliu'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheus/router?groupid=123456'
 - name: 'prometheusalert-all'
   webhook_configs:
   - url: 'http://[prometheusalert_url]:8080/prometheus/router?wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx&email=123@qq.com&phone=15395105573'

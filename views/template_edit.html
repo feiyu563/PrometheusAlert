@@ -42,6 +42,7 @@
                             <option value="rlydh" {{if eq .Template.Tpltype "rlydh"}}selected="selected"{{end}}>容联云电话</option>
                             <option value="email" {{if eq .Template.Tpltype "email"}}selected="selected"{{end}}>Email</option>
 							<option value="tg" {{if eq .Template.Tpltype "tg"}}selected="selected"{{end}}>Telegram</option>
+							<option value="rl" {{if eq .Template.Tpltype "rl"}}selected="selected"{{end}}>百度Hi(如流)</option>
                           </select>
 					    </div>
 						
@@ -71,7 +72,7 @@
 					    <br />
 
 					    <div class="input-group">
-					    <span class="input-group-addon" id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}</span>
+					    <span class="input-group-addon" id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "rl"}}百度Hi(如流)群id{{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}</span>
 					    <input type="text" id="purl" class="form-control" name="purl" value="">
 					    </div>
 					    <br />
@@ -87,7 +88,7 @@
 					    <input type="text" id="ptag" class="form-control" name="ptag" value="">
 					    </div>
 					    <br />
-						
+
 					    <div class="text-right">
 						<span style="color:red;font-weight:bold">进行模版测试前请先点击保存模版</span>
 					    <button type="submit" class="btn btn-primary" onclick="savetpl();">保存模版</button>
@@ -119,6 +120,10 @@
 							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="email"){
 					        typeStr.innerText="邮箱(多个请以,隔开)";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="rl"){
+					        typeStr.innerText="百度Hi(如流)群id";
 							document.getElementById("Party").style.display="none";
 							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="workwechat"){
@@ -169,6 +174,7 @@
 							var upurl=document.getElementById("purl");
 							var upparty=document.getElementById("pparty");
 							var uptag=document.getElementById("ptag");
+							var upgroupid=document.getElementById("pgroupid");
 							var sendurl="";
 							if (utype.value=="dd"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&ddurl='+upurl.value;
@@ -178,6 +184,8 @@
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
 							} else if(utype.value=="email"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
+							} else if(utype.value=="rl"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&groupid='+upurl.value;
 							} else if(utype.value=="workwechat"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxuser='+upurl.value+'&wxparty='+upparty.value+'&wxtag='+uptag.value;
 							} else{
