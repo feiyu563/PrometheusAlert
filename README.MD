@@ -8,6 +8,8 @@
 ![forks](https://img.shields.io/github/forks/feiyu563/PrometheusAlert.svg)
 [![docker](https://img.shields.io/docker/pulls/feiyu563/prometheus-alert.svg)](https://hub.docker.com/r/feiyu563/prometheus-alert)
 
+[![GitHub Release](https://img.shields.io/github/release/feiyu563/PrometheusAlert.svg)](https://github.com/feiyu563/PrometheusAlert/releases)
+
 [![Travis](https://img.shields.io/badge/language-Go-green.svg)]()
 [![Travis](https://img.shields.io/badge/language-JavaScript-yellow.svg)]()
 [![Travis](https://img.shields.io/badge/language-Shell-blue.svg)]()
