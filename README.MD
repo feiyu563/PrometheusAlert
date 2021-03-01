@@ -11,6 +11,13 @@
 [![Travis](https://img.shields.io/badge/language-Go-green.svg)]()
 [![Travis](https://img.shields.io/badge/language-JavaScript-yellow.svg)]()
 [![Travis](https://img.shields.io/badge/language-Shell-blue.svg)]()
+
+-----------------
+
+PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)等。
+
+![it](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/it.png)
+
 -----------------
 * 如果这个项目能为您带来帮助，我将感到非常荣幸！同时非常欢迎您加入PrometheusAlert全家桶的微信群一起探讨关于PrometheusAlert新一期的开发计划。
 
@@ -44,12 +51,6 @@ cd PrometheusAlert/example/linux/
 ![dashboard](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard.png)
 ![dashboard-test](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-test.png)
 ![dashboard-tpl-list](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-tpl-list.png)
-
------------------
-
-PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)等。
-
-![it](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/it.png)
 
 --------------------------------------
 
