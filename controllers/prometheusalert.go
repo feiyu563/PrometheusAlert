@@ -27,7 +27,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_wxurl := c.Input().Get("wxurl")
 	P_fsurl := c.Input().Get("fsurl")
 	P_phone := c.Input().Get("phone")
-	if P_phone == "" && P_type == "txdx" || P_type == "hwdx" || P_type == "bddx" || P_type == "alydx" || P_type == "txdh" || P_type == "alydh" || P_type == "rlydh" {
+	if P_phone == "" && ( P_type == "txdx" || P_type == "hwdx" || P_type == "bddx" || P_type == "alydx" || P_type == "txdh" || P_type == "alydh" || P_type == "rlydh" || P_type == "7moordx" || P_type == "7moordh") {
 		P_phone = GetUserPhone(1)
 	}
 	P_email := c.Input().Get("email")
@@ -111,6 +111,12 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	//容联云电话
 	case "rlydh":
 		ret = ret + PostRLYphonecall(message, pphone, logsign)
+	//七陌短信
+	case "7moordx":
+		ret = ret + Post7MOORmessage(message, pphone, logsign)
+	//七陌语音电话
+	case "7moordh":
+		ret = ret + Post7MOORphonecall(message, pphone, logsign)
 	//邮件
 	case "email":
 		ret = ret + SendEmail(message, email, logsign)
