@@ -40,6 +40,8 @@
                             <option value="hwdx" {{if eq .Template.Tpltype "hwdx"}}selected="selected"{{end}}>华为云短信</option>
                             <option value="bddx" {{if eq .Template.Tpltype "bddx"}}selected="selected"{{end}}>百度云短信</option>
                             <option value="rlydh" {{if eq .Template.Tpltype "rlydh"}}selected="selected"{{end}}>容联云电话</option>
+                            <option value="rlydh" {{if eq .Template.Tpltype "7moordx"}}selected="selected"{{end}}>七陌短信</option>
+                            <option value="rlydh" {{if eq .Template.Tpltype "7moordh"}}selected="selected"{{end}}>七陌语音电话</option>
                             <option value="email" {{if eq .Template.Tpltype "email"}}selected="selected"{{end}}>Email</option>
 							<option value="tg" {{if eq .Template.Tpltype "tg"}}selected="selected"{{end}}>Telegram</option>
 							<option value="rl" {{if eq .Template.Tpltype "rl"}}selected="selected"{{end}}>百度Hi(如流)</option>
@@ -56,7 +58,7 @@
                             <option value="Grafana" {{if eq .Template.Tpluse "Grafana"}}selected="selected"{{end}}>Grafana</option>
                             <option value="SonarQube" {{if eq .Template.Tpluse "SonarQube"}}selected="selected"{{end}}>SonarQube</option>
                             <option value="Jenkins" {{if eq .Template.Tpluse "Jenkins"}}selected="selected"{{end}}>Jenkins</option>
-                            <option value="SonarQube" {{if eq .Template.Tpluse "Other"}}selected="selected"{{end}}>Other</option>
+                            <option value="Other" {{if eq .Template.Tpluse "Other"}}selected="selected"{{end}}>Other</option>
                           </select>
 						</div>
 					    <br />
