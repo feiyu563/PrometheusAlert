@@ -39,9 +39,10 @@ data:
     logpath=logs/prometheusalertcenter.log
     #转换Prometheus,graylog告警消息的时区为CST时区(如默认已经是CST时区，请勿开启)
     prometheus_cst_time=0
-    #数据库驱动，支持sqlite3，mysql,如使用mysql，请开启db_host,db_user,db_password,db_name的注释
+    #数据库驱动，支持sqlite3，mysql,postgres如使用mysql或postgres，请开启db_host,db_port,db_user,db_password,db_name的注释
     db_driver=sqlite3
-    #db_host=127.0.0.1:3306
+    #db_host=127.0.0.1
+    #db_port=3306
     #db_user=root
     #db_password=root
     #db_name=prometheusalert
