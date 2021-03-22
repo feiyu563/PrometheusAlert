@@ -13,7 +13,7 @@ git clone https://github.com/feiyu563/PrometheusAlert.git
 
 #创建配置文件
 mkdir /etc/prometheusalert-center/
-cp PrometheusAlert/conf/app.conf /etc/prometheusalert-center/
+cp PrometheusAlert/conf/app-example.conf /etc/prometheusalert-center/
 
 #启动PrometheusAlert并挂载配置文件
 docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prometheusalert-center feiyu563/prometheus-alert:latest
