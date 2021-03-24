@@ -67,7 +67,7 @@ PrometheusAlert具备如下特性
  - 增加Dashboard，提供配置测试，告警消息模版自定义，告警模版测试等功能
  - 增加自定义告警消息模版支持，可以通过自定义模版对任意服务WebHook进行支持
  - 增加代理支持
- - 增加支持mysql、sqlite3作为模版存储，便于集群化部署
+ - 增加支持mysql、sqlite3(默认)、postgres作为模版存储，便于集群化部署
  
 ---------------------
 
@@ -84,16 +84,17 @@ PrometheusAlert具备如下特性
 
 ## PrometheusAlert全家桶新手入门
 
-* [PrometheusAlert GitBook](https://feiyu563.gitbook.io/prometheusalert)
+文档阅读提示
 
-* [PrometheusAlert配置](https://feiyu563.gitbook.io/prometheusalert)
+
+* [【PrometheusAlert安装及配置说明】](doc/readme/install.md)
   * [安装部署PrometheusAlert](doc/readme/install.md)
   * [接口说明](doc/readme/restful.md)
   * [Metrics指标](doc/readme/metrics.md)
   * [配置文件说明](doc/readme/setup.md)
   * [其他配置](doc/readme/other.md)
   * [使用Dashboard对配置进行测试](doc/readme/dashboard.md)
-* [告警接收目标配置](https://feiyu563.gitbook.io/prometheusalert)
+* [【 app.conf 告警接收目标配置】](doc/readme/dingding.md)
   * [钉钉告警配置](doc/readme/dingding.md)
   * [飞书告警配置](doc/readme/feishu.md)
   * [企业微信告警配置](doc/readme/wechat.md)
@@ -107,16 +108,17 @@ PrometheusAlert具备如下特性
   * [七陌短信和电话告警配置](doc/readme/7moor.md)
   * [TeleGram告警配置](doc/readme/tg.md)
   * [百度Hi(如流)告警配置](doc/readme/ruliu.md)
-* [告警源配置(内置固定消息模版)](https://feiyu563.gitbook.io/prometheusalert)
-  * [Prometheus配置](doc/readme/prometheus.md)
-  * [graylog配置](doc/readme/graylog.md)
-  * [grafana配置](doc/readme/grafana.md)
-  * [zabbix配置](doc/readme/zabbix.md)
-  * [sonarqube配置](doc/readme/sonarqube.md)
-  * [jenkins配置](doc/readme/jenkins.md)
-* ★推荐 [PrometheusAlert高级自定义消息模版玩法](doc/readme/customtpl.md)
-* [版本更新说明](https://github.com/feiyu563/PrometheusAlert/releases)
-* [如何对PrometheusAlert进行二次开发](https://github.com/feiyu563/PrometheusAlert/wiki/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E3%80%90PrometheusAlert%E3%80%91%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91)
+* [【告警源配置】](doc/readme/prometheus.md)
+  * [★★★★★ 推荐 任意告警源（自定义消息模版）接入配置](doc/readme/customtpl.md)
+  * [Prometheus 接入配置](doc/readme/prometheus.md)
+  * [graylog（内置固定消息模版）接入配置](doc/readme/graylog.md)
+  * [grafana（内置固定消息模版）接入配置](doc/readme/grafana.md)
+  * [zabbix（内置固定消息模版）接入配置](doc/readme/zabbix.md)
+  * [sonarqube（自定义消息模版）接入配置](doc/readme/sonarqube.md)
+  * [jenkins（自定义消息模版）接入配置](doc/readme/jenkins.md)
+
+* [【版本更新说明】](https://github.com/feiyu563/PrometheusAlert/releases)
+* [【如何对PrometheusAlert进行二次开发】](https://github.com/feiyu563/PrometheusAlert/wiki/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E3%80%90PrometheusAlert%E3%80%91%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91)
 
 
 --------------------------------------
@@ -124,11 +126,11 @@ PrometheusAlert具备如下特性
 项目源码
 ----
 
- - [GitHub: PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)
- - [码云: PrometheusAlert](https://gitee.com/feiyu563/PrometheusAlert)
+ - [【GitHub】: PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)
+ - [【码云】: PrometheusAlert](https://gitee.com/feiyu563/PrometheusAlert)
 
-FOR HELP
+【FOR HELP】
 ----
-Email: 244217140@qq.com
+【Email: 244217140@qq.com】
 
 ![me](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/wx.png)
