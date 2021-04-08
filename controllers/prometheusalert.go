@@ -80,7 +80,7 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	case "dd":
 		Ddurl := strings.Split(pddurl, ",")
 		for _, url := range Ddurl {
-			ret += PostToDingDing(Title+"告警消息", message, url, logsign)
+			ret += PostToDingDing(Title, message, url, logsign)
 		}
 
 	//飞书渠道

@@ -35,7 +35,7 @@ func PostToFS(title, text, Fsurl, logsign string) string {
 }
 
 func PostToFeiShu(title, text, Fsurl, logsign string) string {
-	u := FSMessage{Title: title, Text: text}
+	u := FSMessage{Title: title+"告警消息", Text: text}
 
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
@@ -112,10 +112,13 @@ func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
 	var color string
 	if strings.Count(text, "resolved") > 0 && strings.Count(text, "firing") > 0 {
 		color = "orange"
+		title = title+"告警消息"
 	} else if strings.Count(text, "resolved") > 0 {
 		color = "green"
+		title = title+"告警恢复"
 	} else {
 		color = "red"
+		title = title+"告警消息"
 	}
 	u := FSMessagev2{
 		MsgType: "interactive",
