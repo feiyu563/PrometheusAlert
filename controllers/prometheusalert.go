@@ -80,14 +80,14 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	case "dd":
 		Ddurl := strings.Split(pddurl, ",")
 		for _, url := range Ddurl {
-			ret += PostToDingDing(Title, message, url, logsign)
+			ret += PostToDingDing(Title+"告警消息", message, url, logsign)
 		}
 
 	//飞书渠道
 	case "fs":
 		Fsurl := strings.Split(pfsurl, ",")
 		for _, url := range Fsurl {
-			ret += PostToFS(Title+"告警消息", message, url, logsign)
+			ret += PostToFS(Title, message, url, logsign)
 		}
 
 	//腾讯云短信
