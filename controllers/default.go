@@ -20,16 +20,26 @@ type MainController struct {
 func (c *MainController) Get() {
 	c.Data["IsIndex"] = true
 	c.TplName = "index.html"
+	c.Data["IsLogin"] = checkAccount(c.Ctx)
 }
 
 //test page
 func (c *MainController) Test() {
+	if  !checkAccount(c.Ctx) {
+		c.Redirect("/login", 302)
+		return
+	}
 	c.Data["IsTest"] = true
 	c.TplName = "test.html"
+	c.Data["IsLogin"] = checkAccount(c.Ctx)
 }
 
 //template page
 func (c *MainController) Template() {
+	if  !checkAccount(c.Ctx) {
+		c.Redirect("/login", 302)
+		return
+	}
 	c.Data["IsTemplate"] = true
 	c.TplName = "template.html"
 	Template, err := models.GetAllTpl()
@@ -37,12 +47,18 @@ func (c *MainController) Template() {
 		logs.Error(err)
 	}
 	c.Data["Template"] = Template
+	c.Data["IsLogin"] = checkAccount(c.Ctx)
 }
 
 //template add
 func (c *MainController) TemplateAdd() {
+	if  !checkAccount(c.Ctx) {
+		c.Redirect("/login", 302)
+		return
+	}
 	c.Data["IsTemplate"] = true
 	c.TplName = "template_add.html"
+	c.Data["IsLogin"] = checkAccount(c.Ctx)
 }
 func (c *MainController) AddTpl() {
 	//获取表单信息
@@ -68,6 +84,10 @@ func (c *MainController) AddTpl() {
 	c.ServeJSON()
 }
 func (c *MainController) TemplateEdit() {
+	if  !checkAccount(c.Ctx) {
+		c.Redirect("/login", 302)
+		return
+	}
 	c.Data["IsTemplate"] = true
 	c.TplName = "template_edit.html"
 	s_id, _ := strconv.Atoi(c.Input().Get("id"))
@@ -76,6 +96,7 @@ func (c *MainController) TemplateEdit() {
 		logs.Error(err)
 	}
 	c.Data["Template"] = Template
+	c.Data["IsLogin"] = checkAccount(c.Ctx)
 }
 
 //func (c *MainController) TemplateTest() {
@@ -89,6 +110,10 @@ func (c *MainController) TemplateEdit() {
 //	c.Data["Template"] = Template
 //}
 func (c *MainController) TemplateDel() {
+	if  !checkAccount(c.Ctx) {
+		c.Redirect("/login", 302)
+		return
+	}
 	s_id, _ := strconv.Atoi(c.Input().Get("id"))
 	err := models.DelTpl(s_id)
 	if err != nil {
