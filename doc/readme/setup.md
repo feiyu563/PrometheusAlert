@@ -5,6 +5,12 @@ PrometheusAlert配置文件中定义了丰富的配置项，默认配置即可�
 ```
 #---------------------↓全局配置-----------------------
 appname = PrometheusAlert
+#登录用户名
+login_user=prometheusalert
+#登录密码
+login_password=prometheusalert
+#监听地址
+httpaddr = "0.0.0.0"
 #监听端口
 httpport = 8080
 runmode = dev

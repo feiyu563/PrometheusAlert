@@ -42,6 +42,7 @@ cd PrometheusAlert/example/linux/
 ./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
 
 #启动后可使用浏览器打开以下地址查看：http://xxx.xxx.xxx.xxx:8080
+#默认登录帐号和密码在app.conf中有配置
 ```
 
 
