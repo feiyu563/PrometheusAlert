@@ -19,6 +19,7 @@ cp PrometheusAlert/conf/app-example.conf /etc/prometheusalert-center/app.conf
 docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prometheusalert-center feiyu563/prometheus-alert:latest
 
 #启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
+#默认登录帐号和密码在app.conf中有配置
 ```
 
 - 在linux系统中部署
@@ -32,6 +33,7 @@ cd PrometheusAlert/example/linux/
 ./PrometheusAlert #后台运行请执行nohup ./PrometheusAlert &
 
 #启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
+#默认登录帐号和密码在app.conf中有配置
 ```
 
 - 在windows系统中运行
@@ -44,6 +46,7 @@ git clone https://github.com/feiyu563/PrometheusAlert.git
 cd PrometheusAlert/example/windows/
 
 #启动后可使用浏览器打开测试地址：http://127.0.0.1:8080
+#默认登录帐号和密码在app.conf中有配置
 ```
 
 - 在kubernetes中运行
@@ -53,6 +56,7 @@ cd PrometheusAlert/example/windows/
 kubectl apply -n monitoring -f https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/example/kubernetes/PrometheusAlert-Deployment.yaml
 
 #启动后可使用浏览器打开以下地址查看：http://[YOUR-PrometheusAlert-URL]:8080
+#默认登录帐号和密码在app.conf中有配置
 ```
 
 - 使用helm部署
@@ -68,6 +72,7 @@ cd PrometheusAlert/example/helm
 helm upgrade --install monitor prometheusalert -n monitoring
 
 #启动后可使用浏览器打开以下地址查看: http://[Ingress_url]:[Ingress_port]
+#默认登录帐号和密码在app.conf中有配置
 ```
 --------------------------------------------------------------------
 
