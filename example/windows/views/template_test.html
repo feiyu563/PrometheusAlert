@@ -34,7 +34,7 @@
 					    <br />
 
 					    <div class="input-group">
-					    <span class="input-group-addon">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}手机号{{end}}{{end}}{{end}}</span>
+					    <span class="input-group-addon">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "webhook"}}WebHook地址{{else}}手机号{{end}}{{end}}{{end}}{{end}}</span>
 					    <input type="text" id="purl" class="form-control" name="purl" value="">
 					    </div>
 					    <br />
@@ -57,6 +57,8 @@
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value;
 							} else if(utype.value=="fs"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
+							} else if(utype.value=="webhook"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value;
 							} else{
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&phone='+upurl.value;
 							}

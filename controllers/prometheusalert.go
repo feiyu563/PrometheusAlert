@@ -26,6 +26,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_ddurl := c.Input().Get("ddurl")
 	P_wxurl := c.Input().Get("wxurl")
 	P_fsurl := c.Input().Get("fsurl")
+	P_webhookurl := c.Input().Get("webhookurl")
 	P_phone := c.Input().Get("phone")
 	if P_phone == "" && ( P_type == "txdx" || P_type == "hwdx" || P_type == "bddx" || P_type == "alydx" || P_type == "txdh" || P_type == "alydh" || P_type == "rlydh" || P_type == "7moordx" || P_type == "7moordh") {
 		P_phone = GetUserPhone(1)
@@ -54,7 +55,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 			message = err.Error()
 		} else {
 			tpl.Execute(buf, p_json)
-			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_phone, P_email,P_touser,P_toparty,P_totag,P_groupid,logsign)
+			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_webhookurl,P_phone, P_email,P_touser,P_toparty,P_totag,P_groupid,logsign)
 		}
 	} else {
 		message = "接口参数缺失！"
@@ -64,7 +65,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, email,ptouser,ptoparty,ptotag,pgroupid, logsign string) string {
+func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhookurl,pphone, email,ptouser,ptoparty,ptotag,pgroupid, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	ret := ""
 	model.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
@@ -88,6 +89,13 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 		Fsurl := strings.Split(pfsurl, ",")
 		for _, url := range Fsurl {
 			ret += PostToFS(Title+"告警消息", message, url, logsign)
+		}
+
+	//Webhook渠道
+	case "webhook":
+		Fwebhookurl := strings.Split(pwebhookurl, ",")
+		for _, url := range Fwebhookurl {
+			ret += PostToWebhook(message, url, logsign)
 		}
 
 	//腾讯云短信

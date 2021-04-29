@@ -33,6 +33,7 @@
                             <option value="wx" {{if eq .Template.Tpltype "wx"}}selected="selected"{{end}}>企业微信</option>
                             <option value="workwechat" {{if eq .Template.Tpltype "workwechat"}}selected="selected"{{end}}>企业微信应用</option>
                             <option value="fs" {{if eq .Template.Tpltype "fs"}}selected="selected"{{end}}>飞书</option>
+                            <option value="webhook" {{if eq .Template.Tpltype "webhook"}}selected="selected"{{end}}>WebHook</option>
                             <option value="txdx" {{if eq .Template.Tpltype "txdx"}}selected="selected"{{end}}>腾讯云短信</option>
                             <option value="txdh" {{if eq .Template.Tpltype "txdh"}}selected="selected"{{end}}>腾讯云电话</option>
                             <option value="alydx" {{if eq .Template.Tpltype "alydx"}}selected="selected"{{end}}>阿里云短信</option>
@@ -58,6 +59,7 @@
                             <option value="Grafana" {{if eq .Template.Tpluse "Grafana"}}selected="selected"{{end}}>Grafana</option>
                             <option value="SonarQube" {{if eq .Template.Tpluse "SonarQube"}}selected="selected"{{end}}>SonarQube</option>
                             <option value="Jenkins" {{if eq .Template.Tpluse "Jenkins"}}selected="selected"{{end}}>Jenkins</option>
+                            <option value="WebHook" {{if eq .Template.Tpluse "WebHook"}}selected="selected"{{end}}>WebHook</option>
                             <option value="Other" {{if eq .Template.Tpluse "Other"}}selected="selected"{{end}}>Other</option>
                           </select>
 						</div>
@@ -74,7 +76,7 @@
 					    <br />
 
 					    <div class="input-group">
-					    <span class="input-group-addon" id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "rl"}}百度Hi(如流)群id{{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}</span>
+					    <span class="input-group-addon" id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "webhook"}}WebHook地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "rl"}}百度Hi(如流)群id{{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}</span>
 					    <input type="text" id="purl" class="form-control" name="purl" value="">
 					    </div>
 					    <br />
@@ -118,6 +120,10 @@
 							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="fs"){
 					        typeStr.innerText="飞书机器人地址";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="webhook"){
+					        typeStr.innerText="webhook地址";
 							document.getElementById("Party").style.display="none";
 							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="email"){
@@ -184,6 +190,8 @@
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value;
 							} else if(utype.value=="fs"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
+							} else if(utype.value=="webhook"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value;
 							} else if(utype.value=="email"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
 							} else if(utype.value=="rl"){
