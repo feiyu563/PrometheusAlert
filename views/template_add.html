@@ -32,6 +32,7 @@
                             <option value="wx">企业微信</option>
                             <option value="workwechat">企业微信应用</option>
                             <option value="fs">飞书</option>
+                            <option value="webhook">WebHook</option>
                             <option value="txdx">腾讯云短信</option>
                             <option value="txdh">腾讯云电话</option>
                             <option value="alydx">阿里云短信</option>
@@ -56,6 +57,7 @@
                             <option value="Grafana">Grafana</option>
                             <option value="SonarQube">SonarQube</option>
                             <option value="Jenkins">Jenkins</option>
+                            <option value="WebHook">WebHook</option>
                             <option value="Other">Other</option>
                           </select>
 						</div>
@@ -113,6 +115,10 @@
 							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="fs"){
 					        typeStr.innerText="飞书机器人地址";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="webhook"){
+					        typeStr.innerText="WebHook地址";
 							document.getElementById("Party").style.display="none";
 							document.getElementById("Tag").style.display="none";
 					     } else if(typeSelect=="email"){
@@ -178,6 +184,8 @@
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value;
 							} else if(utype.value=="fs"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value;
+							} else if(utype.value=="webhook"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value;
 							} else if(utype.value=="email"){
 							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
 							} else if(utype.value=="rl"){
