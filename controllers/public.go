@@ -22,7 +22,6 @@ func GetCSTtime(date string) string {
 		h, _ := time.ParseDuration("-1h")
 		tm3 := tm2.Add(-8 * h)
 		tm = tm3.Format("2006-01-02 15:04:05")
-
 	}
 	return tm
 }
@@ -30,9 +29,13 @@ func GetCSTtime(date string) string {
 func TimeFormat(timestr,format string) string {
 	returnTime,err:=time.Parse("2006-01-02T15:04:05.999999999Z",timestr)
 	if err!=nil {
-		logs.Error("自定义模板时间格式转换失败："+err.Error())
+		returnTime,err=time.Parse("2006-01-02T15:04:05.999999999+08:00",timestr)
 	}
-	return returnTime.Format(format)
+	if err!=nil {
+		return err.Error()
+	} else {
+		return returnTime.Format(format)
+	}
 }
 
 //获取用户号码
