@@ -35,7 +35,7 @@ PrometheusAlert是开源的运维告警中心消息转发系统，支持主流�
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
 如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.4.0/linux.zip)
 
-# wget https://github.com/feiyu563/PrometheusAlert/releases && cd linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.4.0/linux.zip && cd linux/
 
 #，下载好后解压并进入解压后的文件夹
 
