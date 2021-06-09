@@ -1,0 +1,47 @@
+{{template "main"}}
+  <title>PrometheusAlert</title>
+</head>
+
+<body>
+{{template "head" .}}
+	<div class="bs-docs-header">
+		<div class="container">
+				<label class="col-sm-2">MarkDown测试</label>
+		</div>
+	</div>
+	<div class="container">
+		<div class="bs-example" >
+			<label>*MarkDown内容:</label>
+			<br />
+			<textarea id="content" name="content" cols="30" rows="10" class="form-control" placeholder="自定义Markdown内容文本" onkeyup=showHtml()>
+[Prometheus故障恢复信息](https://prometheus.com)
+
+**[测试告警消息Markdown](https://alertmanager.com)**
+
+`告警级别:`严重
+
+`开始时间:`2021-05-27T12:28:37.83Z
+
+`结束时间:`2021-05-28T00:39:07.83Z
+
+`故障主机IP:`127.0.0.1:80
+
+**Too Many Alert Message PrometheusAlert**
+			</textarea>
+		</div>
+	</div>
+	<div class="container">
+		<label>显示效果:</label>
+		<div id='MarkdownHtml' class="bs-example"></div>
+		<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/static/js/marked.min.js"></script>
+		<script type="text/javascript">
+			$(function () {
+				showHtml();
+			})
+			function showHtml(){
+				$("#MarkdownHtml").html(marked($("#content").val()));
+			};
+		</script>
+	</div>
+{{template "endhtml"}}
