@@ -62,7 +62,7 @@ func main() {
 		logpath := beego.AppConfig.String("logpath")
 		logs.SetLogger(logtype, `{"filename":"`+logpath+`"}`)
 	}
-	logs.Info("[main] 当前版本（Version）4.4.1")
+	logs.Info("[main] 当前版本（Version）4.4.2")
 	model.MetricsInit()
 	beego.Handler("/metrics", promhttp.Handler())
 	beego.Run()

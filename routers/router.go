@@ -18,6 +18,7 @@ func init() {
 	//beego.Router("/template/test", &controllers.MainController{},"get,post:TemplateTest")
 	beego.Router("/template/del", &controllers.MainController{}, "get:TemplateDel")
 	beego.Router("/alerttest", &controllers.MainController{}, "post:AlertTest")
+	beego.Router("/markdowntest", &controllers.MainController{}, "get:MarkdownTest")
 
 	//prometheus
 	beego.Router("/prometheus/alert", &controllers.PrometheusController{}, "post:PrometheusAlert")
