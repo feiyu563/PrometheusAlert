@@ -32,16 +32,18 @@ PrometheusAlert是开源的运维告警中心消息转发系统，支持主流�
 ## 启动
 
 ```
-#clone项目源代码
-git clone https://github.com/feiyu563/PrometheusAlert.git
+#打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
+如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.4.0/linux.zip)
 
-#进入程序目录并运行PrometheusAlert
-cd PrometheusAlert/example/linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases && cd linux/
+
+#，下载好后解压并进入解压后的文件夹
+
 
 #运行PrometheusAlert
-./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
+# ./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
 
-#启动后可使用浏览器打开以下地址查看：http://xxx.xxx.xxx.xxx:8080
+#启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
 #默认登录帐号和密码在app.conf中有配置
 ```
 

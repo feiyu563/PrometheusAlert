@@ -8,12 +8,9 @@ PrometheusAlert可以部署在本地和云平台上，支持windows、linux、�
 - 使用容器部署
 
 ```
-#clone项目源代码
-git clone https://github.com/feiyu563/PrometheusAlert.git
-
 #创建配置文件
 mkdir /etc/prometheusalert-center/
-cp PrometheusAlert/conf/app-example.conf /etc/prometheusalert-center/app.conf
+wget https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/conf/app-example.conf -O /etc/prometheusalert-center/app.conf
 
 #启动PrometheusAlert并挂载配置文件
 docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prometheusalert-center feiyu563/prometheus-alert:latest
@@ -25,12 +22,16 @@ docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prome
 - 在linux系统中部署
 
 ```
-#clone项目源代码
-git clone https://github.com/feiyu563/PrometheusAlert.git
+#打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
+如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.4.0/linux.zip)
 
-#进入程序目录并运行PrometheusAlert
-cd PrometheusAlert/example/linux/
-./PrometheusAlert #后台运行请执行nohup ./PrometheusAlert &
+# wget https://github.com/feiyu563/PrometheusAlert/releases && cd linux/
+
+#，下载好后解压并进入解压后的文件夹
+
+
+#运行PrometheusAlert
+# ./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
 
 #启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
 #默认登录帐号和密码在app.conf中有配置
@@ -39,11 +40,11 @@ cd PrometheusAlert/example/linux/
 - 在windows系统中运行
 
 ```
-#clone项目源代码
-git clone https://github.com/feiyu563/PrometheusAlert.git
+#打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
+如windows版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.4.0/windows.zip)
 
 #进入程序目录并双击运行 PrometheusAlert.exe即可
-cd PrometheusAlert/example/windows/
+cd windows/
 
 #启动后可使用浏览器打开测试地址：http://127.0.0.1:8080
 #默认登录帐号和密码在app.conf中有配置
