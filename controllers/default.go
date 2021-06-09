@@ -122,6 +122,13 @@ func (c *MainController) TemplateDel() {
 	c.Redirect("/template", 302)
 }
 
+//markdown test
+func (c *MainController) MarkdownTest() {
+	c.Data["IsMarkDownTest"] = true
+	c.TplName = "markdown_test.html"
+	c.Data["IsLogin"] = checkAccount(c.Ctx)
+}
+
 func LogsSign() string {
 	return strconv.FormatInt(time.Now().UnixNano(), 10)
 }
