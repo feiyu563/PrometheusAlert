@@ -1,4 +1,4 @@
-## zabbix接入配置
+## markdown测试
 
 PrometheusAlert Dashboard提供基础的Markdown文本编辑测试，方便部分模版(如钉钉、企业微信、飞书)格式调整。该页面仅供参考(由于钉钉、企业微信和飞书对Markdown的支持并不全面)
 
