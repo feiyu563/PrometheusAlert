@@ -224,14 +224,14 @@ func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsur
 		if ddurl == "" {
 			ddurl = beego.AppConfig.String("ddurl")
 		}
-		PostToDingDing(Title+titleend, DDtext, ddurl, logsign)
+		PostToDingDing(Title+titleend, DDtext, ddurl, "",logsign)
 	}
 	//触发微信
 	if typeid == 3 {
 		if wxurl == "" {
 			wxurl = beego.AppConfig.String("wxurl")
 		}
-		PostToWeiXin(WXtext, wxurl, logsign)
+		PostToWeiXin(WXtext, wxurl, "",logsign)
 	}
 
 	//取到手机号
@@ -283,7 +283,7 @@ func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsur
 		if fsurl == "" {
 			fsurl = beego.AppConfig.String("fsurl")
 		}
-		PostToFeiShu(Title+titleend, FStext, fsurl, logsign)
+		PostToFS(Title+titleend, FStext, fsurl,"", logsign)
 	}
 	//触发TG
 	if typeid == 11 {

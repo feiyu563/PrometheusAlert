@@ -30,6 +30,9 @@ PrometheusAlert全家桶飞书配置说明
 消息格式参考：
 https://open.feishu.cn/document/ukTMukTMukTM/uADOwUjLwgDM14CM4ATN
 
+
+ **PS: 飞书机器人V2目前已经支持 `@某人` ,使用该功能需要取得对应用户的飞书关联的Email邮箱地址。**
+
 飞书相关配置：
 
 ```

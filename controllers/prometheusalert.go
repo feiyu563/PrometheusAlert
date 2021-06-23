@@ -36,6 +36,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_toparty:=c.Input().Get("wxparty")
 	P_totag:=c.Input().Get("wxtag")
 	P_groupid := c.Input().Get("groupid")
+	P_atsomeone := c.Input().Get("at")
 	//get tpl
 	message := ""
 	funcMap := template.FuncMap{
@@ -55,7 +56,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 			message = err.Error()
 		} else {
 			tpl.Execute(buf, p_json)
-			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_webhookurl,P_phone, P_email,P_touser,P_toparty,P_totag,P_groupid,logsign)
+			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_webhookurl,P_phone, P_email,P_touser,P_toparty,P_totag,P_groupid,P_atsomeone,logsign)
 		}
 	} else {
 		message = "接口参数缺失！"
@@ -65,7 +66,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhookurl,pphone, email,ptouser,ptoparty,ptotag,pgroupid, logsign string) string {
+func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhookurl,pphone, email,ptouser,ptoparty,ptotag,pgroupid,patsomeone, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	ret := ""
 	model.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
@@ -74,21 +75,21 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhook
 	case "wx":
 		Wxurl := strings.Split(pwxurl, ",")
 		for _, url := range Wxurl {
-			ret += PostToWeiXin(message, url, logsign)
+			ret += PostToWeiXin(message, url, patsomeone,logsign)
 		}
 
 	//钉钉渠道
 	case "dd":
 		Ddurl := strings.Split(pddurl, ",")
 		for _, url := range Ddurl {
-			ret += PostToDingDing(Title+"告警消息", message, url, logsign)
+			ret += PostToDingDing(Title+"告警消息", message, url,patsomeone, logsign)
 		}
 
 	//飞书渠道
 	case "fs":
 		Fsurl := strings.Split(pfsurl, ",")
 		for _, url := range Fsurl {
-			ret += PostToFS(Title+"告警消息", message, url, logsign)
+			ret += PostToFS(Title+"告警消息", message, url, patsomeone,logsign)
 		}
 
 	//Webhook渠道
