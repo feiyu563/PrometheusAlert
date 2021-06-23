@@ -139,15 +139,15 @@ func (c *MainController) AlertTest() {
 	switch MessageData {
 	case "wx":
 		wxtext := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n>**测试告警**\n>`告警级别:`测试\n**PrometheusAlert**"
-		ret := PostToWeiXin(wxtext, beego.AppConfig.String("wxurl"), logsign)
+		ret := PostToWeiXin(wxtext, beego.AppConfig.String("wxurl"), "jikun.zhang",logsign)
 		c.Data["json"] = ret
 	case "dd":
 		ddtext := "## [PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "#### 测试告警\n\n" + "###### 告警级别：测试\n\n##### PrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToDingDing("PrometheusAlert", ddtext, beego.AppConfig.String("ddurl"), logsign)
+		ret := PostToDingDing("PrometheusAlert", ddtext, beego.AppConfig.String("ddurl"),"15395105573", logsign)
 		c.Data["json"] = ret
 	case "fs":
 		fstext := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "测试告警\n\n" + "告警级别：测试\n\nPrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToFS("PrometheusAlert", fstext, beego.AppConfig.String("fsurl"), logsign)
+		ret := PostToFS("PrometheusAlert", fstext, beego.AppConfig.String("fsurl"), "244217140@qq.com",logsign)
 		c.Data["json"] = ret
 	case "txdx":
 		MobileMessage := "PrometheusAlertCenter测试告警"

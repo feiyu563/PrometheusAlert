@@ -30,6 +30,7 @@ type Annotations struct {
 	Fsurl  string `json:"fsurl"`  //2020年4月25日 17:33:38 增加多个飞书告警支持
 	Email  string `json:"email"`  //2020年7月4日 10:15:20 增加多个email告警支持
 	Groupid  string `json:"groupid"`  //2021年2月2日 17:28:23 增加多个如流告警支持
+	AtSomeOne  string `json:"at"`  //2021年6月23日 14:02:21 增加@某人支持
 }
 type Alerts struct {
 	Status       string
@@ -150,18 +151,18 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail,rgr
 		//发送消息到钉钉
 		if rddurl == "" && RMessage.Annotations.Ddurl == "" {
 			url := beego.AppConfig.String("ddurl")
-			PostToDingDing(Title+titleend, ddtext, url, logsign)
+			PostToDingDing(Title+titleend, ddtext, url,RMessage.Annotations.AtSomeOne, logsign)
 		} else {
 			if rddurl != "" {
 				Ddurl := strings.Split(rddurl, ",")
 				for _, url := range Ddurl {
-					PostToDingDing(Title+titleend, ddtext, url, logsign)
+					PostToDingDing(Title+titleend, ddtext, url,RMessage.Annotations.AtSomeOne, logsign)
 				}
 			}
 			if RMessage.Annotations.Ddurl != "" {
 				Ddurl := strings.Split(RMessage.Annotations.Ddurl, ",")
 				for _, url := range Ddurl {
-					PostToDingDing(Title+titleend, ddtext, url, logsign)
+					PostToDingDing(Title+titleend, ddtext, url, RMessage.Annotations.AtSomeOne,logsign)
 				}
 			}
 		}
@@ -182,36 +183,36 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail,rgr
 		//发送消息到微信
 		if rwxurl == "" && RMessage.Annotations.Wxurl == "" {
 			url := beego.AppConfig.String("wxurl")
-			PostToWeiXin(wxtext, url, logsign)
+			PostToWeiXin(wxtext, url, RMessage.Annotations.AtSomeOne,logsign)
 		} else {
 			if rwxurl != "" {
 				Wxurl := strings.Split(rwxurl, ",")
 				for _, url := range Wxurl {
-					PostToWeiXin(wxtext, url, logsign)
+					PostToWeiXin(wxtext, url, RMessage.Annotations.AtSomeOne,logsign)
 				}
 			}
 			if RMessage.Annotations.Wxurl != "" {
 				Wxurl := strings.Split(RMessage.Annotations.Wxurl, ",")
 				for _, url := range Wxurl {
-					PostToWeiXin(wxtext, url, logsign)
+					PostToWeiXin(wxtext, url, RMessage.Annotations.AtSomeOne,logsign)
 				}
 			}
 		}
 		//发送消息到飞书
 		if rfsurl == "" && RMessage.Annotations.Fsurl == "" {
 			url := beego.AppConfig.String("fsurl")
-			PostToFS(Title+titleend, fstext, url, logsign)
+			PostToFS(Title+titleend, fstext, url, RMessage.Annotations.AtSomeOne,logsign)
 		} else {
 			if rfsurl != "" {
 				Fsurl := strings.Split(rfsurl, ",")
 				for _, url := range Fsurl {
-					PostToFS(Title+titleend, fstext, url, logsign)
+					PostToFS(Title+titleend, fstext, url, RMessage.Annotations.AtSomeOne,logsign)
 				}
 			}
 			if RMessage.Annotations.Fsurl != "" {
 				Fsurl := strings.Split(RMessage.Annotations.Fsurl, ",")
 				for _, url := range Fsurl {
-					PostToFS(Title+titleend, fstext, url, logsign)
+					PostToFS(Title+titleend, fstext, url,RMessage.Annotations.AtSomeOne, logsign)
 				}
 			}
 		}

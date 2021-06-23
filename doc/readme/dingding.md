@@ -18,6 +18,9 @@ PrometheusAlert全家桶钉钉配置说明
 
 复制图中的Webhook地址，并填入PrometheusAlert配置文件app.conf中对应配置项即可。
 
+ **PS: 钉钉机器人目前已经支持 `@某人` ,使用该功能需要取得对应用户的钉钉关联手机号码，如下图：**
+![ding4](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dingding5.png)
+
 钉钉目前支持只支持markdown语法的子集，具体支持的元素如下：
 
 ```

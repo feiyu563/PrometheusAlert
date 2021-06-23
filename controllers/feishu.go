@@ -19,7 +19,7 @@ type FSMessage struct {
 	Text  string `json:"text"`
 }
 
-func PostToFS(title, text, Fsurl, logsign string) string {
+func PostToFS(title, text, Fsurl, userEmail,logsign string) string {
 	open := beego.AppConfig.String("open-feishu")
 	if open != "1" {
 		logs.Info(logsign, "[feishu]", "飞书接口未配置未开启状态,请先配置open-feishu为1")
@@ -27,7 +27,7 @@ func PostToFS(title, text, Fsurl, logsign string) string {
 	}
 	RTstring := ""
 	if strings.Contains(Fsurl, "/v2/") {
-		RTstring = PostToFeiShuv2(title, text, Fsurl, logsign)
+		RTstring = PostToFeiShuv2(title, text, Fsurl, userEmail,logsign)
 	} else {
 		RTstring = PostToFeiShu(title, text, Fsurl, logsign)
 	}
@@ -104,11 +104,11 @@ type Cards struct {
 
 type FSMessagev2 struct {
 	MsgType string `json:"msg_type"`
-	Email   string `json:"email"`
+	Email   string `json:"email"`  //@所使用字段
 	Card    Cards  `json:"card"`
 }
 
-func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
+func PostToFeiShuv2(title, text, Fsurl, userEmail,logsign string) string {
 	var color string
 	if strings.Count(text, "resolved") > 0 && strings.Count(text, "firing") > 0 {
 		color = "orange"
@@ -117,6 +117,19 @@ func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
 	} else {
 		color = "red"
 	}
+
+
+	SendContent:=text
+	if userEmail!="" {
+		emails:=strings.Split(userEmail, ",")
+		emailtext:=""
+		for _,email:=range emails{
+			emailtext+="<at email="+email+"></at>"
+		}
+		SendContent+=emailtext
+	}
+
+
 	u := FSMessagev2{
 		MsgType: "interactive",
 		Email:   "244217140@qq.com",
@@ -136,7 +149,7 @@ func PostToFeiShuv2(title, text, Fsurl, logsign string) string {
 				Element{
 					Tag: "div",
 					Text: Te{
-						Content: text,
+						Content: SendContent,
 						Tag:     "lark_md",
 					},
 				},

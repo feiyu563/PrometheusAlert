@@ -185,15 +185,15 @@ func SendMessageG3(message Graylog3, typeid int, logsign, ddurl, wxurl, fsurl, t
 		if ddurl == "" {
 			ddurl = beego.AppConfig.String("ddurl")
 		}
-		PostToDingDing(Title+"告警信息", "## ["+Title+"Graylog3告警信息]("+message.Event.Source+")\n\n"+"#### "+message.Description+"\n\n"+"!["+Title+"]("+Logourl+")", ddurl, logsign)
+		PostToDingDing(Title+"告警信息", "## ["+Title+"Graylog3告警信息]("+message.Event.Source+")\n\n"+"#### "+message.Description+"\n\n"+"!["+Title+"]("+Logourl+")", ddurl,"", logsign)
 		if fsurl == "" {
 			fsurl = beego.AppConfig.String("fsurl")
 		}
-		PostToFeiShu(Title+"告警信息", "["+Title+"Graylog3告警信息]("+message.Event.Source+")\n\n"+""+message.Description+"\n\n"+"!["+Title+"]("+Logourl+")", fsurl, logsign)
+		PostToFS(Title+"告警信息", "["+Title+"Graylog3告警信息]("+message.Event.Source+")\n\n"+""+message.Description+"\n\n"+"!["+Title+"]("+Logourl+")", fsurl,"", logsign)
 		if wxurl == "" {
 			wxurl = beego.AppConfig.String("wxurl")
 		}
-		PostToWeiXin("["+Title+"Graylog3告警信息]("+message.Event.Source+")\n>**"+message.Description+"**", wxurl, logsign)
+		PostToWeiXin("["+Title+"Graylog3告警信息]("+message.Event.Source+")\n>**"+message.Description+"**", wxurl, "",logsign)
 		if email == "" {
 			email = beego.AppConfig.String("Default_emails")
 		}
@@ -234,14 +234,14 @@ func SendMessageG3(message Graylog3, typeid int, logsign, ddurl, wxurl, fsurl, t
 			if ddurl == "" {
 				ddurl = beego.AppConfig.String("ddurl")
 			}
-			PostToDingDing(Title+"告警信息", DDtext, ddurl, logsign)
+			PostToDingDing(Title+"告警信息", DDtext, ddurl,"", logsign)
 		}
 		//触发微信
 		if typeid == 3 {
 			if wxurl == "" {
 				wxurl = beego.AppConfig.String("wxurl")
 			}
-			PostToWeiXin(WXtext, wxurl, logsign)
+			PostToWeiXin(WXtext, wxurl, "",logsign)
 		}
 		//触发电话告警
 		if typeid == 4 {
@@ -290,7 +290,7 @@ func SendMessageG3(message Graylog3, typeid int, logsign, ddurl, wxurl, fsurl, t
 			if fsurl == "" {
 				fsurl = beego.AppConfig.String("fsurl")
 			}
-			PostToFeiShu(Title+"告警信息", FStext, fsurl, logsign)
+			PostToFS(Title+"告警信息", FStext, fsurl, "",logsign)
 		}
 		//触发TG
 		if typeid == 11 {

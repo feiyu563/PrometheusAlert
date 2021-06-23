@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type DDMessage struct {
@@ -24,7 +25,7 @@ type DDMessage struct {
 	} `json:"at"`
 }
 
-func PostToDingDing(title, text, Ddurl, logsign string) string {
+func PostToDingDing(title, text, Ddurl,AtSomeOne, logsign string) string {
 	open := beego.AppConfig.String("open-dingding")
 	if open != "1" {
 		logs.Info(logsign, "[dingding]", "钉钉接口未配置未开启状态,请先配置open-dingding为1")
@@ -35,16 +36,28 @@ func PostToDingDing(title, text, Ddurl, logsign string) string {
 	if Isatall == 0 {
 		Atall = false
 	}
+	atMobile:=[]string{"15395105573"}
+	SendText:=text
+	if AtSomeOne!="" {
+		atMobile=strings.Split(AtSomeOne, ",")
+		AtText:=""
+		for _,phoneN:=range atMobile{
+			AtText+=" @"+phoneN
+		}
+		SendText+=AtText
+		Atall = false
+	}
+
 	u := DDMessage{
 		Msgtype: "markdown",
 		Markdown: struct {
 			Title string `json:"title"`
 			Text  string `json:"text"`
-		}{Title: title, Text: text},
+		}{Title: title, Text: SendText},
 		At: struct {
 			AtMobiles []string `json:"atMobiles"`
 			IsAtAll   bool     `json:"isAtAll"`
-		}{AtMobiles: []string{"15395105573"}, IsAtAll: Atall},
+		}{AtMobiles: atMobile, IsAtAll: Atall},
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)

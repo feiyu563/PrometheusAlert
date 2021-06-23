@@ -60,7 +60,7 @@
                         </th>
                         <th>{{.Tpluse}}</th>
 						<th>
-                        	/prometheusalert?type={{.Tpltype}}&tpl={{.Tplname}}&{{if eq .Tpltype "dd"}}ddurl=钉钉机器人地址{{else}}{{if eq .Tpltype "wx"}}wxurl=微信机器人地址{{else}}{{if eq .Tpltype "fs"}}fsurl=飞书机器人地址{{else}}{{if eq .Tpltype "webhook"}}webhookurl=WebHook地址{{else}}{{if eq .Tpltype "email"}}email=Email地址{{else}}{{if eq .Tpltype "rl"}}groupid=百度Hi(如流)群id{{else}}{{if eq .Tpltype "workwechat"}}wxuser=接受用户&wxparty=接受部门&wxtag=接受标签{{else}}phone=手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+                        	/prometheusalert?type={{.Tpltype}}&tpl={{.Tplname}}&{{if eq .Tpltype "dd"}}ddurl=钉钉机器人地址&at=18888888888{{else}}{{if eq .Tpltype "wx"}}wxurl=微信机器人地址&at=zhangsan{{else}}{{if eq .Tpltype "fs"}}fsurl=飞书机器人地址&at=zhangsan@xxx.com{{else}}{{if eq .Tpltype "webhook"}}webhookurl=WebHook地址{{else}}{{if eq .Tpltype "email"}}email=Email地址{{else}}{{if eq .Tpltype "rl"}}groupid=百度Hi(如流)群id{{else}}{{if eq .Tpltype "workwechat"}}wxuser=接受用户&wxparty=接受部门&wxtag=接受标签{{else}}phone=手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
 						</th>
 						<th>{{.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
 						<!--<th><a href="/template/test?id={{.Id}}" class="glyphicon glyphicon-send"></a></th>-->
