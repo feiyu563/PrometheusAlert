@@ -131,9 +131,9 @@ Zabbix后台配置
 [PrometheusAlert告警平台告警信息](https://zabbix.nb.cn)
 >**{TRIGGER.NAME}**
 >`故障时间：`{EVENT.DATE} {EVENT.TIME}
-`故障前状态：`{TRIGGER.SEVERITY}
-`故障事件ID：`{ITEM.LASTVALUE}
-`故障主机IP:`{EVENT.ID}
+`告警级别：`{TRIGGER.SEVERITY}
+`故障前状态：`{ITEM.LASTVALUE}
+`故障事件ID:`{EVENT.ID}
 `故障主机IP：`{HOST.IP}
 `故障主机名：`{HOST.NAME}
 `故障时长：`{EVENT.AGE}
@@ -147,8 +147,8 @@ Zabbix后台配置
 [PrometheusAlert告警平台恢复信息](https://zabbix.nb.cn)
 >**{TRIGGER.NAME} 已经恢复**
 >`恢复时间：`{EVENT.RECOVERY.DATE} {EVENT.RECOVERY.TIME}
-`故障前状态：`{TRIGGER.SEVERITY}
-`故障事件ID：`{ITEM.LASTVALUE}
+`告警级别：`{TRIGGER.SEVERITY}
+`故障前状态：`{ITEM.LASTVALUE}
 `故障主机IP：`{HOST.IP}
 `故障主机名：`{HOST.NAME}
 `故障时长：`{EVENT.AGE}
@@ -162,8 +162,8 @@ Zabbix后台配置
 [PrometheusAlert告警平台确认信息](https://zabbix.nb.cn)
 >**{USER.FULLNAME} 已经确认故障原因**
 >`确认时间：`{ACK.DATE} {ACK.TIME}
-`故障前状态：`{TRIGGER.SEVERITY}
-`故障事件ID：`{ITEM.LASTVALUE}
+`告警级别：`{TRIGGER.SEVERITY}
+`故障前状态：`{ITEM.LASTVALUE}
 `故障主机IP：`{HOST.IP}
 `故障主机名：`{HOST.NAME}
 `故障时长：`{EVENT.AGE}
