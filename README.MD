@@ -74,6 +74,7 @@ PrometheusAlert具备如下特性
 
 致谢以下伙伴对PrometheusAlert的贡献
 ---------------------
+ - [@cyancow](https://github.com/cyancow)
  - [@minibear2333](https://github.com/minibear2333)
  - [@bigdimple](https://github.com/bigdimple)
  - [@ysicing](https://github.com/ysicing)
