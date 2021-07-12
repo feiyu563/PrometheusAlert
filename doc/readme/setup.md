@@ -5,6 +5,12 @@ PrometheusAlert配置文件中定义了丰富的配置项，默认配置即可�
 ```
 #---------------------↓全局配置-----------------------
 appname = PrometheusAlert
+#登录用户名
+login_user=prometheusalert
+#登录密码
+login_password=prometheusalert
+#监听地址
+httpaddr = "0.0.0.0"
 #监听端口
 httpport = 8080
 runmode = dev
@@ -24,8 +30,8 @@ rlogourl=https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/a
 messagelevel=3
 #电话告警级别(等于4就进行语音告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
 phonecalllevel=4
-#默认拨打号码
-defaultphone=15395105573
+#默认拨打号码(页面测试短信和电话功能需要配置此项)
+defaultphone=xxxxxxxx
 #故障恢复是否启用电话通知0为关闭,1为开启
 phonecallresolved=0
 #自动告警抑制(自动告警抑制是默认同一个告警源的告警信息只发送告警级别最高的第一条告警信息,其他消息默认屏蔽,这么做的目的是为了减少相同告警来源的消息数量,防止告警炸弹,0为关闭,1为开启)
@@ -34,8 +40,15 @@ silent=0
 logtype=file
 #日志文件路径
 logpath=logs/prometheusalertcenter.log
-#转换Prometheus告警消息的时区为CST时区(如默认已经是CST时区，请勿开启)
+#转换Prometheus,graylog告警消息的时区为CST时区(如默认已经是CST时区，请勿开启)
 prometheus_cst_time=0
+#数据库驱动，支持sqlite3，mysql,postgres如使用mysql或postgres，请开启db_host,db_port,db_user,db_password,db_name的注释
+db_driver=sqlite3
+#db_host=127.0.0.1
+#db_port=3306
+#db_user=root
+#db_password=root
+#db_name=prometheusalert
 
 #---------------------↓webhook-----------------------
 #是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
@@ -51,13 +64,13 @@ open-weixin=1
 wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
 
 #是否开启飞书告警通道,可同时开始多个通道0为关闭,1为开启
-open-feishu=1
+open-feishu=0
 #默认飞书机器人地址
 fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
 
 #---------------------↓腾讯云接口-----------------------
 #是否开启腾讯云短信告警通道,可同时开始多个通道0为关闭,1为开启
-open-txdx=1
+open-txdx=0
 #腾讯云短信接口key
 TXY_DX_appkey=xxxxx
 #腾讯云短信模版ID 腾讯云短信模版配置可参考 prometheus告警:{1}
@@ -68,7 +81,7 @@ TXY_DX_sdkappid=xxxxx
 TXY_DX_sign=腾讯云
 
 #是否开启腾讯云电话告警通道,可同时开始多个通道0为关闭,1为开启
-TXY_DH_open-txdh=1
+open-txdh=0
 #腾讯云电话接口key
 TXY_DH_phonecallappkey=xxxxx
 #腾讯云电话模版ID
@@ -78,7 +91,7 @@ TXY_DH_phonecallsdkappid=xxxxx
 
 #---------------------↓华为云接口-----------------------
 #是否开启华为云短信告警通道,可同时开始多个通道0为关闭,1为开启
-open-hwdx=1
+open-hwdx=0
 #华为云短信接口key
 HWY_DX_APP_Key=xxxxxxxxxxxxxxxxxxxxxx
 #华为云短信接口Secret
@@ -94,7 +107,7 @@ HWY_DX_Sender=xxxxxxxxxx
 
 #---------------------↓阿里云接口-----------------------
 #是否开启阿里云短信告警通道,可同时开始多个通道0为关闭,1为开启
-open-alydx=1
+open-alydx=0
 #阿里云短信主账号AccessKey的ID
 ALY_DX_AccessKeyId=xxxxxxxxxxxxxxxxxxxxxx
 #阿里云短信接口密钥
@@ -105,7 +118,7 @@ ALY_DX_SignName=阿里云
 ALY_DX_Template=xxxxxxxxxxxxxxxxxxxxxx
 
 #是否开启阿里云电话告警通道,可同时开始多个通道0为关闭,1为开启
-open-alydx=1
+open-alydh=0
 #阿里云电话主账号AccessKey的ID
 ALY_DH_AccessKeyId=xxxxxxxxxxxxxxxxxxxxxx
 #阿里云电话接口密钥
@@ -116,8 +129,8 @@ ALY_DX_CalledShowNumber=xxxxxxxxx
 ALY_DH_TtsCode=xxxxxxxx
 
 #---------------------↓容联云接口-----------------------
-#是否开启腾讯云电话告警通道,可同时开始多个通道0为关闭,1为开启
-RLY_DH_open-rlydh=1
+#是否开启容联云电话告警通道,可同时开始多个通道0为关闭,1为开启
+RLY_DH_open-rlydh=0
 #容联云基础接口地址
 RLY_URL=https://app.cloopen.com:8883/2013-12-26/Accounts/
 #容联云后台SID
@@ -129,17 +142,82 @@ RLY_APP_ID=xxxxxxxxxxxxx
 
 #---------------------↓邮件配置-----------------------
 #是否开启邮件
-open-email=1
+open-email=0
 #邮件发件服务器地址
 Email_host=smtp.qq.com
 #邮件发件服务器端口
 Email_port=465
 #邮件帐号
-Email_user=123456789@qq.com
+Email_user=xxxxxxx@qq.com
 #邮件密码
-Email_password=xxxxxxx
+Email_password=xxxxxx
 #邮件标题
 Email_title=运维告警
 #默认发送邮箱
-Default_emails=123456@qq.com,123456@baidu.com
+Default_emails=xxxxx@qq.com,xxxxx@qq.com
+
+#---------------------↓七陌云接口-----------------------
+#是否开启七陌短信告警通道,可同时开始多个通道0为关闭,1为开启
+open-7moordx=0
+#七陌账户ID
+7MOOR_ACCOUNT_ID=Nxxx
+#七陌账户APISecret
+7MOOR_ACCOUNT_APISECRET=xxx
+#七陌账户短信模板编号
+7MOOR_DX_TEMPLATENUM=n
+#注意：七陌短信变量这里只用一个var1，在代码里写死了。
+#-----------
+#是否开启七陌webcall语音通知告警通道,可同时开始多个通道0为关闭,1为开启
+open-7moordh=0
+#请在七陌平台添加虚拟服务号、文本节点
+#七陌账户webcall的虚拟服务号
+7MOOR_WEBCALL_SERVICENO=xxx
+# 文本节点里被替换的变量，我配置的是text。如果被替换的变量不是text，请修改此配置
+7MOOR_WEBCALL_VOICE_VAR=text
+
+#---------------------↓telegram接口-----------------------
+#是否开启telegram告警通道,可同时开始多个通道0为关闭,1为开启
+open-tg=0
+#tg机器人token
+TG_TOKEN=xxxxx
+#tg消息模式 个人消息或者频道消息 0为关闭(推送给个人)，1为开启(推送给频道)
+TG_MODE_CHAN=0
+#tg用户ID
+TG_USERID=xxxxx
+#tg频道name
+TG_CHANNAME=xxxxx
+#tg api地址, 可以配置为代理地址
+#TG_API_PROXY="https://api.telegram.org/bot%s/%s"
+
+#---------------------↓workwechat接口-----------------------
+#是否开启workwechat告警通道,可同时开始多个通道0为关闭,1为开启
+open-workwechat=0
+# 企业ID
+WorkWechat_CropID=xxxxx
+# 应用ID
+WorkWechat_AgentID=xxxx
+# 应用secret
+WorkWechat_AgentSecret=xxxx
+# 接受用户
+WorkWechat_ToUser="zhangsan|lisi"
+# 接受部门
+WorkWechat_ToParty="ops|dev"
+# 接受标签
+WorkWechat_ToTag=""
+# 消息类型, 暂时只支持markdown
+# WorkWechat_Msgtype = "markdown"
+
+#---------------------↓百度云接口-----------------------
+#是否开启百度云短信告警通道,可同时开始多个通道0为关闭,1为开启
+open-baidudx=0
+#百度云短信接口AK(ACCESS_KEY_ID)
+BDY_DX_AK=xxxxx
+#百度云短信接口SK(SECRET_ACCESS_KEY)
+BDY_DX_SK=xxxxx
+#百度云短信ENDPOINT（ENDPOINT参数需要用指定区域的域名来进行定义，如服务所在区域为北京，则为）
+BDY_DX_ENDPOINT=http://smsv3.bj.baidubce.com
+#百度云短信模版ID,根据自己审核通过的模版来填写(模版支持一个参数code：如prometheus告警:{code})
+BDY_DX_TEMPLATE_ID=xxxxx
+#百度云短信签名ID，根据自己审核通过的签名来填写
+TXY_DX_SIGNATURE_ID=xxxxx
 ```

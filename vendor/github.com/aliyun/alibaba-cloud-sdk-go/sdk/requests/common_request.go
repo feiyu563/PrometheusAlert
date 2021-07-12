@@ -83,6 +83,8 @@ func (request *CommonRequest) TransToAcsRequest() {
 		rpcRequest.version = request.Version
 		rpcRequest.locationServiceCode = request.ServiceCode
 		rpcRequest.actionName = request.ApiName
+		rpcRequest.Headers["x-acs-version"] = request.Version
+		rpcRequest.Headers["x-acs-action"] = request.ApiName
 		request.Ontology = rpcRequest
 	}
 }

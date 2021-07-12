@@ -55,7 +55,7 @@ func PostRLYphonecall(CallMessage, PhoneNumber, logsign string) string {
 	open := beego.AppConfig.String("RLY_DH_open-rlydh")
 	accountSid := beego.AppConfig.String("RLY_ACCOUNT_SID")
 
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[rlyphonecall]", "容联云语音接口未配置未开启状态,请先配置open-rlydh为1")
 		return "容联云语音接口未配置未开启状态,请先配置open-txdh为1"
 	}

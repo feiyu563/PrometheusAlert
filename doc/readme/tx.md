@@ -8,7 +8,7 @@
 
 * 语音（电话）：https://cloud.tencent.com/document/product/1128/37343
 
-* 注意事项：开通腾讯云短信和语音需要配置的模版请使用如下：`prometheus告警:{1}`
+* 注意事项：开通腾讯云短信和语音需要配置的模版请填写类似如下内容：`prometheus告警:{1}`
 
 ![tengxun1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/tengxun1.png)
 

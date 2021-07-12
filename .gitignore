@@ -1,3 +1,6 @@
-*.log
-logs/*.log
 conf/app.conf
+PrometheusAlert
+PrometheusAlert.exe
+logo
+.idea
+logs/*.log

@@ -1,0 +1,12 @@
+.idea
+.git
+doc
+example
+logo
+logs/*.log
+tests
+zabbix
+.gitignore
+build.sh
+build.bat
+README.MD

@@ -5,10 +5,11 @@ import (
 	"PrometheusAlert/models"
 	"bytes"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"strings"
 	"text/template"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 type PrometheusAlertController struct {
@@ -25,23 +26,37 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	P_ddurl := c.Input().Get("ddurl")
 	P_wxurl := c.Input().Get("wxurl")
 	P_fsurl := c.Input().Get("fsurl")
+	P_webhookurl := c.Input().Get("webhookurl")
 	P_phone := c.Input().Get("phone")
+	if P_phone == "" && ( P_type == "txdx" || P_type == "hwdx" || P_type == "bddx" || P_type == "alydx" || P_type == "txdh" || P_type == "alydh" || P_type == "rlydh" || P_type == "7moordx" || P_type == "7moordh") {
+		P_phone = GetUserPhone(1)
+	}
 	P_email := c.Input().Get("email")
+	P_touser:=c.Input().Get("wxuser")
+	P_toparty:=c.Input().Get("wxparty")
+	P_totag:=c.Input().Get("wxtag")
+	P_groupid := c.Input().Get("groupid")
+	P_atsomeone := c.Input().Get("at")
 	//get tpl
 	message := ""
+	funcMap := template.FuncMap{
+		"GetCSTtime": GetCSTtime,
+		"TimeFormat": TimeFormat,
+	}
 	if P_tpl != "" && P_type != "" {
 		tpltext, err := models.GetTplOne(P_tpl)
 		if err != nil {
 			logs.Error(logsign, err)
 		}
 		buf := new(bytes.Buffer)
-		tpl, err := template.New("").Funcs(template.FuncMap{"GetCSTtime": GetCSTtime}).Parse(tpltext.Tpl)
+		//tpl, err := template.New("").Funcs(template.FuncMap{"GetCSTtime": GetCSTtime}).Parse(tpltext.Tpl)
+		tpl, err := template.New("").Funcs(funcMap).Parse(tpltext.Tpl)
 		if err != nil {
 			logs.Error(logsign, err.Error())
 			message = err.Error()
 		} else {
 			tpl.Execute(buf, p_json)
-			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_phone, P_email, logsign)
+			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_webhookurl,P_phone, P_email,P_touser,P_toparty,P_totag,P_groupid,P_atsomeone,logsign)
 		}
 	} else {
 		message = "接口参数缺失！"
@@ -51,7 +66,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, email, logsign string) string {
+func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhookurl,pphone, email,ptouser,ptoparty,ptotag,pgroupid,patsomeone, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	ret := ""
 	model.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
@@ -60,21 +75,28 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	case "wx":
 		Wxurl := strings.Split(pwxurl, ",")
 		for _, url := range Wxurl {
-			ret += PostToWeiXin(message, url, logsign)
+			ret += PostToWeiXin(message, url, patsomeone,logsign)
 		}
 
 	//钉钉渠道
 	case "dd":
 		Ddurl := strings.Split(pddurl, ",")
 		for _, url := range Ddurl {
-			ret += PostToDingDing(Title+"告警消息", message, url, logsign)
+			ret += PostToDingDing(Title+"告警消息", message, url,patsomeone, logsign)
 		}
 
 	//飞书渠道
 	case "fs":
 		Fsurl := strings.Split(pfsurl, ",")
 		for _, url := range Fsurl {
-			ret += PostToFeiShu(Title+"告警消息", message, url, logsign)
+			ret += PostToFS(Title+"告警消息", message, url, patsomeone,logsign)
+		}
+
+	//Webhook渠道
+	case "webhook":
+		Fwebhookurl := strings.Split(pwebhookurl, ",")
+		for _, url := range Fwebhookurl {
+			ret += PostToWebhook(message, url, logsign)
 		}
 
 	//腾讯云短信
@@ -83,6 +105,9 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	//华为云短信
 	case "hwdx":
 		ret = ret + PostHWmessage(message, pphone, logsign)
+	//百度云短信
+	case "bddx":
+		ret = ret + PostBDYmessage(message, pphone, logsign)
 	//阿里云短信
 	case "alydx":
 		ret = ret + PostALYmessage(message, pphone, logsign)
@@ -95,9 +120,24 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pphone, 
 	//容联云电话
 	case "rlydh":
 		ret = ret + PostRLYphonecall(message, pphone, logsign)
+	//七陌短信
+	case "7moordx":
+		ret = ret + Post7MOORmessage(message, pphone, logsign)
+	//七陌语音电话
+	case "7moordh":
+		ret = ret + Post7MOORphonecall(message, pphone, logsign)
 	//邮件
 	case "email":
 		ret = ret + SendEmail(message, email, logsign)
+	// Telegram
+	case "tg":
+		ret = ret + SendTG(message, logsign)
+	// Workwechat
+	case "workwechat":
+		ret = ret + SendWorkWechat(ptouser,ptoparty,ptotag,message, logsign)
+	//百度Hi(如流)
+	case "rl":
+		ret += PostToRuLiu(pgroupid, message, beego.AppConfig.String("BDRL_URL"), logsign)
 	//异常参数
 	default:
 		ret = "参数错误"
