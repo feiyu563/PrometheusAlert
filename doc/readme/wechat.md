@@ -8,6 +8,39 @@
 
 复制图中的Webhook地址，并填入PrometheusAlert配置文件app.conf中对应配置项即可。
 
+ **PS: 企业微信机器人目前已经支持 `@某人` ,使用该功能需要通过企业微信管理后台取得对应用户的帐号，如下图：**
+![wx2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/wx3.png)
+
+
+企业微信机器人目前支持的markdown语法是如下的子集：
+
+```
+标题 （支持1至6级标题，注意#与文字中间要有空格）
+# 标题一
+## 标题二
+### 标题三
+#### 标题四
+##### 标题五
+###### 标题六
+
+加粗
+**bold**
+
+链接
+[这是一个链接](http://work.weixin.qq.com/api/doc)
+
+行内代码段（暂不支持跨行）
+`code`
+
+引用
+> 引用文字
+
+字体颜色(只支持3种内置颜色)
+<font color="info">绿色</font>
+<font color="comment">灰色</font>
+<font color="warning">橙红色</font>
+```
+
 企业微信机器人相关配置：
 
 ```

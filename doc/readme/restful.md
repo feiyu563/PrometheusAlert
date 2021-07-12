@@ -43,6 +43,10 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /grafana/alydh     处理Grafana告警消息转发到阿里云电话接口
 /grafana/rlydh     处理Grafana告警消息转发到容联云电话接口
 /grafana/email     处理Grafana告警消息转发到Email接口
+/grafana/bddx      处理Grafana告警消息转发到百度云短信接口
+/grafana/tg        处理Grafana告警消息转发到telegram接口
+/grafana/workwechat处理Grafana告警消息转发到企业微信应用接口
+/grafana/ruliu     处理Grafana告警消息转发到百度Hi(如流)接口
 ```
 
 - `graylog2固定模版接口`
@@ -61,6 +65,10 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /graylog2/alydh     处理Graylog2告警消息转发到阿里云电话接口
 /graylog2/rlydh     处理Graylog2告警消息转发到容联云电话接口
 /graylog2/email     处理Graylog2告警消息转发到Email接口
+/graylog2/bddx       处理Graylog2告警消息转发到百度云短信接口
+/graylog2/tg         处理Graylog2告警消息转发到telegram接口
+/graylog2/workwechat 处理Graylog2告警消息转发到企业微信应用接口
+/graylog2/ruliu      处理Graylog2告警消息转发到百度Hi(如流)接口
 ```
 
 - `graylog3固定模版接口`
@@ -79,6 +87,10 @@ PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，�
 /graylog3/alydh     处理Graylog3告警消息转发到阿里云电话接口
 /graylog3/rlydh     处理Graylog3告警消息转发到容联云电话接口
 /graylog3/email     处理Graylog3告警消息转发到Email接口
+/graylog3/bddx      处理Graylog3告警消息转发到百度云短信接口
+/graylog3/tg        处理Graylog3告警消息转发到telegram接口
+/graylog3/workwechat处理Graylog3告警消息转发到企业微信应用接口
+/graylog3/ruliu     处理Graylog3告警消息转发到百度Hi(如流)接口
 ```
 
 - `语音短信回调接口`

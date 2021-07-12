@@ -19,3 +19,4 @@
 2020/01/14 18:12:51.160 [D] [server.go:2774] 127.0.0.1 - - [14/Jan/2020 06:12:39] "POST /graylog2/dingding HTTP/1.1 200 0" 11.165693  curl/7.65.3
 
 2020/05/25 18:10:03.837 [I] [asm_amd64.s:1373]  http server Running on http://:8080
+2020/08/06 19:46:17.940 [I] [asm_amd64.s:1373]  http server Running on http://:8080

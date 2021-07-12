@@ -2,11 +2,12 @@ package controllers
 
 import (
 	"bufio"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 //转换UTC时区到CST
@@ -21,9 +22,20 @@ func GetCSTtime(date string) string {
 		h, _ := time.ParseDuration("-1h")
 		tm3 := tm2.Add(-8 * h)
 		tm = tm3.Format("2006-01-02 15:04:05")
-
 	}
 	return tm
+}
+
+func TimeFormat(timestr,format string) string {
+	returnTime,err:=time.Parse("2006-01-02T15:04:05.999999999Z",timestr)
+	if err!=nil {
+		returnTime,err=time.Parse("2006-01-02T15:04:05.999999999+08:00",timestr)
+	}
+	if err!=nil {
+		return err.Error()
+	} else {
+		return returnTime.Format(format)
+	}
 }
 
 //获取用户号码
@@ -63,6 +75,8 @@ func GetUserPhone(neednum int) string {
 			}
 		}
 		f.Close()
+	} else {
+		logs.Error(err.Error())
 	}
 	return Num
 }

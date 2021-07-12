@@ -11,7 +11,7 @@ import (
 // SendEmail
 func SendEmail(EmailBody, Emails, logsign string) string {
 	open := beego.AppConfig.String("open-email")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[email]", "email未配置未开启状态,请先配置open-email为1")
 		return "eamil未配置未开启状态,请先配置open-email为1"
 	}

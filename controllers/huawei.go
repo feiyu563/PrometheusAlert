@@ -16,7 +16,7 @@ import (
 //华为云短信子程序
 func PostHWmessage(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-hwdx")
-	if open == "0" {
+	if open != "1" {
 		logs.Info(logsign, "[hwmessage]", "华为云短信接口未配置未开启状态,请先配置open-hwdx为1")
 		return "华为云短信接口未配置未开启状态,请先配置open-hwdx为1"
 	}
