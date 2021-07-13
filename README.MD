@@ -16,7 +16,7 @@
 
 -----------------
 
-PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)等。
+PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube。阿里云-云监控，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)等。
 
 ![it](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/it.png)
 
@@ -68,7 +68,8 @@ PrometheusAlert具备如下特性
  - 增加自定义告警消息模版支持，可以通过自定义模版对任意服务WebHook进行支持
  - 增加代理支持
  - 增加支持mysql、sqlite3(默认)、postgres作为模版存储，便于集群化部署
- - 增加支持钉钉，企业微信，飞书V2的@某人功能
+ - 增加支持钉钉，企业微信的@某人功能
+ - 增加支持阿里云-云监控告警
  
 ---------------------
 
