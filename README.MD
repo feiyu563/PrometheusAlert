@@ -75,6 +75,7 @@ PrometheusAlert具备如下特性
 致谢以下伙伴对PrometheusAlert的贡献
 ---------------------
  - [@cyancow](https://github.com/cyancow)
+ - [@birkh8792](https://github.com/birkh8792)
  - [@minibear2333](https://github.com/minibear2333)
  - [@bigdimple](https://github.com/bigdimple)
  - [@ysicing](https://github.com/ysicing)
@@ -118,6 +119,7 @@ PrometheusAlert具备如下特性
   * [zabbix（内置固定消息模版）接入配置](doc/readme/zabbix.md)
   * [sonarqube（自定义消息模版）接入配置](doc/readme/sonarqube.md)
   * [jenkins（自定义消息模版）接入配置](doc/readme/jenkins.md)
+  * [阿里云-云监控（自定义消息模版）接入配置](doc/readme/yunjiankong.md)
 * [【WebHook】](doc/readme/webhook.md)
 * [【MarkDown测试】](doc/readme/markdowntest.md)
 

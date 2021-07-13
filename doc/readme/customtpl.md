@@ -2,7 +2,9 @@
 
 --------------------------------------
 
-自定义告警消息模版可以支持任意带有WebHook服务的系统接入到PrometheusAlert上。钉钉机器人、企业微信机器人和飞书机器人V2均已经支持@某人的功能。使用时，需要在Url中加入`&at= 1539510xxxx`；如需添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱，具体可参考各自说明文档。
+自定义告警消息模版可以支持任意带有WebHook服务的系统接入到PrometheusAlert上。钉钉机器人、企业微信机器人均已经支持@某人的功能。使用时，需要在Url中加入`&at= 1539510xxxx`；如需添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，具体可参考各自说明文档。
+
+新增功能：url参数中 `ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid `等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息
 
 使用该功能需要使用者对go语言的template模版有一些初步了解，可以参考默认模版的一些语法来进行自定义。
 
@@ -132,6 +134,7 @@ receivers:
 - name: 'prometheusalert-all'
   webhook_configs:
   - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=钉钉机器人地址'
+  #注意：url参数中 ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息
 ```
 
 ![dashboard-tpl-list](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-tpl-list.png)
