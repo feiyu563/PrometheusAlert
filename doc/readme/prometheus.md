@@ -40,7 +40,7 @@ groups:
       wxurl: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx-xxxxxx-xxxxxx-xxxxxx,https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx-xxxx-xxxxxxx-xxxxx" #支持添加多个企业微信机器人告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的企业微信机器人地址
       email: "12345@qq.com,45678@baidu.com,91011@aliyun.com" #支持添加多个邮箱告警,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的邮箱地址
       groupid: "12345,678910" #支持添加多个如流群id,用,号分割即可,如果留空或者未填写,则默认发送到配置文件中填写的如流群id
-      at: "1539510xxxx" #@某人功能，支持添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱，具体可参考各自说明文档
+      at: "1539510xxxx" #@某人功能，支持添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，具体可参考各自说明文档
 ```
 
 2)通过Prometheus AlertManager router方式(使用PrometheusAlert程序内置固定模版，非web页面上的模版)
