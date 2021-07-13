@@ -91,3 +91,60 @@ func UpdateTpl(id int, tplname, t_type, t_use, tpl string) error {
 	}
 	return err
 }
+
+type AlertRecord struct {
+	Id           int64
+	SendType     string
+	Alertname    string
+	AlertLevel   string
+	BusinessType string
+	Instance     string
+	StartsAt     string
+	EndsAt       string
+	Summary      string
+	Description  string
+	HandleStatus string
+	AlertStatus  string
+	AlertJson    string
+	Remark       string
+	Revision     int
+	CreatedBy    string
+	CreatedTime  time.Time
+	UpdatedBy    string
+	UpdatedTime  time.Time
+}
+
+func (alertRecord *AlertRecord) TableName() string {
+	return "alert_record"
+}
+
+func AddAlertRecord(sendType string, alertname string, alertLevel string, businessType string, instance string,
+	startsAt string, endsAt string, summary string, description string, alertStatus string, alertJson string, remark string) error {
+	o := orm.NewOrm()
+	var err error
+
+	alertRecord := &AlertRecord{
+		//Id: id,
+		SendType:     sendType,
+		Alertname:    alertname,
+		AlertLevel:   alertLevel,
+		BusinessType: businessType,
+		Instance:     instance,
+		StartsAt:     startsAt,
+		EndsAt:       endsAt,
+		Summary:      summary,
+		Description:  description,
+		HandleStatus: "0",
+		AlertStatus:  alertStatus,
+		AlertJson:    alertJson,
+		Remark:       remark,
+		Revision:     1,
+		CreatedBy:    "system",
+		CreatedTime:  time.Now(),
+		UpdatedBy:    "system",
+		UpdatedTime:  time.Now(),
+	}
+	// 插入数据
+	_, err = o.Insert(alertRecord)
+	return err
+}
