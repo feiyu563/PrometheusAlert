@@ -9,15 +9,15 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/mattn/go-sqlite3"
 	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"os"
 	"path"
 )
 
 func init() {
-	db_driver:=beego.AppConfig.String("db_driver")
+	db_driver := beego.AppConfig.String("db_driver")
 	switch db_driver {
 	case "sqlite3":
 		// 检查数据库文件
@@ -49,7 +49,7 @@ func init() {
 		orm.RegisterDataBase("default", "sqlite3", Db_name, 10)
 	}
 	// 注册模型
-	orm.RegisterModel(new(models.PrometheusAlertDB))
+	orm.RegisterModel(new(models.PrometheusAlertDB), new(models.AlertRecord))
 	orm.RunSyncdb("default", false, true)
 }
 
