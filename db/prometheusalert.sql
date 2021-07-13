@@ -61,3 +61,28 @@ INSERT INTO `prometheus_alert_d_b` VALUES ('26', 'dd', 'Jenkins', 'jenkins-dd-ex
 INSERT INTO `prometheus_alert_d_b` VALUES ('27', 'fs', 'Prometheus', 'prometheus-fsv2', '{{ $var := .externalURL}}{{ range $k,$v:=.alerts }}\r\n{{if eq $v.status \"resolved\"}}\r\n**[Prometheus恢复信息]({{$v.generatorURL}})**\r\n*[{{$v.labels.alertname}}]({{$var}})*\r\n告警级别：{{$v.labels.level}}\r\n开始时间：{{$v.startsAt}}\r\n结束时间：{{$v.endsAt}}\r\n故障主机IP：{{$v.labels.instance}}\r\n**{{$v.annotations.description}}**\r\n{{else}}\r\n**[Prometheus告警信息]({{$v.generatorURL}})**\r\n*[{{$v.labels.alertname}}]({{$var}})*\r\n告警级别：{{$v.labels.level}}\r\n开始时间：{{$v.startsAt}}\r\n结束时间：{{$v.endsAt}}\r\n故障主机IP：{{$v.labels.instance}}\r\n**{{$v.annotations.description}}**\r\n{{end}}\r\n{{ end }}', '2020-12-22 03:16:15');
 INSERT INTO `prometheus_alert_d_b` VALUES ('28', 'workwechat', 'Prometheus', 'prometheus-wechatapp', '{{ $var := .externalURL}}{{ range $k,$v:=.alerts }}\r\n{{if eq $v.status \"resolved\"}}\r\n[Prometheus恢复信息]($v.generatorURL}})\r\n>**[{{$v.labels.alertname}}]({{$var}})**\r\n>告警级别: {{$v.labels.level}}\r\n开始时间: {{$v.startsAt}}\r\n结束时间: {{$v.endsAt}}\r\n故障主机IP: {{$v.labels.instance}}\r\n**{{$v.annotations.description}}**\r\n{{else}}\r\n[Prometheus告警信息]($v.generatorURL}})\r\n>**[{{$v.labels.alertname}}]({{$var}})**\r\n>告警级别: {{$v.labels.level}}\r\n开始时间: {{$v.startsAt}}\r\n结束时间: {{$v.endsAt}}\r\n故障主机IP: {{$v.labels.instance}}\r\n**{{$v.annotations.description}}**\r\n{{end}}\r\n{{ end }}', '2020-12-22 03:07:19');
 INSERT INTO `prometheus_alert_d_b` VALUES ('29', 'rl', 'Prometheus', 'prometheus-ruliu', '{{ $var := .externalURL}}{{ range $k,$v:=.alerts }}\r\n{{if eq $v.status \"resolved\"}}\r\n[Prometheus恢复信息]($v.generatorURL}})\r\n>**[{{$v.labels.alertname}}]({{$var}})**\r\n>告警级别: {{$v.labels.level}}\r\n开始时间: {{$v.startsAt}}\r\n结束时间: {{$v.endsAt}}\r\n故障主机IP: {{$v.labels.instance}}\r\n**{{$v.annotations.description}}**\r\n{{else}}\r\n[Prometheus告警信息]($v.generatorURL}})\r\n>**[{{$v.labels.alertname}}]({{$var}})**\r\n>告警级别: {{$v.labels.level}}\r\n开始时间: {{$v.startsAt}}\r\n结束时间: {{$v.endsAt}}\r\n故障主机IP: {{$v.labels.instance}}\r\n**{{$v.annotations.description}}**\r\n{{end}}\r\n{{ end }}', '2020-12-22 03:07:19');
+
+
+CREATE TABLE `alert_record` (
+                                `id` bigint NOT NULL AUTO_INCREMENT,
+                                `send_type` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `alertname` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `alert_level` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `business_type` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `instance` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `starts_at` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `ends_at` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `summary` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `description` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `handle_status` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `alert_status` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `alert_json` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `remark` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `revision` int NOT NULL DEFAULT '0',
+                                `created_by` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `created_time` datetime NOT NULL,
+                                `updated_by` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+                                `updated_time` datetime NOT NULL,
+                                PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
