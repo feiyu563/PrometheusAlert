@@ -4,7 +4,7 @@ Prometheus支持三种配置，`任选其一或者两者搭配均可`。
 
 --------------------------------------
 
-# 第一种方法
+### 第一种方法
 通过自定义告警消息模版的方式(使用web页面上的自定义模版，`强烈推荐此种办法，后续两种办法使用的都是程序内置的模版，不可改变`)
 
 具体参考：[推荐 任意告警源（自定义消息模版）接入配置](customtpl.md)
@@ -15,7 +15,7 @@ Prometheus支持三种配置，`任选其一或者两者搭配均可`。
 
 --------------------------------------
 
-# 第二种方法
+### 第二种方法
 通过Prometheus Rules方式(使用PrometheusAlert程序内置固定模版，非web页面上的模版)
 
 首先需要在Alertmanager配置Webhook，可参考如下模板：
@@ -59,7 +59,7 @@ groups:
 
 --------------------------------------
 
-# 第三种方法
+### 第三种方法
 通过Prometheus AlertManager router方式(使用PrometheusAlert程序内置固定模版，非web页面上的模版)
 
 针对 `/prometheus/router  AlertManager router指定接收端接口`,该接口可在url中直接指定告警的接收端,支持多个参数,分别是:wxurl,ddurl,fsurl,email,phone(phone用于短信和电话告警)
