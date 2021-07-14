@@ -123,6 +123,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	funcMap := template.FuncMap{
 		"GetCSTtime": GetCSTtime,
 		"TimeFormat": TimeFormat,
+		"GetTime": GetTime,
 	}
 	if P_tpl != "" && P_type != "" {
 		tpltext, err := models.GetTplOne(P_tpl)

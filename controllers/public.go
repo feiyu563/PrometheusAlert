@@ -3,12 +3,29 @@ package controllers
 import (
 	"bufio"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 )
+
+//转换时间戳到时间字符串
+func GetTime(timeStr string,timeFormat ...string) string  {
+	S_Time,_:=strconv.ParseInt(timeStr,10,64)
+
+	if len(timeFormat)==0 {
+		timeFormat = append(timeFormat, "2006-01-02T15:04:05")
+	}
+	var R_Time string
+	if len(timeStr)==13 {
+		R_Time=time.Unix(S_Time/1000,0).Format(timeFormat[0])
+	} else {
+		R_Time=time.Unix(S_Time,0).Format(timeFormat[0])
+	}
+	return R_Time
+}
 
 //转换UTC时区到CST
 func GetCSTtime(date string) string {

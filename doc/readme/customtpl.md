@@ -225,3 +225,49 @@ receivers:
 {{end}}
 {{ end }}
 ```
+
+4.3 `GetTime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于将`毫秒或秒`级时间戳转换为时间字符
+
+目前支持两种使用方式：
+
+- 使用默认时间字符串格式输出 `{{GetTime .Timestamp}}` ,如：
+
+```
+ALiYun {{.AlertState}}信息
+>**{{.AlertName}}**
+>告警级别: {{.TriggerLevel}}
+开始时间: {{GetTime .Timestamp}} //输出时间格式：2006-01-02T15:04:05
+故障主机: {{.InstanceName}}
+------------详细信息--------------
+metricName: {{.MetricName}}
+expression: {{.Expression}}
+signature: {{.Signature}}
+metricProject: {{.MetricProject}}
+userId: {{.UserId}}
+namespace: {{.Namespace}}
+preTriggerLevel: {{.PreTriggerLevel}}
+ruleId: {{.RuleId}}
+dimensions: {{.Dimensions}}
+**当前值：{{.CurValue}}**
+```
+
+- 指定输出时间格式输出 `{{GetTime .Timestamp "2006/01/02 15:04:05"}}` ,如
+
+```
+ALiYun {{.AlertState}}信息
+>**{{.AlertName}}**
+>告警级别: {{.TriggerLevel}}
+开始时间: {{GetTime .Timestamp}} //输出时间格式：2006/01/02 15:04:05
+故障主机: {{.InstanceName}}
+------------详细信息--------------
+metricName: {{.MetricName}}
+expression: {{.Expression}}
+signature: {{.Signature}}
+metricProject: {{.MetricProject}}
+userId: {{.UserId}}
+namespace: {{.Namespace}}
+preTriggerLevel: {{.PreTriggerLevel}}
+ruleId: {{.RuleId}}
+dimensions: {{.Dimensions}}
+**当前值：{{.CurValue}}**
+```
