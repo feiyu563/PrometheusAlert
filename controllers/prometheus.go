@@ -105,6 +105,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 	PhoneCallResolved, _ := beego.AppConfig.Int("phonecallresolved")
 	Silent, _ := beego.AppConfig.Int("silent")
 	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
+	Record:=beego.AppConfig.String("AlertRecord")
 	var ddtext, wxtext, fstext, MobileMessage, PhoneCallMessage, EmailMessage, titleend, rltext string
 	//对分组消息进行排序
 	AlerMessage := message.Alerts
@@ -124,9 +125,10 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		// 消息入库
 		//AtTime, _ := time.ParseInLocation("2006-01-02 15:04:05", At, time.Local)
 		//EtTime, _ := time.ParseInLocation("2006-01-02 15:04:05", Et, time.Local)
-		models.AddAlertRecord(RMessage.Labels.SendType, RMessage.Labels.Alertname, RMessage.Labels.Severity, RMessage.Labels.BusinessType, RMessage.Labels.Instance,
-			At, Et, RMessage.Annotations.Summary, RMessage.Annotations.Description, "", "", "")
-
+		if Record == "1" {
+			models.AddAlertRecord(RMessage.Labels.SendType, RMessage.Labels.Alertname, RMessage.Labels.Severity, RMessage.Labels.BusinessType, RMessage.Labels.Instance,
+				At, Et, RMessage.Annotations.Summary, RMessage.Annotations.Description, "", "", "")
+		}
 		if RMessage.Status == "resolved" {
 			titleend = "故障恢复信息"
 			model.AlertsFromCounter.WithLabelValues("prometheus", RMessage.Annotations.Description, RMessage.Labels.Level, RMessage.Labels.Instance, "resolved").Add(1)
