@@ -183,7 +183,7 @@ receivers:
 {{ end }}
 ```
 
-- 转换UTC时间到CST时间 `{{GetCSTtime ""}}` ,如
+- 转换UTC时间到CST时间 `{{GetCSTtime $v.startsAt}}` ,如
 
 ```
 {{ $var := .externalURL}}{{ range $k,$v:=.alerts }}
