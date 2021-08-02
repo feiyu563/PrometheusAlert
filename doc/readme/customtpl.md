@@ -239,6 +239,8 @@ receivers:
 
 ### 3 `GetTime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于将`毫秒或秒`级时间戳转换为时间字符
 
+特别说明：`GetTime`函数支持字符和float64类型参数，字符型支持秒级和毫秒级时间戳的处理，float64类型暂时只支持秒级时间戳处理。
+
 目前支持两种使用方式：
 
 - 使用默认时间字符串格式输出 `{{GetTime .Timestamp}}` ,如：
@@ -263,6 +265,7 @@ dimensions: {{.Dimensions}}
 ```
 
 - 指定输出时间格式输出 `{{GetTime .Timestamp "2006/01/02 15:04:05"}}` ,如
+
 
 ```
 ALiYun {{.AlertState}}信息

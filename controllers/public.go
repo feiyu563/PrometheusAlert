@@ -11,21 +11,31 @@ import (
 	"github.com/astaxie/beego/logs"
 )
 
-//转换时间戳到时间字符串
-func GetTime(timeStr string,timeFormat ...string) string  {
-	S_Time,_:=strconv.ParseInt(timeStr,10,64)
 
-	if len(timeFormat)==0 {
-		timeFormat = append(timeFormat, "2006-01-02T15:04:05")
-	}
+//转换时间戳到时间字符串
+func GetTime(timeStr interface{},timeFormat ...string) string  {
 	var R_Time string
-	if len(timeStr)==13 {
-		R_Time=time.Unix(S_Time/1000,0).Format(timeFormat[0])
-	} else {
-		R_Time=time.Unix(S_Time,0).Format(timeFormat[0])
+	//判断传入的timeStr是否为float64类型，如gerrit消息中时间戳就是float64
+	switch timeStr.(type) {
+	case string:
+		S_Time,_:=strconv.ParseInt(timeStr.(string),10,64)
+		if len(timeFormat)==0 {
+			timeFormat = append(timeFormat, "2006-01-02T15:04:05")
+		}
+		if len(timeStr.(string))==13 {
+			R_Time=time.Unix(S_Time/1000,0).Format(timeFormat[0])
+		} else {
+			R_Time=time.Unix(S_Time,0).Format(timeFormat[0])
+		}
+	case float64:
+		if len(timeFormat)==0 {
+			timeFormat = append(timeFormat, "2006-01-02T15:04:05")
+		}
+		R_Time=time.Unix(int64(timeStr.(float64)),0).Format(timeFormat[0])
 	}
 	return R_Time
 }
+
 
 //转换UTC时区到CST
 func GetCSTtime(date string) string {

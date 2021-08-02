@@ -8,7 +8,7 @@
 
 * 语音（电话）：https://help.aliyun.com/document_detail/55070.html?spm=a2c4g.11186623.6.547.77e271b9SAbG6p
 
-* 注意事项：开通阿里云短信和语音需要配置的模版请填写类似如下内容，`prometheus告警:${code}`，其中`${code}`为固定内容，请勿替换。
+##### 注意事项：开通阿里云短信和语音需要配置的模版请填写类似如下内容，`prometheus告警:${code}`，其中`${code}`为固定内容，请勿替换。
 * 阿里云短信申请注意事项如下图标红的【短信模板】和【短信签名】
 ![短信模板](https://user-images.githubusercontent.com/24855321/113266467-e4f13800-9307-11eb-8cfc-b90742f56d19.png)
 ![短信签名](https://user-images.githubusercontent.com/24855321/113266618-10742280-9308-11eb-9538-b15033d3642e.png)
