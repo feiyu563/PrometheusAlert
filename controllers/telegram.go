@@ -33,9 +33,9 @@ func SendTG(msg, logsign string) string {
 		_, err = botapi.Send(tgusermsg)
 	} else {
 		// 推送给channel
-		if !strings.HasPrefix(tgchanname, "@") {
-			tgchanname = fmt.Sprintf("@%v", tgchanname)
-		}
+// 		if !strings.HasPrefix(tgchanname, "@") {
+// 			tgchanname = fmt.Sprintf("@%v", tgchanname)
+// 		}
 		tgchanmsg := tgbotapi.NewMessageToChannel(tgchanname, msg)
 		_, err = botapi.Send(tgchanmsg)
 	}
