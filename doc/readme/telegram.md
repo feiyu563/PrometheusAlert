@@ -14,7 +14,7 @@ TG_TOKEN=xxxxx
 TG_MODE_CHAN=0
 #tg用户ID 数字
 TG_USERID=xxxxx
-#tg频道name
+#tg频道id 负数
 TG_CHANNAME=xxxxx
 #tg api地址, 可以配置为代理地址
 #TG_API_PROXY="https://api.telegram.org/bot%s/%s"
