@@ -127,6 +127,7 @@ PrometheusAlert具备如下特性
 * [【版本更新说明】](https://github.com/feiyu563/PrometheusAlert/releases)
 * [【如何对PrometheusAlert进行二次开发】](https://github.com/feiyu563/PrometheusAlert/wiki/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E3%80%90PrometheusAlert%E3%80%91%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91)
 * [通用自定义模板共享链接](https://github.com/feiyu563/PrometheusAlert/issues/30)
+* [Prometheus rules共享链接](https://github.com/feiyu563/PrometheusAlert/issues/89)
 
 --------------------------------------
 
