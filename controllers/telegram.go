@@ -1,15 +1,12 @@
-// MIT License
-// Copyright (c) 2020 ysicing <i@ysicing.me>
-
 package controllers
 
 import (
 	"PrometheusAlert/model"
-	"fmt"
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"strings"
 )
 
 // SendTG 发送电报消息
@@ -33,9 +30,6 @@ func SendTG(msg, logsign string) string {
 		_, err = botapi.Send(tgusermsg)
 	} else {
 		// 推送给channel
-		if !strings.HasPrefix(tgchanname, "@") {
-			tgchanname = fmt.Sprintf("@%v", tgchanname)
-		}
 		tgchanmsg := tgbotapi.NewMessageToChannel(tgchanname, msg)
 		_, err = botapi.Send(tgchanmsg)
 	}
