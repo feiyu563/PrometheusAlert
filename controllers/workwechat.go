@@ -11,7 +11,7 @@ import (
 )
 
 // SendWorkWechat 发送微信企业应用消息
-func SendWorkWechat(touser,toparty,totag,msg, logsign string) string {
+func SendWorkWechat(touser, toparty, totag, msg, logsign string) string {
 	open := beego.AppConfig.String("open-workwechat")
 	if open != "1" {
 		logs.Info(logsign, "[workwechat]", "workwechat未配置未开启状态,请先配置open-workwechat为1")
@@ -44,4 +44,3 @@ func SendWorkWechat(touser,toparty,totag,msg, logsign string) string {
 	logs.Info(logsign, "[workwechat]", "workwechat send ok.")
 	return "workwechat send ok"
 }
-

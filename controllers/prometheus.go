@@ -105,7 +105,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 	PhoneCallResolved, _ := beego.AppConfig.Int("phonecallresolved")
 	Silent, _ := beego.AppConfig.Int("silent")
 	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
-	Record:=beego.AppConfig.String("AlertRecord")
+	Record := beego.AppConfig.String("AlertRecord")
 	var ddtext, wxtext, fstext, MobileMessage, PhoneCallMessage, EmailMessage, titleend, rltext string
 	//对分组消息进行排序
 	AlerMessage := message.Alerts
@@ -301,6 +301,8 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		}
 		// 发送消息到Telegram
 		SendTG(PhoneCallMessage, logsign)
+		// 发送消息到Bark
+		SendBark(PhoneCallMessage, logsign)
 		// 推送消息到企业微信
 		SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), wxtext, logsign)
 

@@ -35,13 +35,13 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 	switch message.ZabbixType {
 	//微信渠道
 	case "wx":
-		ret = PostToWeiXin(message.ZabbixMessage, message.ZabbixTarget, "",logsign)
+		ret = PostToWeiXin(message.ZabbixMessage, message.ZabbixTarget, "", logsign)
 	//钉钉渠道
 	case "dd":
-		ret = PostToDingDing("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, "",logsign)
+		ret = PostToDingDing("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, "", logsign)
 	//飞书v1渠道
 	case "fs":
-		ret = PostToFS("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, "",logsign)
+		ret = PostToFS("Zabbix告警消息", message.ZabbixMessage, message.ZabbixTarget, "", logsign)
 	//腾讯云短信
 	case "txdx":
 		ret = PostTXmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
@@ -74,7 +74,7 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 		ret = ret + SendTG(message.ZabbixMessage, logsign)
 	//workwechat
 	case "workwechat":
-		ret = ret + SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"),beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"),message.ZabbixMessage, logsign)
+		ret = ret + SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), message.ZabbixMessage, logsign)
 	//百度Hi(如流)
 	case "rl":
 		ret = PostToRuLiu(beego.AppConfig.String("BDRL_ID"), message.ZabbixMessage, message.ZabbixTarget, logsign)
