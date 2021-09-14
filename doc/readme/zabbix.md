@@ -21,14 +21,14 @@ Usage: zabbixclient [-h] [-t SendTarget] [-m SendMessage] [-type SendType] [-d P
 Example(发送告警到钉钉)：zabbixclent -t https://oapi.dingtalk.com/robot/send?access_token=xxxxx -m zabbix告警测试 -type dh -d http://127.0.0.1:8080/zabbix
 
 Options:
-  -d PrometheusAlert的地址
+  -d PrometheusAlert的地址（必须参数）
     	PrometheusAlert的地址 (default "http://127.0.0.1:8080/zabbix")
   -h	显示帮助
-  -m 告警消息内容
+  -m 告警消息内容（必须参数）
     	需要发送的告警消息内容 (default "zabbix告警测试")
-  -t 手机号/钉钉url/微信url/飞书url
+  -t 手机号/钉钉url/微信url/飞书url（可选参数，如无则从PrometheusAlert的app.conf文件中读取默认配置）
     	指定告警消息的接收目标的手机号/钉钉url/微信url (default "https://oapi.dingtalk.com/robot/send?access_token=xxxxx")
-  -type txdx(腾讯云短信)、txdh(腾讯云电话)、alydx(阿里云短信)、alydh(阿里云电话)、hwdx(华为云短信)、rlydh(荣联云电话)、dd(钉钉)、wx(微信)、fs(飞书)
+  -type txdx(腾讯云短信)、txdh(腾讯云电话)、alydx(阿里云短信)、alydh(阿里云电话)、hwdx(华为云短信)、rlydh(荣联云电话)、dd(钉钉)、wx(微信)、fs(飞书) （必须参数）
     	告警消息的目标类型,支持txdx(腾讯云短信)、txdh(腾讯云电话)、alydx(阿里云短信)、alydh(阿里云电话)、hwdx(华为云短信)、rlydh(荣联云电话)、dd(钉钉)、wx(微信)、fs(飞书) (default "dd")
 ```
 
@@ -36,12 +36,12 @@ Zabbix后台配置
 
 1) 首先需要在zabbix后台新增报警媒介，进入 管理-->报警媒介-->创建媒介类型，配置如图：
 
-![zabbix1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix1.png)
+![zabbix1](../zabbix1.png)
 
 ```
 #脚本参数
-    -t
-    https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxx #指定告警消息的接收目标的手机号/钉钉url/微信url，注意需要与-type参数对应
+    -t （可选参数）
+    https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxx #指定告警消息的接收目标的手机号/钉钉url/微信url，注意需要与-type参数对应（可选参数）
     -m
     {ALERT.MESSAGE}   #这事zabbix内置消息变量名
     -type
@@ -52,13 +52,13 @@ Zabbix后台配置
 
 2) 将报警媒介分配给用户，进入 用户-->点击需要分配的用户名-->报警媒介-->添加。如图：
 
-![zabbix2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix2.png)
+![zabbix2](../zabbix2.png)
 
 3) 继续添加告警动作，进入 配置-->动作-->创建动作。如图：
 
-![zabbix3](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix3.png)
+![zabbix3](../zabbix3.png)
 
-![zabbix4](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix4.png)
+![zabbix4](../zabbix4.png)
 
 最关键的配置就是消息内容的部分，可以参考以下消息模版：
 
@@ -195,7 +195,7 @@ Zabbix后台配置
 
 4) 最终告警效果:
 
-![zabbix5](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/zabbix5.png)
+![zabbix5](../zabbix5.png)
 
 5) zabbixclient其他用法
 

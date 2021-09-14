@@ -8,6 +8,15 @@
 
 #### 新增功能：url参数中 `ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid `等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息
 
+#### 新增功能：url参数中支持参数 rr=true， 该参数为开启随机轮询，目前仅针对ddurl，fsurl，wxurl有效，默认情况下如果上述Url配置的是多个地址，则多个地址全部发送，如开启该选项，则从多个地址中随机取一个地址发送，主要是为了避免消息发送频率过高导致触发部分机器人拦截消息
+
+参考配置：
+```
+- name: 'prometheusalert-all'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&rr=true&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx'
+```
+
 #### 使用该功能需要使用者对go语言的template模版有一些初步了解，可以参考默认模版的一些语法来进行自定义。
 
 #### 模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
@@ -109,7 +118,7 @@ receivers:
 
 * 添加到Dashboard中，并选择对应模版类型和用途等信息，注意模版名称一定不要重复,且一定要是英文字符。
 
-![tpladd1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/tpladd1.png)
+![tpladd1](../tpladd1.png)
 
 
 * 添加完自定义模板后，主要一定要点击保存。
@@ -123,7 +132,7 @@ receivers:
 
   * 在表格中找到刚刚创建的自定义模版，点击右侧的模版测试按钮，进入模版测试页面
 
-![tpladd1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/tpltest1.png)
+![tpladd1](../tpltest1.png)
 
 - 将之前从PrometheusAlert日志中提取的JSON填入`消息协议JSON内容`文本框中，且输入钉钉机器人地址(如模版的类型不是钉钉，模版测试页面的地址输入框显示会不同名称，如微信机器人地址等)
 
@@ -147,7 +156,7 @@ receivers:
   #注意：url参数中 ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息
 ```
 
-![dashboard-tpl-list](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-tpl-list.png)
+![dashboard-tpl-list](../dashboard-tpl-list.png)
 
 ----------------------------------------------------------------------
 ## 自定义模版函数和使用

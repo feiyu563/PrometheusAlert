@@ -45,11 +45,11 @@ ALY_DH_TtsCode=xxxxxxxx
 ```
 开通阿里云语音服务，并进行资质管理认证，添加语音通知模板（建议模板内容使用中文，阿里云语音服务朗读会比较清晰）
 
-![aliyun01](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/aliyun-01.png)
+![aliyun01](../aliyun-01.png)
 
 在AlertTemplate中创建阿里云电话通知模板，内容可参照如图（appname为我自定义标签，可修改为自己的定义的标签）
 
-![aliyun02](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/aliyun-02.png)
+![aliyun02](../aliyun-02.png)
 
 在prometheus中添加rules，如下（description为语音朗读内容）
 

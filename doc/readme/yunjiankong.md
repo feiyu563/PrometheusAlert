@@ -30,6 +30,6 @@ dimensions: {{.Dimensions}}
 
 5.单击确认。如图
 
-![sonar1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/yunjiankong.png)
+![sonar1](../yunjiankong.png)
 
 这样后面云监控触发告警后，PrometheusAlert就可以收到对应的告警信息，并实现告警。
