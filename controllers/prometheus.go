@@ -38,6 +38,7 @@ type Annotations struct {
 	Email     string `json:"email"`   //2020年7月4日 10:15:20 增加多个email告警支持
 	Groupid   string `json:"groupid"` //2021年2月2日 17:28:23 增加多个如流告警支持
 	AtSomeOne string `json:"at"`      //2021年6月23日 14:02:21 增加@某人支持
+	Rr string `json:"rr"`      //2021年9月14日 14:48:08 增加随机轮询参数支持
 }
 type Alerts struct {
 	Status       string
@@ -171,14 +172,22 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		} else {
 			if rddurl != "" {
 				Ddurl := strings.Split(rddurl, ",")
-				for _, url := range Ddurl {
-					PostToDingDing(Title+titleend, ddtext, url, RMessage.Annotations.AtSomeOne, logsign)
+				if RMessage.Annotations.Rr == "true" {
+					PostToDingDing(Title+titleend, ddtext, DoBalance(Ddurl), RMessage.Annotations.AtSomeOne, logsign)
+				} else {
+					for _, url := range Ddurl {
+						PostToDingDing(Title+titleend, ddtext, url, RMessage.Annotations.AtSomeOne, logsign)
+					}
 				}
 			}
 			if RMessage.Annotations.Ddurl != "" {
 				Ddurl := strings.Split(RMessage.Annotations.Ddurl, ",")
-				for _, url := range Ddurl {
-					PostToDingDing(Title+titleend, ddtext, url, RMessage.Annotations.AtSomeOne, logsign)
+				if RMessage.Annotations.Rr == "true" {
+					PostToDingDing(Title+titleend, ddtext, DoBalance(Ddurl), RMessage.Annotations.AtSomeOne, logsign)
+				} else {
+					for _, url := range Ddurl {
+						PostToDingDing(Title+titleend, ddtext, url, RMessage.Annotations.AtSomeOne, logsign)
+					}
 				}
 			}
 		}
@@ -203,14 +212,22 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		} else {
 			if rwxurl != "" {
 				Wxurl := strings.Split(rwxurl, ",")
-				for _, url := range Wxurl {
-					PostToWeiXin(wxtext, url, RMessage.Annotations.AtSomeOne, logsign)
+				if RMessage.Annotations.Rr == "true" {
+					PostToWeiXin(wxtext, DoBalance(Wxurl), RMessage.Annotations.AtSomeOne, logsign)
+				} else {
+					for _, url := range Wxurl {
+						PostToWeiXin(wxtext, url, RMessage.Annotations.AtSomeOne, logsign)
+					}
 				}
 			}
 			if RMessage.Annotations.Wxurl != "" {
 				Wxurl := strings.Split(RMessage.Annotations.Wxurl, ",")
-				for _, url := range Wxurl {
-					PostToWeiXin(wxtext, url, RMessage.Annotations.AtSomeOne, logsign)
+				if RMessage.Annotations.Rr == "true" {
+					PostToWeiXin(wxtext, DoBalance(Wxurl), RMessage.Annotations.AtSomeOne, logsign)
+				} else {
+					for _, url := range Wxurl {
+						PostToWeiXin(wxtext, url, RMessage.Annotations.AtSomeOne, logsign)
+					}
 				}
 			}
 		}
@@ -221,14 +238,22 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		} else {
 			if rfsurl != "" {
 				Fsurl := strings.Split(rfsurl, ",")
-				for _, url := range Fsurl {
-					PostToFS(Title+titleend, fstext, url, RMessage.Annotations.AtSomeOne, logsign)
+				if RMessage.Annotations.Rr == "true" {
+					PostToFS(Title+titleend, fstext, DoBalance(Fsurl), RMessage.Annotations.AtSomeOne, logsign)
+				} else {
+					for _, url := range Fsurl {
+						PostToFS(Title+titleend, fstext, url, RMessage.Annotations.AtSomeOne, logsign)
+					}
 				}
 			}
 			if RMessage.Annotations.Fsurl != "" {
 				Fsurl := strings.Split(RMessage.Annotations.Fsurl, ",")
-				for _, url := range Fsurl {
-					PostToFS(Title+titleend, fstext, url, RMessage.Annotations.AtSomeOne, logsign)
+				if RMessage.Annotations.Rr == "true" {
+					PostToFS(Title+titleend, fstext, DoBalance(Fsurl), RMessage.Annotations.AtSomeOne, logsign)
+				} else {
+					for _, url := range Fsurl {
+						PostToFS(Title+titleend, fstext, url, RMessage.Annotations.AtSomeOne, logsign)
+					}
 				}
 			}
 		}

@@ -18,7 +18,7 @@
 
 PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube。阿里云-云监控，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)等。
 
-![it](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/it.png)
+![it](doc/it.png)
 
 -----------------
 * 如果这个项目能为您带来帮助，我将感到非常荣幸！同时非常欢迎您加入PrometheusAlert全家桶的微信群一起探讨关于PrometheusAlert新一期的开发计划。
@@ -33,9 +33,9 @@ PrometheusAlert是开源的运维告警中心消息转发系统，支持主流�
 
 ```
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.4.0/linux.zip)
+如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.6.0/linux.zip)
 
-# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.4.0/linux.zip && unzip linux.zip &&cd linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.6.0/linux.zip && unzip linux.zip &&cd linux/
 
 #运行PrometheusAlert
 # ./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
@@ -50,9 +50,9 @@ PrometheusAlert是开源的运维告警中心消息转发系统，支持主流�
 
 -----------------
 
-![dashboard](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard.png)
-![dashboard-test](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-test.png)
-![dashboard-tpl-list](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-tpl-list.png)
+![dashboard](doc/dashboard.png)
+![dashboard-test](doc/dashboard-test.png)
+![dashboard-tpl-list](doc/dashboard-tpl-list.png)
 
 --------------------------------------
 
@@ -70,6 +70,7 @@ PrometheusAlert具备如下特性
  - 增加支持mysql、sqlite3(默认)、postgres作为模版存储，便于集群化部署
  - 增加支持钉钉，企业微信的@某人功能
  - 增加支持阿里云-云监控告警
+ - 增加随机轮询，目前仅针对ddurl，fsurl，wxurl有效，默认情况下如果上述Url配置的是多个地址，则多个地址全部发送，如开启该选项，则从多个地址中随机取一个地址发送，主要是为了避免消息发送频率过高导致触发部分机器人拦截消息
  
 ---------------------
 
@@ -87,9 +88,6 @@ PrometheusAlert具备如下特性
 --------------------------------------
 
 ## PrometheusAlert全家桶新手入门
-
-文档阅读提示
-
 
 * [【PrometheusAlert安装及配置说明】](doc/readme/install.md)
   * [安装部署PrometheusAlert](doc/readme/install.md)
@@ -128,17 +126,28 @@ PrometheusAlert具备如下特性
 * [【如何对PrometheusAlert进行二次开发】](https://github.com/feiyu563/PrometheusAlert/wiki/%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E3%80%90PrometheusAlert%E3%80%91%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91)
 * [通用自定义模板共享链接](https://github.com/feiyu563/PrometheusAlert/issues/30)
 * [Prometheus rules共享链接](https://github.com/feiyu563/PrometheusAlert/issues/89)
+* [【如何捐赠】](doc/readme/donate.md)
 
 --------------------------------------
 
 项目源码
+
 ----
 
  - [【GitHub】: PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)
  - [【码云】: PrometheusAlert](https://gitee.com/feiyu563/PrometheusAlert)
+ 
+---
 
-【FOR HELP】
+加入PrometheusAlert微信交流群
+
 ----
-【Email: 244217140@qq.com】
 
-![me](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/wx.png)
+
+![me](doc/wx.png)
+
+---
+
+Email: 244217140@qq.com
+
+----

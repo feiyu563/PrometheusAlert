@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
+	"math/rand"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 )
@@ -104,4 +104,16 @@ func GetUserPhone(neednum int) string {
 		logs.Error(err.Error())
 	}
 	return Num
+}
+
+// 随机返回
+func DoBalance(instances []string) string {
+	if len(instances) == 0 {
+		logs.Error( "no instances for rand")
+		return ""
+	}
+	lens := len(instances)
+	index := rand.Intn(lens)
+	inst := instances[index]
+	return inst
 }
