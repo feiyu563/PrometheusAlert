@@ -158,7 +158,7 @@ func PostToFeiShuv2(title, text, Fsurl, userEmail, logsign string) string {
 					Tag: "note",
 					Elements: []Element{
 						{
-							Content: "PrometheusAlert    ",
+							Content: title,
 							Tag:     "lark_md",
 						},
 					},
