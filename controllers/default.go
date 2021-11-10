@@ -2,11 +2,13 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
+	"bytes"
 	"strconv"
 	"time"
-
+	"text/template"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"encoding/json"
 )
 
 //取到tpl路径
@@ -124,9 +126,38 @@ func (c *MainController) TemplateDel() {
 
 //markdown test
 func (c *MainController) MarkdownTest() {
-	c.Data["IsMarkDownTest"] = true
-	c.TplName = "markdown_test.html"
-	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	if c.Ctx.Request.Method == "GET" {
+		c.Data["IsMarkDownTest"] = true
+		c.TplName = "markdown_test.html"
+		c.Data["IsLogin"] = checkAccount(c.Ctx)
+	} else {
+		var p_json interface{}
+		var resp string
+		JsonContent := c.Input().Get("jsoncontent")
+		TplContent := c.Input().Get("tplcontent")
+		json.Unmarshal([]byte(JsonContent), &p_json)
+
+		funcMap := template.FuncMap{
+			"GetCSTtime": GetCSTtime,
+			"TimeFormat": TimeFormat,
+			"GetTime":    GetTime,
+		}
+		buf := new(bytes.Buffer)
+		tpl, err := template.New("").Funcs(funcMap).Parse(TplContent)
+		if err != nil {
+			resp=err.Error()
+		} else {
+			err=tpl.Execute(buf, p_json)
+			if err!=nil {
+				resp=err.Error()
+			} else {
+				resp=buf.String()
+			}
+		}
+		c.Data["json"] = resp
+		c.ServeJSON()
+	}
+
 }
 
 func LogsSign() string {
