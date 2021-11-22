@@ -24,4 +24,4 @@ PrometheusAlert Dashboard提供基础的Markdown文本编辑测试，方便部�
 
 - `显示效果:`窗口即会实时显示渲染后的Markdown文本
 
-![markdown](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/markdown.png)
+![markdown](../markdown.png)

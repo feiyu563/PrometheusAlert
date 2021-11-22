@@ -25,7 +25,7 @@ type DDMessage struct {
 	} `json:"at"`
 }
 
-func PostToDingDing(title, text, Ddurl,AtSomeOne, logsign string) string {
+func PostToDingDing(title, text, Ddurl, AtSomeOne, logsign string) string {
 	open := beego.AppConfig.String("open-dingding")
 	if open != "1" {
 		logs.Info(logsign, "[dingding]", "钉钉接口未配置未开启状态,请先配置open-dingding为1")
@@ -36,15 +36,15 @@ func PostToDingDing(title, text, Ddurl,AtSomeOne, logsign string) string {
 	if Isatall == 0 {
 		Atall = false
 	}
-	atMobile:=[]string{"15395105573"}
-	SendText:=text
-	if AtSomeOne!="" {
-		atMobile=strings.Split(AtSomeOne, ",")
-		AtText:=""
-		for _,phoneN:=range atMobile{
-			AtText+=" @"+phoneN
+	atMobile := []string{"15395105573"}
+	SendText := text
+	if AtSomeOne != "" {
+		atMobile = strings.Split(AtSomeOne, ",")
+		AtText := ""
+		for _, phoneN := range atMobile {
+			AtText += " @" + phoneN
 		}
-		SendText+=AtText
+		SendText += AtText
 		Atall = false
 	}
 

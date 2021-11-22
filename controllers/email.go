@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"PrometheusAlert/model"
+	"crypto/tls"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/go-gomail/gomail"
@@ -38,6 +39,9 @@ func SendEmail(EmailBody, Emails, logsign string) string {
 	// 正文
 	m.SetBody("text/html", EmailBody)
 	d := gomail.NewDialer(serverHost, serverPort, fromEmail, Passwd)
+	//忽略证书
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	//d.SSL=true
 	// 发送
 	err := d.DialAndSend(m)
 	model.AlertToCounter.WithLabelValues("email", EmailBody, Emails).Add(1)

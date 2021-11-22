@@ -31,7 +31,7 @@ PrometheusAlert WebHook是实现将PrometheusAlert收到的消息转发给除了
 }
 ```
 
-![webhook1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/webhook1.png)
+![webhook1](../webhook1.png)
 
 ---------------------------------------------------------------------
 - 对新添加的模版进行测试
@@ -41,7 +41,7 @@ PrometheusAlert WebHook是实现将PrometheusAlert收到的消息转发给除了
 
 - 测试无误后，回到`AlertTemplate`页面并复制页面上刚刚新建的模板的地址（将地址中`WebHook地址`替换成企业内部接口`http://127.0.0.1:8080/test`）。
 
-![webhook2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/webhook2.png)
+![webhook2](../webhook2.png)
 
 - 接下来更新下alertmanager的路由配置，配置内容参考如下：
 
