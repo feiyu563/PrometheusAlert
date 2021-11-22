@@ -1,14 +1,30 @@
-## 自定义告警消息模版使用说明
+# 自定义告警消息模版使用说明
 
 --------------------------------------
 
-自定义告警消息模版可以支持任意带有WebHook服务的系统接入到PrometheusAlert上。钉钉机器人、企业微信机器人和飞书机器人V2均已经支持@某人的功能。使用时，需要在Url中加入`&at= 1539510xxxx`；如需添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱，具体可参考各自说明文档。
+自定义告警消息模版可以支持任意带有WebHook服务的系统接入到PrometheusAlert上。
 
-使用该功能需要使用者对go语言的template模版有一些初步了解，可以参考默认模版的一些语法来进行自定义。
+#### 钉钉机器人、企业微信机器人均已经支持@某人的功能。使用时，需要在Url中加入`&at= 1539510xxxx`；如需添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号。
 
-模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
+#### 新增功能：url参数中 `ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid `等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息
 
-1.下面以添加Prometheus的自定义告警消息模版为例讲解如何添加自定义模版
+#### 新增功能：url参数中支持参数 rr=true， 该参数为开启随机轮询，目前仅针对ddurl，fsurl，wxurl有效，默认情况下如果上述Url配置的是多个地址，则多个地址全部发送，如开启该选项，则从多个地址中随机取一个地址发送，主要是为了避免消息发送频率过高导致触发部分机器人拦截消息
+
+参考配置：
+```
+- name: 'prometheusalert-all'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&rr=true&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx'
+```
+
+#### 使用该功能需要使用者对go语言的template模版有一些初步了解，可以参考默认模版的一些语法来进行自定义。
+
+#### 模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
+
+----------------------------------------
+## 新建自定义模板
+----------------------------------------------------------------------
+### 1.下面以添加Prometheus的自定义告警消息模版为例讲解如何添加自定义模版
 
 - 开始之前，请先临时更改你的Alertmanager的配置，将所有告警信息都转发到PrometheusAlert自定义接口,参考如下：
 
@@ -26,7 +42,7 @@ route:
 receivers:
 - name: 'PrometheusAlert'
   webhook_configs:
-  - url: 'http://[YOUR-PrometheusAlert-URL]/prometheusalert' #这里的配置仅在测试时使用，只是为了方便查看接收到的json消息，正式使用请更改为PrometheusAlert模版页面中显示的Url
+  - url: 'http://[YOUR-PrometheusAlert-URL]/prometheusalert?type=dd&tpl=prometheus-dingding' #这里的配置仅在测试时使用，只是为了方便查看接收到的json消息，正式使用请更改为PrometheusAlert模版页面中显示的Url
 ```
 
 配置完成后，重启或者reload Alertmanager，是配置生效。
@@ -37,7 +53,7 @@ receivers:
 2020/05/21 10:58:17.850 [D] [value.go:460]  [1590029897850034963] {"receiver":"prometheus-alert-center","status":"firing","alerts":[{"status":"firing","labels":{"alertname":"TargetDown","index":"1","instance":"example-1","job":"example","level":"2","service":"example"},"annotations":{"description":"target was down! example dev /example-1 was down for more than 120s.","level":"2","timestamp":"2020-05-21 02:58:07.829 +0000 UTC"},"startsAt":"2020-05-21T02:58:07.830216179Z","endsAt":"0001-01-01T00:00:00Z","generatorURL":"https://prometheus-alert-center/graph?g0.expr=up%7Bjob%21%3D%22kubernetes-pods%22%2Cjob%21%3D%22kubernetes-service-endpoints%22%7D+%21%3D+1\u0026g0.tab=1","fingerprint":"e2a5025853d4da64"}],"groupLabels":{"instance":"example-1"},"commonLabels":{"alertname":"TargetDown","index":"1","instance":"example-1","job":"example","level":"2","service":"example"},"commonAnnotations":{"description":"target was down! example dev /example-1 was down for more than 120s.","level":"2","timestamp":"2020-05-21 02:58:07.829 +0000 UTC"},"externalURL":"https://prometheus-alert-center","version":"4","groupKey":"{}/{job=~\"^(?:.*)$\"}:{instance=\"example-1\"}"}
 ```
 
-- 继续截取日志中的JSON内容，通过任意json格式化工具进行格式化如下：
+- 继续截取日志中的JSON内容，通过任意[json格式化工具](https://www.bejson.com/)进行格式化如下：
 
 ```
 {
@@ -102,26 +118,31 @@ receivers:
 
 * 添加到Dashboard中，并选择对应模版类型和用途等信息，注意模版名称一定不要重复,且一定要是英文字符。
 
-![tpladd1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/tpladd1.png)
+![tpladd1](../tpladd1.png)
 
 
 * 添加完自定义模板后，主要一定要点击保存。
 
 ---------------------------------------------------------------------
-2.继续对新添加的模版进行测试
+## 测试自定义模板
+----------------------------------------------------------------------
+### 1.对新添加的模版进行测试
 
 - 打开PrometheusAlert Dashboard的模版管理页面`AlertTemplate`
 
   * 在表格中找到刚刚创建的自定义模版，点击右侧的模版测试按钮，进入模版测试页面
 
-![tpladd1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/tpltest1.png)
+![tpladd1](../tpltest1.png)
 
 - 将之前从PrometheusAlert日志中提取的JSON填入`消息协议JSON内容`文本框中，且输入钉钉机器人地址(如模版的类型不是钉钉，模版测试页面的地址输入框显示会不同名称，如微信机器人地址等)
 
 - 继续点击模版测试按钮即可对新添加的模版进行测试，如模版没有错误，将会收到对应的钉钉消息，如无法收到钉钉消息，请检查模版是否有什么地方配置错误
 
 ----------------------------------------------------------------------
-3.自定义告警消息模版接口使用非常简单
+## 使用自定义模板
+----------------------------------------------------------------------
+
+### 1.自定义告警消息模版接口使用非常简单
 
 - 打开PrometheusAlert Dashboard的模版管理页面`AlertTemplate`
 
@@ -132,14 +153,16 @@ receivers:
 - name: 'prometheusalert-all'
   webhook_configs:
   - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=钉钉机器人地址'
+  #注意：url参数中 ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息
 ```
 
-![dashboard-tpl-list](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/dashboard-tpl-list.png)
+![dashboard-tpl-list](../dashboard-tpl-list.png)
 
 ----------------------------------------------------------------------
-4.关于自定义模版函数
+## 自定义模版函数和使用
+----------------------------------------------------------------------
 
-4.1 `GetCSTtime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于强制将时间字段时区从UTC转换到CST
+### 1 `GetCSTtime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于强制将时间字段时区从UTC转换到CST
 
 目前支持两种使用方式：
 
@@ -169,7 +192,7 @@ receivers:
 {{ end }}
 ```
 
-- 转换UTC时间到CST时间 `{{GetCSTtime ""}}` ,如
+- 转换UTC时间到CST时间 `{{GetCSTtime $v.startsAt}}` ,如
 
 ```
 {{ $var := .externalURL}}{{ range $k,$v:=.alerts }}
@@ -195,7 +218,7 @@ receivers:
 {{ end }}
 ```
 
-4.2 `TimeFormat` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于格式化时间显示
+### 2 `TimeFormat` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于格式化时间显示
 
 如下示例将prmetheus的告警时间格式改为：2006-01-02T15:04:05
 
@@ -221,4 +244,53 @@ receivers:
 ![Prometheus](https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png)
 {{end}}
 {{ end }}
+```
+
+### 3 `GetTime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于将`毫秒或秒`级时间戳转换为时间字符
+
+特别说明：`GetTime`函数支持字符和数值类型参数，字符型支持秒级和毫秒级时间戳的处理，数值类型暂时只支持秒级时间戳处理。
+
+目前支持两种使用方式：
+
+- 使用默认时间字符串格式输出 `{{GetTime .Timestamp}}` ,如：
+
+```
+ALiYun {{.AlertState}}信息
+>**{{.AlertName}}**
+>告警级别: {{.TriggerLevel}}
+开始时间: {{GetTime .Timestamp}} //输出时间格式：2006-01-02T15:04:05
+故障主机: {{.InstanceName}}
+------------详细信息--------------
+metricName: {{.MetricName}}
+expression: {{.Expression}}
+signature: {{.Signature}}
+metricProject: {{.MetricProject}}
+userId: {{.UserId}}
+namespace: {{.Namespace}}
+preTriggerLevel: {{.PreTriggerLevel}}
+ruleId: {{.RuleId}}
+dimensions: {{.Dimensions}}
+**当前值：{{.CurValue}}**
+```
+
+- 指定输出时间格式输出 `{{GetTime .Timestamp "2006/01/02 15:04:05"}}` ,如
+
+
+```
+ALiYun {{.AlertState}}信息
+>**{{.AlertName}}**
+>告警级别: {{.TriggerLevel}}
+开始时间: {{GetTime .Timestamp}} //输出时间格式：2006/01/02 15:04:05
+故障主机: {{.InstanceName}}
+------------详细信息--------------
+metricName: {{.MetricName}}
+expression: {{.Expression}}
+signature: {{.Signature}}
+metricProject: {{.MetricProject}}
+userId: {{.UserId}}
+namespace: {{.Namespace}}
+preTriggerLevel: {{.PreTriggerLevel}}
+ruleId: {{.RuleId}}
+dimensions: {{.Dimensions}}
+**当前值：{{.CurValue}}**
 ```

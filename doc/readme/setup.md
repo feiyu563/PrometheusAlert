@@ -220,4 +220,25 @@ BDY_DX_ENDPOINT=http://smsv3.bj.baidubce.com
 BDY_DX_TEMPLATE_ID=xxxxx
 #百度云短信签名ID，根据自己审核通过的签名来填写
 TXY_DX_SIGNATURE_ID=xxxxx
+
+#---------------------↓百度Hi(如流)-----------------------
+#是否开启百度Hi(如流)告警通道,可同时开始多个通道0为关闭,1为开启
+open-ruliu=1
+#默认百度Hi(如流)机器人地址
+BDRL_URL=https://api.im.baidu.com/api/msg/groupmsgsend?access_token=d29df350638ff2475d910bce7464f8c33
+#百度Hi(如流)群ID
+BDRL_ID=23278773
+#---------------------↓bark接口-----------------------
+#是否开启telegram告警通道,可同时开始多个通道0为关闭,1为开启
+open-bark=0
+#bark默认地址, 建议自行部署bark-server
+BARK_URL=https://api.day.app
+#bark key, 多个key使用分割
+BARK_KEYS=xxxxx
+# 复制, 推荐开启
+BARK_COPY=1
+# 历史记录保存,推荐开启
+BARK_ARCHIVE=1
+# 消息分组
+BARK_GROUP=PrometheusAlert
 ```

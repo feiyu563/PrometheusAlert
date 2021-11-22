@@ -2,11 +2,13 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
+	"bytes"
 	"strconv"
 	"time"
-
+	"text/template"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"encoding/json"
 )
 
 //取到tpl路径
@@ -25,7 +27,7 @@ func (c *MainController) Get() {
 
 //test page
 func (c *MainController) Test() {
-	if  !checkAccount(c.Ctx) {
+	if !checkAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
@@ -36,7 +38,7 @@ func (c *MainController) Test() {
 
 //template page
 func (c *MainController) Template() {
-	if  !checkAccount(c.Ctx) {
+	if !checkAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
@@ -52,7 +54,7 @@ func (c *MainController) Template() {
 
 //template add
 func (c *MainController) TemplateAdd() {
-	if  !checkAccount(c.Ctx) {
+	if !checkAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
@@ -84,7 +86,7 @@ func (c *MainController) AddTpl() {
 	c.ServeJSON()
 }
 func (c *MainController) TemplateEdit() {
-	if  !checkAccount(c.Ctx) {
+	if !checkAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
@@ -110,7 +112,7 @@ func (c *MainController) TemplateEdit() {
 //	c.Data["Template"] = Template
 //}
 func (c *MainController) TemplateDel() {
-	if  !checkAccount(c.Ctx) {
+	if !checkAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
@@ -124,9 +126,38 @@ func (c *MainController) TemplateDel() {
 
 //markdown test
 func (c *MainController) MarkdownTest() {
-	c.Data["IsMarkDownTest"] = true
-	c.TplName = "markdown_test.html"
-	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	if c.Ctx.Request.Method == "GET" {
+		c.Data["IsMarkDownTest"] = true
+		c.TplName = "markdown_test.html"
+		c.Data["IsLogin"] = checkAccount(c.Ctx)
+	} else {
+		var p_json interface{}
+		var resp string
+		JsonContent := c.Input().Get("jsoncontent")
+		TplContent := c.Input().Get("tplcontent")
+		json.Unmarshal([]byte(JsonContent), &p_json)
+
+		funcMap := template.FuncMap{
+			"GetCSTtime": GetCSTtime,
+			"TimeFormat": TimeFormat,
+			"GetTime":    GetTime,
+		}
+		buf := new(bytes.Buffer)
+		tpl, err := template.New("").Funcs(funcMap).Parse(TplContent)
+		if err != nil {
+			resp=err.Error()
+		} else {
+			err=tpl.Execute(buf, p_json)
+			if err!=nil {
+				resp=err.Error()
+			} else {
+				resp=buf.String()
+			}
+		}
+		c.Data["json"] = resp
+		c.ServeJSON()
+	}
+
 }
 
 func LogsSign() string {
@@ -139,15 +170,15 @@ func (c *MainController) AlertTest() {
 	switch MessageData {
 	case "wx":
 		wxtext := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n>**测试告警**\n>`告警级别:`测试\n**PrometheusAlert**"
-		ret := PostToWeiXin(wxtext, beego.AppConfig.String("wxurl"), "jikun.zhang",logsign)
+		ret := PostToWeiXin(wxtext, beego.AppConfig.String("wxurl"), "jikun.zhang", logsign)
 		c.Data["json"] = ret
 	case "dd":
 		ddtext := "## [PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "#### 测试告警\n\n" + "###### 告警级别：测试\n\n##### PrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToDingDing("PrometheusAlert", ddtext, beego.AppConfig.String("ddurl"),"15395105573", logsign)
+		ret := PostToDingDing("PrometheusAlert", ddtext, beego.AppConfig.String("ddurl"), "15395105573", logsign)
 		c.Data["json"] = ret
 	case "fs":
 		fstext := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "测试告警\n\n" + "告警级别：测试\n\nPrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToFS("PrometheusAlert", fstext, beego.AppConfig.String("fsurl"), "244217140@qq.com",logsign)
+		ret := PostToFS("PrometheusAlert", fstext, beego.AppConfig.String("fsurl"), "244217140@qq.com", logsign)
 		c.Data["json"] = ret
 	case "txdx":
 		MobileMessage := "PrometheusAlertCenter测试告警"
@@ -193,7 +224,7 @@ func (c *MainController) AlertTest() {
 		c.Data["json"] = ret
 	case "workwechat":
 		WorkwechatMessage := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n" + "测试告警\n" + "告警级别：测试\nPrometheusAlert\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"),beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"),WorkwechatMessage, logsign)
+		ret := SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), WorkwechatMessage, logsign)
 		c.Data["json"] = ret
 	case "bddx":
 		MobileMessage := "PrometheusAlertCenter测试告警"
@@ -201,7 +232,11 @@ func (c *MainController) AlertTest() {
 		c.Data["json"] = ret
 	case "bdrl":
 		RLMessage := "## [PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "#### 测试告警\n\n" + "###### 告警级别：测试\n\n##### PrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToRuLiu(beego.AppConfig.String("BDRL_ID"),RLMessage,beego.AppConfig.String("BDRL_URL"), logsign)
+		ret := PostToRuLiu(beego.AppConfig.String("BDRL_ID"), RLMessage, beego.AppConfig.String("BDRL_URL"), logsign)
+		c.Data["json"] = ret
+	case "bark":
+		TgMessage := "PrometheusAlertCenter测试告警"
+		ret := SendBark(TgMessage, logsign)
 		c.Data["json"] = ret
 	default:
 		c.Data["json"] = "hahaha!"

@@ -18,7 +18,7 @@ func init() {
 	//beego.Router("/template/test", &controllers.MainController{},"get,post:TemplateTest")
 	beego.Router("/template/del", &controllers.MainController{}, "get:TemplateDel")
 	beego.Router("/alerttest", &controllers.MainController{}, "post:AlertTest")
-	beego.Router("/markdowntest", &controllers.MainController{}, "get:MarkdownTest")
+	beego.Router("/markdowntest", &controllers.MainController{}, "get,post:MarkdownTest")
 
 	//prometheus
 	beego.Router("/prometheus/alert", &controllers.PrometheusController{}, "post:PrometheusAlert")
@@ -48,6 +48,7 @@ func init() {
 	beego.Router("/graylog2/tg", &controllers.Graylog2Controller{}, "post:GraylogTG")
 	beego.Router("/graylog2/workwechat", &controllers.Graylog2Controller{}, "post:GraylogWorkWechat")
 	beego.Router("/graylog2/ruliu", &controllers.Graylog2Controller{}, "post:GraylogRuLiu")
+	beego.Router("/graylog2/bark", &controllers.Graylog2Controller{}, "post:GraylogBark")
 
 	//graylog3
 	//beego.Router("/graylog3/phone", &controllers.Graylog3Controller{},"post:GraylogTxdh")
@@ -65,6 +66,7 @@ func init() {
 	beego.Router("/graylog3/tg", &controllers.Graylog3Controller{}, "post:GraylogTG")
 	beego.Router("/graylog3/workwechat", &controllers.Graylog3Controller{}, "post:GraylogWorkWechat")
 	beego.Router("/graylog3/ruliu", &controllers.Graylog3Controller{}, "post:GraylogRuLiu")
+	beego.Router("/graylog3/bark", &controllers.Graylog3Controller{}, "post:GraylogBark")
 
 	//grafana
 	//beego.Router("/grafana/phone", &controllers.GrafanaController{},"post:GrafanaTxdh")
@@ -82,6 +84,7 @@ func init() {
 	beego.Router("/grafana/tg", &controllers.GrafanaController{}, "post:GrafanaTG")
 	beego.Router("/grafana/workwechat", &controllers.GrafanaController{}, "post:GrafanaWorkWechat")
 	beego.Router("/grafana/ruliu", &controllers.GrafanaController{}, "post:GrafanaRuLiu")
+	beego.Router("/grafana/bark", &controllers.GrafanaController{}, "post:GrafanaBark")
 
 	beego.Router("/tengxun/status", &controllers.TengXunStatusController{}, "post:TengXunStatus")
 	//zabbix

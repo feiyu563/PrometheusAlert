@@ -31,9 +31,10 @@ func PostHWmessage(Messages string, PhoneNumbers, logsign string) string {
 	now := time.Now().Format("2006-01-02T15:04:05Z")
 	nonce := "7226249334"
 	digest := getSha256Code(nonce + now + hwappsecret)
-	//digestBase64:=base64.URLEncoding.EncodeToString([]byte(digest))
 	digestBase64 := base64.StdEncoding.EncodeToString([]byte(digest))
 	xheader := `"UsernameToken Username="` + hwappkey + `",PasswordDigest="` + digestBase64 + `",Nonce="` + nonce + `",Created="` + now + `"`
+	//生成form数据
+	FormData:=strings.NewReader(url.Values{"from": {sender}, "to": {PhoneNumbers}, "templateId": {hwtplid}, "templateParas": {"[\"" + Messages + "\"]"}, "signature": {hwsign}, "statusCallback": {""}, "extend": {logsign}}.Encode())
 	var tr *http.Transport
 	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
 		proxy := func(_ *http.Request) (*url.URL, error) {
@@ -49,7 +50,7 @@ func PostHWmessage(Messages string, PhoneNumbers, logsign string) string {
 		}
 	}
 	client := &http.Client{Transport: tr}
-	req, _ := http.NewRequest("POST", hwappurl+"/sms/batchSendSms/v1", strings.NewReader(url.Values{"from": {sender}, "to": {PhoneNumbers}, "templateId": {hwtplid}, "templateParas": {"[" + Messages + "]"}, "signature": {hwsign}, "statusCallback": {""}, "extend": {logsign}}.Encode()))
+	req, _ := http.NewRequest("POST", hwappurl+"/sms/batchSendSms/v1", FormData)
 	req.Header.Set("Authorization", `WSSE realm="SDP",profile="UsernameToken",type="Appkey"`)
 	req.Header.Set("X-WSSE", xheader)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")

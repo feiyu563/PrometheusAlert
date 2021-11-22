@@ -21,21 +21,21 @@ type WXMessage struct {
 	Markdown Mark   `json:"markdown"`
 }
 
-func PostToWeiXin(text, WXurl, atuserid,logsign string) string {
+func PostToWeiXin(text, WXurl, atuserid, logsign string) string {
 	open := beego.AppConfig.String("open-weixin")
 	if open != "1" {
 		logs.Info(logsign, "[weixin]", "企业微信接口未配置未开启状态,请先配置open-weixin为1")
 		return "企业微信接口未配置未开启状态,请先配置open-weixin为1"
 	}
 
-	SendContent:=text
-	if atuserid!="" {
-		userid:=strings.Split(atuserid, ",")
-		idtext:=""
-		for _,id:=range userid{
-			idtext+="<@"+id+">"
+	SendContent := text
+	if atuserid != "" {
+		userid := strings.Split(atuserid, ",")
+		idtext := ""
+		for _, id := range userid {
+			idtext += "<@" + id + ">"
 		}
-		SendContent+=idtext
+		SendContent += idtext
 	}
 	u := WXMessage{
 		Msgtype:  "markdown",

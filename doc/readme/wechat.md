@@ -2,14 +2,14 @@
 
 打开企业微信,进入企业微信群中,选择群设置-->群机器人-->添加，可参下图：
 
-![wx1](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/wx1.png)
+![wx1](../wx1.png)
 
-![wx2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/wx2.png)
+![wx2](../wx2.png)
 
 复制图中的Webhook地址，并填入PrometheusAlert配置文件app.conf中对应配置项即可。
 
  **PS: 企业微信机器人目前已经支持 `@某人` ,使用该功能需要通过企业微信管理后台取得对应用户的帐号，如下图：**
-![wx2](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/wx3.png)
+![wx2](../wx3.png)
 
 
 企业微信机器人目前支持的markdown语法是如下的子集：

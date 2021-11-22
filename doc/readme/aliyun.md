@@ -8,7 +8,7 @@
 
 * 语音（电话）：https://help.aliyun.com/document_detail/55070.html?spm=a2c4g.11186623.6.547.77e271b9SAbG6p
 
-* 注意事项：开通阿里云短信和语音需要配置的模版请填写类似如下内容，`prometheus告警:${code}`，其中`${code}`为固定内容，请勿替换。
+##### 注意事项：开通阿里云短信和语音需要配置的模版请填写类似如下内容，`prometheus告警:${code}`，其中`${code}`为固定内容，请勿替换。
 * 阿里云短信申请注意事项如下图标红的【短信模板】和【短信签名】
 ![短信模板](https://user-images.githubusercontent.com/24855321/113266467-e4f13800-9307-11eb-8cfc-b90742f56d19.png)
 ![短信签名](https://user-images.githubusercontent.com/24855321/113266618-10742280-9308-11eb-9538-b15033d3642e.png)
@@ -45,11 +45,11 @@ ALY_DH_TtsCode=xxxxxxxx
 ```
 开通阿里云语音服务，并进行资质管理认证，添加语音通知模板（建议模板内容使用中文，阿里云语音服务朗读会比较清晰）
 
-![aliyun01](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/aliyun-01.png)
+![aliyun01](../aliyun-01.png)
 
 在AlertTemplate中创建阿里云电话通知模板，内容可参照如图（appname为我自定义标签，可修改为自己的定义的标签）
 
-![aliyun02](https://gitee.com/feiyu563/PrometheusAlert/raw/master/doc/aliyun-02.png)
+![aliyun02](../aliyun-02.png)
 
 在prometheus中添加rules，如下（description为语音朗读内容）
 
