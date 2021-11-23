@@ -4,7 +4,6 @@ import (
 	"PrometheusAlert/model"
 	"PrometheusAlert/models"
 	_ "PrometheusAlert/routers"
-	"github.com/Unknwon/com"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
@@ -16,13 +15,18 @@ import (
 	"path"
 )
 
+func IsExist(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil || os.IsExist(err)
+}
+
 func init() {
 	db_driver := beego.AppConfig.String("db_driver")
 	switch db_driver {
 	case "sqlite3":
 		// 检查数据库文件
 		Db_name := "./db/PrometheusAlertDB.db"
-		if !com.IsExist(Db_name) {
+		if !IsExist(Db_name) {
 			os.MkdirAll(path.Dir(Db_name), os.ModePerm)
 			os.Create(Db_name)
 		}
@@ -39,7 +43,7 @@ func init() {
 	default:
 		// 检查数据库文件
 		Db_name := "./db/PrometheusAlertDB.db"
-		if !com.IsExist(Db_name) {
+		if !IsExist(Db_name) {
 			os.MkdirAll(path.Dir(Db_name), os.ModePerm)
 			os.Create(Db_name)
 		}
