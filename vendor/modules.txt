@@ -1,6 +1,3 @@
-# github.com/Unknwon/com v0.0.0-00010101000000-000000000000 => github.com/unknwon/com v1.0.1
-## explicit
-github.com/Unknwon/com
 # github.com/aliyun/alibaba-cloud-sdk-go v1.61.641
 ## explicit
 github.com/aliyun/alibaba-cloud-sdk-go/sdk
@@ -55,7 +52,7 @@ github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
-# github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e
+# github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1
 github.com/gopherjs/gopherjs/js
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
@@ -95,7 +92,7 @@ github.com/prometheus/procfs/internal/util
 # github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644
 ## explicit
 github.com/shiena/ansicolor
-# github.com/smartystreets/assertions v0.0.0-20190116191733-b6c0e53d7304
+# github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d
 github.com/smartystreets/assertions
 github.com/smartystreets/assertions/internal/go-render/render
 github.com/smartystreets/assertions/internal/oglematchers
@@ -163,4 +160,3 @@ gopkg.in/alexcesaro/quotedprintable.v3
 gopkg.in/ini.v1
 # gopkg.in/yaml.v2 v2.3.0
 gopkg.in/yaml.v2
-# github.com/Unknwon/com => github.com/unknwon/com v1.0.1
