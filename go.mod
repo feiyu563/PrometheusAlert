@@ -2,10 +2,7 @@ module PrometheusAlert
 
 go 1.15
 
-replace github.com/Unknwon/com => github.com/unknwon/com v1.0.1
-
 require (
-	github.com/Unknwon/com v0.0.0-00010101000000-000000000000
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.641
 	github.com/astaxie/beego v1.12.1
 	github.com/baidubce/bce-sdk-go v0.9.32
