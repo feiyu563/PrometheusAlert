@@ -20,13 +20,13 @@ type Graylog3 struct {
 	Backlogs    []Backlog  `json:"backlog"`
 }
 type AlertEvent struct {
-	Source string `json:"source`
+	Source string `json:"source"`
 }
 type Backlog struct {
 	Timestamp string  `json:"timestamp"` //开始时间
 	Index     string  `json:"index"`     //索引
 	Message   string  `json:"message"`
-	Fields    G3Field `json:"fields`
+	Fields    G3Field `json:"fields"`
 }
 type G3Field struct {
 	Gl2RemoteIp   string `json:"gl2_remote_ip"`

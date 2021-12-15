@@ -3,12 +3,13 @@ package controllers
 import (
 	"PrometheusAlert/models"
 	"bytes"
+	"encoding/json"
 	"strconv"
-	"time"
 	"text/template"
+	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"encoding/json"
 )
 
 //取到tpl路径
@@ -23,6 +24,11 @@ func (c *MainController) Get() {
 	c.Data["IsIndex"] = true
 	c.TplName = "index.html"
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
+}
+
+// Health returns Hello 200
+func (c *MainController) Health() {
+	c.Ctx.WriteString("Hello!\n")
 }
 
 //test page
@@ -145,13 +151,13 @@ func (c *MainController) MarkdownTest() {
 		buf := new(bytes.Buffer)
 		tpl, err := template.New("").Funcs(funcMap).Parse(TplContent)
 		if err != nil {
-			resp=err.Error()
+			resp = err.Error()
 		} else {
-			err=tpl.Execute(buf, p_json)
-			if err!=nil {
-				resp=err.Error()
+			err = tpl.Execute(buf, p_json)
+			if err != nil {
+				resp = err.Error()
 			} else {
-				resp=buf.String()
+				resp = buf.String()
 			}
 		}
 		c.Data["json"] = resp

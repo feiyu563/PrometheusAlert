@@ -7,12 +7,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 //定义语音请求body结构体
@@ -93,6 +94,9 @@ func PostRLYphonecall(CallMessage, PhoneNumber, logsign string) string {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", encodeAuth)
 	resp, err := client.Do(req)
+	if err != nil {
+		logs.Error(logsign, "[rlyphonecall]", err.Error())
+	}
 	defer resp.Body.Close()
 
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {

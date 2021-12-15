@@ -29,6 +29,46 @@ PrometheusAlert是开源的运维告警中心消息转发系统，支持主流�
 <br>
 <br>
 
+
+## 构建
+
+应用信息和构建相关的命令都写入了Makefile，请确保安装`make`, `git`, `go`命令。如有特定需要，请自行修改Makefile。
+
+```bash
+# 默认
+make
+
+# 只运行构建
+make build
+
+# 运行 go fmt
+make format
+
+# 运行 go vet
+make vet
+
+# 构建镜像
+make docker
+
+# 推送镜像
+make docker-push
+
+# 运行镜像测试
+make docker-test
+
+
+# 运行
+copy conf/app-example.conf conf/app.conf
+./PrometheusAlert
+# 测试应用健康
+curl http://localhost:8080/health
+```
+
+
+<br/>
+<br/>
+
+
 ## 启动
 
 ```

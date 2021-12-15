@@ -5,10 +5,10 @@ import (
 	"PrometheusAlert/models"
 	"bytes"
 	"encoding/json"
-	"strings"
-	"text/template"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"strings"
+	"text/template"
 )
 
 type PrometheusAlertController struct {
@@ -119,7 +119,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		P_groupid = beego.AppConfig.String("BDRL_ID")
 	}
 	P_atsomeone := c.Input().Get("at")
-	P_rr:=c.Input().Get("rr")
+	P_rr := c.Input().Get("rr")
 	//get tpl
 	message := ""
 	funcMap := template.FuncMap{
@@ -140,7 +140,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 			message = err.Error()
 		} else {
 			tpl.Execute(buf, p_json)
-			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_webhookurl, P_phone, P_email, P_touser, P_toparty, P_totag, P_groupid, P_atsomeone,P_rr,logsign)
+			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_webhookurl, P_phone, P_email, P_touser, P_toparty, P_totag, P_groupid, P_atsomeone, P_rr, logsign)
 		}
 	} else {
 		message = "接口参数缺失！"
@@ -150,7 +150,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhookurl, pphone, email, ptouser, ptoparty, ptotag, pgroupid, patsomeone,prr, logsign string) string {
+func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhookurl, pphone, email, ptouser, ptoparty, ptotag, pgroupid, patsomeone, prr, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	ret := ""
 	model.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
@@ -158,7 +158,7 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhook
 	//微信渠道
 	case "wx":
 		Wxurl := strings.Split(pwxurl, ",")
-		if prr=="true" {
+		if prr == "true" {
 			ret += PostToWeiXin(message, DoBalance(Wxurl), patsomeone, logsign)
 		} else {
 			for _, url := range Wxurl {
@@ -169,7 +169,7 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhook
 	//钉钉渠道
 	case "dd":
 		Ddurl := strings.Split(pddurl, ",")
-		if prr=="true" {
+		if prr == "true" {
 			ret += PostToDingDing(Title+"告警消息", message, DoBalance(Ddurl), patsomeone, logsign)
 		} else {
 			for _, url := range Ddurl {
@@ -180,7 +180,7 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhook
 	//飞书渠道
 	case "fs":
 		Fsurl := strings.Split(pfsurl, ",")
-		if prr=="true" {
+		if prr == "true" {
 			ret += PostToFS(Title+"告警消息", message, DoBalance(Fsurl), patsomeone, logsign)
 		} else {
 			for _, url := range Fsurl {
@@ -191,7 +191,7 @@ func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhook
 	//Webhook渠道
 	case "webhook":
 		Fwebhookurl := strings.Split(pwebhookurl, ",")
-		if prr=="true" {
+		if prr == "true" {
 			ret += PostToWebhook(message, DoBalance(Fwebhookurl), logsign)
 		} else {
 			for _, url := range Fwebhookurl {

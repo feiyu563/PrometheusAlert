@@ -34,7 +34,7 @@ func PostHWmessage(Messages string, PhoneNumbers, logsign string) string {
 	digestBase64 := base64.StdEncoding.EncodeToString([]byte(digest))
 	xheader := `"UsernameToken Username="` + hwappkey + `",PasswordDigest="` + digestBase64 + `",Nonce="` + nonce + `",Created="` + now + `"`
 	//生成form数据
-	FormData:=strings.NewReader(url.Values{"from": {sender}, "to": {PhoneNumbers}, "templateId": {hwtplid}, "templateParas": {"[\"" + Messages + "\"]"}, "signature": {hwsign}, "statusCallback": {""}, "extend": {logsign}}.Encode())
+	FormData := strings.NewReader(url.Values{"from": {sender}, "to": {PhoneNumbers}, "templateId": {hwtplid}, "templateParas": {"[\"" + Messages + "\"]"}, "signature": {hwsign}, "statusCallback": {""}, "extend": {logsign}}.Encode())
 	var tr *http.Transport
 	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
 		proxy := func(_ *http.Request) (*url.URL, error) {
