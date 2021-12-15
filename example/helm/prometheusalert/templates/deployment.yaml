@@ -36,12 +36,22 @@ spec:
             subPath: user.csv
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 3
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

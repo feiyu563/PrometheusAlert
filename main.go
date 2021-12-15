@@ -4,6 +4,10 @@ import (
 	"PrometheusAlert/model"
 	"PrometheusAlert/models"
 	_ "PrometheusAlert/routers"
+	"os"
+	"path"
+	"runtime"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
@@ -11,8 +15,15 @@ import (
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"os"
-	"path"
+)
+
+// Infos are set at build time use ldflags.
+var (
+	Version   string
+	Revision  string
+	BuildUser string
+	BuildDate string
+	GoVersion = runtime.Version()
 )
 
 func IsExist(path string) bool {
@@ -66,7 +77,13 @@ func main() {
 		logpath := beego.AppConfig.String("logpath")
 		logs.SetLogger(logtype, `{"filename":"`+logpath+`"}`)
 	}
-	logs.Info("[main] 当前版本（Version）4.6.1")
+	// 输出应用信息
+	logs.Info("[main] 构建的Go版本: ", GoVersion)
+	logs.Info("[main] 应用当前版本: ", Version)
+	logs.Info("[main] 应用当前提交: ", Revision)
+	logs.Info("[main] 应用构建时间: ", BuildDate)
+	logs.Info("[main] 应用构建用户: ", BuildUser)
+
 	model.MetricsInit()
 	beego.Handler("/metrics", promhttp.Handler())
 	beego.Run()
