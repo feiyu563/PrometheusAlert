@@ -38,7 +38,7 @@ type Annotations struct {
 	Email     string `json:"email"`   //2020年7月4日 10:15:20 增加多个email告警支持
 	Groupid   string `json:"groupid"` //2021年2月2日 17:28:23 增加多个如流告警支持
 	AtSomeOne string `json:"at"`      //2021年6月23日 14:02:21 增加@某人支持
-	Rr string `json:"rr"`      //2021年9月14日 14:48:08 增加随机轮询参数支持
+	Rr        string `json:"rr"`      //2021年9月14日 14:48:08 增加随机轮询参数支持
 }
 type Alerts struct {
 	Status       string

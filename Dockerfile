@@ -2,7 +2,9 @@ FROM golang:1.16-alpine3.12 as builder
 
 WORKDIR $GOPATH/src/github.com/feiyu563/PrometheusAlert
 
-RUN apk update && apk upgrade && apk add --no-cache gcc g++ sqlite-libs
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk update && apk upgrade && \
+    apk add --no-cache gcc g++ sqlite-libs make git
 
 ENV GO111MODULE on
 
@@ -10,15 +12,22 @@ ENV GOPROXY https://goproxy.io
 
 COPY . $GOPATH/src/github.com/feiyu563/PrometheusAlert
 
-RUN go mod vendor && go build
+RUN make build
 
 # -----------------------------------------------------------------------------
-
 FROM alpine:3.12
 
 LABEL maintainer="jikun.zhang"
 
-RUN apk update && apk upgrade && apk add --no-cache sqlite-libs
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk add tzdata && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    apk del tzdata && \
+    apk update && apk upgrade && apk add --no-cache sqlite-libs curl
+
+HEALTHCHECK --start-period=10s --interval=20s --timeout=3s --retries=3 \
+    CMD curl -fs http://localhost:8080/health || exit 1
 
 WORKDIR /app
 
