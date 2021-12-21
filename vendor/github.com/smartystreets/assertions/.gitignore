@@ -1,5 +1,4 @@
-.DS_Store
-Thumbs.db
-*.iml
 /.idea
-coverage.out
+/coverage.*
+.DS_Store
+*.iml
