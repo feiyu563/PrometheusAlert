@@ -49,6 +49,16 @@ db_driver=sqlite3
 #db_user=root
 #db_password=root
 #db_name=prometheusalert
+# 是否将告警记录写入es7，0为关闭，1为开启
+alert_to_es=0
+# es地址，是[]string
+# beego.Appconfig.Strings读取配置为[]string，使用";"而不是","
+to_es_url=http://localhost:9200
+# to_es_url=http://es1:9200;http://es2:9200;http://es3:9200
+# es用户和密码
+# to_es_user=username
+# to_es_pwd=password
+
 
 #---------------------↓webhook-----------------------
 #是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
