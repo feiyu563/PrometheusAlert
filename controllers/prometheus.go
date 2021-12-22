@@ -3,10 +3,12 @@ package controllers
 import (
 	"PrometheusAlert/model"
 	"PrometheusAlert/models"
+	"PrometheusAlert/models/elastic"
 	"encoding/json"
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -26,6 +28,8 @@ type Labels struct {
 	DomainId     int64  `json:"domainId"`
 	DomainName   string `json:"domainName"`
 	SendType     string `json:"sendType"`
+	Hostgroup    string `json:"hostgroup,omitempty"`
+	Hostname     string `json:"hostname,omitempty"`
 }
 type Annotations struct {
 	Description string `json:"description"`
@@ -107,6 +111,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 	Silent, _ := beego.AppConfig.Int("silent")
 	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
 	Record := beego.AppConfig.String("AlertRecord")
+	alertToES := beego.AppConfig.DefaultString("alert_to_es", "0")
 	var ddtext, wxtext, fstext, MobileMessage, PhoneCallMessage, EmailMessage, titleend, rltext string
 	//对分组消息进行排序
 	AlerMessage := message.Alerts
@@ -334,6 +339,32 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		//告警抑制开启就直接跳出循环
 		if Silent == 1 {
 			break
+		}
+
+		// 告警写入ES
+		if alertToES == "1" {
+			dt := time.Now()
+			dty, dtm := dt.Year(), int(dt.Month())
+			// example esIndex: prometheusalert-202112
+			esIndex := "prometheusalert-" + strconv.Itoa(dty) + strconv.Itoa(dtm)
+			// Index a prometheusalert (using JSON serialization)
+			alert := &elastic.AlertES{
+				Alertname:    RMessage.Labels.Alertname,
+				Status:       RMessage.Status,
+				Instance:     RMessage.Labels.Instance,
+				Hostgroup:    RMessage.Labels.Hostgroup,
+				Hostname:     RMessage.Labels.Hostname,
+				Level:        RMessage.Labels.Level,
+				Severity:     RMessage.Labels.Severity,
+				BusinessType: RMessage.Labels.BusinessType,
+				SendType:     RMessage.Labels.SendType,
+				Summary:      RMessage.Annotations.Summary,
+				Description:  RMessage.Annotations.Description,
+				StartsAt:     At,
+				EndsAt:       Et,
+				Created:      dt,
+			}
+			elastic.Insert(esIndex, alert)
 		}
 	}
 	return "告警消息发送完成."
