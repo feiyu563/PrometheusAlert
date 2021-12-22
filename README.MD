@@ -111,6 +111,7 @@ PrometheusAlert具备如下特性
  - 增加支持钉钉，企业微信的@某人功能
  - 增加支持阿里云-云监控告警
  - 增加随机轮询，目前仅针对ddurl，fsurl，wxurl有效，默认情况下如果上述Url配置的是多个地址，则多个地址全部发送，如开启该选项，则从多个地址中随机取一个地址发送，主要是为了避免消息发送频率过高导致触发部分机器人拦截消息
+ - 增加支持将Prometheus告警记录写入到Elasticsearch7.x，可通过Kibana进行界面查看告警记录和配置表格导出。
  
 ---------------------
 
@@ -135,6 +136,7 @@ PrometheusAlert具备如下特性
   * [Metrics指标](doc/readme/metrics.md)
   * [配置文件说明](doc/readme/setup.md)
   * [其他配置](doc/readme/other.md)
+  * [ES接入配置](doc/readme/es.md)
   * [使用Dashboard对配置进行测试](doc/readme/dashboard.md)
 * [【 app.conf 告警接收目标配置】](doc/readme/dingding.md)
   * [钉钉告警配置](doc/readme/dingding.md)

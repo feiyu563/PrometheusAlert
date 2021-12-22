@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 )
@@ -128,6 +129,25 @@ func ShouldBeError(actual interface{}, expected ...interface{}) string {
 		return fmt.Sprintf(shouldBeErrorInvalidComparisonValue, reflect.TypeOf(expected))
 	}
 	return ShouldEqual(fmt.Sprint(actual), fmt.Sprint(expected[0]))
+}
+
+// ShouldWrap asserts that the first argument (which must be an error value)
+// 'wraps' the second/final argument (which must also be an error value).
+// It relies on errors.Is to make the determination (https://golang.org/pkg/errors/#Is).
+func ShouldWrap(actual interface{}, expected ...interface{}) string {
+	if fail := need(1, expected); fail != success {
+		return fail
+	}
+
+	if !isError(actual) || !isError(expected[0]) {
+		return fmt.Sprintf(shouldWrapInvalidTypes, reflect.TypeOf(actual), reflect.TypeOf(expected[0]))
+	}
+
+	if !errors.Is(actual.(error), expected[0].(error)) {
+		return fmt.Sprintf(`Expected error("%s") to wrap error("%s") but it didn't.`, actual, expected[0])
+	}
+
+	return success
 }
 
 func isString(value interface{}) bool { _, ok := value.(string); return ok }
