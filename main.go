@@ -78,11 +78,11 @@ func main() {
 		logs.SetLogger(logtype, `{"filename":"`+logpath+`"}`)
 	}
 	// 输出应用信息
-	logs.Info("[main] 构建的Go版本: ", GoVersion)
-	logs.Info("[main] 应用当前版本: ", Version)
-	logs.Info("[main] 应用当前提交: ", Revision)
-	logs.Info("[main] 应用构建时间: ", BuildDate)
-	logs.Info("[main] 应用构建用户: ", BuildUser)
+	logs.Info("[main] 构建的Go版本: %s", GoVersion)
+	logs.Info("[main] 应用当前版本: %s", Version)
+	logs.Info("[main] 应用当前提交: %s", Revision)
+	logs.Info("[main] 应用构建时间: %s", BuildDate)
+	logs.Info("[main] 应用构建用户: %s", BuildUser)
 
 	model.MetricsInit()
 	beego.Handler("/metrics", promhttp.Handler())
