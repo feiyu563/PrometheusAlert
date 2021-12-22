@@ -23,7 +23,7 @@ type MainController struct {
 func (c *MainController) Get() {
 	c.Data["IsIndex"] = true
 	c.TplName = "index.html"
-	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
 // Health returns Hello 200
@@ -33,18 +33,18 @@ func (c *MainController) Health() {
 
 //test page
 func (c *MainController) Test() {
-	if !checkAccount(c.Ctx) {
+	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
 	c.Data["IsTest"] = true
 	c.TplName = "test.html"
-	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
 //template page
 func (c *MainController) Template() {
-	if !checkAccount(c.Ctx) {
+	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
@@ -55,18 +55,18 @@ func (c *MainController) Template() {
 		logs.Error(err)
 	}
 	c.Data["Template"] = Template
-	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
 //template add
 func (c *MainController) TemplateAdd() {
-	if !checkAccount(c.Ctx) {
+	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
 	c.Data["IsTemplate"] = true
 	c.TplName = "template_add.html"
-	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 func (c *MainController) AddTpl() {
 	//获取表单信息
@@ -92,7 +92,7 @@ func (c *MainController) AddTpl() {
 	c.ServeJSON()
 }
 func (c *MainController) TemplateEdit() {
-	if !checkAccount(c.Ctx) {
+	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
@@ -104,7 +104,7 @@ func (c *MainController) TemplateEdit() {
 		logs.Error(err)
 	}
 	c.Data["Template"] = Template
-	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
 //func (c *MainController) TemplateTest() {
@@ -118,7 +118,7 @@ func (c *MainController) TemplateEdit() {
 //	c.Data["Template"] = Template
 //}
 func (c *MainController) TemplateDel() {
-	if !checkAccount(c.Ctx) {
+	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
@@ -135,7 +135,7 @@ func (c *MainController) MarkdownTest() {
 	if c.Ctx.Request.Method == "GET" {
 		c.Data["IsMarkDownTest"] = true
 		c.TplName = "markdown_test.html"
-		c.Data["IsLogin"] = checkAccount(c.Ctx)
+		c.Data["IsLogin"] = CheckAccount(c.Ctx)
 	} else {
 		var p_json interface{}
 		var resp string
