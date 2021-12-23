@@ -45,6 +45,6 @@ COPY static static
 
 COPY views views
 
-#ENTRYPOINT [ "/app/PrometheusAlert" ]
+COPY docker-entrypoint.sh docker-entrypoint.sh
 
-CMD if [ ! -f /app/db/PrometheusAlertDB.db ];then cp /opt/PrometheusAlertDB.db /app/db/PrometheusAlertDB.db;echo 'init ok!';else echo 'pass!';fi && /app/PrometheusAlert
+ENTRYPOINT [ "/bin/sh", "/app/docker-entrypoint.sh" ]
