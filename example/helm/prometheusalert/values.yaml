@@ -5,6 +5,7 @@
 replicaCount: 1
 
 image:
+  # 支持配置自定义模版需要重出镜像，或者使用本人构建镜像：lusson/prometheusalert:v1.0
   repository: feiyu563/prometheus-alert:latest
   pullPolicy: IfNotPresent
 
