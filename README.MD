@@ -84,6 +84,23 @@ curl http://localhost:8080/health
 #默认登录帐号和密码在app.conf中有配置
 ```
 
+## Docker
+
+配置文件 app.conf 的内容可以使用环境变量的方式初始化。
+
+所设置的变量前缀必须以 `PA_` 开始，后面使用配置文件的配置项名称，特别注意的是此配置对大小写并不敏感。
+
+示例
+
+```
+docker run -d \
+-e PA_LOGIN_USER=prometheusalert
+-e PA_LOGIN_PASSWORD=prometheusalert
+-e PA_TITLE=PrometheusAlert
+feiyu563/prometheus-alert
+```
+
+所有的配置文件内容请[点击此处](https://github.com/feiyu563/PrometheusAlert/blob/master/conf/app-example.conf)查看
 
 <br>
 <br>
