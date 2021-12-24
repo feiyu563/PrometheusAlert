@@ -16,6 +16,10 @@ spec:
         app.kubernetes.io/name: {{ include "prometheusalert.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.global.imagePullSecrets | indent 0}}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}"
