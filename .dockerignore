@@ -7,3 +7,4 @@ tests
 build.sh
 build.bat
 README.MD
+dist/
