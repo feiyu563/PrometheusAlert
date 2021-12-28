@@ -1,0 +1,75 @@
+project_name: PrometheusAlert
+
+env:
+  - GO11MODULE=on
+  - GO111MODULE=on
+  - GOPROXY=https://goproxy.io
+  # go-sqlite3需要启用cgo
+  # cgo比较麻烦，交叉编译需要安装特定架构gcc来支持
+  - CGO_ENABLED=1
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod vendor
+
+builds:
+  - id: build-linux
+    main: main.go
+    binary: PrometheusAlert
+    ldflags: -s -w -X main.Version=${{.Version}} -X main.Revision={{.ShortCommit}} -X main.BuildDate={{.Date}} -X main.BuildUser=goreleaser
+    goos:
+      - linux
+    goarch:
+      - amd64
+  # 在linux上交叉编译windows cgo需要mingw64-gcc模块
+  - id: build-windows
+    main: main.go
+    binary: PrometheusAlert
+    ldflags: -s -w -X main.Version=${{.Version}} -X main.Revision={{.ShortCommit}} -X main.BuildDate={{.Date}} -X main.BuildUser=goreleaser
+    env:
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+  # 在linux上交叉编译arm64 cgo需要arm64 gcc模块
+  #- id: build-arm
+  #  main: main.go
+  #  binary: PrometheusAlert
+  #  ldflags: -s -w -X main.Version=${{.Version}} -X main.Revision={{.ShortCommit}} -X main.BuildDate={{.Date}} -X main.BuildUser=goreleaser
+  #  env:
+  #    - CC=aarch64-linux-gnu-gcc
+  #    - CXX=aarch64-linux-gnu-g++
+  #  goos:
+  #    - linux
+  #  goarch:
+  #    - arm64
+
+archives:
+  - id: archive-package
+    format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    wrap_in_directory: true
+    replacements:
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+      arm64: ARM64
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - conf/app-example.conf
+      - db/
+      - logs/
+      - static/
+      - views/
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ .Version }}_snapshot"
