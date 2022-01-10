@@ -24,6 +24,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ['sh', '-c', "sqlite3 /app/db/PrometheusAlertDB.db '.read /app/db/init.sql' && /app/PrometheusAlert"]
           env:
           - name: TZ
             value: "Asia/Shanghai"
@@ -38,6 +39,9 @@ spec:
           - name: prometheus-alert-center-conf
             mountPath: /app/user.csv
             subPath: user.csv
+          - name: prometheus-alert-center-conf
+            mountPath: /app/db/init.sql
+            subPath: init.sql
           livenessProbe:
             httpGet:
               path: /health
@@ -79,3 +83,5 @@ spec:
             path: app.conf
           - key: user.csv
             path: user.csv
+          - key: init.sql
+            path: init.sql

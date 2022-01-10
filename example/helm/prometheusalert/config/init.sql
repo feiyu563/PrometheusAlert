@@ -1,0 +1,3 @@
+INSERT INTO `prometheus_alert_d_b` VALUES ('50', 'wx', 'Prometheus', 'prometheus-wx-2', '{{ $var := .externalURL}}{{ range $k,$v:=.alerts }}\r\n{{if eq $v.status \"resolved\"}}\r\n[Prometheus恢复信息]($v.generatorURL}})\r\n>**[{{$v.labels.alertname}}]({{$var}})**\r\n>告警级别: {{$v.labels.level}}\r\n开始时间: {{$v.startsAt}}\r\n结束时间: {{$v.endsAt}}\r\n故障主机IP: {{$v.labels.instance}}\r\n**{{$v.annotations.description}}**\r\n{{else}}\r\n[Prometheus告警信息]($v.generatorURL}})\r\n>**[{{$v.labels.alertname}}]({{$var}})**\r\n>告警级别: {{$v.labels.level}}\r\n开始时间: {{$v.startsAt}}\r\n结束时间: {{$v.endsAt}}\r\n故障主机IP: {{$v.labels.instance}}\r\n**{{$v.annotations.description}}**\r\n{{end}}\r\n{{ end }}', '2020-12-22 03:07:19');
+
+
