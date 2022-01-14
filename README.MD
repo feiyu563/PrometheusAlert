@@ -47,6 +47,9 @@ make format
 # 运行 go vet
 make vet
 
+# 运行 go test
+make test
+
 # 构建镜像
 make docker
 
@@ -129,7 +132,8 @@ PrometheusAlert具备如下特性
  - 增加支持阿里云-云监控告警
  - 增加随机轮询，目前仅针对ddurl，fsurl，wxurl有效，默认情况下如果上述Url配置的是多个地址，则多个地址全部发送，如开启该选项，则从多个地址中随机取一个地址发送，主要是为了避免消息发送频率过高导致触发部分机器人拦截消息
  - 增加支持将Prometheus告警记录写入到Elasticsearch7.x，可通过Kibana进行界面查看告警记录和配置表格导出。
- 
+ - 增加支持将Gitlab webhook event推送到企微和钉钉。
+
 ---------------------
 
 致谢以下伙伴对PrometheusAlert的贡献
@@ -178,6 +182,7 @@ PrometheusAlert具备如下特性
   * [sonarqube接入配置](doc/readme/sonarqube.md)
   * [jenkins接入配置](doc/readme/jenkins.md)
   * [阿里云-云监控（自定义消息模版）接入配置](doc/readme/yunjiankong.md)
+  * [Gitlab webhook接入配置](doc/readme/gitlab.md)
 * [【WebHook】](doc/readme/webhook.md)
 * [【MarkDown测试】](doc/readme/markdowntest.md)
 
@@ -195,7 +200,7 @@ PrometheusAlert具备如下特性
 
  - [【GitHub】: PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)
  - [【码云】: PrometheusAlert](https://gitee.com/feiyu563/PrometheusAlert)
- 
+
 ---
 
 加入PrometheusAlert微信交流群
