@@ -34,6 +34,7 @@ test:
 .PHONY: build
 build:
 	@echo ">> building code"
+	go mod tidy
 	go mod vendor
 	GO11MODULE=on GO111MODULE=on GOPROXY=https://goproxy.io \
 	  go build -ldflags "$(VERSION_LDFLAGS)" -o PrometheusAlert
