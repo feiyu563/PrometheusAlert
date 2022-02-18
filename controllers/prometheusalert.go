@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	tmplhtml "html/template"
+	"regexp"
 	"strings"
 	"text/template"
 )
@@ -53,10 +55,46 @@ type AliyunAlert struct {
 	Timestamp       string `json:"timestamp"`
 }
 
+type PrometheusAlertMsg struct {
+	Tpl        string
+	Type       string
+	Ddurl      string
+	Wxurl      string
+	Fsurl      string
+	Phone      string
+	WebHookUrl string
+	ToUser     string
+	Email      string
+	ToParty    string
+	ToTag      string
+	GroupId    string
+	AtSomeOne  string
+	RoundRobin string
+	Split      string
+}
+
+type AlertManagerMsg struct {
+	Receiver          string        `json:"receiver"`
+	Status            string        `json:"status"`
+	Alerts            []interface{} `json:"alerts"`
+	ExternalURL       string        `json:"externalURL"` //alertmanage 返回地址
+	GroupLabels       interface{}   `json:"groupLabels"`
+	CommonLabels      interface{}   `json:"commonLabels"`
+	CommonAnnotations interface{}   `json:"commonAnnotations"`
+	Version           string        `json:"version"`
+	GroupKey          string        `json:"groupKey"`
+	TruncatedAlerts   interface{}   `json:"truncatedAlerts"`
+}
+
 func (c *PrometheusAlertController) PrometheusAlert() {
 	logsign := "[" + LogsSign() + "]"
 	var p_json interface{}
+	p_alertmanager_json := AlertManagerMsg{}
+	pMsg := PrometheusAlertMsg{}
 	logs.Debug(logsign, strings.Replace(string(c.Ctx.Input.RequestBody), "\n", "", -1))
+	//该配置仅适用于alertmanager的消息,用于判断是否需要拆分alertmanager告警消息
+	pMsg.Split = c.Input().Get("split")
+
 	if c.Input().Get("from") == "aliyun" {
 		//阿里云云监控告警消息处理
 		AliyunAlertJson := AliyunAlert{}
@@ -78,172 +116,236 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		p_json = AliyunAlertJson
 	} else {
 		json.Unmarshal(c.Ctx.Input.RequestBody, &p_json)
-	}
-	P_type := c.Input().Get("type")
-	P_tpl := c.Input().Get("tpl")
-	P_ddurl := c.Input().Get("ddurl")
-	if P_ddurl == "" {
-		P_ddurl = beego.AppConfig.String("ddurl")
-	}
-	P_wxurl := c.Input().Get("wxurl")
-	if P_wxurl == "" {
-		P_wxurl = beego.AppConfig.String("wxurl")
-	}
-	P_fsurl := c.Input().Get("fsurl")
-	if P_fsurl == "" {
-		P_fsurl = beego.AppConfig.String("fsurl")
-	}
-	P_webhookurl := c.Input().Get("webhookurl")
-	P_phone := c.Input().Get("phone")
-	if P_phone == "" && (P_type == "txdx" || P_type == "hwdx" || P_type == "bddx" || P_type == "alydx" || P_type == "txdh" || P_type == "alydh" || P_type == "rlydh" || P_type == "7moordx" || P_type == "7moordh") {
-		P_phone = GetUserPhone(1)
-	}
-	P_email := c.Input().Get("email")
-	if P_email == "" {
-		P_email = beego.AppConfig.String("Default_emails")
-	}
-	P_touser := c.Input().Get("wxuser")
-	if P_touser == "" {
-		P_touser = beego.AppConfig.String("WorkWechat_ToUser")
-	}
-	P_toparty := c.Input().Get("wxparty")
-	if P_toparty == "" {
-		P_toparty = beego.AppConfig.String("WorkWechat_ToParty")
-	}
-	P_totag := c.Input().Get("wxtag")
-	if P_totag == "" {
-		P_totag = beego.AppConfig.String("WorkWechat_ToTag")
-	}
-	P_groupid := c.Input().Get("groupid")
-	if P_groupid == "" {
-		P_groupid = beego.AppConfig.String("BDRL_ID")
-	}
-	P_atsomeone := c.Input().Get("at")
-	P_rr := c.Input().Get("rr")
-	//get tpl
-	message := ""
-	funcMap := template.FuncMap{
-		"GetCSTtime": GetCSTtime,
-		"TimeFormat": TimeFormat,
-		"GetTime":    GetTime,
-	}
-	if P_tpl != "" && P_type != "" {
-		tpltext, err := models.GetTplOne(P_tpl)
-		if err != nil {
-			logs.Error(logsign, err)
+		if pMsg.Split == "true" {
+			json.Unmarshal(c.Ctx.Input.RequestBody, &p_alertmanager_json)
 		}
-		buf := new(bytes.Buffer)
-		//tpl, err := template.New("").Funcs(template.FuncMap{"GetCSTtime": GetCSTtime}).Parse(tpltext.Tpl)
-		tpl, err := template.New("").Funcs(funcMap).Parse(tpltext.Tpl)
-		if err != nil {
-			logs.Error(logsign, err.Error())
-			message = err.Error()
+	}
+
+	pMsg.Type = c.Input().Get("type")
+	pMsg.Tpl = c.Input().Get("tpl")
+	pMsg.Ddurl = c.Input().Get("ddurl")
+	if pMsg.Ddurl == "" {
+		pMsg.Ddurl = beego.AppConfig.String("ddurl")
+	}
+	pMsg.Wxurl = c.Input().Get("wxurl")
+	if pMsg.Wxurl == "" {
+		pMsg.Wxurl = beego.AppConfig.String("wxurl")
+	}
+	pMsg.Fsurl = c.Input().Get("fsurl")
+	if pMsg.Fsurl == "" {
+		pMsg.Fsurl = beego.AppConfig.String("fsurl")
+	}
+	pMsg.WebHookUrl = c.Input().Get("webhookurl")
+	pMsg.Phone = c.Input().Get("phone")
+	if pMsg.Phone == "" && (pMsg.Type == "txdx" || pMsg.Type == "hwdx" || pMsg.Type == "bddx" || pMsg.Type == "alydx" || pMsg.Type == "txdh" || pMsg.Type == "alydh" || pMsg.Type == "rlydh" || pMsg.Type == "7moordx" || pMsg.Type == "7moordh") {
+		pMsg.Phone = GetUserPhone(1)
+	}
+	pMsg.Email = c.Input().Get("email")
+	if pMsg.Email == "" {
+		pMsg.Email = beego.AppConfig.String("Default_emails")
+	}
+	pMsg.ToUser = c.Input().Get("wxuser")
+	if pMsg.ToUser == "" {
+		pMsg.ToUser = beego.AppConfig.String("WorkWechat_ToUser")
+	}
+	pMsg.ToParty = c.Input().Get("wxparty")
+	if pMsg.ToParty == "" {
+		pMsg.ToParty = beego.AppConfig.String("WorkWechat_ToParty")
+	}
+	pMsg.ToTag = c.Input().Get("wxtag")
+	if pMsg.ToTag == "" {
+		pMsg.ToTag = beego.AppConfig.String("WorkWechat_ToTag")
+	}
+	pMsg.GroupId = c.Input().Get("groupid")
+	if pMsg.GroupId == "" {
+		pMsg.GroupId = beego.AppConfig.String("BDRL_ID")
+	}
+	pMsg.AtSomeOne = c.Input().Get("at")
+	pMsg.RoundRobin = c.Input().Get("rr")
+
+	var message string
+	var err error
+	var msg string
+	if pMsg.Tpl != "" && pMsg.Type != "" {
+		if pMsg.Split == "true" {
+			p_alertmanager_json_copy := p_alertmanager_json
+			for _, Split_alert := range p_alertmanager_json.Alerts {
+				//清空p_alertmanager_json_copy的Alerts
+				p_alertmanager_json_copy.Alerts = p_alertmanager_json_copy.Alerts[0:0]
+				//重新将拆分后的Alerts插入到p_alertmanager_json_copy
+				p_alertmanager_json_copy.Alerts = append(p_alertmanager_json_copy.Alerts, Split_alert)
+				//直接使用p_alertmanager_json_copy去匹配自定义模板会出现报错，主要是由于struct的首字母大写问题，故需要定义一个交换用的json interface，用于将p_alertmanager_json_copy转换成interface
+				var p_alertmanager_interface interface{}
+				p_a_json, _ := json.Marshal(p_alertmanager_json_copy)
+				json.Unmarshal(p_a_json, &p_alertmanager_interface)
+
+				err, msg = TransformAlertMessage(p_alertmanager_interface, &pMsg, logsign)
+				if err != nil {
+					logs.Error(logsign, err.Error())
+					message = err.Error()
+				} else {
+					message = msg
+				}
+			}
 		} else {
-			tpl.Execute(buf, p_json)
-			message = SendMessagePrometheusAlert(buf.String(), P_type, P_ddurl, P_wxurl, P_fsurl, P_webhookurl, P_phone, P_email, P_touser, P_toparty, P_totag, P_groupid, P_atsomeone, P_rr, logsign)
+			err, msg = TransformAlertMessage(p_json, &pMsg, logsign)
+			if err != nil {
+				logs.Error(logsign, err.Error())
+				message = err.Error()
+			} else {
+				message = msg
+			}
 		}
+
 	} else {
-		message = "接口参数缺失！"
+		message = "自定义模板接口参数不全！"
 		logs.Error(logsign, message)
 	}
 	c.Data["json"] = message
 	c.ServeJSON()
 }
 
-func SendMessagePrometheusAlert(message, ptype, pddurl, pwxurl, pfsurl, pwebhookurl, pphone, email, ptouser, ptoparty, ptotag, pgroupid, patsomeone, prr, logsign string) string {
+//消息模版化并发送告警
+func TransformAlertMessage(p_json interface{}, pmsg *PrometheusAlertMsg, logsign string) (error error, msg string) {
+	funcMap := template.FuncMap{
+		"GetCSTtime": GetCSTtime,
+		"TimeFormat": TimeFormat,
+		"GetTime":    GetTime,
+		"toUpper":    strings.ToUpper,
+		"toLower":    strings.ToLower,
+		"title":      strings.Title,
+		// join is equal to strings.Join but inverts the argument order
+		// for easier pipelining in templates.
+		"join": func(sep string, s []string) string {
+			return strings.Join(s, sep)
+		},
+		"match": regexp.MatchString,
+		"safeHtml": func(text string) tmplhtml.HTML {
+			return tmplhtml.HTML(text)
+		},
+		"reReplaceAll": func(pattern, repl, text string) string {
+			re := regexp.MustCompile(pattern)
+			return re.ReplaceAllString(text, repl)
+		},
+		"stringSlice": func(s ...string) []string {
+			return s
+		},
+	}
+
+	tpltext, err := models.GetTplOne(pmsg.Tpl)
+	if err != nil {
+		return err, ""
+	}
+	buf := new(bytes.Buffer)
+
+	tpl, err := template.New("").Funcs(funcMap).Parse(tpltext.Tpl)
+	if err != nil {
+		return err, ""
+	}
+
+	err = tpl.Execute(buf, p_json)
+	if err != nil {
+		return err, ""
+	}
+
+	ReturnMsg := SendMessagePrometheusAlert(buf.String(), pmsg, logsign)
+	return nil, ReturnMsg
+}
+
+func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	Title := beego.AppConfig.String("title")
-	ret := ""
+	var ReturnMsg string
 	model.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
-	switch ptype {
+	switch pmsg.Type {
 	//微信渠道
 	case "wx":
-		Wxurl := strings.Split(pwxurl, ",")
-		if prr == "true" {
-			ret += PostToWeiXin(message, DoBalance(Wxurl), patsomeone, logsign)
+		Wxurl := strings.Split(pmsg.Wxurl, ",")
+		if pmsg.RoundRobin == "true" {
+			ReturnMsg += PostToWeiXin(message, DoBalance(Wxurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Wxurl {
-				ret += PostToWeiXin(message, url, patsomeone, logsign)
+				ReturnMsg += PostToWeiXin(message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
 	//钉钉渠道
 	case "dd":
-		Ddurl := strings.Split(pddurl, ",")
-		if prr == "true" {
-			ret += PostToDingDing(Title+"告警消息", message, DoBalance(Ddurl), patsomeone, logsign)
+		Ddurl := strings.Split(pmsg.Ddurl, ",")
+		if pmsg.RoundRobin == "true" {
+			ReturnMsg += PostToDingDing(Title+"告警消息", message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Ddurl {
-				ret += PostToDingDing(Title+"告警消息", message, url, patsomeone, logsign)
+				ReturnMsg += PostToDingDing(Title+"告警消息", message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
 	//飞书渠道
 	case "fs":
-		Fsurl := strings.Split(pfsurl, ",")
-		if prr == "true" {
-			ret += PostToFS(Title+"告警消息", message, DoBalance(Fsurl), patsomeone, logsign)
+		Fsurl := strings.Split(pmsg.Fsurl, ",")
+		if pmsg.RoundRobin == "true" {
+			ReturnMsg += PostToFS(Title+"告警消息", message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Fsurl {
-				ret += PostToFS(Title+"告警消息", message, url, patsomeone, logsign)
+				ReturnMsg += PostToFS(Title+"告警消息", message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
 	//Webhook渠道
 	case "webhook":
-		Fwebhookurl := strings.Split(pwebhookurl, ",")
-		if prr == "true" {
-			ret += PostToWebhook(message, DoBalance(Fwebhookurl), logsign)
+		Fwebhookurl := strings.Split(pmsg.WebHookUrl, ",")
+		if pmsg.RoundRobin == "true" {
+			ReturnMsg += PostToWebhook(message, DoBalance(Fwebhookurl), logsign)
 		} else {
 			for _, url := range Fwebhookurl {
-				ret += PostToWebhook(message, url, logsign)
+				ReturnMsg += PostToWebhook(message, url, logsign)
 			}
 		}
 
 	//腾讯云短信
 	case "txdx":
-		ret = PostTXmessage(message, pphone, logsign)
+		ReturnMsg += PostTXmessage(message, pmsg.Phone, logsign)
 	//华为云短信
 	case "hwdx":
-		ret = ret + PostHWmessage(message, pphone, logsign)
+		ReturnMsg += PostHWmessage(message, pmsg.Phone, logsign)
 	//百度云短信
 	case "bddx":
-		ret = ret + PostBDYmessage(message, pphone, logsign)
+		ReturnMsg += PostBDYmessage(message, pmsg.Phone, logsign)
 	//阿里云短信
 	case "alydx":
-		ret = ret + PostALYmessage(message, pphone, logsign)
+		ReturnMsg += PostALYmessage(message, pmsg.Phone, logsign)
 	//腾讯云电话
 	case "txdh":
-		ret = PostTXphonecall(message, pphone, logsign)
+		ReturnMsg += PostTXphonecall(message, pmsg.Phone, logsign)
 	//阿里云电话
 	case "alydh":
-		ret = ret + PostALYphonecall(message, pphone, logsign)
+		ReturnMsg += PostALYphonecall(message, pmsg.Phone, logsign)
 	//容联云电话
 	case "rlydh":
-		ret = ret + PostRLYphonecall(message, pphone, logsign)
+		ReturnMsg += PostRLYphonecall(message, pmsg.Phone, logsign)
 	//七陌短信
 	case "7moordx":
-		ret = ret + Post7MOORmessage(message, pphone, logsign)
+		ReturnMsg += Post7MOORmessage(message, pmsg.Phone, logsign)
 	//七陌语音电话
 	case "7moordh":
-		ret = ret + Post7MOORphonecall(message, pphone, logsign)
+		ReturnMsg += Post7MOORphonecall(message, pmsg.Phone, logsign)
 	//邮件
 	case "email":
-		ret = ret + SendEmail(message, email, logsign)
+		ReturnMsg += SendEmail(message, pmsg.Email, logsign)
 	// Telegram
 	case "tg":
-		ret = ret + SendTG(message, logsign)
+		ReturnMsg += SendTG(message, logsign)
 	// Workwechat
 	case "workwechat":
-		ret = ret + SendWorkWechat(ptouser, ptoparty, ptotag, message, logsign)
+		ReturnMsg += SendWorkWechat(pmsg.ToUser, pmsg.ToParty, pmsg.ToTag, message, logsign)
 	//百度Hi(如流)
 	case "rl":
-		ret += PostToRuLiu(pgroupid, message, beego.AppConfig.String("BDRL_URL"), logsign)
+		ReturnMsg += PostToRuLiu(pmsg.GroupId, message, beego.AppConfig.String("BDRL_URL"), logsign)
 	// Bark
 	case "bark":
-		ret = ret + SendBark(message, logsign)
+		ReturnMsg += SendBark(message, logsign)
 	//异常参数
 	default:
-		ret = "参数错误"
+		ReturnMsg = "参数错误"
 	}
-	return ret
+	return ReturnMsg
 }
