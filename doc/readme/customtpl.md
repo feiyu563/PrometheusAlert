@@ -161,10 +161,10 @@ receivers:
 ![dashboard-tpl-list](../dashboard-tpl-list.png)
 
 ----------------------------------------------------------------------
-## 自定义模版函数和使用
+## 自定义模版函数和使用（兼容alertmanager模板函数`toUpper、toLower、title、join、match、safeHtml、reReplaceAll、stringSlice`）
 ----------------------------------------------------------------------
 
-### 1 `GetCSTtime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于强制将时间字段时区从UTC转换到CST（兼容alertmanager模板函数）
+### 1 `GetCSTtime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于强制将时间字段时区从UTC转换到CST
 
 目前支持两种使用方式：
 
