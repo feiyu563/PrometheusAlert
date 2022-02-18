@@ -8,6 +8,22 @@ Prometheus支持三种配置，`任选其一或者两者搭配均可`。
 通过自定义告警消息模版的方式(使用web页面上的自定义模版)
 ### 推荐此种配置方法，后续两种办法使用的都是程序内置的模版，不可改变
 
+参考alertmanager配置：
+```
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['instance']
+  group_wait: 10m
+  group_interval: 10s
+  repeat_interval: 10m
+  receiver: 'web.hook.prometheusalert'
+receivers:
+- name: 'web.hook.prometheusalert'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&split=true&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxx&at=18888888888'
+```
+
 具体参考：[推荐 任意告警源（自定义消息模版）接入配置](customtpl.md)
 
 最终告警效果:
