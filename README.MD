@@ -99,10 +99,10 @@ curl http://localhost:8080/health
 
 ```
 docker run -d \
--e PA_LOGIN_USER=prometheusalert
--e PA_LOGIN_PASSWORD=prometheusalert
--e PA_TITLE=PrometheusAlert
--e PA_OPEN_FEISHU=1
+-e PA_LOGIN_USER=prometheusalert \
+-e PA_LOGIN_PASSWORD=prometheusalert \
+-e PA_TITLE=PrometheusAlert \
+-e PA_OPEN_FEISHU=1 \
 feiyu563/prometheus-alert
 ```
 
