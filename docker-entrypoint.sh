@@ -7,7 +7,7 @@ else
 fi
 
 if env | grep -q '^PA_.\+=.\+'; then
-    for VAR_NAME in $(env | grep '^PA_.\+=.\+' | sed -r "s/^PA_([^=]*).*/\1/g"); do
+    for VAR_NAME in $(env | grep '^PA_.\+=.\+' | sed -r "s/^PA_([^=]*).*/\1/g");do
         if echo ${VAR_NAME} | grep -q '.*\-.*'; then
             echo "\"PA_${VAR_NAME}\" in Environment variable contains '-',this will be ignored."
             continue
