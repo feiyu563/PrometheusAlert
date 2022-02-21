@@ -73,23 +73,10 @@ type PrometheusAlertMsg struct {
 	Split      string
 }
 
-type AlertManagerMsg struct {
-	Receiver          string        `json:"receiver"`
-	Status            string        `json:"status"`
-	Alerts            []interface{} `json:"alerts"`
-	ExternalURL       string        `json:"externalURL"` //alertmanage 返回地址
-	GroupLabels       interface{}   `json:"groupLabels"`
-	CommonLabels      interface{}   `json:"commonLabels"`
-	CommonAnnotations interface{}   `json:"commonAnnotations"`
-	Version           string        `json:"version"`
-	GroupKey          string        `json:"groupKey"`
-	TruncatedAlerts   interface{}   `json:"truncatedAlerts"`
-}
-
 func (c *PrometheusAlertController) PrometheusAlert() {
 	logsign := "[" + LogsSign() + "]"
 	var p_json interface{}
-	p_alertmanager_json := AlertManagerMsg{}
+	p_alertmanager_json := make(map[string]interface{})
 	pMsg := PrometheusAlertMsg{}
 	logs.Debug(logsign, strings.Replace(string(c.Ctx.Input.RequestBody), "\n", "", -1))
 	//该配置仅适用于alertmanager的消息,用于判断是否需要拆分alertmanager告警消息
@@ -168,18 +155,11 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	var msg string
 	if pMsg.Tpl != "" && pMsg.Type != "" {
 		if pMsg.Split == "true" {
-			p_alertmanager_json_copy := p_alertmanager_json
-			for _, Split_alert := range p_alertmanager_json.Alerts {
-				//清空p_alertmanager_json_copy的Alerts
-				p_alertmanager_json_copy.Alerts = p_alertmanager_json_copy.Alerts[0:0]
-				//重新将拆分后的Alerts插入到p_alertmanager_json_copy
-				p_alertmanager_json_copy.Alerts = append(p_alertmanager_json_copy.Alerts, Split_alert)
-				//直接使用p_alertmanager_json_copy去匹配自定义模板会出现报错，主要是由于struct的首字母大写问题，故需要定义一个交换用的json interface，用于将p_alertmanager_json_copy转换成interface
-				var p_alertmanager_interface interface{}
-				p_a_json, _ := json.Marshal(p_alertmanager_json_copy)
-				json.Unmarshal(p_a_json, &p_alertmanager_interface)
-
-				err, msg = TransformAlertMessage(p_alertmanager_interface, &pMsg, logsign)
+			AlertsValue, _ := p_alertmanager_json["alerts"].([]interface{})
+			for _, AlertValue := range AlertsValue {
+				p_alertmanager_json["alerts"] = AlertsValue[0:0]
+				p_alertmanager_json["alerts"] = append(p_alertmanager_json["alerts"].([]interface{}), AlertValue)
+				err, msg = TransformAlertMessage(p_alertmanager_json, &pMsg, logsign)
 				if err != nil {
 					logs.Error(logsign, err.Error())
 					message = err.Error()
@@ -187,6 +167,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 					message = msg
 				}
 			}
+
 		} else {
 			err, msg = TransformAlertMessage(p_json, &pMsg, logsign)
 			if err != nil {
