@@ -3,4 +3,6 @@ PrometheusAlert
 PrometheusAlert.exe
 logo
 .idea
-logs/*.log
+logs/
+example/linux
+example/windows

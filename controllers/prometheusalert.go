@@ -76,12 +76,10 @@ type PrometheusAlertMsg struct {
 func (c *PrometheusAlertController) PrometheusAlert() {
 	logsign := "[" + LogsSign() + "]"
 	var p_json interface{}
+	//针对prometheus的消息特殊处理
 	p_alertmanager_json := make(map[string]interface{})
 	pMsg := PrometheusAlertMsg{}
 	logs.Debug(logsign, strings.Replace(string(c.Ctx.Input.RequestBody), "\n", "", -1))
-	//该配置仅适用于alertmanager的消息,用于判断是否需要拆分alertmanager告警消息
-	pMsg.Split = c.Input().Get("split")
-
 	if c.Input().Get("from") == "aliyun" {
 		//阿里云云监控告警消息处理
 		AliyunAlertJson := AliyunAlert{}
@@ -103,9 +101,8 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		p_json = AliyunAlertJson
 	} else {
 		json.Unmarshal(c.Ctx.Input.RequestBody, &p_json)
-		if pMsg.Split == "true" {
-			json.Unmarshal(c.Ctx.Input.RequestBody, &p_alertmanager_json)
-		}
+		//针对prometheus的消息特殊处理
+		json.Unmarshal(c.Ctx.Input.RequestBody, &p_alertmanager_json)
 	}
 
 	pMsg.Type = c.Input().Get("type")
@@ -149,16 +146,20 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	}
 	pMsg.AtSomeOne = c.Input().Get("at")
 	pMsg.RoundRobin = c.Input().Get("rr")
+	//该配置仅适用于alertmanager的消息,用于判断是否需要拆分alertmanager告警消息
+	pMsg.Split = c.Input().Get("split")
 
-	var message string
+	var message, msg string
 	var err error
-	var msg string
 	if pMsg.Tpl != "" && pMsg.Type != "" {
 		if pMsg.Split == "true" {
-			AlertsValue, _ := p_alertmanager_json["alerts"].([]interface{})
-			for _, AlertValue := range AlertsValue {
-				p_alertmanager_json["alerts"] = AlertsValue[0:0]
+			Alerts_Value, _ := p_alertmanager_json["alerts"].([]interface{})
+			for _, AlertValue := range Alerts_Value {
+				p_alertmanager_json["alerts"] = Alerts_Value[0:0]
 				p_alertmanager_json["alerts"] = append(p_alertmanager_json["alerts"].([]interface{}), AlertValue)
+
+				//后续计划支持prometheus rules嵌入发送目标
+
 				err, msg = TransformAlertMessage(p_alertmanager_json, &pMsg, logsign)
 				if err != nil {
 					logs.Error(logsign, err.Error())
