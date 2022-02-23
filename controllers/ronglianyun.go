@@ -53,7 +53,7 @@ func PostRLYphonecall(CallMessage, PhoneNumber, logsign string) string {
 	var (
 		body []byte
 	)
-	open := beego.AppConfig.String("RLY_DH_open-rlydh")
+	open := beego.AppConfig.String("open-rlydh")
 	accountSid := beego.AppConfig.String("RLY_ACCOUNT_SID")
 
 	if open != "1" {
