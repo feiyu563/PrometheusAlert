@@ -6,6 +6,11 @@ on:
       - 'master'
     tags:
       - '*'
+  pull_request:
+    branches:
+      - 'master'
+  release:
+    types: [published]
 
 jobs:
 
