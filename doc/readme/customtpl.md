@@ -2,33 +2,26 @@
 
 --------------------------------------
 
-自定义告警消息模版可以支持任意带有WebHook服务的系统接入到PrometheusAlert上。
+### 自定义告警消息模版可以支持任意带有WebHook服务的系统接入到PrometheusAlert上。
 
-#### 钉钉机器人、企业微信机器人均已经支持@某人的功能。使用时，需要在Url中加入`&at= 1539510xxxx`；如需添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号。
+### PrometheusAlert 原理：
 
-#### 新增功能：url参数中 `ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid `等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息。
+#### PrometheusAlert 的自定义模板接口 `/prometheusalert` 专门用来接收外部服务传入的 HTTP POST 的 JSON 数据（通常带有WebHook的软件都可以接入PrometheusAlert），`/prometheusalert` 接口在接收到JSON数据后，会根据Url中的`tpl`参数去查找对应的自定义模板，通过找到的模板去渲染JSON以便输出渲染后的文本，最后将渲染后的文本转发给指定的目标，如钉钉机器，从而实现钉钉告警。
 
-#### 新增功能：url参数中支持参数 `rr=true`， 该参数为开启随机轮询，目前仅针对ddurl，fsurl，wxurl有效，默认情况下如果上述Url配置的是多个地址，则多个地址全部发送，如开启该选项，则从多个地址中随机取一个地址发送，主要是为了避免消息发送频率过高导致触发部分机器人拦截消息。
+#### 流程参考：
 
-#### 新增功能：url参数新增 `split=true`，该参数仅针对Prometheus告警消息有效，作用是将Prometheus分组消息拆分成单条发送。默认情况下自定义模板不会对Prometheus分组的消息进行拆分，如果Prometheus一次告警附带的同分组的告警消息条数过多，可能会导致告警消息体过大。
+`XXX WebHook ---POST JSON--> /prometheusalert?type=dd&tpl=prometheus-dingding&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx ---> PrometheusAlert通过tpl模版prometheus-dingding渲染收到的JSON ---> https://oapi.dingtalk.com/robot/send?access_token=xxxx  ---> 钉钉机器人完成告警`
 
-参考配置：
-```
-- name: 'prometheusalert-all'
-  webhook_configs:
-  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&rr=true&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx'
-```
 
-#### 使用该功能需要使用者对go语言的template模版有一些初步了解，可以参考默认模版的一些语法来进行自定义。
-
-#### 模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
-
-----------------------------------------
-## 新建自定义模板
 ----------------------------------------------------------------------
-### 1.下面以添加Prometheus的自定义告警消息模版为例讲解如何添加自定义模版
 
-- 开始之前，请先临时更改你的Alertmanager的配置，将所有告警信息都转发到PrometheusAlert自定义接口,参考如下：
+### 下面以Prometheus为例演示下完整的使用自定义模板流程
+
+----------------------------------------------------------------------
+## 一、配置WebHook将消息转发给PrometheusAlert
+----------------------------------------------------------------------
+
+### 1.更改Alertmanager的配置，将所有告警信息都转发到PrometheusAlert自定义接口,参考如下：
 
   * 这么配置主要是为了方便调试和获取到Prometheus告警消息接口的JSON协议内容，其他的如grafana、graylog、sonarqube等支持WebHook的系统可以直接在控制台页面配置上`http://[YOUR-PrometheusAlert-URL]/prometheusalert`自定义消息模版的接口即可
 
@@ -44,18 +37,18 @@ route:
 receivers:
 - name: 'PrometheusAlert'
   webhook_configs:
-  - url: 'http://[YOUR-PrometheusAlert-URL]/prometheusalert?type=dd&tpl=prometheus-dingding' #这里的配置仅在测试时使用，只是为了方便查看接收到的json消息，正式使用请更改为PrometheusAlert模版页面中显示的Url
+  - url: 'http://[YOUR-PrometheusAlert-URL]/prometheusalert?type=dd&tpl=prometheus-dingding'
 ```
 
-配置完成后，重启或者reload Alertmanager，是配置生效。
+配置完成后，重启或者reload Alertmanager，使配置生效。
 
-- 可手动或等待Prometheus告警触发后，去PrometheusAlert中查看收到的日志消息。找到类似下面的内容：
+- 可手动或等待Prometheus告警触发后，去PrometheusAlert中查看收到的日志消息。找到类似下面的内容（日志文件在log目录下）,json格式的消息一般都是`{`开头：
 
 ```
 2020/05/21 10:58:17.850 [D] [value.go:460]  [1590029897850034963] {"receiver":"prometheus-alert-center","status":"firing","alerts":[{"status":"firing","labels":{"alertname":"TargetDown","index":"1","instance":"example-1","job":"example","level":"2","service":"example"},"annotations":{"description":"target was down! example dev /example-1 was down for more than 120s.","level":"2","timestamp":"2020-05-21 02:58:07.829 +0000 UTC"},"startsAt":"2020-05-21T02:58:07.830216179Z","endsAt":"0001-01-01T00:00:00Z","generatorURL":"https://prometheus-alert-center/graph?g0.expr=up%7Bjob%21%3D%22kubernetes-pods%22%2Cjob%21%3D%22kubernetes-service-endpoints%22%7D+%21%3D+1\u0026g0.tab=1","fingerprint":"e2a5025853d4da64"}],"groupLabels":{"instance":"example-1"},"commonLabels":{"alertname":"TargetDown","index":"1","instance":"example-1","job":"example","level":"2","service":"example"},"commonAnnotations":{"description":"target was down! example dev /example-1 was down for more than 120s.","level":"2","timestamp":"2020-05-21 02:58:07.829 +0000 UTC"},"externalURL":"https://prometheus-alert-center","version":"4","groupKey":"{}/{job=~\"^(?:.*)$\"}:{instance=\"example-1\"}"}
 ```
 
-- 继续截取日志中的JSON内容，通过任意[json格式化工具](https://www.bejson.com/)进行格式化如下：
+- 截取日志中的JSON内容（主要是`{.....}`这部分），通过任意[json格式化工具](https://www.bejson.com/)进行格式化如下：
 
 ```
 {
@@ -103,6 +96,10 @@ receivers:
 }
 ```
 
+----------------------------------------------------------------------
+## 二、对照JSON新建自定义模板(为方便调试，编写模版可以在web页面的MarkDownTest进行)
+----------------------------------------------------------------------
+
 * 然后对照该JSON开始编写模版,并在Dashboard上进行添加,示例模版如下：
 
 ```
@@ -118,16 +115,17 @@ receivers:
 {{ end }}
 ```
 
-* 添加到Dashboard中，并选择对应模版类型和用途等信息，注意模版名称一定不要重复,且一定要是英文字符。
+* 添加到Dashboard中，并选择对应模版类型和模版用途，注意模版名称一定不要重复,且一定要是英文字符。
 
 ![tpladd1](../tpladd1.png)
 
 
-* 添加完自定义模板后，主要一定要点击保存。
+* 添加完自定义模板后，一定要点击保存。
 
----------------------------------------------------------------------
-## 测试自定义模板
 ----------------------------------------------------------------------
+## 三、测试自定义模板
+----------------------------------------------------------------------
+
 ### 1.对新添加的模版进行测试
 
 - 打开PrometheusAlert Dashboard的模版管理页面`AlertTemplate`
@@ -141,7 +139,7 @@ receivers:
 - 继续点击模版测试按钮即可对新添加的模版进行测试，如模版没有错误，将会收到对应的钉钉消息，如无法收到钉钉消息，请检查模版是否有什么地方配置错误
 
 ----------------------------------------------------------------------
-## 使用自定义模板
+## 四、使用自定义模板
 ----------------------------------------------------------------------
 
 ### 1.自定义告警消息模版接口使用非常简单
@@ -159,6 +157,40 @@ receivers:
 ```
 
 ![dashboard-tpl-list](../dashboard-tpl-list.png)
+
+
+至此完成！其他的一些支持WebHook的系统也可以通过同样的方式和流程来添加。
+
+----------------------------------------------------------------------
+## 自定义模版的一些说明
+----------------------------------------------------------------------
+
+#### 1.钉钉机器人、企业微信机器人均已经支持@某人的功能。使用时，需要在Url中加入`&at= 1539510xxxx`；如需添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号。
+
+`示例：http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx&at= 1539510xxxx`
+
+
+#### 2.url参数中 `ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid `等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息。
+
+`示例：http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd`
+
+
+#### 3.url参数中支持参数 `rr=true`， 该参数为开启随机轮询，目前仅针对ddurl，fsurl，wxurl有效，默认情况下如果上述Url配置的是多个地址，则多个地址全部发送，如开启该选项，则从多个地址中随机取一个地址发送，主要是为了避免消息发送频率过高导致触发部分机器人拦截消息。
+
+`示例：http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx&rr=true`
+
+
+#### 4.url参数新增 `split=true`，该参数仅针对Prometheus告警消息有效，作用是将Prometheus分组消息拆分成单条发送。默认情况下自定义模板不会对Prometheus分组的消息进行拆分，如果Prometheus一次告警附带的同分组的告警消息条数过多，可能会导致告警消息体过大。
+
+`示例：http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx&rr=true&split=true`
+
+
+#### 5.自定义模板使用的是go语言的template模版，可以参考默认模版的一些语法来进行自定义。
+
+#### 6.模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
+
+#### 7.关于优先级问题：URL参数 > app.conf
+
 
 ----------------------------------------------------------------------
 ## 自定义模版函数和使用（兼容alertmanager模板函数`toUpper、toLower、title、join、match、safeHtml、reReplaceAll、stringSlice`）
@@ -220,6 +252,8 @@ receivers:
 {{ end }}
 ```
 
+
+
 ### 2 `TimeFormat` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于格式化时间显示
 
 如下示例将prmetheus的告警时间格式改为：2006-01-02T15:04:05
@@ -247,6 +281,8 @@ receivers:
 {{end}}
 {{ end }}
 ```
+
+
 
 ### 3 `GetTime` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于将`毫秒或秒`级时间戳转换为时间字符
 
