@@ -10,20 +10,13 @@
 
 #### 流程参考：
 
-A:XXX WebHook
-B:POST JSON
-C:/prometheusalert?type=dd&tpl=prometheus-dingding&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx
-D:PrometheusAlert通过tpl模版prometheus-dingding渲染收到的JSON
-E:https://oapi.dingtalk.com/robot/send?access_token=xxxx
-F:钉钉机器人完成告警
-
 ```mermaid
 graph TD;
-    A-->B;
-    B-->C;
-    C-->D;
-    D-->E;
-    E-->F;
+    XXX WebHook-->POST JSON;
+    POST JSON-->/prometheusalert?type=dd&tpl=prometheus-dingding&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx;
+    /prometheusalert?type=dd&tpl=prometheus-dingding&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx-->PrometheusAlert通过tpl模版prometheus-dingding渲染收到的JSON;
+    PrometheusAlert通过tpl模版prometheus-dingding渲染收到的JSON-->https://oapi.dingtalk.com/robot/send?access_token=xxxx;
+    https://oapi.dingtalk.com/robot/send?access_token=xxxx-->钉钉机器人完成告警;
 ```
 
 ----------------------------------------------------------------------
