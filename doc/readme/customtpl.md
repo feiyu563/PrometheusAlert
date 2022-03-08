@@ -13,8 +13,8 @@
 ```mermaid
 graph TD;
     XXX WebHook-->POST JSON;
-    POST JSON-->/prometheusalert?type=dd&tpl=prometheus-dingding&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx;
-    /prometheusalert?type=dd&tpl=prometheus-dingding&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx-->PrometheusAlert通过tpl模版prometheus-dingding渲染收到的JSON;
+    POST JSON-->接口/prometheusalert?type=dd&tpl=prometheus-dingding&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx;
+    接口/prometheusalert?type=dd&tpl=prometheus-dingding&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx-->PrometheusAlert通过tpl模版prometheus-dingding渲染收到的JSON;
     PrometheusAlert通过tpl模版prometheus-dingding渲染收到的JSON-->https://oapi.dingtalk.com/robot/send?access_token=xxxx;
     https://oapi.dingtalk.com/robot/send?access_token=xxxx-->钉钉机器人完成告警;
 ```
