@@ -6,7 +6,7 @@
 
 ### PrometheusAlert 原理：
 
-#### PrometheusAlert 的自定义模板接口 `/prometheusalert` 专门用来接收外部服务传入的 HTTP POST 的 JSON 数据（通常带有WebHook的软件都可以接入PrometheusAlert），`/prometheusalert` 接口在接收到JSON数据后，会根据Url中的`tpl`参数去查找对应的自定义模板，通过找到的模板去渲染JSON以便输出渲染后的文本，最后将渲染后的文本转发给指定的目标，如钉钉机器，从而实现钉钉告警。
+#### PrometheusAlert 的自定义模板接口 `/prometheusalert` 专门用来接收外部服务传入的 HTTP POST 的 JSON 数据（通常带有WebHook的软件都可以接入PrometheusAlert），`/prometheusalert` 接口在接收到JSON数据后，会根据Url中的`tpl`参数去查找对应的自定义模板，通过找到的模板去渲染JSON以便输出渲染后的文本，最后将渲染后的文本转发给指定的目标，如钉钉机器人，从而实现钉钉告警。
 
 #### 流程参考：
 
