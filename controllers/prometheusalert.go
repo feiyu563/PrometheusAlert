@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
 	"PrometheusAlert/models"
 	"bytes"
 	"encoding/json"
@@ -237,7 +236,7 @@ func TransformAlertMessage(p_json interface{}, pmsg *PrometheusAlertMsg, logsign
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	var ReturnMsg string
-	model.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
+	models.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
 	switch pmsg.Type {
 	//微信渠道
 	case "wx":

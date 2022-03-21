@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
@@ -68,7 +68,7 @@ func PostToWeiXin(text, WXurl, atuserid, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[weixin]", err.Error())
 	}
-	model.AlertToCounter.WithLabelValues("weixin", text, "").Add(1)
+	models.AlertToCounter.WithLabelValues("weixin", text, "").Add(1)
 	logs.Info(logsign, "[weixin]", string(result))
 	return string(result)
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"PrometheusAlert/model"
 	"PrometheusAlert/models"
 	_ "PrometheusAlert/routers"
 	"os"
@@ -84,7 +83,7 @@ func main() {
 	logs.Info("[main] 应用构建时间: %s", BuildDate)
 	logs.Info("[main] 应用构建用户: %s", BuildUser)
 
-	model.MetricsInit()
+	models.MetricsInit()
 	beego.Handler("/metrics", promhttp.Handler())
 	beego.Run()
 }

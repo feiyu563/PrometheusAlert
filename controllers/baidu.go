@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -42,6 +42,6 @@ func PostBDYmessage(Messages, PhoneNumbers, logsign string) string {
 		}
 		logs.Info(logsign, "[bdymessage]", "send sms success to %s . %s", m, result)
 	}
-	model.AlertToCounter.WithLabelValues("bdydx", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("bdydx", Messages, PhoneNumbers).Add(1)
 	return PhoneNumbers + " SendMessages Over."
 }

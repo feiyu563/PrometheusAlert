@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -44,7 +44,7 @@ func SendBark(msg, logsign string) string {
 			logs.Error(logsign, "[bark]", fmt.Errorf("send to %s, get code: %d", u, get.Code))
 		}
 	}
-	model.AlertToCounter.WithLabelValues("bark", "", "").Add(1)
+	models.AlertToCounter.WithLabelValues("bark", "", "").Add(1)
 	logs.Info(logsign, "[bark]", "bark send ok.")
 	return "bark send ok"
 }

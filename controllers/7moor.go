@@ -2,7 +2,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"bytes"
 	"crypto/md5"
 	"crypto/tls"
@@ -110,7 +110,7 @@ func Post7MOORmessage(Messages string, PhoneNumbers, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[7moordx]", err.Error())
 	}
-	model.AlertToCounter.WithLabelValues("7moordx", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("7moordx", Messages, PhoneNumbers).Add(1)
 	logs.Info(logsign, "[7moordx]", string(result))
 
 	return string(result)
@@ -122,7 +122,7 @@ func Post7MOORphonecall(Messages string, PhoneNumbers, logsign string) string {
 	for _, mobile := range mobiles {
 		go webcallPost(Messages, mobile, logsign)
 	}
-	model.AlertToCounter.WithLabelValues("7moordh", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("7moordh", Messages, PhoneNumbers).Add(1)
 
 	return PhoneNumbers + " called over."
 }

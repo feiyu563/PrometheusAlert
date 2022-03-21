@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"encoding/json"
 
 	"github.com/astaxie/beego"
@@ -31,7 +31,7 @@ func (c *ZabbixController) ZabbixAlert() {
 
 func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 	ret := ""
-	model.AlertsFromCounter.WithLabelValues("zabbix", message.ZabbixMessage, "", "", "").Add(1)
+	models.AlertsFromCounter.WithLabelValues("zabbix", message.ZabbixMessage, "", "", "").Add(1)
 	switch message.ZabbixType {
 	//微信渠道
 	case "wx":

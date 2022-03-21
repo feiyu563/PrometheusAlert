@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
 	"PrometheusAlert/models"
 	"PrometheusAlert/models/elastic"
 	"encoding/json"
@@ -137,7 +136,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		}
 		if RMessage.Status == "resolved" {
 			titleend = "故障恢复信息"
-			model.AlertsFromCounter.WithLabelValues("prometheus", RMessage.Annotations.Description, RMessage.Labels.Level, RMessage.Labels.Instance, "resolved").Add(1)
+			models.AlertsFromCounter.WithLabelValues("prometheus", RMessage.Annotations.Description, RMessage.Labels.Level, RMessage.Labels.Instance, "resolved").Add(1)
 			ddtext = "## [" + Title + titleend + "](" + RMessage.GeneratorUrl + ")\n\n" + "#### [" + RMessage.Labels.Alertname + "](" + message.Externalurl + ")\n\n" + "###### 告警级别：" + AlertLevel[nLevel] + "\n\n" + "###### 开始时间：" + At + "\n\n" + "###### 结束时间：" + Et + "\n\n" + "###### 故障主机IP：" + RMessage.Labels.Instance + "\n\n" + "##### " + RMessage.Annotations.Description + "\n\n" + "![" + Title + "](" + Rlogourl + ")"
 			rltext = "## [" + Title + titleend + "](" + RMessage.GeneratorUrl + ")\n\n" + "#### [" + RMessage.Labels.Alertname + "](" + message.Externalurl + ")\n\n" + "###### 告警级别：" + AlertLevel[nLevel] + "\n\n" + "###### 开始时间：" + At + "\n\n" + "###### 结束时间：" + Et + "\n\n" + "###### 故障主机IP：" + RMessage.Labels.Instance + "\n\n" + "##### " + RMessage.Annotations.Description + "\n\n" + "![" + Title + "](" + Rlogourl + ")"
 			fstext = "## [" + Title + titleend + "](" + RMessage.GeneratorUrl + ")\n\n" + "#### [" + RMessage.Labels.Alertname + "](" + message.Externalurl + ")\n\n" + "###### 告警级别：" + AlertLevel[nLevel] + "\n\n" + "###### 开始时间：" + At + "\n\n" + "###### 结束时间：" + Et + "\n\n" + "###### 故障主机IP：" + RMessage.Labels.Instance + "\n\n" + "##### " + RMessage.Annotations.Description + "\n\n" + "![" + Title + "](" + Rlogourl + ")"
@@ -154,7 +153,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 				<img src=` + Rlogourl + ` />`
 		} else {
 			titleend = "故障告警信息"
-			model.AlertsFromCounter.WithLabelValues("prometheus", RMessage.Annotations.Description, RMessage.Labels.Level, RMessage.Labels.Instance, "firing").Add(1)
+			models.AlertsFromCounter.WithLabelValues("prometheus", RMessage.Annotations.Description, RMessage.Labels.Level, RMessage.Labels.Instance, "firing").Add(1)
 			ddtext = "## [" + Title + titleend + "](" + RMessage.GeneratorUrl + ")\n\n" + "#### [" + RMessage.Labels.Alertname + "](" + message.Externalurl + ")\n\n" + "###### 告警级别：" + AlertLevel[nLevel] + "\n\n" + "###### 开始时间：" + At + "\n\n" + "###### 结束时间：" + Et + "\n\n" + "###### 故障主机IP：" + RMessage.Labels.Instance + "\n\n" + "##### " + RMessage.Annotations.Description + "\n\n" + "![" + Title + "](" + Logourl + ")"
 			rltext = "## [" + Title + titleend + "](" + RMessage.GeneratorUrl + ")\n\n" + "#### [" + RMessage.Labels.Alertname + "](" + message.Externalurl + ")\n\n" + "###### 告警级别：" + AlertLevel[nLevel] + "\n\n" + "###### 开始时间：" + At + "\n\n" + "###### 结束时间：" + Et + "\n\n" + "###### 故障主机IP：" + RMessage.Labels.Instance + "\n\n" + "##### " + RMessage.Annotations.Description + "\n\n" + "![" + Title + "](" + Logourl + ")"
 			fstext = "## [" + Title + titleend + "](" + RMessage.GeneratorUrl + ")\n\n" + "#### [" + RMessage.Labels.Alertname + "](" + message.Externalurl + ")\n\n" + "###### 告警级别：" + AlertLevel[nLevel] + "\n\n" + "###### 开始时间：" + At + "\n\n" + "###### 结束时间：" + Et + "\n\n" + "###### 故障主机IP：" + RMessage.Labels.Instance + "\n\n" + "##### " + RMessage.Annotations.Description + "\n\n" + "![" + Title + "](" + Logourl + ")"

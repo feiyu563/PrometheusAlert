@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"bytes"
 	"crypto/sha256"
 	"crypto/tls"
@@ -111,7 +111,7 @@ func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 		logs.Error(logsign, "[txmessage]", err.Error())
 	}
 
-	model.AlertToCounter.WithLabelValues("txdx", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("txdx", Messages, PhoneNumbers).Add(1)
 	logs.Info(logsign, "[txmessage]", string(result))
 	return string(result)
 }
@@ -160,7 +160,7 @@ func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 		res := PhoneCallPost(TXurl, u, logsign)
 		logs.Info(logsign, "[txphonecall]", res)
 	}
-	model.AlertToCounter.WithLabelValues("txdh", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("txdh", Messages, PhoneNumbers).Add(1)
 	return PhoneNumbers + " Called Over."
 }
 

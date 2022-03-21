@@ -4,7 +4,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/ysicing/workwxbot"
@@ -40,7 +40,7 @@ func SendWorkWechat(touser, toparty, totag, msg, logsign string) string {
 	if err := workwxapi.Send(workwxmsg); err != nil {
 		logs.Error(logsign, "[workwechat]", err.Error())
 	}
-	model.AlertToCounter.WithLabelValues("workwechat", "", "").Add(1)
+	models.AlertToCounter.WithLabelValues("workwechat", "", "").Add(1)
 	logs.Info(logsign, "[workwechat]", "workwechat send ok.")
 	return "workwechat send ok"
 }

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"bytes"
 	"crypto/md5"
 	"encoding/base64"
@@ -102,6 +102,6 @@ func PostRLYphonecall(CallMessage, PhoneNumber, logsign string) string {
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {
 		logs.Error(logsign, "[rlyphonecall]", err)
 	}
-	model.AlertToCounter.WithLabelValues("rlydx", CallMessage, PhoneNumber).Add(1)
+	models.AlertToCounter.WithLabelValues("rlydx", CallMessage, PhoneNumber).Add(1)
 	return string(body)
 }

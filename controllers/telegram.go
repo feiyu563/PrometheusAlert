@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -36,7 +36,7 @@ func SendTG(msg, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[tg]", err.Error())
 	}
-	model.AlertToCounter.WithLabelValues("telegram", "", "").Add(1)
+	models.AlertToCounter.WithLabelValues("telegram", "", "").Add(1)
 	logs.Info(logsign, "[tg]", "tg send ok.")
 	return "tg send ok"
 }

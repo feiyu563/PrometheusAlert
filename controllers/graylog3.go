@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"encoding/json"
 	"strconv"
 
@@ -192,7 +192,7 @@ func SendMessageG3(message Graylog3, typeid int, logsign, ddurl, wxurl, fsurl, t
 	Logourl := beego.AppConfig.String("logourl")
 	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
 	if len(message.Backlogs) == 0 {
-		model.AlertsFromCounter.WithLabelValues("graylog3", message.Description, "3", "", "").Add(1)
+		models.AlertsFromCounter.WithLabelValues("graylog3", message.Description, "3", "", "").Add(1)
 		if ddurl == "" {
 			ddurl = beego.AppConfig.String("ddurl")
 		}
@@ -220,7 +220,7 @@ func SendMessageG3(message Graylog3, typeid int, logsign, ddurl, wxurl, fsurl, t
 		if PCstTime == 1 {
 			GraylogTime = GetCSTtime(m.Timestamp)
 		}
-		model.AlertsFromCounter.WithLabelValues("graylog3", m.Message, "4", m.Fields.Gl2RemoteIp, m.Index).Add(1)
+		models.AlertsFromCounter.WithLabelValues("graylog3", m.Message, "4", m.Fields.Gl2RemoteIp, m.Index).Add(1)
 		DDtext := "## [" + Title + "Graylog3告警信息](" + message.Event.Source + ")\n\n" + "#### " + message.Description + "\n\n" + "###### 告警索引：" + m.Index + "\n\n" + "###### 开始时间：" + GraylogTime + " \n\n" + "###### 告警主机：" + m.Fields.Gl2RemoteIp + ":" + strconv.Itoa(m.Fields.Gl2RemotePort) + "\n\n" + "##### " + m.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"
 		RLtext := "## [" + Title + "Graylog3告警信息](" + message.Event.Source + ")\n\n" + "#### " + message.Description + "\n\n" + "###### 告警索引：" + m.Index + "\n\n" + "###### 开始时间：" + GraylogTime + " \n\n" + "###### 告警主机：" + m.Fields.Gl2RemoteIp + ":" + strconv.Itoa(m.Fields.Gl2RemotePort) + "\n\n" + "##### " + m.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"
 		FStext := "[" + Title + "Graylog3告警信息](" + message.Event.Source + ")\n\n" + "" + message.Description + "\n\n" + "告警索引：" + m.Index + "\n\n" + "开始时间：" + GraylogTime + " \n\n" + "告警主机：" + m.Fields.Gl2RemoteIp + ":" + strconv.Itoa(m.Fields.Gl2RemotePort) + "\n\n" + "" + m.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"PrometheusAlert/model"
+	"PrometheusAlert/models"
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
@@ -95,7 +95,7 @@ func PostToRuLiu(ids, text, RLurl, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[ruliu]", err.Error())
 	}
-	model.AlertToCounter.WithLabelValues("ruliu", text, "").Add(1)
+	models.AlertToCounter.WithLabelValues("ruliu", text, "").Add(1)
 	logs.Info(logsign, "[ruliu]", string(result))
 	return string(result)
 }
