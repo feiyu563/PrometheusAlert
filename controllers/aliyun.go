@@ -34,7 +34,8 @@ func PostALYmessage(Messages, PhoneNumbers, logsign string) string {
 		logs.Error(logsign, "[alymessage]", err.Error())
 	}
 	logs.Info(logsign, "[alymessage]", response)
-	models.AlertToCounter.WithLabelValues("alydx", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("alydx").Add(1)
+	ChartsJson.Alydx += 1
 	return response.Message
 }
 func PostALYphonecall(Messages string, PhoneNumbers, logsign string) string {
@@ -65,6 +66,7 @@ func PostALYphonecall(Messages string, PhoneNumbers, logsign string) string {
 		}
 		logs.Info(logsign, "[alyphonecall]", response)
 	}
-	models.AlertToCounter.WithLabelValues("alydh", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("alydh").Add(1)
+	ChartsJson.Alydh += 1
 	return PhoneNumbers + "Called Over."
 }

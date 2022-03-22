@@ -191,7 +191,8 @@ func SendMessageG(message Graylog2, typeid int, logsign, ddurl, wxurl, fsurl, tx
 	Logourl := beego.AppConfig.String("logourl")
 	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
 	if len(message.Check_result.MatchingMessages) == 0 {
-		models.AlertsFromCounter.WithLabelValues("graylog2", message.Check_result.Result_description, "4", "", "").Add(1)
+		models.AlertsFromCounter.WithLabelValues("graylog").Add(1)
+		ChartsJson.Graylog += 1
 		if ddurl == "" {
 			ddurl = beego.AppConfig.String("ddurl")
 		}
@@ -218,7 +219,8 @@ func SendMessageG(message Graylog2, typeid int, logsign, ddurl, wxurl, fsurl, tx
 		if PCstTime == 1 {
 			GraylogTime = GetCSTtime(m.Timestamp)
 		}
-		models.AlertsFromCounter.WithLabelValues("graylog2", message.Check_result.Result_description, "4", m.Fields.Gl2RemoteIp, "firing").Add(1)
+		models.AlertsFromCounter.WithLabelValues("graylog").Add(1)
+		ChartsJson.Graylog += 1
 		DDtext := "## [" + Title + "Graylog2告警信息](" + Alerturl + ")\n\n" + "#### " + message.Check_result.Result_description + "\n\n" + "###### 告警索引：" + m.Index + "\n\n" + "###### 开始时间：" + GraylogTime + " \n\n" + "###### 告警主机：" + m.Fields.Gl2RemoteIp + ":" + strconv.Itoa(m.Fields.Gl2RemotePort) + "\n\n" + "##### " + m.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"
 		RLtext := "## [" + Title + "Graylog2告警信息](" + Alerturl + ")\n\n" + "#### " + message.Check_result.Result_description + "\n\n" + "###### 告警索引：" + m.Index + "\n\n" + "###### 开始时间：" + GraylogTime + " \n\n" + "###### 告警主机：" + m.Fields.Gl2RemoteIp + ":" + strconv.Itoa(m.Fields.Gl2RemotePort) + "\n\n" + "##### " + m.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"
 		FStext := "[" + Title + "Graylog2告警信息](" + Alerturl + ")\n\n" + "" + message.Check_result.Result_description + "\n\n" + "告警索引：" + m.Index + "\n\n" + "开始时间：" + GraylogTime + " \n\n" + "告警主机：" + m.Fields.Gl2RemoteIp + ":" + strconv.Itoa(m.Fields.Gl2RemotePort) + "\n\n" + "" + m.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"

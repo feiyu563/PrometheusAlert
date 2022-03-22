@@ -95,7 +95,8 @@ func PostToRuLiu(ids, text, RLurl, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[ruliu]", err.Error())
 	}
-	models.AlertToCounter.WithLabelValues("ruliu", text, "").Add(1)
+	models.AlertToCounter.WithLabelValues("ruliu").Add(1)
+	ChartsJson.Ruliu += 1
 	logs.Info(logsign, "[ruliu]", string(result))
 	return string(result)
 }

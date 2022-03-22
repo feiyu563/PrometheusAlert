@@ -86,7 +86,8 @@ func PostToDingDing(title, text, Ddurl, AtSomeOne, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[dingding]", err.Error())
 	}
-	models.AlertToCounter.WithLabelValues("dingding", text, "").Add(1)
+	models.AlertToCounter.WithLabelValues("dingding").Add(1)
+	ChartsJson.Dingding += 1
 	logs.Info(logsign, "[dingding]", string(result))
 	return string(result)
 }

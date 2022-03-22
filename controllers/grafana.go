@@ -197,7 +197,8 @@ func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsur
 	AlertLevel := []string{"信息", "警告", "一般严重", "严重", "灾难"}
 	if message.State == "ok" {
 		titleend = "故障恢复信息"
-		models.AlertsFromCounter.WithLabelValues("grafana", message.Message, "4", "", "resolved").Add(1)
+		models.AlertsFromCounter.WithLabelValues("grafana").Add(1)
+		ChartsJson.Grafana += 1
 		DDtext = "## [" + Title + "Grafana" + titleend + "](" + message.RuleUrl + ")\n\n#### " + message.RuleName + "\n\n###### 告警级别：" + AlertLevel[4] + "\n\n###### 开始时间：" + time.Now().Format("2006-01-02 15:04:05") + "\n\n##### " + message.Message + " 已经恢复正常\n\n" + "![" + Title + "](" + Rlogourl + ")"
 		FStext = "[" + Title + "Grafana" + titleend + "](" + message.RuleUrl + ")\n\n" + message.RuleName + "\n\n告警级别：" + AlertLevel[4] + "\n\n开始时间：" + time.Now().Format("2006-01-02 15:04:05") + "\n\n" + message.Message + " 已经恢复正常\n\n" + "![" + Title + "](" + Rlogourl + ")"
 		WXtext = "[" + Title + "Grafana" + titleend + "](" + message.RuleUrl + ")\n>**" + message.RuleName + "**\n>`告警级别:`" + AlertLevel[4] + "\n`开始时间:`" + time.Now().Format("2006-01-02 15:04:05") + "\n" + message.Message + " 已经恢复正常\n"
@@ -210,7 +211,8 @@ func SendMessageGrafana(message Grafana, typeid int, logsign, ddurl, wxurl, fsur
 				<img src=` + Rlogourl + ` />`
 	} else {
 		titleend = "故障告警信息"
-		models.AlertsFromCounter.WithLabelValues("grafana", message.Message, "4", "", "firing").Add(1)
+		models.AlertsFromCounter.WithLabelValues("grafana").Add(1)
+		ChartsJson.Grafana += 1
 		DDtext = "## [" + Title + "Grafana" + titleend + "](" + message.RuleUrl + ")\n\n" + "#### " + message.RuleName + "\n\n" + "###### 告警级别：" + AlertLevel[4] + "\n\n" + "###### 开始时间：" + time.Now().Format("2006-01-02 15:04:05") + "\n\n" + "##### " + message.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"
 		RLtext = "## [" + Title + "Grafana" + titleend + "](" + message.RuleUrl + ")\n\n" + "#### " + message.RuleName + "\n\n" + "###### 告警级别：" + AlertLevel[4] + "\n\n" + "###### 开始时间：" + time.Now().Format("2006-01-02 15:04:05") + "\n\n" + "##### " + message.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"
 		FStext = "[" + Title + "Grafana" + titleend + "](" + message.RuleUrl + ")\n\n" + "" + message.RuleName + "\n\n" + "告警级别：" + AlertLevel[4] + "\n\n" + "开始时间：" + time.Now().Format("2006-01-02 15:04:05") + "\n\n" + "" + message.Message + "\n\n" + "![" + Title + "](" + Logourl + ")"

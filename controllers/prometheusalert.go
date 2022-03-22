@@ -72,6 +72,8 @@ type PrometheusAlertMsg struct {
 	Split      string
 }
 
+//var Xlabels = make(map[string][]string)
+
 func (c *PrometheusAlertController) PrometheusAlert() {
 	logsign := "[" + LogsSign() + "]"
 	var p_json interface{}
@@ -158,7 +160,14 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				p_alertmanager_json["alerts"] = append(p_alertmanager_json["alerts"].([]interface{}), AlertValue)
 
 				//后续计划支持prometheus rules嵌入发送目标
+				//提取 AlertValue 中的 label
+				xalert := AlertValue.(map[string]interface{})
+				for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
+					logs.Info(label_key, "=", label_value.(string))
+					//SetXlabels(label_key, label_value.(string))
+				}
 
+				//发送消息
 				err, msg = TransformAlertMessage(p_alertmanager_json, &pMsg, logsign)
 				if err != nil {
 					logs.Error(logsign, err.Error())
@@ -185,6 +194,38 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.Data["json"] = message
 	c.ServeJSON()
 }
+
+//func SetXlabels(keys, values string) {
+//	if len(Xlabels["labels"]) > 0 {
+//		y := 0
+//		for _, x := range Xlabels["labels"] {
+//			if x == keys {
+//				y = 1
+//				break
+//			}
+//		}
+//		if y == 0 {
+//			Xlabels["labels"] = append(Xlabels["labels"], keys)
+//		}
+//	} else {
+//		Xlabels["labels"] = append(Xlabels["labels"], keys)
+//	}
+//
+//	if len(Xlabels["values"]) > 0 {
+//		y := 0
+//		for _, x := range Xlabels["values"] {
+//			if x == values {
+//				y = 1
+//				break
+//			}
+//		}
+//		if y == 0 {
+//			Xlabels["values"] = append(Xlabels["values"], values)
+//		}
+//	} else {
+//		Xlabels["values"] = append(Xlabels["values"], values)
+//	}
+//}
 
 //消息模版化并发送告警
 func TransformAlertMessage(p_json interface{}, pmsg *PrometheusAlertMsg, logsign string) (error error, msg string) {
@@ -236,7 +277,8 @@ func TransformAlertMessage(p_json interface{}, pmsg *PrometheusAlertMsg, logsign
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	var ReturnMsg string
-	models.AlertsFromCounter.WithLabelValues("PrometheusAlert", message, "", "", "").Add(1)
+	models.AlertsFromCounter.WithLabelValues("/prometheusalert").Add(1)
+	ChartsJson.Prometheusalert += 1
 	switch pmsg.Type {
 	//微信渠道
 	case "wx":

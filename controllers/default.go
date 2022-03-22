@@ -12,6 +12,34 @@ import (
 	"github.com/astaxie/beego/logs"
 )
 
+type DashboardJson struct {
+	Telegram        int `json:"telegram"`
+	Smoordx         int `json:"smoordx"`
+	Smoordh         int `json:"smoordh"`
+	Alydx           int `json:"alydx"`
+	Alydh           int `json:"alydh"`
+	Bdydx           int `json:"bdydx"`
+	Bark            int `json:"bark"`
+	Dingding        int `json:"dingding"`
+	Email           int `json:"email"`
+	Feishu          int `json:"feishu"`
+	Hwdx            int `json:"hwdx"`
+	Rlydx           int `json:"rlydx"`
+	Ruliu           int `json:"ruliu"`
+	Txdx            int `json:"txdx"`
+	Txdh            int `json:"txdh"`
+	Webhook         int `json:"webhook"`
+	Weixin          int `json:"weixin"`
+	Workwechat      int `json:"workwechat"`
+	Zabbix          int `json:"zabbix"`
+	Grafana         int `json:"grafana"`
+	Graylog         int `json:"graylog"`
+	Prometheus      int `json:"prometheus"`
+	Prometheusalert int `json:"prometheusalert"`
+}
+
+var ChartsJson DashboardJson
+
 //取到tpl路径
 //fmt.Println(filepath.Join(beego.AppPath,"tpl"))
 
@@ -19,10 +47,20 @@ type MainController struct {
 	beego.Controller
 }
 
+//func (c *MainController) GetLabels() {
+//	c.Data["json"] = Xlabels
+//	c.ServeJSON()
+//}
+
 //main page
 func (c *MainController) Get() {
+	if !CheckAccount(c.Ctx) {
+		c.Redirect("/login", 302)
+		return
+	}
 	c.Data["IsIndex"] = true
 	c.TplName = "index.html"
+	c.Data["ChartsJson"] = ChartsJson
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 

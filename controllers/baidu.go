@@ -42,6 +42,7 @@ func PostBDYmessage(Messages, PhoneNumbers, logsign string) string {
 		}
 		logs.Info(logsign, "[bdymessage]", "send sms success to %s . %s", m, result)
 	}
-	models.AlertToCounter.WithLabelValues("bdydx", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("bdydx").Add(1)
+	ChartsJson.Bdydx += 1
 	return PhoneNumbers + " SendMessages Over."
 }

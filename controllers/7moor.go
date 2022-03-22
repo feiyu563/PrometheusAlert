@@ -110,7 +110,8 @@ func Post7MOORmessage(Messages string, PhoneNumbers, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[7moordx]", err.Error())
 	}
-	models.AlertToCounter.WithLabelValues("7moordx", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("7moordx").Add(1)
+	ChartsJson.Smoordx += 1
 	logs.Info(logsign, "[7moordx]", string(result))
 
 	return string(result)
@@ -122,7 +123,8 @@ func Post7MOORphonecall(Messages string, PhoneNumbers, logsign string) string {
 	for _, mobile := range mobiles {
 		go webcallPost(Messages, mobile, logsign)
 	}
-	models.AlertToCounter.WithLabelValues("7moordh", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("7moordh").Add(1)
+	ChartsJson.Smoordh += 1
 
 	return PhoneNumbers + " called over."
 }

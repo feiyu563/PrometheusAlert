@@ -102,6 +102,7 @@ func PostRLYphonecall(CallMessage, PhoneNumber, logsign string) string {
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {
 		logs.Error(logsign, "[rlyphonecall]", err)
 	}
-	models.AlertToCounter.WithLabelValues("rlydx", CallMessage, PhoneNumber).Add(1)
+	models.AlertToCounter.WithLabelValues("rlydx").Add(1)
+	ChartsJson.Rlydx += 1
 	return string(body)
 }

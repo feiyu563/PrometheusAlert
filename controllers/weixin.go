@@ -68,7 +68,8 @@ func PostToWeiXin(text, WXurl, atuserid, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[weixin]", err.Error())
 	}
-	models.AlertToCounter.WithLabelValues("weixin", text, "").Add(1)
+	models.AlertToCounter.WithLabelValues("weixin").Add(1)
+	ChartsJson.Weixin += 1
 	logs.Info(logsign, "[weixin]", string(result))
 	return string(result)
 }

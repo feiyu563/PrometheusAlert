@@ -29,39 +29,168 @@
 
     <!-- Main content -->
     <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
 
-      <!-- Default box -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">PrometheusAlert全家桶</h3>
+            <!-- DONUT CHART -->
+            <div class="card card-danger">
+              <div class="card-header">
+                <h3 class="card-title">接收告警</h3>
 
-          <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-              <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-              <i class="fas fa-times"></i>
-            </button>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
           </div>
-        </div>
-        <div class="card-body">
-         PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3和数据可视化系统Grafana、阿里云-云监控发出的预警消息，支持将收到的这些消息发送到钉钉，微信，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，容联云电话等。
-          <br>
-          PrometheusAlert的成长离不开所有爱好运维和开发的朋友们的支持！如果您也对这个项目感兴趣，请点击一下 Star 以示鼓励，谢谢
-        </div>
-        <!-- /.card-body -->
-        <div class="card-footer">
-          如果这个项目能为您带来帮助，我将感到非常荣幸！
-        </div>
-        <!-- /.card-footer-->
-      </div>
-      <!-- /.card -->
+          <!-- /.col (LEFT) -->
+          <div class="col-md-6">
 
+            <!-- BAR CHART -->
+            <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">发送告警</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart">
+                  <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+          <!-- /.col (RIGHT) -->
+        </div>
+		
+        <!-- /.row -->
+		
+        <!--<div class="row">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>名称</th>
+						<th>模版类型</th>
+						<th>模版用途</th>
+						<th>路径</th>
+					</tr>
+				</thead>
+				<tbody id="tpllist" >
+					<tr>
+						<th>1</th>
+						<th>2</th>
+                        <th>3</th>
+						<th>4</th>
+					</tr>
+				</tbody>
+			</table>
+        </div>-->
+		
+		
+      </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
 {{template "endhtml"}}
 <script>
+  $(function () {
+    /* ChartJS
+     * -------
+     * Here we will create a few charts using ChartJS
+     */
+
+    var areaChartData = {
+      labels  : ['Telegram', '七陌短信', '七陌语音电话', '阿里云短信', '阿里云语音电话', '	百度云短信', 'Bark(iPhone推送)', '钉钉', 'Email', '飞书', '华为云短信', '容联云语音电话', '	百度Hi(如流)', '腾讯云短信', '腾讯云语音电话', 'Webhook', '企业微信', '	企业微信应用'],
+      datasets: [
+        {
+          label               : 'Send Alerts to',
+          backgroundColor     : 'rgba(60,141,188,0.9)',
+          borderColor         : 'rgba(60,141,188,0.8)',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : [{{.ChartsJson.Telegram}}, {{.ChartsJson.Smoordx}}, {{.ChartsJson.Smoordh}}, {{.ChartsJson.Alydx}}, {{.ChartsJson.Alydh}}, {{.ChartsJson.Bdydx}}, {{.ChartsJson.Bark}}, {{.ChartsJson.Dingding}}, {{.ChartsJson.Email}}, {{.ChartsJson.Feishu}}, {{.ChartsJson.Hwdx}}, {{.ChartsJson.Rlydx}}, {{.ChartsJson.Ruliu}}, {{.ChartsJson.Txdx}}, {{.ChartsJson.Txdh}}, {{.ChartsJson.Webhook}}, {{.ChartsJson.Weixin}}, {{.ChartsJson.Workwechat}}]
+        },
+      ]
+    }
+
+
+    //-------------
+    //- DONUT CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+    var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+    var donutData        = {
+      labels: [
+          'zabbix',
+          'grafana',
+          'graylog',
+          'prometheus',
+          'prometheusalert',
+      ],
+      datasets: [
+        {
+          data: [{{.ChartsJson.Zabbix}},{{.ChartsJson.Grafana}},{{.ChartsJson.Graylog}},{{.ChartsJson.Prometheus}},{{.ChartsJson.Prometheusalert}}],
+          backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc'],
+        }
+      ]
+    }
+    var donutOptions     = {
+      maintainAspectRatio : false,
+      responsive : true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(donutChartCanvas, {
+      type: 'doughnut',
+      data: donutData,
+      options: donutOptions
+    })
+
+    //-------------
+    //- BAR CHART -
+    //-------------
+    var barChartCanvas = $('#barChart').get(0).getContext('2d')
+    var barChartData = $.extend(true, {}, areaChartData)
+    var temp0 = areaChartData.datasets[0]
+    barChartData.datasets[0] = temp0
+
+    var barChartOptions = {
+      responsive              : true,
+      maintainAspectRatio     : false,
+      datasetFill             : false
+    }
+
+    new Chart(barChartCanvas, {
+      type: 'bar',
+      data: barChartData,
+      options: barChartOptions
+    })
+  })
 </script>
 {{template "jshtml"}}

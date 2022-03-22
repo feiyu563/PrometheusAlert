@@ -65,7 +65,8 @@ func PostHWmessage(Messages string, PhoneNumbers, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[hwmessage]", err.Error())
 	}
-	models.AlertToCounter.WithLabelValues("hwdx", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("hwdx").Add(1)
+	ChartsJson.Hwdx += 1
 	logs.Info(logsign, "[hwmessage]", string(result))
 	return string(result)
 }

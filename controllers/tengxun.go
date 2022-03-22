@@ -111,7 +111,8 @@ func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 		logs.Error(logsign, "[txmessage]", err.Error())
 	}
 
-	models.AlertToCounter.WithLabelValues("txdx", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("txdx").Add(1)
+	ChartsJson.Txdx += 1
 	logs.Info(logsign, "[txmessage]", string(result))
 	return string(result)
 }
@@ -160,7 +161,8 @@ func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 		res := PhoneCallPost(TXurl, u, logsign)
 		logs.Info(logsign, "[txphonecall]", res)
 	}
-	models.AlertToCounter.WithLabelValues("txdh", Messages, PhoneNumbers).Add(1)
+	models.AlertToCounter.WithLabelValues("txdh").Add(1)
+	ChartsJson.Txdh += 1
 	return PhoneNumbers + " Called Over."
 }
 

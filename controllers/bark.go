@@ -44,7 +44,8 @@ func SendBark(msg, logsign string) string {
 			logs.Error(logsign, "[bark]", fmt.Errorf("send to %s, get code: %d", u, get.Code))
 		}
 	}
-	models.AlertToCounter.WithLabelValues("bark", "", "").Add(1)
+	models.AlertToCounter.WithLabelValues("bark").Add(1)
+	ChartsJson.Bark += 1
 	logs.Info(logsign, "[bark]", "bark send ok.")
 	return "bark send ok"
 }

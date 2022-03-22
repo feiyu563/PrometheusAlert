@@ -19,6 +19,7 @@ func init() {
 	beego.Router("/template/del", &controllers.MainController{}, "get:TemplateDel")
 	beego.Router("/alerttest", &controllers.MainController{}, "post:AlertTest")
 	beego.Router("/markdowntest", &controllers.MainController{}, "get,post:MarkdownTest")
+
 	// health
 	beego.Router("/health", &controllers.MainController{}, "get:Health")
 

@@ -7,21 +7,21 @@ var (
 		Name: "alers_from_count",
 		Help: "count alers from any where",
 	},
-		[]string{"from", "message", "level", "host", "index"},
+		[]string{"alert_from"},
 	)
 	//model.AlertsFromCounter.WithLabelValues("from","to","message","level","host","index").Add(1)
 	AlertToCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "alers_to_count",
 		Help: "count alers to any where",
 	},
-		[]string{"to", "message", "phone"},
+		[]string{"send_to"},
 	)
 	//model.AlertToCounter.WithLabelValues("to","message").Add(1)
 	AlertFailedCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "alers_send_failed_count",
 		Help: "count alers send failed",
 	},
-		[]string{"to", "message", "phone"},
+		[]string{"send_to"},
 	)
 	//model.AlertFailedCounter.WithLabelValues("to","message","phone").Add(1)
 )

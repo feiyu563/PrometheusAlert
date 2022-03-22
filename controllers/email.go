@@ -44,7 +44,8 @@ func SendEmail(EmailBody, Emails, logsign string) string {
 	//d.SSL=true
 	// 发送
 	err := d.DialAndSend(m)
-	models.AlertToCounter.WithLabelValues("email", EmailBody, Emails).Add(1)
+	models.AlertToCounter.WithLabelValues("email").Add(1)
+	ChartsJson.Email += 1
 	if err != nil {
 		logs.Error(logsign, "[email]", err.Error())
 	}

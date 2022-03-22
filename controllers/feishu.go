@@ -64,7 +64,8 @@ func PostToFeiShu(title, text, Fsurl, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[feishu]", err.Error())
 	}
-	models.AlertToCounter.WithLabelValues("feishu", text, "").Add(1)
+	models.AlertToCounter.WithLabelValues("feishu").Add(1)
+	ChartsJson.Feishu += 1
 	logs.Info(logsign, "[feishu]", string(result))
 	return string(result)
 }
@@ -194,7 +195,8 @@ func PostToFeiShuv2(title, text, Fsurl, userEmail, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[feishuv2]", title+": "+err.Error())
 	}
-	models.AlertToCounter.WithLabelValues("feishuv2", text, "").Add(1)
+	models.AlertToCounter.WithLabelValues("feishu").Add(1)
+	ChartsJson.Feishu += 1
 	logs.Info(logsign, "[feishuv2]", title+": "+string(result))
 	return string(result)
 }

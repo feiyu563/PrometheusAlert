@@ -31,7 +31,8 @@ func (c *ZabbixController) ZabbixAlert() {
 
 func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 	ret := ""
-	models.AlertsFromCounter.WithLabelValues("zabbix", message.ZabbixMessage, "", "", "").Add(1)
+	models.AlertsFromCounter.WithLabelValues("zabbix").Add(1)
+	ChartsJson.Zabbix += 1
 	switch message.ZabbixType {
 	//微信渠道
 	case "wx":

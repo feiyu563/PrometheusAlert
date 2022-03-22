@@ -36,7 +36,8 @@ func SendTG(msg, logsign string) string {
 	if err != nil {
 		logs.Error(logsign, "[tg]", err.Error())
 	}
-	models.AlertToCounter.WithLabelValues("telegram", "", "").Add(1)
+	models.AlertToCounter.WithLabelValues("telegram").Add(1)
+	ChartsJson.Telegram += 1
 	logs.Info(logsign, "[tg]", "tg send ok.")
 	return "tg send ok"
 }
