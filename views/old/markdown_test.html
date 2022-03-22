@@ -1,0 +1,64 @@
+{{template "main"}}
+  <title>PrometheusAlert</title>
+</head>
+
+<body>
+{{template "head" .}}
+	<div class="bs-docs-header">
+		<div class="container">
+				<label class="col-sm-2">自定义模板测试</label>
+		</div>
+	</div>
+<form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
+	<div class="container">
+		<div class="bs-example" >
+			<label>*Json内容:</label>
+			<br />
+			<textarea id="jsoncontent" name="jsoncontent" cols="30" rows="10" class="form-control" placeholder="原始Json内容文本"></textarea>
+			<br />
+			<label>*模版内容:</label>
+			<br />
+			<textarea id="tplcontent" name="tplcontent" cols="30" rows="10" class="form-control" placeholder="自定义模版内容文本"></textarea>
+			<br />
+			<div class="text-right">
+			<button type="button" class="btn btn-primary" onclick="showHtml();">查看效果</button>
+			</div>
+		</div>
+	</div>
+</form>
+	<div class="container">
+		<label>显示效果:(效果仅供参考，因部分机器人对markdown的支持不同，可能渲染的结果会不尽相同)</label>
+		<div id='MarkdownHtml' class="bs-example"></div>
+	</div>
+
+<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/js/marked.min.js"></script>
+<script type="text/javascript">
+	function showHtml(){
+		var jsoncontent=document.getElementById("jsoncontent");
+		var tplcontent=document.getElementById("tplcontent");
+
+		if (jsoncontent.value.length==0){
+			alert('原始Json内容文本不能为空');
+			return
+		};
+
+		if (tplcontent.value.length==0){
+			alert('自定义模版内容文本不能为空');
+			return
+		};
+		
+		$.ajax({
+			type: "POST",
+			dataType: "json",
+			url: '{{ urlfor "MainController.MarkdownTest"}}',
+			data: $('#formtpl').serialize(),
+			success: function (result) {
+				console.log(result);
+				$("#MarkdownHtml").html(marked(result));
+			},
+		});
+		
+	};
+</script>
+{{template "endhtml"}}

@@ -1,0 +1,113 @@
+{{template "main"}}
+  <title>PrometheusAlert</title>
+</head>
+
+<body>
+{{template "head" .}}
+        <div class="bs-docs-header">
+            <div class="container">
+				<label class="col-sm-2">自定义模版管理</label>
+			</div>
+        </div>
+
+		<div class="container">
+			<div class="page-header text-right">
+				<div class="form-group" style="text-align:center">
+				<!--<h4 style='color:red;'>特别提醒：自定义模板仅支持 /prometheusalert 接口，其他接口均为固定模版接口，不支持自定义模板</h4>-->
+				</div>
+				<a type="submit" class="btn btn-primary" href="/template/add"><span class="glyphicon glyphicon-plus-sign"></span> 添加模版</a>
+			</div>
+		</div>
+		<div class="container">
+		<div class="page-header">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<!--<th>Id</th>-->
+						<th>名称</th>
+						<th>模版类型</th>
+						<th>模版用途</th>
+						<th>路径</th>
+						<th>创建时间</th>
+						<!--<th>模版测试</th>-->
+						<th>模版编辑</th>
+						<th>模版删除</th>
+					</tr>
+				</thead>
+				<tbody id="tpllist" >
+					{{range .Template}}
+					<tr>
+						<!--<th>{{.Id}}</th>-->
+						<th>{{.Tplname}}</th>
+						<th>
+                           {{if eq .Tpltype "dd"}}钉钉{{end}}
+                           {{if eq .Tpltype "wx"}}企业微信{{end}}
+                           {{if eq .Tpltype "workwechat"}}企业微信应用{{end}}
+                           {{if eq .Tpltype "fs"}}飞书{{end}}
+                           {{if eq .Tpltype "webhook"}}WebHook{{end}}
+                           {{if eq .Tpltype "txdx"}}腾讯云短信{{end}}
+                           {{if eq .Tpltype "txdh"}}腾讯云电话{{end}}
+                           {{if eq .Tpltype "alydx"}}阿里云短信{{end}}
+                           {{if eq .Tpltype "alydh"}}阿里云电话{{end}}
+                           {{if eq .Tpltype "hwdx"}}华为云短信{{end}}
+                           {{if eq .Tpltype "bddx"}}百度云短信{{end}}
+                           {{if eq .Tpltype "rlydh"}}容联云电话{{end}}
+                           {{if eq .Tpltype "7moordx"}}七陌短信{{end}}
+                           {{if eq .Tpltype "7moordh"}}七陌语音电话{{end}}
+                           {{if eq .Tpltype "email"}}Email{{end}}
+						   {{if eq .Tpltype "tg"}}Telegram{{end}}
+						   {{if eq .Tpltype "rl"}}百度Hi(如流){{end}}
+						   {{if eq .Tpltype "bark"}}Bark(iPhone推送){{end}}
+                        </th>
+                        <th>{{if eq .Tpluse "ALiYun"}}阿里云-云监控{{else}}{{.Tpluse}}{{end}}</th>
+						<th>
+                        	/prometheusalert?type={{.Tpltype}}&tpl={{.Tplname}}{{if eq .Tpluse "ALiYun"}}&from=aliyun{{end}}&{{if eq .Tpltype "dd"}}ddurl=钉钉机器人地址&at=18888888888{{else}}{{if eq .Tpltype "wx"}}wxurl=微信机器人地址&at=zhangsan{{else}}{{if eq .Tpltype "fs"}}fsurl=飞书机器人地址&at=zhangsan@xxx.com{{else}}{{if eq .Tpltype "webhook"}}webhookurl=WebHook地址{{else}}{{if eq .Tpltype "email"}}email=Email地址{{else}}{{if eq .Tpltype "rl"}}groupid=百度Hi(如流)群id{{else}}{{if eq .Tpltype "workwechat"}}wxuser=接受用户&wxparty=接受部门&wxtag=接受标签{{else}}phone=手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
+						</th>
+						<th>{{.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
+						<!--<th><a href="/template/test?id={{.Id}}" class="glyphicon glyphicon-send"></a></th>-->
+						<th><a href="/template/edit?id={{.Id}}" class="glyphicon glyphicon-edit"></a></th>
+						<th><a href="javascript:if(confirm('确实要删除吗?'))location='/template/del?id={{.Id}}'" class="glyphicon glyphicon-trash"></a></th>
+
+					</tr>
+					{{end}}
+				</tbody>
+			</table>
+			</div>
+		</div>
+
+<div class="page-header">
+<div class="container text-center"> 
+	<!--<nav aria-label="Page navigation">
+	  <ul class="pagination">
+		<li>
+		  <a href="#" aria-label="Previous">
+			<span aria-hidden="true">&laquo;</span>
+		  </a>
+		</li>
+		<li><a href="#">1</a></li>
+		<li><a href="#">2</a></li>
+		<li class="active"><span>3</span></li>
+		<li><a href="#">4</a></li>
+		<li><a href="#">5</a></li>
+		<li>
+		  <a href="#" aria-label="Next">
+			<span aria-hidden="true">&raquo;</span>
+		  </a>
+		</li>
+	  </ul>
+	</nav>-->
+</div>
+</div>
+<script type="text/javascript">
+var td_array=new Array();
+var td_length=document.getElementById("tpllist");
+var myurl=window.location.origin;
+for(var m=0;m<td_length.rows.length;m++){
+td_length.rows[m].cells[3].innerHTML=(myurl+td_length.rows[m].cells[3].innerHTML).replace(/\s/gi,'');
+//uresturl.innerHTML=myurl+uresturl.innerHTML;
+}
+
+//uresturl.innerHTML=myurl+uresturl.innerHTML;
+//console.log(uresturl.innerHTML);
+</script>
+{{template "endhtml"}}

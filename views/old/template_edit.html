@@ -1,0 +1,238 @@
+{{template "main"}}
+  <title>PrometheusAlert</title>
+</head>
+
+<body>
+{{template "head" .}}
+        <div class="bs-docs-header">
+            <div class="container">
+                    <label class="col-sm-2">自定义模版管理</label>
+			</div>
+        </div>
+		<div class="container">
+			<div class="page-header text-right">
+				<div class="form-group" style="text-align:center">
+				<!--<h4 style='color:red;'>特别提醒：自定义模板仅支持 /prometheusalert 接口，其他接口均为固定模版接口，不支持自定义模板</h4>-->
+				</div>
+			</div>
+		</div>
+            <div class="container">
+					<div class="bs-example" >
+					    <form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
+						<input type="hidden" name="id" value="{{.Template.Id}}">
+					    <div class="input-group">
+					    <span class="input-group-addon">*模版名称</span>
+					    <input type="text" id="name" class="form-control" name="name" value="{{.Template.Tplname}}">
+					    </div>
+					    <br />
+						
+					    <div class="input-group">
+					    <span class="input-group-addon">*模版类型</span>
+                          <select class="form-control" name="type" id="type" onchange="typeChange()">
+                            <option value="dd" {{if eq .Template.Tpltype "dd"}}selected="selected"{{end}}>钉钉</option>
+                            <option value="wx" {{if eq .Template.Tpltype "wx"}}selected="selected"{{end}}>企业微信</option>
+                            <option value="workwechat" {{if eq .Template.Tpltype "workwechat"}}selected="selected"{{end}}>企业微信应用</option>
+                            <option value="fs" {{if eq .Template.Tpltype "fs"}}selected="selected"{{end}}>飞书</option>
+                            <option value="webhook" {{if eq .Template.Tpltype "webhook"}}selected="selected"{{end}}>WebHook</option>
+                            <option value="txdx" {{if eq .Template.Tpltype "txdx"}}selected="selected"{{end}}>腾讯云短信</option>
+                            <option value="txdh" {{if eq .Template.Tpltype "txdh"}}selected="selected"{{end}}>腾讯云电话</option>
+                            <option value="alydx" {{if eq .Template.Tpltype "alydx"}}selected="selected"{{end}}>阿里云短信</option>
+                            <option value="alydh" {{if eq .Template.Tpltype "alydh"}}selected="selected"{{end}}>阿里云电话</option>
+                            <option value="hwdx" {{if eq .Template.Tpltype "hwdx"}}selected="selected"{{end}}>华为云短信</option>
+                            <option value="bddx" {{if eq .Template.Tpltype "bddx"}}selected="selected"{{end}}>百度云短信</option>
+                            <option value="rlydh" {{if eq .Template.Tpltype "rlydh"}}selected="selected"{{end}}>容联云电话</option>
+                            <option value="rlydh" {{if eq .Template.Tpltype "7moordx"}}selected="selected"{{end}}>七陌短信</option>
+                            <option value="rlydh" {{if eq .Template.Tpltype "7moordh"}}selected="selected"{{end}}>七陌语音电话</option>
+                            <option value="email" {{if eq .Template.Tpltype "email"}}selected="selected"{{end}}>Email</option>
+							<option value="tg" {{if eq .Template.Tpltype "tg"}}selected="selected"{{end}}>Telegram</option>
+							<option value="rl" {{if eq .Template.Tpltype "rl"}}selected="selected"{{end}}>百度Hi(如流)</option>
+                          </select>
+					    </div>
+						
+					    <br />
+						<div class="input-group">
+						  <span class="input-group-addon">*模版用途</span>
+                          <select class="form-control" name="use" id="use">
+                            <option value="Prometheus" {{if eq .Template.Tpluse "Prometheus"}}selected="selected"{{end}}>Prometheus</option>
+                            <option value="Graylog2" {{if eq .Template.Tpluse "Graylog2"}}selected="selected"{{end}}>Graylog2</option>
+                            <option value="Graylog3" {{if eq .Template.Tpluse "Graylog3"}}selected="selected"{{end}}>Graylog3</option>
+                            <option value="Grafana" {{if eq .Template.Tpluse "Grafana"}}selected="selected"{{end}}>Grafana</option>
+                            <option value="SonarQube" {{if eq .Template.Tpluse "SonarQube"}}selected="selected"{{end}}>SonarQube</option>
+                            <option value="Jenkins" {{if eq .Template.Tpluse "Jenkins"}}selected="selected"{{end}}>Jenkins</option>
+                            <option value="WebHook" {{if eq .Template.Tpluse "WebHook"}}selected="selected"{{end}}>WebHook</option>
+                            <option value="ALiYun" {{if eq .Template.Tpluse "ALiYun"}}selected="selected"{{end}}>阿里云-云监控</option>
+                            <option value="Other" {{if eq .Template.Tpluse "Other"}}selected="selected"{{end}}>Other</option>
+                          </select>
+						</div>
+					    <br />
+						
+					    <label>*模版内容:</label>
+					    <br />
+					    <textarea id="content" name="content" cols="30" rows="10" class="form-control">{{.Template.Tpl}}</textarea>
+					    <br />
+
+					    <label>消息协议JSON内容:</label>
+					    <br />
+					    <textarea id="pjson" name="pjson" cols="30" rows="10" class="form-control" placeholder="可在PrometheusAlert日志中查找"></textarea>
+					    <br />
+
+					    <div class="input-group">
+					    <span class="input-group-addon" id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "webhook"}}WebHook地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "rl"}}百度Hi(如流)群id{{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}</span>
+					    <input type="text" id="purl" class="form-control" name="purl" value="">
+					    </div>
+					    <br />
+
+					    <div id="Pat" class="input-group" style="display:none">
+					    <span class="input-group-addon" id="typestr">@某人</span>
+					    <input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱">
+					    </div>
+					    <br />
+
+					    <div id="Party" class="input-group" style="display:none">
+					    <span class="input-group-addon" id="typestr">接受部门</span>
+					    <input type="text" id="pparty" class="form-control" name="pparty" value="">
+					    </div>
+					    <br />
+						
+					    <div id="Tag" class="input-group" style="display:none">
+					    <span class="input-group-addon" id="typestr">接受标签</span>
+					    <input type="text" id="ptag" class="form-control" name="ptag" value="">
+					    </div>
+					    <br />
+
+					    <div class="text-right">
+						<span style="color:red;font-weight:bold">进行模版测试前请先点击保存模版</span>
+					    <button type="submit" class="btn btn-primary" onclick="savetpl();">保存模版</button>
+					    <button type="button" class="btn btn-primary" onclick="sendtest();">模版测试</button>
+					    </div>
+					    </form>
+					</div>
+					<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+					<script type="text/javascript">
+                        $(function () {
+                            typeChange();
+                        })
+                        function typeChange(){
+                         var objS = document.getElementById("type");
+						 var typeStr = document.getElementById("typestr");
+                         var typeSelect = objS.options[objS.selectedIndex].value;
+						 
+					     if (typeSelect=="dd"){
+					        typeStr.innerText="钉钉机器人地址";
+							document.getElementById("Pat").style.display="";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="wx"){
+					        typeStr.innerText="微信机器人地址";
+							document.getElementById("Pat").style.display="";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="fs"){
+					        typeStr.innerText="飞书机器人地址";
+							document.getElementById("Pat").style.display="";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="webhook"){
+					        typeStr.innerText="webhook地址";
+							document.getElementById("Pat").style.display="none";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="email"){
+					        typeStr.innerText="邮箱(多个请以,隔开)";
+							document.getElementById("Pat").style.display="none";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="rl"){
+					        typeStr.innerText="百度Hi(如流)群id";
+							document.getElementById("Pat").style.display="none";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     } else if(typeSelect=="workwechat"){
+					        typeStr.innerText="接受用户";
+							document.getElementById("Pat").style.display="none";
+							document.getElementById("Party").style.display="";
+							document.getElementById("Tag").style.display="";
+					     } else{
+					        typeStr.innerText="手机号";
+							document.getElementById("Pat").style.display="none";
+							document.getElementById("Party").style.display="none";
+							document.getElementById("Tag").style.display="none";
+					     }
+						 
+                        }
+						
+					    function savetpl(){
+						var uname=document.getElementById("name");
+						if (uname.value.length==0){
+							alert('模版名称不能为空');
+							return
+						};
+						var ucontent=document.getElementById("content");
+						if (ucontent.value.length==0){
+							alert('模版内容不能为空');
+							return
+						};
+
+                        $.ajax({
+                            type: "POST",
+                            dataType: "json",
+                            url: '{{ urlfor "MainController.AddTpl"}}',
+                            data: $('#formtpl').serialize(),
+                            success: function (result) {
+                                console.log(result);
+                                if (result == null) {
+                                    alert("模版保存成功!");
+                                } else {
+                                    alert("模版保存失败!");
+								};
+                            },
+                        });
+						
+						}
+						
+						function sendtest(){
+							var uname=document.getElementById("name");
+							var utype=document.getElementById("type");
+							var upjson=document.getElementById("pjson");
+							var upurl=document.getElementById("purl");
+							var upat=document.getElementById("pat");
+							var upparty=document.getElementById("pparty");
+							var uptag=document.getElementById("ptag");
+							var upgroupid=document.getElementById("pgroupid");
+							var sendurl="";
+							if (utype.value=="dd"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&ddurl='+upurl.value+'&at='+upat.value;
+							} else if(utype.value=="wx"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value+'&at='+upat.value;
+							} else if(utype.value=="fs"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value+'&at='+upat.value;
+							} else if(utype.value=="webhook"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value;
+							} else if(utype.value=="email"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
+							} else if(utype.value=="rl"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&groupid='+upurl.value;
+							} else if(utype.value=="workwechat"){
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxuser='+upurl.value+'&wxparty='+upparty.value+'&wxtag='+uptag.value;
+							} else{
+							   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&phone='+upurl.value;
+							}
+							if (upjson.value.length==0){
+								alert('消息协议JSON内容不能为空');
+							}else{
+                    			var json_data = JSON.stringify(upjson.value);
+                        		$.ajax({
+                        			url: sendurl,
+                        			async: false,
+                        			type: "post",
+                        			data: upjson.value,
+                        			success: function (data, status) {
+                        				alert(data);
+                        			},
+                        		});
+								
+							};
+						}
+					</script>
+            </div>
+{{template "endhtml"}}

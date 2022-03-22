@@ -1,95 +1,307 @@
 {{define "main"}}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <link rel="shortcut icon" href="/static/img/prometheus-ico.png" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="/static/css/docs.css" rel="stylesheet" />
-  <style>
-	  #myBtn {
-	  display: none;
-	  position: fixed;
-	  right: 5px;
-	  top: 70%;
-	  z-index: 99;
-	  border: none;
-	  outline: none;
-	  cursor: pointer;
-	  padding: 12px;
-	  border-radius: 18px;
-	  background-color:rgba(255,255,255,.15);
-	  border-color:#4cae4c;
-	  }
-	  #myBtn:hover {
-	  background-color:#f9f9f9;
-	  border-color:#eea236;
-	  }
-  </style>
-{{end}}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PrometheusAlert | 控制中心</title>
 
-{{define "head"}}
-<div class="navbar navbar-static-top bs-docs-nav">
-  <div class="container">
-  <a class="navbar-brand" href="#">
-    <img alt="Brand" width="20" height="20" src="/static/img/prometheus-ico.png">
-  </a>
-  <a class="navbar-brand"  href="/">PrometheusAlert</a>
-    <ul class="nav nav-tabs">
-      <li role="presentation" {{if .IsIndex}}class="active"{{end}}><a href="/">Index</a></li>
-      <li role="presentation" {{if .IsTest}}class="active"{{end}}><a href="/test">Test</a></li>
-      <li role="presentation" {{if .IsTemplate}}class="active"{{end}}><a href="/template">AlertTemplate</a></li>
-      <li role="presentation" {{if .IsMarkDownTest}}class="active"{{end}}><a href="/markdowntest">MarkDownTest</a></li>
-      <li role="presentation" {{if .IsSilences}}class="active"{{end}}><a href="javascript:if(confirm('即将上线，敬请期待......'))location='/'">Silences</a></li>
-      <li role="presentation" {{if .IsSetup}}class="active"{{end}}><a href="javascript:if(confirm('即将上线，敬请期待......'))location='/'">Setup</a></li>
-      <li role="presentation"><a href="https://feiyu563.github.io/">Help</a></li>
-      {{if .IsLogin}}
-      <li role="presentation" class="navbar-right"><a href="/login?exit=true"><span class="glyphicon glyphicon-off"></span></a></li>
-      {{else}}
-      <li role="presentation" class="navbar-right"><a href="/login"><span class="glyphicon glyphicon-user"></span></a></li>
-      {{end}}
-    </ul>
-  </div>
-</div>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/plugins/fontawesome-free/css/all.min.css">
+  <!-- flag-icon-css -->
+  <link rel="stylesheet" href="/static/plugins/flag-icon-css/css/flag-icon.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet"href="/static/dist/css/adminlte.min.css">
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="/static/plugins/codemirror/codemirror.css">
+  <link rel="stylesheet" href="/static/plugins/codemirror/theme/monokai.css">
+</head>
+<body class="hold-transition sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+      <img src="/static/dist/img/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">PrometheusAlert</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a href="/" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Dashboard
+              </p>
+            </a>
+          </li>
+		  
+		  
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                模板管理
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+			
+            <ul class="nav nav-treeview">
+			
+              <li class="nav-item">
+                <a href="/template" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>自定义模版</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/markdowntest" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Markdown测试</p>
+                </a>
+              </li>
+			  
+            </ul>
+          </li>
+		  
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tree"></i>
+              <p>
+                告警管理
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+			
+            <ul class="nav nav-treeview">
+			
+              <!--<li class="nav-item">
+                <a href="javascript:if(confirm('即将上线，敬请期待......'))location='/'" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>告警拦截</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="javascript:if(confirm('即将上线，敬请期待......'))location='/'" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>告警路由</p>
+                </a>
+              </li>-->
+			  
+              <li class="nav-item">
+                <a href="/test" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>告警测试</p>
+                </a>
+              </li>
+			  
+            </ul>
+          </li>
+		  
+          <!--<li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                设置
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+			
+            <ul class="nav nav-treeview">
+			  <li class="nav-header">Webook</li>
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>企业微信机器人</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>钉钉机器人</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>飞书机器人</p>
+                </a>
+              </li>
+			  
+			  <li class="nav-header">企业应用</li>
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>企业微信应用</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Telegram</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>百度Hi(如流)</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Bark(iPhone推送)</p>
+                </a>
+              </li>
+			  
+			  
+			  <li class="nav-header">Email</li>
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Email</p>
+                </a>
+              </li>
+			  
+			  <li class="nav-header">短信</li>
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>腾讯云短信</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>阿里云短信</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>华为云短信</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>百度云短信</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>七陌短信</p>
+                </a>
+              </li>
+			  
+			  <li class="nav-header">电话</li>
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>腾讯云电话</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>阿里云语音电话</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>荣联云语音电话</p>
+                </a>
+              </li>
+			  
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>七陌语音电话</p>
+                </a>
+              </li>
+			  
+            </ul>
+          </li> -->
+
+          <li class="nav-item">
+            <a href="https://github.com/feiyu563/PrometheusAlert/issues" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                帮助
+                <span class="right badge badge-danger">New</span>
+              </p>
+            </a>
+          </li>
+
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
 {{end}}
 
 {{define "endhtml"}}
-<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-<div class="container">
-	<button onclick="topFunction()" id="myBtn"><span class="glyphicon glyphicon-plane"></span><p>返回顶部</p></button>
-	<script>
-	// 当网页向下滑动 20px 出现"返回顶部" 按钮
-	window.onscroll = function() {scrollFunction()};
 
-	function scrollFunction() {console.log(121);
-	if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-	document.getElementById("myBtn").style.display = "block";
-	} else {
-	document.getElementById("myBtn").style.display = "none";
-	}
-	}
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 4.6.0
+    </div>
+    <strong>PrometheusAlert <a href="https://github.com/feiyu563/PrometheusAlert">Github</a> && <a href="https://gitee.com/feiyu563/PrometheusAlert">Gitee</a> </strong>
+  </footer>
 
-	// 点击按钮，返回顶部
-	function topFunction() {
-	document.body.scrollTop = 0;
-	document.documentElement.scrollTop = 0;
-	}
-	</script>
-	
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
 </div>
+<!-- ./wrapper -->
 
-<div class="bs-docs-footer">
+<!-- jQuery -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<script src="/static/dist/js/marked.min.js"></script>
+<!-- CodeMirror -->
+<script src="/static/plugins/codemirror/codemirror.js"></script>
+<script src="/static/plugins/codemirror/mode/css/css.js"></script>
+<script src="/static/plugins/codemirror/mode/xml/xml.js"></script>
+<script src="/static/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="/static/plugins/codemirror/mode/markdown/markdown.js"></script>
+<script src="/static/plugins/codemirror/mode/javascript/javascript.js"></script>
+{{end}}
 
-	<div class="container">
-		
-		<p>Designed and built with all the love in the world by jikun.zhang</p>
-
-		<p>PrometheusAlert</p>
-
-	  </div>
-</div>
-
+{{define "jshtml"}}
 </body>
 </html>
 {{end}}

@@ -1,71 +1,99 @@
-{{template "main"}}
-	<title>PrometheusAlert全家桶</title>
-</head>
-<body>
-{{template "head" .}}
-<div class="bs-docs-header">
-	<div class="container">
-		<label class="col-sm-2">用户登录</label>
-	</div>
-</div>
-<div class="container">
-	<div class="page-header">
-		<div class="bs-example" >
-			<form class="form-horizontal" method="POST" action="/login">
-				<div class="form-group">
-					<label class="col-sm-2 control-label"></label>
-					<div class="col-sm-10">
-						<div class="input-group">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-						<input type="text" id="uname" class="form-control" placeholder="username" name="username" style="width:85%">
-						</div>
-					</div>
-				</div>
-				
-				<div class="form-group">
-					<label class="col-sm-2 control-label"></label>
-					<div class="col-sm-10">
-					<div class="input-group">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-						<input type="password" id="pwd" class="form-control" placeholder="Password" name="password" style="width:85%">
-					</div>
-					</div>
-				</div>
-				
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<div class="checkbox">
-							<label><input type="checkbox" name="autologin">自动登录</label>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					{{if .loginerror}}
-						<label class="col-sm-2 control-label" style="color:red">登录失败!</label>
-					{{end}}
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-success form-control" onclick="return checkinput();" style="width:85%">登录</button>
-					</div>
-						<script type="text/javascript">
-							function checkinput(){
-								var uname=document.getElementById("uname");
-								var pwd=document.getElementById("pwd");
-								if (uname.value.length==0){
-									alert('用户名不能为空');
-									return false
-								};
-								if (pwd.value.length==0){
-									alert('密码不能为空');
-									return false
-								};
-								return true
-								
-								}
-						</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PrometheusAlert | 登录控制中心</title>
 
-				</div>
-			</form>
-		</div>
-	</div>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="static/plugins/fontawesome-free/css/all.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="static/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet"href="static/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href=""><b>Prometheus</b>Alert</a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">登录控制中心</p>
+
+      <form action="/login" method="post">
+        <div class="input-group mb-3">
+          <input type="text" id="uname" name="username" class="form-control" placeholder="Username">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" id="pwd" name="password" class="form-control" placeholder="Password">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+           <div class="col-8">
+            <div class="icheck-primary">
+              <input type="checkbox" id="remember" name="autologin" checked>
+              <label for="remember">
+                Remember Me
+              </label>
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block" onclick="return checkinput();">登录</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+
+
+
+      <div class="social-auth-links text-center mb-3">
+	  {{if .loginerror}}
+        <p>Username or Password For Login Error</p>
+	  {{end}}
+      </div>
+      <!-- /.social-auth-links -->
+
+    </div>
+    <!-- /.login-card-body -->
+  </div>
 </div>
-{{template "endhtml"}}
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="static/dist/js/adminlte.min.js"></script>
+
+<script type="text/javascript">
+	function checkinput(){
+		var uname=document.getElementById("uname");
+		var pwd=document.getElementById("pwd");
+		if (uname.value.length==0){
+			alert('用户名不能为空');
+			return false
+		};
+		if (pwd.value.length==0){
+			alert('密码不能为空');
+			return false
+		};
+	    return true
+	}
+</script>
+</body>
+</html>

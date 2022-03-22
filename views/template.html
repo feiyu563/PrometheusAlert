@@ -1,25 +1,59 @@
 {{template "main"}}
-  <title>PrometheusAlert</title>
-</head>
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/" class="nav-link">模版管理</a>
+      </li>
+    </ul>
 
-<body>
-{{template "head" .}}
-        <div class="bs-docs-header">
-            <div class="container">
-				<label class="col-sm-2">自定义模版管理</label>
-			</div>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>自定义模版管理</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+				<a href="/template/add" class="btn btn-default bg-warning">
+					<i class="fas fa-file mr-2"></i> 添加模版
+				</a>
+            </ol>
+          </div>
         </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
-		<div class="container">
-			<div class="page-header text-right">
-				<div class="form-group" style="text-align:center">
-				<!--<h4 style='color:red;'>特别提醒：自定义模板仅支持 /prometheusalert 接口，其他接口均为固定模版接口，不支持自定义模板</h4>-->
-				</div>
-				<a type="submit" class="btn btn-primary" href="/template/add"><span class="glyphicon glyphicon-plus-sign"></span> 添加模版</a>
-			</div>
-		</div>
-		<div class="container">
-		<div class="page-header">
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"></h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+
+
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -65,40 +99,39 @@
 						</th>
 						<th>{{.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
 						<!--<th><a href="/template/test?id={{.Id}}" class="glyphicon glyphicon-send"></a></th>-->
-						<th><a href="/template/edit?id={{.Id}}" class="glyphicon glyphicon-edit"></a></th>
-						<th><a href="javascript:if(confirm('确实要删除吗?'))location='/template/del?id={{.Id}}'" class="glyphicon glyphicon-trash"></a></th>
+						<th>
+						<a href="/template/edit?id={{.Id}}" class="btn btn-default bg-success">
+							<i class="fa fa-edit"></i> Edit
+						</a>
+						</th>
+						<th>
+						<a href="javascript:if(confirm('确实要删除吗?'))location='/template/del?id={{.Id}}'" class="btn btn-default bg-danger">
+							<i class="fa fa-trash"></i> Delete
+						</a>
+						</th>
 
 					</tr>
 					{{end}}
 				</tbody>
 			</table>
-			</div>
-		</div>
 
-<div class="page-header">
-<div class="container text-center"> 
-	<!--<nav aria-label="Page navigation">
-	  <ul class="pagination">
-		<li>
-		  <a href="#" aria-label="Previous">
-			<span aria-hidden="true">&laquo;</span>
-		  </a>
-		</li>
-		<li><a href="#">1</a></li>
-		<li><a href="#">2</a></li>
-		<li class="active"><span>3</span></li>
-		<li><a href="#">4</a></li>
-		<li><a href="#">5</a></li>
-		<li>
-		  <a href="#" aria-label="Next">
-			<span aria-hidden="true">&raquo;</span>
-		  </a>
-		</li>
-	  </ul>
-	</nav>-->
-</div>
-</div>
-<script type="text/javascript">
+
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+          特别提醒：自定义模板仅支持 /prometheusalert 接口，其他接口均为固定模版接口，不支持自定义模板
+        </div>
+        <!-- /.card-footer-->
+      </div>
+      <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{{template "endhtml"}}
+<script>
 var td_array=new Array();
 var td_length=document.getElementById("tpllist");
 var myurl=window.location.origin;
@@ -110,4 +143,4 @@ td_length.rows[m].cells[3].innerHTML=(myurl+td_length.rows[m].cells[3].innerHTML
 //uresturl.innerHTML=myurl+uresturl.innerHTML;
 //console.log(uresturl.innerHTML);
 </script>
-{{template "endhtml"}}
+{{template "jshtml"}}

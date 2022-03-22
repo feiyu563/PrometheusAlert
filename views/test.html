@@ -1,25 +1,51 @@
 {{template "main"}}
-  <title>PrometheusAlert</title>
-</head>
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/" class="nav-link">告警管理</a>
+      </li>
+    </ul>
 
-<body>
-{{template "head" .}}
-        <div class="bs-docs-header">
-            <div class="container">
-                    <label class="col-sm-2">告警测试</label>
-			</div>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>告警测试</h1>
+          </div>
         </div>
-            <div class="container">
-				<div class="page-header">
+      </div><!-- /.container-fluid -->
+    </section>
 
-				<div class="form-group" style="text-align:center">
-				<label>短信和电话请提前配置好app.conf中的[defaultphone]配置项</label>
-				</div>
+    <!-- Main content -->
+    <section class="content">
 
-				</div>
-            </div>
-		<div class="container">
-		<div class="page-header">
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"></h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+         
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -33,118 +59,194 @@
 					<tr>
 						<th>1</th>
 						<th>钉钉</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="dd">告警测试</button></th>
+						<th>
+						<a id="dd" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>2</th>
 						<th>企业微信</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="wx">告警测试</button></th>
+						<th>
+						<a id="wx" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>3</th>
 						<th>飞书</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="fs">告警测试</button></th>
+						<th>
+						<a id="fs" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>4</th>
 						<th>腾讯云语音电话</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="txdh">告警测试</button></th>
+						<th>
+						<a id="txdh" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>5</th>
 						<th>腾讯云短信</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="txdx">告警测试</button></th>
+						<th>
+						<a id="txdx" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>6</th>
 						<th>阿里云语音电话</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="alydh">告警测试</button></th>
+						<th>
+						<a id="alydh" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>7</th>
 						<th>阿里云短信</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="alydx">告警测试</button></th>
+						<th>
+						<a id="alydx" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>8</th>
 						<th>容联云语音电话</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="rlydh">告警测试</button></th>
+						<th>
+						<a id="rlydh" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>9</th>
 						<th>华为云短信</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="hwdx">告警测试</button></th>
+						<th>
+						<a id="hwdx" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>10</th>
 						<th>Email</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="email">告警测试</button></th>
+						<th>
+						<a id="email" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>11</th>
 						<th>七陌短信</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="7moordx">告警测试</button></th>
+						<th>
+						<a id="7moordx" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>12</th>
 						<th>七陌语音电话</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="7moordh">告警测试</button></th>
+						<th>
+						<a id="7moordh" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>13</th>
 						<th>Telegram</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="tg">告警测试</button></th>
+						<th>
+						<a id="tg" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 					<tr>
 						<th>14</th>
 						<th>企业微信应用</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="workwechat">告警测试</button></th>
+						<th>
+						<a id="workwechat" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>15</th>
 						<th>百度云短信</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="bddx">告警测试</button></th>
+						<th>
+						<a id="bddx" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 
 					<tr>
 						<th>16</th>
 						<th>百度Hi(如流)</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="bdrl">告警测试</button></th>
+						<th>
+						<a id="bdrl" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 					<tr>
 						<th>17</th>
 						<th>Bark(iPhone推送)</th>
-						<th><button class="btn btn-primary" data-toggle='modal' id="bark">告警测试</button></th>
+						<th>
+						<a id="bark" class="btn btn-default btn-flat">
+						  <i class="fas fa-bullhorn"></i> 告警测试
+						</a>
+						</th>
 					</tr>
 				</tbody>
 			</table>
-			</div>
-		</div>
-<div class="page-header">
-<div class="container text-center"> 
-<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
-    <script>
-      $(function(){
-         $(".btn").click(function(){
-           $.post("/alerttest",{mtype:$(this).attr("id")},function(result){
-             alert(result);
-             });
-          });
-       })
-    </script>
-</div>
-</div>
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+          短信和电话请提前配置好app.conf中的[defaultphone]配置项
+        </div>
+        <!-- /.card-footer-->
+      </div>
+      <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
 {{template "endhtml"}}
+<script>
+$(function(){
+ $(".btn").click(function(){
+   $.post("/alerttest",{mtype:$(this).attr("id")},function(result){
+	 alert(result);
+	 });
+  });
+})
+</script>
+{{template "jshtml"}}
