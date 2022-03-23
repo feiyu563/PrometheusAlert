@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="/static/plugins/fontawesome-free/css/all.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="/static/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <!-- flag-icon-css -->
   <link rel="stylesheet" href="/static/plugins/flag-icon-css/css/flag-icon.min.css">
   <!-- Theme style -->
@@ -100,7 +104,14 @@
                   <p>告警路由</p>
                 </a>
               </li>-->
-			  
+
+              <li class="nav-item">
+                <a href="/record" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>告警记录查询</p>
+                </a>
+              </li>
+
               <li class="nav-item">
                 <a href="/test" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -301,6 +312,19 @@
 <script src="/static/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 <script src="/static/plugins/codemirror/mode/markdown/markdown.js"></script>
 <script src="/static/plugins/codemirror/mode/javascript/javascript.js"></script>
+<!-- DataTables  & Plugins -->
+<script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="/static/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/static/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="/static/plugins/jszip/jszip.min.js"></script>
+<script src="/static/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="/static/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="/static/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="/static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 {{end}}
 
 {{define "jshtml"}}

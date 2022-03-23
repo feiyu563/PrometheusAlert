@@ -21,6 +21,8 @@ func init() {
 	beego.Router("/markdowntest", &controllers.MainController{}, "get,post:MarkdownTest")
 
 	//setup
+	beego.Router("/record", &controllers.MainController{}, "get:Record")
+	beego.Router("/record/clean", &controllers.MainController{}, "get:RecordClean")
 	beego.Router("/setup/weixin", &controllers.MainController{}, "get,post:SetupWeixin")
 	// health
 	beego.Router("/health", &controllers.MainController{}, "get:Health")

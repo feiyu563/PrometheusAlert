@@ -18,33 +18,32 @@ type PrometheusController struct {
 }
 
 type Labels struct {
-	Alertname string `json:"alertname"`
-	Instance  string `json:"instance"`
-	Level     string `json:"level"` //2019年11月20日 16:03:10更改告警级别定义位置,适配prometheus alertmanager rule
-
+	Alertname    string `json:"alertname"`
+	Instance     string `json:"instance"`
+	Level        string `json:"level"` //2019年11月20日 16:03:10更改告警级别定义位置,适配prometheus alertmanager rule
 	Severity     string `json:"severity"`
 	BusinessType string `json:"businessType"`
 	DomainId     int64  `json:"domainId"`
 	DomainName   string `json:"domainName"`
 	SendType     string `json:"sendType"`
+	Job          string `json:"job"`
 	Hostgroup    string `json:"hostgroup,omitempty"`
 	Hostname     string `json:"hostname,omitempty"`
 }
 type Annotations struct {
 	Description string `json:"description"`
 	Summary     string `json:"summary"`
-	//Level string `json:"level"`  //2019年11月20日 16:04:04 删除Annotations level,改用label中的level
-	Mobile    string `json:"mobile"`  //2019年2月25日 19:09:23 增加手机号支持
-	Ddurl     string `json:"ddurl"`   //2019年3月12日 20:33:38 增加多个钉钉告警支持
-	Wxurl     string `json:"wxurl"`   //2019年3月12日 20:33:38 增加多个钉钉告警支持
-	Fsurl     string `json:"fsurl"`   //2020年4月25日 17:33:38 增加多个飞书告警支持
-	Email     string `json:"email"`   //2020年7月4日 10:15:20 增加多个email告警支持
-	Groupid   string `json:"groupid"` //2021年2月2日 17:28:23 增加多个如流告警支持
-	AtSomeOne string `json:"at"`      //2021年6月23日 14:02:21 增加@某人支持
-	Rr        string `json:"rr"`      //2021年9月14日 14:48:08 增加随机轮询参数支持
+	Mobile      string `json:"mobile"`  //2019年2月25日 19:09:23 增加手机号支持
+	Ddurl       string `json:"ddurl"`   //2019年3月12日 20:33:38 增加多个钉钉告警支持
+	Wxurl       string `json:"wxurl"`   //2019年3月12日 20:33:38 增加多个钉钉告警支持
+	Fsurl       string `json:"fsurl"`   //2020年4月25日 17:33:38 增加多个飞书告警支持
+	Email       string `json:"email"`   //2020年7月4日 10:15:20 增加多个email告警支持
+	Groupid     string `json:"groupid"` //2021年2月2日 17:28:23 增加多个如流告警支持
+	AtSomeOne   string `json:"at"`      //2021年6月23日 14:02:21 增加@某人支持
+	Rr          string `json:"rr"`      //2021年9月14日 14:48:08 增加随机轮询参数支持
 }
 type Alerts struct {
-	Status       string
+	Status       string      `json:"status"`
 	Labels       Labels      `json:"labels"`
 	Annotations  Annotations `json:"annotations"`
 	StartsAt     string      `json:"startsAt"`
@@ -107,7 +106,6 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 	Messagelevel, _ := beego.AppConfig.Int("messagelevel")
 	PhoneCalllevel, _ := beego.AppConfig.Int("phonecalllevel")
 	PhoneCallResolved, _ := beego.AppConfig.Int("phonecallresolved")
-	Silent, _ := beego.AppConfig.Int("silent")
 	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
 	Record := beego.AppConfig.String("AlertRecord")
 	alertToES := beego.AppConfig.DefaultString("alert_to_es", "0")
@@ -127,13 +125,6 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 			Et = GetCSTtime(RMessage.EndsAt)
 		}
 
-		// 消息入库
-		//AtTime, _ := time.ParseInLocation("2006-01-02 15:04:05", At, time.Local)
-		//EtTime, _ := time.ParseInLocation("2006-01-02 15:04:05", Et, time.Local)
-		if Record == "1" {
-			models.AddAlertRecord(RMessage.Labels.SendType, RMessage.Labels.Alertname, RMessage.Labels.Severity, RMessage.Labels.BusinessType, RMessage.Labels.Instance,
-				At, Et, RMessage.Annotations.Summary, RMessage.Annotations.Description, "", "", "")
-		}
 		if RMessage.Status == "resolved" {
 			titleend = "故障恢复信息"
 			models.AlertsFromCounter.WithLabelValues("prometheus").Add(1)
@@ -337,9 +328,19 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		// 推送消息到企业微信
 		SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), wxtext, logsign)
 
-		//告警抑制开启就直接跳出循环
-		if Silent == 1 {
-			break
+		// 消息入库
+		//AtTime, _ := time.ParseInLocation("2006-01-02 15:04:05", At, time.Local)
+		//EtTime, _ := time.ParseInLocation("2006-01-02 15:04:05", Et, time.Local)
+		if Record == "1" {
+			models.AddAlertRecord(RMessage.Labels.Alertname,
+				RMessage.Labels.Level,
+				RMessage.Labels.Instance,
+				RMessage.Labels.Job,
+				At,
+				Et,
+				RMessage.Annotations.Summary,
+				RMessage.Annotations.Description,
+				RMessage.Status)
 		}
 
 		// 告警写入ES
@@ -350,20 +351,16 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 			esIndex := "prometheusalert-" + strconv.Itoa(dty) + strconv.Itoa(dtm)
 			// Index a prometheusalert (using JSON serialization)
 			alert := &elastic.AlertES{
-				Alertname:    RMessage.Labels.Alertname,
-				Status:       RMessage.Status,
-				Instance:     RMessage.Labels.Instance,
-				Hostgroup:    RMessage.Labels.Hostgroup,
-				Hostname:     RMessage.Labels.Hostname,
-				Level:        RMessage.Labels.Level,
-				Severity:     RMessage.Labels.Severity,
-				BusinessType: RMessage.Labels.BusinessType,
-				SendType:     RMessage.Labels.SendType,
-				Summary:      RMessage.Annotations.Summary,
-				Description:  RMessage.Annotations.Description,
-				StartsAt:     At,
-				EndsAt:       Et,
-				Created:      dt,
+				Alertname:   RMessage.Labels.Alertname,
+				Status:      RMessage.Status,
+				Instance:    RMessage.Labels.Instance,
+				Level:       RMessage.Labels.Level,
+				Job:         RMessage.Labels.Job,
+				Summary:     RMessage.Annotations.Summary,
+				Description: RMessage.Annotations.Description,
+				StartsAt:    At,
+				EndsAt:      Et,
+				Created:     dt,
 			}
 			elastic.Insert(esIndex, alert)
 		}

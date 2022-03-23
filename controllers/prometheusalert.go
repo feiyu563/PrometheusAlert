@@ -2,14 +2,17 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
+	"PrometheusAlert/models/elastic"
 	"bytes"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	tmplhtml "html/template"
 	"regexp"
+	"strconv"
 	"strings"
 	"text/template"
+	"time"
 )
 
 type PrometheusAlertController struct {
@@ -163,10 +166,64 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 
 				//后续计划支持prometheus rules嵌入发送目标
 				//提取 AlertValue 中的 label
+				var Alertname, Level, Instance, Job, Summary, Description string
 				xalert := AlertValue.(map[string]interface{})
 				for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
 					logs.Info(label_key, "=", label_value.(string))
+					if label_key == "alertname" {
+						Alertname = label_value.(string)
+					}
+					if label_key == "level" {
+						Level = label_value.(string)
+					}
+					if label_key == "instance" {
+						Instance = label_value.(string)
+					}
+					if label_key == "job" {
+						Job = label_value.(string)
+					}
 					//SetXlabels(label_key, label_value.(string))
+				}
+				for annotation_key, annotation_value := range xalert["annotations"].(map[string]interface{}) {
+					logs.Info(annotation_key, "=", annotation_value.(string))
+					if annotation_key == "description" {
+						Description = annotation_value.(string)
+					}
+					if annotation_key == "summary" {
+						Summary = annotation_value.(string)
+					}
+				}
+
+				if beego.AppConfig.String("AlertRecord") == "1" {
+					models.AddAlertRecord(Alertname,
+						Level,
+						Instance,
+						Job,
+						xalert["startsAt"].(string),
+						xalert["endsAt"].(string),
+						Summary,
+						Description,
+						xalert["status"].(string))
+				}
+
+				// 告警写入ES
+				if beego.AppConfig.DefaultString("alert_to_es", "0") == "1" {
+					dt := time.Now()
+					dty, dtm := dt.Year(), int(dt.Month())
+					esIndex := "prometheusalert-" + strconv.Itoa(dty) + strconv.Itoa(dtm)
+					alert := &elastic.AlertES{
+						Alertname:   Alertname,
+						Status:      xalert["status"].(string),
+						Instance:    Instance,
+						Level:       Level,
+						Job:         Job,
+						Summary:     Summary,
+						Description: Description,
+						StartsAt:    xalert["startsAt"].(string),
+						EndsAt:      xalert["endsAt"].(string),
+						Created:     dt,
+					}
+					elastic.Insert(esIndex, alert)
 				}
 
 				//发送消息

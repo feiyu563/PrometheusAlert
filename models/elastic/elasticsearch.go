@@ -13,20 +13,16 @@ var esCli *es7.Client
 
 // AlertES is a alert structure used for serializing data in ES.
 type AlertES struct {
-	Alertname    string    `json:"alertname"`
-	Status       string    `json:"status"`
-	Instance     string    `json:"instance"`
-	Hostgroup    string    `json:"hostgroup,omitempty"`
-	Hostname     string    `json:"hostname,omitempty"`
-	Level        string    `json:"level"`
-	Severity     string    `json:"severity,omitempty"`
-	BusinessType string    `json:"businessType,omitempty"`
-	SendType     string    `json:"sendType,omitempty"`
-	Summary      string    `json:"summary,omitempty"`
-	Description  string    `json:"description"`
-	StartsAt     string    `json:"startsAt"`
-	EndsAt       string    `json:"endsAt"`
-	Created      time.Time `json:"created"`
+	Alertname   string    `json:"alertname"`
+	Status      string    `json:"status"`
+	Instance    string    `json:"instance"`
+	Level       string    `json:"level"`
+	Job         string    `json:"job"`
+	Summary     string    `json:"summary"`
+	Description string    `json:"description"`
+	StartsAt    string    `json:"startsAt"`
+	EndsAt      string    `json:"endsAt"`
+	Created     time.Time `json:"created"`
 }
 
 // es mapping field datatypes
@@ -37,12 +33,7 @@ const mapping = `{
 				"alertname":    {"type": "keyword"},
 				"status":       {"type": "keyword"},
 				"instance":     {"type": "keyword"},
-				"hostgroup":    {"type": "keyword"},
-				"hostname":     {"type": "keyword"},
 				"level":        {"type": "keyword"},
-				"severity":     {"type": "keyword"},
-				"businessType": {"type": "keyword"},
-				"sendType":     {"type": "keyword"},
 				"startsAt":      {"type": "date"},
 				"endsAt":       {"type": "date"},
 				"created":      {"type": "date"},
