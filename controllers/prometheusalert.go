@@ -82,6 +82,8 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	pMsg := PrometheusAlertMsg{}
 	logs.Debug(logsign, strings.Replace(string(c.Ctx.Input.RequestBody), "\n", "", -1))
 	if c.Input().Get("from") == "aliyun" {
+		models.AlertsFromCounter.WithLabelValues("aliyun").Add(1)
+		ChartsJson.Aliyun += 1
 		//阿里云云监控告警消息处理
 		AliyunAlertJson := AliyunAlert{}
 		AliyunAlertJson.Expression = c.Input().Get("expression")
