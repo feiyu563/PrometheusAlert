@@ -1,0 +1,250 @@
+{{template "main"}}
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/" class="nav-link">告警管理</a>
+      </li>
+    </ul>
+
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>添加告警路由</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"></h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+
+			<form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
+			
+			
+			  <div class="row">
+				<div class="col-sm-6">
+				  <!-- text input -->
+				  <div class="form-group">
+					<label>路由名称</label>
+					<input type="text" id="name" class="form-control" name="name" value="">
+				  </div>
+				</div>
+			  
+				<div class="col-sm-6">
+				  <!-- select -->
+				  <div class="form-group">
+					<label>生效模版名称</label>
+					<select class="form-control" name="tpl_id" id="tpl_id" onchange="typeChange()">
+					{{range .Template}}
+					<option value="{{.Id}}">{{.Tplname}}</option>
+					{{end}}
+					</select>
+				  </div>
+				</div>
+
+			  </div>
+			
+			  <div class="row"  style="display:none;">
+				<div class="col-sm-6">
+				  <!-- text input -->
+				  <div class="form-group">
+					<label>模版类型</label>
+					<input type="text" id="tpltype" class="form-control" name="tpltype" value="" disabled>
+				  </div>
+				</div>
+			  </div>
+
+			<br />
+			
+			  <div class="row">
+				<div class="col-12">
+				  <!-- text input -->
+				  <div class="form-group">
+					<label>路由规则</label>
+					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="规则如 app=nginx,env=test">
+				  </div>
+				</div>
+			  </div>
+
+			<br />
+
+			  <div class="row">
+				<div class="col-sm-6">
+				  <!-- text input -->
+				  <div class="form-group">
+					<label id="typestr">钉钉机器人地址</label>
+					<input type="text" id="purl" class="form-control" name="purl" value="">
+				  </div>
+				</div>
+
+				<div id="Pat" class="col-sm-6">
+				  <!-- text input -->
+				  <div class="form-group">
+					<label id="typestr">@某人</label>
+					<input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，">
+					<!-- <input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱"> -->
+				  </div>
+				</div>
+
+				<div id="Party" class="col-sm-6" style="display:none">
+				  <!-- text input -->
+				  <div class="form-group">
+					<label id="typestr">接受部门</label>
+					<input type="text" id="pparty" class="form-control" name="pparty" value="">
+				  </div>
+				</div>
+
+				<div id="Tag" class="col-sm-6" style="display:none">
+				  <!-- text input -->
+				  <div class="form-group">
+					<label id="typestr">接受标签</label>
+					<input type="text" id="ptag" class="form-control" name="ptag" value="">
+				  </div>
+				</div>
+
+			  </div>
+
+			<br />
+
+			<div class="text-right">
+			<a class="btn btn-app bg-success" onclick="savetpl();">
+			  <i class="fas fa-save"></i> 保存路由
+			</a>
+			</div>
+			</form>
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+          
+        </div>
+        <!-- /.card-footer-->
+      </div>
+      <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{{template "endhtml"}}
+<script>
+$(function () {
+	typeChange();
+})
+function typeChange(){
+ var tpl_id = document.getElementById("tpl_id");
+ var tpltype = document.getElementById("tpltype");
+ var typeStr = document.getElementById("typestr");
+ var tpl_idSelect = tpl_id.options[tpl_id.selectedIndex].value; //get id
+ var tpls={{.Template}};
+ 
+ tpls.forEach(function(tpl){
+   if (tpl.Id==tpl_idSelect){
+     tpltype.value=tpl.Tpltype
+   }
+ });
+ 
+ if (tpltype.value=="dd"){
+	typeStr.innerText="钉钉机器人地址(多个请以,隔开)";
+	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="wx"){
+	typeStr.innerText="微信机器人地址(多个请以,隔开)";
+	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="fs"){
+	typeStr.innerText="飞书机器人地址(多个请以,隔开)";
+	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="webhook"){
+	typeStr.innerText="webhook地址(多个请以,隔开)";
+	document.getElementById("Pat").style.display="none";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="email"){
+	typeStr.innerText="邮箱(多个请以,隔开)";
+	document.getElementById("Pat").style.display="none";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="rl"){
+	typeStr.innerText="百度Hi(如流)群id";
+	document.getElementById("Pat").style.display="none";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="workwechat"){
+    alert("workwechat暂不支持告警路由，待后期开启!");
+	/*typeStr.innerText="接受用户";
+	document.getElementById("Pat").style.display="none";
+	document.getElementById("Party").style.display="";
+	document.getElementById("Tag").style.display="";*/
+	
+ } else{
+	typeStr.innerText="手机号(多个请以,隔开)";
+	document.getElementById("Pat").style.display="none";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ }
+ 
+}
+
+function savetpl(){
+var uname=document.getElementById("rules");
+if (uname.value.length==0){
+	alert('路由规则不能为空');
+	return
+};
+var ucontent=document.getElementById("purl");
+if (ucontent.value.length==0){
+	alert('url 或 手机号参数不能为空');
+	return
+};
+
+$.ajax({
+	type: "POST",
+	dataType: "json",
+	url: '{{ urlfor "MainController.AddRouter"}}',
+	data: $('#formtpl').serialize(),
+	success: function (result) {
+		console.log(result);
+		if (result == null) {
+			alert("告警路由保存成功!");
+		} else {
+			alert("告警路由保存失败!");
+		};
+	},
+});
+
+}
+</script>
+{{template "jshtml"}}

@@ -158,7 +158,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	var message, msg string
 	var err error
 	if pMsg.Tpl != "" && pMsg.Type != "" {
-		if pMsg.Split == "true" {
+		if pMsg.Split != "false" {
 			Alerts_Value, _ := p_alertmanager_json["alerts"].([]interface{})
 			for _, AlertValue := range Alerts_Value {
 				p_alertmanager_json["alerts"] = Alerts_Value[0:0]
@@ -167,14 +167,14 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				//后续计划支持prometheus rules嵌入发送目标
 				//提取 AlertValue 中的 label
 
-				xalert := AlertValue.(map[string]interface{})
-				for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-					logs.Info(label_key, "=", label_value.(string))
-					//if label_key == "alertname" {
-					//	Alertname: = label_value.(string)
-					//}
-					//SetXlabels(label_key, label_value.(string))
-				}
+				//xalert := AlertValue.(map[string]interface{})
+				//for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
+				//	logs.Info(label_key, "=", label_value.(string))
+				//	if label_key == "alertname" {
+				//		Alertname: = label_value.(string)
+				//	}
+				//	SetXlabels(label_key, label_value.(string))
+				//}
 
 				//发送消息
 				err, msg = TransformAlertMessage(p_alertmanager_json, &pMsg, logsign)
@@ -208,7 +208,6 @@ func SetRecord(AlertValue interface{}) {
 	var Alertname, Level, Instance, Job, Summary, Description string
 	xalert := AlertValue.(map[string]interface{})
 	for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-		logs.Info(label_key, "=", label_value.(string))
 		if label_key == "alertname" {
 			Alertname = label_value.(string)
 		}
@@ -224,7 +223,6 @@ func SetRecord(AlertValue interface{}) {
 		//SetXlabels(label_key, label_value.(string))
 	}
 	for annotation_key, annotation_value := range xalert["annotations"].(map[string]interface{}) {
-		logs.Info(annotation_key, "=", annotation_value.(string))
 		if annotation_key == "description" {
 			Description = annotation_value.(string)
 		}
@@ -233,7 +231,7 @@ func SetRecord(AlertValue interface{}) {
 		}
 	}
 
-	if beego.AppConfig.String("AlertRecord") == "1" {
+	if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Instance, Job, xalert["startsAt"].(string), xalert["endsAt"].(string), Summary, Description, xalert["status"].(string)) {
 		models.AddAlertRecord(Alertname,
 			Level,
 			Instance,

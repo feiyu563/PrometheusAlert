@@ -1,0 +1,135 @@
+{{template "main"}}
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/" class="nav-link">告警管理</a>
+      </li>
+    </ul>
+
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>告警路由</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+				<a href="/alertrouter/add" class="btn btn-default bg-warning">
+					<i class="fas fa-file mr-2"></i> 添加路由
+				</a>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"></h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th style="display:none;">Id</th>
+						<th>路由名称</th>
+						<th>生效模版</th>
+						<th>模版类型</th>
+						<th>模版用途</th>
+						<th>路由规则</th>
+						<th>创建时间</th>
+						<th>编辑</th>
+						<th>删除</th>
+					</tr>
+				</thead>
+				<tbody id="tpllist" >
+					{{range .AlertRouter}}
+					<tr>
+						<th style="display:none;">{{.Id}}</th>
+						<th>{{.Name}}</th>
+						<th>{{.Tpl.Tplname}}</th>
+						<th>
+                           {{if eq .Tpl.Tpltype "dd"}}钉钉{{end}}
+                           {{if eq .Tpl.Tpltype "wx"}}企业微信{{end}}
+                           {{if eq .Tpl.Tpltype "workwechat"}}企业微信应用{{end}}
+                           {{if eq .Tpl.Tpltype "fs"}}飞书{{end}}
+                           {{if eq .Tpl.Tpltype "webhook"}}WebHook{{end}}
+                           {{if eq .Tpl.Tpltype "txdx"}}腾讯云短信{{end}}
+                           {{if eq .Tpl.Tpltype "txdh"}}腾讯云电话{{end}}
+                           {{if eq .Tpl.Tpltype "alydx"}}阿里云短信{{end}}
+                           {{if eq .Tpl.Tpltype "alydh"}}阿里云电话{{end}}
+                           {{if eq .Tpl.Tpltype "hwdx"}}华为云短信{{end}}
+                           {{if eq .Tpl.Tpltype "bddx"}}百度云短信{{end}}
+                           {{if eq .Tpl.Tpltype "rlydh"}}容联云电话{{end}}
+                           {{if eq .Tpl.Tpltype "7moordx"}}七陌短信{{end}}
+                           {{if eq .Tpl.Tpltype "7moordh"}}七陌语音电话{{end}}
+                           {{if eq .Tpl.Tpltype "email"}}Email{{end}}
+						   {{if eq .Tpl.Tpltype "tg"}}Telegram{{end}}
+						   {{if eq .Tpl.Tpltype "rl"}}百度Hi(如流){{end}}
+						   {{if eq .Tpl.Tpltype "bark"}}Bark(iPhone推送){{end}}
+                        </th>
+                        <th>{{.Tpl.Tpluse}}</th>
+						<th>{{.Rules}}</th>
+						<th>{{.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
+						<th>
+						<a href="/alertrouter/edit?id={{.Id}}" class="btn btn-default bg-success">
+							<i class="fa fa-edit"></i> Edit
+						</a>
+						</th>
+						<th>
+						<a href="javascript:if(confirm('确实要删除吗?'))location='/alertrouter/del?id={{.Id}}'" class="btn btn-default bg-danger">
+							<i class="fa fa-trash"></i> Delete
+						</a>
+						</th>
+
+					</tr>
+					{{end}}
+				</tbody>
+			</table>
+
+
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+          
+        </div>
+        <!-- /.card-footer-->
+      </div>
+      <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{{template "endhtml"}}
+<script>
+
+</script>
+{{template "jshtml"}}

@@ -23,6 +23,12 @@ func init() {
 	//setup
 	beego.Router("/record", &controllers.MainController{}, "get:Record")
 	beego.Router("/record/clean", &controllers.MainController{}, "get:RecordClean")
+	beego.Router("/alertrouter", &controllers.MainController{}, "get:AlertRouter")
+	beego.Router("/alertrouter/add", &controllers.MainController{}, "get:RouterAdd")
+	beego.Router("/alertrouter/edit", &controllers.MainController{}, "get:RouterEdit")
+	beego.Router("/alertrouter/addrouter", &controllers.MainController{}, "post:AddRouter")
+	beego.Router("/alertrouter/del", &controllers.MainController{}, "get:RouterDel")
+
 	beego.Router("/setup/weixin", &controllers.MainController{}, "get,post:SetupWeixin")
 	// health
 	beego.Router("/health", &controllers.MainController{}, "get:Health")
