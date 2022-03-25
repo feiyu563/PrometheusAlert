@@ -226,25 +226,32 @@ func AlertRouterSet(xalert map[string]interface{}, RouterMsg PrometheusAlertMsg)
 		if rules_num == rules_num_match {
 			switch router_value.Tpl.Tpltype {
 			case "wx":
-				RouterMsg.Wxurl = RouterMsg.Wxurl + "," + router_value.UrlOrPhone
+				RouterMsg.Wxurl = router_value.UrlOrPhone
+				RouterMsg.AtSomeOne = router_value.AtSomeOne
 			//钉钉渠道
 			case "dd":
-				RouterMsg.Ddurl = RouterMsg.Ddurl + "," + router_value.UrlOrPhone
+				RouterMsg.Ddurl = router_value.UrlOrPhone
+				RouterMsg.AtSomeOne = router_value.AtSomeOne
 			//飞书渠道
 			case "fs":
-				RouterMsg.Fsurl = RouterMsg.Fsurl + "," + router_value.UrlOrPhone
+				RouterMsg.Fsurl = router_value.UrlOrPhone
+				RouterMsg.AtSomeOne = router_value.AtSomeOne
 			//Webhook渠道
 			case "webhook":
-				RouterMsg.WebHookUrl = RouterMsg.WebHookUrl + "," + router_value.UrlOrPhone
+				RouterMsg.WebHookUrl = router_value.UrlOrPhone
+				RouterMsg.AtSomeOne = router_value.AtSomeOne
 			//邮件
 			case "email":
-				RouterMsg.Email = RouterMsg.Email + "," + router_value.UrlOrPhone
+				RouterMsg.Email = router_value.UrlOrPhone
+				RouterMsg.AtSomeOne = router_value.AtSomeOne
 			//百度Hi(如流)
 			case "rl":
-				RouterMsg.GroupId = RouterMsg.GroupId + "," + router_value.UrlOrPhone
+				RouterMsg.GroupId = router_value.UrlOrPhone
+				RouterMsg.AtSomeOne = router_value.AtSomeOne
 			//短信、电话
 			case "txdx", "hwdx", "bddx", "alydx", "txdh", "alydh", "rlydh", "7moordx", "7moordh":
-				RouterMsg.Phone = RouterMsg.Phone + "," + router_value.UrlOrPhone
+				RouterMsg.Phone = router_value.UrlOrPhone
+				RouterMsg.AtSomeOne = router_value.AtSomeOne
 			//异常参数
 			default:
 				logs.Info("暂未支持的路由！")
