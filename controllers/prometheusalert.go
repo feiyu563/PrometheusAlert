@@ -158,34 +158,36 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	var message, msg string
 	var err error
 	if pMsg.Tpl != "" && pMsg.Type != "" {
+
 		if pMsg.Split != "false" {
+			//判断告警路由AlertRouter列表是否为空
+			if GlobalAlertRouter == nil {
+				//刷新告警路由AlertRouter
+				GlobalAlertRouter, _ = models.GetAllAlertRouter()
+			}
 			Alerts_Value, _ := p_alertmanager_json["alerts"].([]interface{})
+
 			for _, AlertValue := range Alerts_Value {
 				p_alertmanager_json["alerts"] = Alerts_Value[0:0]
 				p_alertmanager_json["alerts"] = append(p_alertmanager_json["alerts"].([]interface{}), AlertValue)
 				go SetRecord(AlertValue)
-				//后续计划支持prometheus rules嵌入发送目标
-				//提取 AlertValue 中的 label
+				//提取 prometheus 告警消息中的 label，用于和告警路由比对
+				xalert := AlertValue.(map[string]interface{})
+				//路由处理
+				sMsg := AlertRouterSet(xalert, pMsg)
 
-				//xalert := AlertValue.(map[string]interface{})
-				//for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-				//	logs.Info(label_key, "=", label_value.(string))
-				//	if label_key == "alertname" {
-				//		Alertname: = label_value.(string)
-				//	}
-				//	SetXlabels(label_key, label_value.(string))
-				//}
+				logs.Info(sMsg.Ddurl)
 
 				//发送消息
-				err, msg = TransformAlertMessage(p_alertmanager_json, &pMsg, logsign)
+				err, msg = TransformAlertMessage(p_alertmanager_json, &sMsg, logsign)
 				if err != nil {
 					logs.Error(logsign, err.Error())
 					message = err.Error()
 				} else {
 					message = msg
 				}
-			}
 
+			}
 		} else {
 			err, msg = TransformAlertMessage(p_json, &pMsg, logsign)
 			if err != nil {
@@ -202,6 +204,54 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	}
 	c.Data["json"] = message
 	c.ServeJSON()
+}
+
+//路由处理
+func AlertRouterSet(xalert map[string]interface{}, RouterMsg PrometheusAlertMsg) PrometheusAlertMsg {
+	for _, router_value := range GlobalAlertRouter {
+
+		rules := strings.Split(router_value.Rules, ",")
+		rules_num := len(rules)
+		rules_num_match := 0
+
+		for _, rule := range rules {
+			for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
+				if rule == (label_key + "=" + label_value.(string)) {
+					rules_num_match += 1
+				}
+			}
+		}
+
+		//判断如果路由规则匹配，需要追加url到现有的参数中
+		if rules_num == rules_num_match {
+			switch router_value.Tpl.Tpltype {
+			case "wx":
+				RouterMsg.Wxurl = RouterMsg.Wxurl + "," + router_value.UrlOrPhone
+			//钉钉渠道
+			case "dd":
+				RouterMsg.Ddurl = RouterMsg.Ddurl + "," + router_value.UrlOrPhone
+			//飞书渠道
+			case "fs":
+				RouterMsg.Fsurl = RouterMsg.Fsurl + "," + router_value.UrlOrPhone
+			//Webhook渠道
+			case "webhook":
+				RouterMsg.WebHookUrl = RouterMsg.WebHookUrl + "," + router_value.UrlOrPhone
+			//邮件
+			case "email":
+				RouterMsg.Email = RouterMsg.Email + "," + router_value.UrlOrPhone
+			//百度Hi(如流)
+			case "rl":
+				RouterMsg.GroupId = RouterMsg.GroupId + "," + router_value.UrlOrPhone
+			//短信、电话
+			case "txdx", "hwdx", "bddx", "alydx", "txdh", "alydh", "rlydh", "7moordx", "7moordh":
+				RouterMsg.Phone = RouterMsg.Phone + "," + router_value.UrlOrPhone
+			//异常参数
+			default:
+				logs.Info("暂未支持的路由！")
+			}
+		}
+	}
+	return RouterMsg
 }
 
 func SetRecord(AlertValue interface{}) {

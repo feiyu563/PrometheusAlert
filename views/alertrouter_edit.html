@@ -7,7 +7,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="/" class="nav-link">告警管理</a>
+        <a href="/alertrouter" class="nav-link">告警管理</a>
       </li>
     </ul>
 
@@ -158,8 +158,6 @@ $(function () {
 	typeChange();
 })
 function typeChange(){
-var xx = {{.AlertRouter}};
-console.log(xx);
  var tpl_id = document.getElementById("tpl_id");
  var tpltype = document.getElementById("tpltype");
  var typeStr = document.getElementById("typestr");
@@ -231,6 +229,7 @@ $.ajax({
 		console.log(result);
 		if (result == null) {
 			alert("告警路由保存成功!");
+			window.location.replace("/alertrouter")
 		} else {
 			alert("告警路由保存失败!");
 		};

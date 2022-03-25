@@ -41,6 +41,8 @@ type DashboardJson struct {
 
 var ChartsJson DashboardJson
 
+var GlobalAlertRouter []*models.AlertRouter
+
 //取到tpl路径
 //fmt.Println(filepath.Join(beego.AppPath,"tpl"))
 
@@ -79,11 +81,8 @@ func (c *MainController) AlertRouter() {
 	c.Data["IsAlertRouter"] = true
 	c.TplName = "alertrouter.html"
 
-	AlertRouter, err := models.GetAllAlertRouter()
-	if err != nil {
-		logs.Error(err)
-	}
-	c.Data["AlertRouter"] = AlertRouter
+	GlobalAlertRouter, _ = models.GetAllAlertRouter()
+	c.Data["AlertRouter"] = GlobalAlertRouter
 
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
