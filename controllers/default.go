@@ -79,6 +79,7 @@ func (c *MainController) AlertRouter() {
 		return
 	}
 	c.Data["IsAlertRouter"] = true
+	c.Data["IsAlertManageMenu"] = true
 	c.TplName = "alertrouter.html"
 
 	GlobalAlertRouter, _ = models.GetAllAlertRouter()
@@ -99,6 +100,7 @@ func (c *MainController) RouterAdd() {
 	}
 	c.Data["Template"] = Template
 	c.Data["IsAlertRouter"] = true
+	c.Data["IsAlertManageMenu"] = true
 	c.TplName = "alertrouter_add.html"
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
@@ -141,6 +143,7 @@ func (c *MainController) RouterEdit() {
 		return
 	}
 	c.Data["IsAlertRouter"] = true
+	c.Data["IsAlertManageMenu"] = true
 	c.TplName = "alertrouter_edit.html"
 	s_id, _ := strconv.Atoi(c.Input().Get("id"))
 	AlertRouter, err := models.GetAlertRouter(s_id)
@@ -161,7 +164,6 @@ func (c *MainController) RouterDel() {
 	if err != nil {
 		logs.Error(err)
 	}
-	c.Redirect("/alertrouter", 302)
 }
 
 //test page
@@ -171,6 +173,7 @@ func (c *MainController) Test() {
 		return
 	}
 	c.Data["IsTest"] = true
+	c.Data["IsAlertManageMenu"] = true
 	c.TplName = "test.html"
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
@@ -182,6 +185,7 @@ func (c *MainController) Record() {
 		return
 	}
 	c.Data["IsRecord"] = true
+	c.Data["IsAlertManageMenu"] = true
 	c.TplName = "record.html"
 	Record, err := models.GetAllRecord()
 	if err != nil {
@@ -197,7 +201,6 @@ func (c *MainController) RecordClean() {
 		return
 	}
 	models.RecordClean()
-	c.Redirect("/record", 302)
 }
 
 //template page
@@ -207,6 +210,7 @@ func (c *MainController) Template() {
 		return
 	}
 	c.Data["IsTemplate"] = true
+	c.Data["IsTemplateMenu"] = true
 	c.TplName = "template.html"
 	Template, err := models.GetAllTpl()
 	if err != nil {
@@ -223,6 +227,7 @@ func (c *MainController) TemplateAdd() {
 		return
 	}
 	c.Data["IsTemplate"] = true
+	c.Data["IsTemplateMenu"] = true
 	c.TplName = "template_add.html"
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
@@ -259,6 +264,7 @@ func (c *MainController) TemplateEdit() {
 		return
 	}
 	c.Data["IsTemplate"] = true
+	c.Data["IsTemplateMenu"] = true
 	c.TplName = "template_edit.html"
 	s_id, _ := strconv.Atoi(c.Input().Get("id"))
 	Template, err := models.GetTpl(s_id)
@@ -269,16 +275,6 @@ func (c *MainController) TemplateEdit() {
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
-//func (c *MainController) TemplateTest() {
-//	c.Data["IsTemplate"]=true
-//	c.TplName = "template_test.html"
-//	s_id,_:=strconv.Atoi(c.Input().Get("id"))
-//	Template, err := models.GetTpl(s_id)
-//	if err != nil {
-//		logs.Error(err)
-//	}
-//	c.Data["Template"] = Template
-//}
 func (c *MainController) TemplateDel() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
@@ -289,7 +285,6 @@ func (c *MainController) TemplateDel() {
 	if err != nil {
 		logs.Error(err)
 	}
-	c.Redirect("/template", 302)
 }
 
 //markdown test
@@ -300,6 +295,7 @@ func (c *MainController) MarkdownTest() {
 	}
 	if c.Ctx.Request.Method == "GET" {
 		c.Data["IsMarkDownTest"] = true
+		c.Data["IsTemplateMenu"] = true
 		c.TplName = "markdown_test.html"
 		c.Data["IsLogin"] = CheckAccount(c.Ctx)
 	} else {
@@ -338,7 +334,8 @@ func (c *MainController) SetupWeixin() {
 		return
 	}
 	if c.Ctx.Request.Method == "GET" {
-		//c.Data["IsMarkDownTest"] = true
+		c.Data["IsWeixin"] = true
+		c.Data["IsSetupMenu"] = true
 		c.TplName = "setup_weixin.html"
 		c.Data["IsLogin"] = CheckAccount(c.Ctx)
 	} else {
