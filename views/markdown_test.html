@@ -48,11 +48,11 @@
 		<form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
 			<label>*Json内容: 原始Json内容文本</label>
 			<br />
-			<textarea id="jsoncontent" name="jsoncontent" class="p-3" placeholder="原始Json内容文本"></textarea>
+			<textarea id="jsoncontent" name="jsoncontent" class="form-control" style="color:white;background-color:black" cols="30" rows="10" placeholder="原始Json内容文本"></textarea>
 			<br />
 			<label>*模版内容: 自定义模版内容文本</label>
 			<br />
-			<textarea id="tplcontent" name="tplcontent" class="p-3" placeholder="自定义模版内容文本"></textarea>
+			<textarea id="tplcontent" name="tplcontent" class="form-control" style="color:#dc1aa9;background-color:black" cols="30" rows="10" placeholder="自定义模版内容文本"></textarea>
 			<br />
 			<div class="text-right">
 			
@@ -95,45 +95,31 @@
   <!-- /.content-wrapper -->
 {{template "endhtml"}}
 <script>
-$(function () {
-    // CodeMirror
-    CodeMirror.fromTextArea(document.getElementById("tplcontent"), {
-      mode: "markdown",
-	  lineNumbers: true,
-	  extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"},
-      theme: "monokai"
-    });
-    CodeMirror.fromTextArea(document.getElementById("jsoncontent"), {
-      mode: "json",
-	  lineNumbers: true,
-      theme: "monokai"
-    });
-})
-	function showHtml(){
-		var jsoncontent=document.getElementById("jsoncontent");
-		var tplcontent=document.getElementById("tplcontent");
+function showHtml(){
+	var jsoncontent=document.getElementById("jsoncontent");
+	var tplcontent=document.getElementById("tplcontent");
 
-		if (jsoncontent.value.length==0){
-			alert('原始Json内容文本不能为空');
-			return
-		};
-
-		if (tplcontent.value.length==0){
-			alert('自定义模版内容文本不能为空');
-			return
-		};
-		
-		$.ajax({
-			type: "POST",
-			dataType: "json",
-			url: '{{ urlfor "MainController.MarkdownTest"}}',
-			data: $('#formtpl').serialize(),
-			success: function (result) {
-				console.log(result);
-				$("#MarkdownHtml").html(marked(result));
-			},
-		});
-		
+	if (jsoncontent.value.length==0){
+		alert('原始Json内容文本不能为空');
+		return
 	};
+
+	if (tplcontent.value.length==0){
+		alert('自定义模版内容文本不能为空');
+		return
+	};
+	
+	$.ajax({
+		type: "POST",
+		dataType: "json",
+		url: '{{ urlfor "MainController.MarkdownTest"}}',
+		data: $('#formtpl').serialize(),
+		success: function (result) {
+			console.log(result);
+			$("#MarkdownHtml").html(marked(result));
+		},
+	});
+	
+};
 </script>
 {{template "jshtml"}}
