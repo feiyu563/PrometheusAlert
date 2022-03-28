@@ -3,6 +3,8 @@ package main
 import (
 	"PrometheusAlert/models"
 	_ "PrometheusAlert/routers"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/robfig/cron/v3"
 	"os"
 	"path"
 	"runtime"
@@ -13,7 +15,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // Infos are set at build time use ldflags.
@@ -83,6 +84,15 @@ func main() {
 	logs.Info("[main] 应用构建时间: %s", BuildDate)
 	logs.Info("[main] 应用构建用户: %s", BuildUser)
 
+	// 定时删除日志
+	RecordLive, _ := beego.AppConfig.Int("RecordLive")
+	if (RecordLive == 1){
+		RecordLiveDay, _ := beego.AppConfig.Int("RecordLiveDay")
+		logs.Info("[main] 告警记录生存周期: %dd", RecordLiveDay)
+		c := cron.New(cron.WithSeconds())
+		c.AddFunc("0 0 1 * * *", func() { models.RecordCleanByTime(RecordLiveDay) })
+		c.Start()
+	}
 	models.MetricsInit()
 	beego.Handler("/metrics", promhttp.Handler())
 	beego.Run()

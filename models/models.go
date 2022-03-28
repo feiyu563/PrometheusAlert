@@ -147,6 +147,11 @@ func RecordClean() {
 	o.Raw("delete from alert_record").Exec()
 }
 
+func RecordCleanByTime(RecordLiveDay int) {
+	o := orm.NewOrm()
+	o.Raw("delete from alert_record where created_time < ?",time.Now().AddDate(0,0,RecordLiveDay*-1)).Exec()
+}
+
 func AddAlertRecord(alertname, alertLevel, instance, job, startsAt, endsAt, summary, description, alertStatus string) error {
 	o := orm.NewOrm()
 	var err error

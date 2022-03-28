@@ -103,6 +103,9 @@ github.com/prometheus/common/model
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
+# github.com/robfig/cron/v3 v3.0.0
+## explicit
+github.com/robfig/cron/v3
 # github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644
 ## explicit
 github.com/shiena/ansicolor
