@@ -184,8 +184,6 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				//路由处理
 				sMsg := AlertRouterSet(xalert, pMsg)
 
-				logs.Info(sMsg.Ddurl)
-
 				//发送消息
 				err, msg := TransformAlertMessage(p_alertmanager_json, &sMsg, PrometheusAlertTpl.Tpl, logsign)
 				if err != nil {
