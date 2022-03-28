@@ -164,6 +164,7 @@ func (c *MainController) RouterDel() {
 	if err != nil {
 		logs.Error(err)
 	}
+	c.Redirect("/alertrouter", 302)
 }
 
 //test page
@@ -201,6 +202,7 @@ func (c *MainController) RecordClean() {
 		return
 	}
 	models.RecordClean()
+	c.Redirect("/record", 302)
 }
 
 //template page
@@ -285,6 +287,7 @@ func (c *MainController) TemplateDel() {
 	if err != nil {
 		logs.Error(err)
 	}
+	c.Redirect("/template", 302)
 }
 
 //markdown test
