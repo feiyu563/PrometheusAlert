@@ -13,6 +13,7 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/olivere/elastic/v7 v7.0.29
 	github.com/prometheus/client_golang v1.8.0
+	github.com/robfig/cron/v3 v3.0.0
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/ysicing/workwxbot v1.0.1
