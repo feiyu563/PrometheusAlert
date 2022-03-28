@@ -42,6 +42,7 @@ type DashboardJson struct {
 var ChartsJson DashboardJson
 
 var GlobalAlertRouter []*models.AlertRouter
+var GlobalPrometheusAlertTpl []*models.PrometheusAlertDB
 
 //取到tpl路径
 //fmt.Println(filepath.Join(beego.AppPath,"tpl"))
@@ -214,11 +215,11 @@ func (c *MainController) Template() {
 	c.Data["IsTemplate"] = true
 	c.Data["IsTemplateMenu"] = true
 	c.TplName = "template.html"
-	Template, err := models.GetAllTpl()
+	GlobalPrometheusAlertTpl, err := models.GetAllTpl()
 	if err != nil {
 		logs.Error(err)
 	}
-	c.Data["Template"] = Template
+	c.Data["Template"] = GlobalPrometheusAlertTpl
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
@@ -252,10 +253,12 @@ func (c *MainController) AddTpl() {
 		id, _ := strconv.Atoi(tid)
 		err = models.UpdateTpl(id, name, t_tpye, t_use, content)
 	}
-	var resp interface{}
-	resp = err
+	var resp string
 	if err != nil {
 		resp = err.Error()
+	} else {
+		resp = "操作完成."
+		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
 	}
 	c.Data["json"] = resp
 	c.ServeJSON()
@@ -272,6 +275,8 @@ func (c *MainController) TemplateEdit() {
 	Template, err := models.GetTpl(s_id)
 	if err != nil {
 		logs.Error(err)
+	} else {
+		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
 	}
 	c.Data["Template"] = Template
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
@@ -286,6 +291,8 @@ func (c *MainController) TemplateDel() {
 	err := models.DelTpl(s_id)
 	if err != nil {
 		logs.Error(err)
+	} else {
+		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
 	}
 	c.Redirect("/template", 302)
 }

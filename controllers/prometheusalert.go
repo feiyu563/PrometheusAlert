@@ -154,16 +154,19 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	pMsg.RoundRobin = c.Input().Get("rr")
 	//该配置仅适用于alertmanager的消息,用于判断是否需要拆分alertmanager告警消息
 	pMsg.Split = c.Input().Get("split")
-
-	PrometheusAlertTpl, err := models.GetTplOne(pMsg.Tpl)
-	if err != nil {
-		logs.Error(err)
-		c.Data["json"] = err.Error()
-		c.ServeJSON()
+	//模版加载进内存处理,防止告警过多频繁查库
+	var PrometheusAlertTpl *models.PrometheusAlertDB
+	if GlobalPrometheusAlertTpl == nil {
+		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
+	}
+	for _, Tpl := range GlobalPrometheusAlertTpl {
+		if Tpl.Tplname == pMsg.Tpl {
+			PrometheusAlertTpl = Tpl
+		}
 	}
 
-	var message, msg string
-	if pMsg.Tpl != "" && pMsg.Type != "" {
+	var message string
+	if pMsg.Type != "" && PrometheusAlertTpl != nil {
 		if pMsg.Split != "false" && PrometheusAlertTpl.Tpluse == "Prometheus" {
 			//判断告警路由AlertRouter列表是否为空
 			if GlobalAlertRouter == nil {
@@ -184,7 +187,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				logs.Info(sMsg.Ddurl)
 
 				//发送消息
-				err, msg = TransformAlertMessage(p_alertmanager_json, &sMsg,PrometheusAlertTpl.Tpl, logsign)
+				err, msg := TransformAlertMessage(p_alertmanager_json, &sMsg, PrometheusAlertTpl.Tpl, logsign)
 				if err != nil {
 					logs.Error(logsign, err.Error())
 					message = err.Error()
@@ -194,7 +197,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 
 			}
 		} else {
-			err, msg = TransformAlertMessage(p_json, &pMsg, PrometheusAlertTpl.Tpl,logsign)
+			err, msg := TransformAlertMessage(p_json, &pMsg, PrometheusAlertTpl.Tpl, logsign)
 			if err != nil {
 				logs.Error(logsign, err.Error())
 				message = err.Error()
@@ -204,7 +207,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		}
 
 	} else {
-		message = "自定义模板接口参数不全！"
+		message = "自定义模板接口参数异常！"
 		logs.Error(logsign, message)
 	}
 	c.Data["json"] = message
@@ -359,7 +362,7 @@ func SetRecord(AlertValue interface{}) {
 //}
 
 //消息模版化并发送告警
-func TransformAlertMessage(p_json interface{}, pmsg *PrometheusAlertMsg, tpltext,logsign string) (error error, msg string) {
+func TransformAlertMessage(p_json interface{}, pmsg *PrometheusAlertMsg, tpltext, logsign string) (error error, msg string) {
 	funcMap := template.FuncMap{
 		"GetCSTtime": GetCSTtime,
 		"TimeFormat": TimeFormat,
