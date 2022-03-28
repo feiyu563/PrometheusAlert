@@ -253,11 +253,11 @@ func (c *MainController) AddTpl() {
 		id, _ := strconv.Atoi(tid)
 		err = models.UpdateTpl(id, name, t_tpye, t_use, content)
 	}
-	var resp string
+	var resp interface{}
 	if err != nil {
 		resp = err.Error()
 	} else {
-		resp = "操作完成."
+		resp = err
 		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
 	}
 	c.Data["json"] = resp
