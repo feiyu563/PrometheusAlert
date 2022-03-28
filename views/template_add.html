@@ -112,7 +112,7 @@
 				  <!-- textarea -->
 				  <div class="form-group">
 					<label>*模版内容:</label>
-					<textarea class="p-3" id="content" name="content" placeholder="模版内容请参照go语言模版进行填写，匹配的JSON内容可在PrometheusAlert的日志中寻找对应监控告警系统发来的消息"></textarea>
+					<textarea class="form-control" style="color:#dc1aa9;background-color:black" cols="30" rows="10" id="content" name="content" placeholder="模版内容请参照go语言模版进行填写，匹配的JSON内容可在PrometheusAlert的日志中寻找对应监控告警系统发来的消息"></textarea>
 				  </div>
 				</div>
 				
@@ -120,7 +120,7 @@
 				  <!-- textarea -->
 				  <div class="form-group">
 					<label>消息协议JSON内容:</label>
-					<textarea class="p-3" id="pjson" name="pjson" placeholder="可在PrometheusAlert日志中查找"></textarea>
+					<textarea class="form-control" style="color:white;background-color:black" cols="30" rows="10" id="pjson" name="pjson" placeholder="可在PrometheusAlert日志中查找"></textarea>
 				  </div>
 				</div>
 			  </div>
@@ -193,20 +193,6 @@
   <!-- /.content-wrapper -->
 {{template "endhtml"}}
 <script>
-$(function () {
-    // CodeMirror
-    CodeMirror.fromTextArea(document.getElementById("content"), {
-      mode: "markdown",
-	  lineNumbers: true,
-	  extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"},
-      theme: "monokai"
-    });
-    CodeMirror.fromTextArea(document.getElementById("pjson"), {
-      mode: "json",
-	  lineNumbers: true,
-      theme: "monokai"
-    });
-})
 function typeChange(){
  var objS = document.getElementById("type");
  var typeStr = document.getElementById("typestr");

@@ -117,7 +117,7 @@
 				  <!-- textarea -->
 				  <div class="form-group">
 					<label>*模版内容:</label>
-					  <textarea class="p-3" id="content" name="content">{{.Template.Tpl}}</textarea>
+					  <textarea class="form-control" style="color:#dc1aa9;background-color:black" cols="30" rows="10" id="content" name="content">{{.Template.Tpl}}</textarea>
 				  </div>
 				</div>
 				
@@ -126,7 +126,7 @@
 				  <!-- textarea -->
 				  <div class="form-group">
 					<label>消息协议JSON内容:</label>
-					  <textarea class="p-3" id="pjson" name="pjson" placeholder="可在PrometheusAlert日志中查找"></textarea>
+					  <textarea class="form-control" style="color:white;background-color:black" cols="30" rows="10" id="pjson" name="pjson" placeholder="可在PrometheusAlert日志中查找"></textarea>
 				  </div>
 				</div>
 				
@@ -200,18 +200,6 @@
 <script>
 $(function () {
 	typeChange();
-    // CodeMirror
-    CodeMirror.fromTextArea(document.getElementById("content"), {
-      mode: "markdown",
-	  lineNumbers: true,
-	  extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"},
-      theme: "monokai"
-    });
-    CodeMirror.fromTextArea(document.getElementById("pjson"), {
-      mode: "json",
-	  lineNumbers: true,
-      theme: "monokai"
-    });
 })
 function typeChange(){
  var objS = document.getElementById("type");
