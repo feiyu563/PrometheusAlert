@@ -140,30 +140,40 @@ func NewBodyFromSectionFile(file *os.File, off, size int64) (*Body, error) {
 //
 // PARAMS:
 //     - r: the input reader
-//     - size: the size to be read from the input reader which must be <= reader size
+//     - size: the size to be read, -1 is read all
 // RETURNS:
 //     - *Body: the return Body object
 //     - error: error if any specific error occurs
 func NewBodyFromSizedReader(r io.Reader, size int64) (*Body, error) {
+	var buffer bytes.Buffer
+	var rlen int64
 	var err error
-	var buf1, buf2 bytes.Buffer
-	tee := io.TeeReader(r, &buf1)
-	readerSize, err := io.Copy(&buf2, tee)
-	if err != nil {
-		return nil, err
-	}
-	if readerSize < size {
-		return nil, NewBceClientError("given size can't be bigger than the reader actual size")
-	}
-	contentMD5 := ""
 	if size >= 0 {
-		contentMD5, err = util.CalculateContentMD5(&buf1, size)
+		rlen, err = io.CopyN(&buffer, r, size)
+	} else {
+		rlen, err = io.Copy(&buffer, r)
 	}
 	if err != nil {
 		return nil, err
 	}
-	stream := io.LimitReader(&buf2, size)
-	return &Body{ioutil.NopCloser(stream), size, contentMD5}, nil
+	if rlen != int64(buffer.Len()) { // must be equal
+		return nil, NewBceClientError("unexpected reader")
+	}
+	if size >= 0 {
+		if rlen < size {
+			return nil, NewBceClientError("size is great than reader actual size")
+		}
+	}
+	contentMD5, err := util.CalculateContentMD5(bytes.NewBuffer(buffer.Bytes()), rlen)
+	if err != nil {
+		return nil, err
+	}
+	body := &Body{
+		stream:     ioutil.NopCloser(&buffer),
+		size:       rlen,
+		contentMD5: contentMD5,
+	}
+	return body, nil
 }
 
 // BceRequest defines the request structure for accessing BCE services

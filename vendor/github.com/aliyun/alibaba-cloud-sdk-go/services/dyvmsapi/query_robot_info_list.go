@@ -21,7 +21,6 @@ import (
 )
 
 // QueryRobotInfoList invokes the dyvmsapi.QueryRobotInfoList API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobotinfolist.html
 func (client *Client) QueryRobotInfoList(request *QueryRobotInfoListRequest) (response *QueryRobotInfoListResponse, err error) {
 	response = CreateQueryRobotInfoListResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) QueryRobotInfoList(request *QueryRobotInfoListRequest) (re
 }
 
 // QueryRobotInfoListWithChan invokes the dyvmsapi.QueryRobotInfoList API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobotinfolist.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryRobotInfoListWithChan(request *QueryRobotInfoListRequest) (<-chan *QueryRobotInfoListResponse, <-chan error) {
 	responseChan := make(chan *QueryRobotInfoListResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) QueryRobotInfoListWithChan(request *QueryRobotInfoListRequ
 }
 
 // QueryRobotInfoListWithCallback invokes the dyvmsapi.QueryRobotInfoList API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobotinfolist.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryRobotInfoListWithCallback(request *QueryRobotInfoListRequest, callback func(response *QueryRobotInfoListResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -97,6 +92,7 @@ func CreateQueryRobotInfoListRequest() (request *QueryRobotInfoListRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "QueryRobotInfoList", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

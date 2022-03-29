@@ -79,7 +79,7 @@ func ShouldPanicWith(actual interface{}, expected ...interface{}) (message strin
 			recoveredErr, errFound := recovered.(error)
 			expectedErr, expectedFound := expected[0].(error)
 			if errFound && expectedFound && errors.Is(recoveredErr, expectedErr) {
-					message = success
+				message = success
 			} else if equal := ShouldEqual(recovered, expected[0]); equal != success {
 				message = serializer.serialize(expected[0], recovered, fmt.Sprintf(shouldHavePanickedWith, expected[0], recovered))
 			} else {

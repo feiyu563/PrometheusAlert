@@ -21,7 +21,6 @@ import (
 )
 
 // CreateRobotTask invokes the dyvmsapi.CreateRobotTask API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/createrobottask.html
 func (client *Client) CreateRobotTask(request *CreateRobotTaskRequest) (response *CreateRobotTaskResponse, err error) {
 	response = CreateCreateRobotTaskResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) CreateRobotTask(request *CreateRobotTaskRequest) (response
 }
 
 // CreateRobotTaskWithChan invokes the dyvmsapi.CreateRobotTask API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/createrobottask.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) CreateRobotTaskWithChan(request *CreateRobotTaskRequest) (<-chan *CreateRobotTaskResponse, <-chan error) {
 	responseChan := make(chan *CreateRobotTaskResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) CreateRobotTaskWithChan(request *CreateRobotTaskRequest) (
 }
 
 // CreateRobotTaskWithCallback invokes the dyvmsapi.CreateRobotTask API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/createrobottask.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) CreateRobotTaskWithCallback(request *CreateRobotTaskRequest, callback func(response *CreateRobotTaskResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -106,6 +101,7 @@ func CreateCreateRobotTaskRequest() (request *CreateRobotTaskRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "CreateRobotTask", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

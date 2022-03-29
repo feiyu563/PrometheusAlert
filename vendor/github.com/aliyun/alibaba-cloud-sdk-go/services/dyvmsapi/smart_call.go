@@ -21,7 +21,6 @@ import (
 )
 
 // SmartCall invokes the dyvmsapi.SmartCall API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/smartcall.html
 func (client *Client) SmartCall(request *SmartCallRequest) (response *SmartCallResponse, err error) {
 	response = CreateSmartCallResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) SmartCall(request *SmartCallRequest) (response *SmartCallR
 }
 
 // SmartCallWithChan invokes the dyvmsapi.SmartCall API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/smartcall.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SmartCallWithChan(request *SmartCallRequest) (<-chan *SmartCallResponse, <-chan error) {
 	responseChan := make(chan *SmartCallResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) SmartCallWithChan(request *SmartCallRequest) (<-chan *Smar
 }
 
 // SmartCallWithCallback invokes the dyvmsapi.SmartCall API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/smartcall.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SmartCallWithCallback(request *SmartCallRequest, callback func(response *SmartCallResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -79,6 +74,8 @@ type SmartCallRequest struct {
 	ResourceOwnerId      requests.Integer `position:"Query" name:"ResourceOwnerId"`
 	VoiceCodeParam       string           `position:"Query" name:"VoiceCodeParam"`
 	EarlyMediaAsr        requests.Boolean `position:"Query" name:"EarlyMediaAsr"`
+	BackgroundSpeed      requests.Integer `position:"Query" name:"BackgroundSpeed"`
+	BackgroundVolume     requests.Integer `position:"Query" name:"BackgroundVolume"`
 	Speed                requests.Integer `position:"Query" name:"Speed"`
 	AsrBaseId            string           `position:"Query" name:"AsrBaseId"`
 	SessionTimeout       requests.Integer `position:"Query" name:"SessionTimeout"`
@@ -87,6 +84,7 @@ type SmartCallRequest struct {
 	TtsSpeed             requests.Integer `position:"Query" name:"TtsSpeed"`
 	VoiceCode            string           `position:"Query" name:"VoiceCode"`
 	CalledShowNumber     string           `position:"Query" name:"CalledShowNumber"`
+	EnableITN            requests.Boolean `position:"Query" name:"EnableITN"`
 	ActionCodeTimeBreak  requests.Integer `position:"Query" name:"ActionCodeTimeBreak"`
 	TtsConf              requests.Boolean `position:"Query" name:"TtsConf"`
 	ActionCodeBreak      requests.Boolean `position:"Query" name:"ActionCodeBreak"`
@@ -94,8 +92,10 @@ type SmartCallRequest struct {
 	RecordFlag           requests.Boolean `position:"Query" name:"RecordFlag"`
 	OwnerId              requests.Integer `position:"Query" name:"OwnerId"`
 	TtsVolume            requests.Integer `position:"Query" name:"TtsVolume"`
+	StreamAsr            requests.Integer `position:"Query" name:"StreamAsr"`
 	Volume               requests.Integer `position:"Query" name:"Volume"`
 	MuteTime             requests.Integer `position:"Query" name:"MuteTime"`
+	BackgroundFileCode   string           `position:"Query" name:"BackgroundFileCode"`
 	OutId                string           `position:"Query" name:"OutId"`
 	AsrModelId           string           `position:"Query" name:"AsrModelId"`
 	PauseTime            requests.Integer `position:"Query" name:"PauseTime"`
@@ -105,10 +105,10 @@ type SmartCallRequest struct {
 // SmartCallResponse is the response struct for api SmartCall
 type SmartCallResponse struct {
 	*responses.BaseResponse
-	RequestId string `json:"RequestId" xml:"RequestId"`
-	CallId    string `json:"CallId" xml:"CallId"`
 	Code      string `json:"Code" xml:"Code"`
 	Message   string `json:"Message" xml:"Message"`
+	RequestId string `json:"RequestId" xml:"RequestId"`
+	CallId    string `json:"CallId" xml:"CallId"`
 }
 
 // CreateSmartCallRequest creates a request to invoke SmartCall API
@@ -117,6 +117,7 @@ func CreateSmartCallRequest() (request *SmartCallRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "SmartCall", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

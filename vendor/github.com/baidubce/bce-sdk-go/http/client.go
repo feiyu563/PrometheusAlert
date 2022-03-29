@@ -136,13 +136,14 @@ func Execute(request *Request) (*Response, error) {
 	}
 	httpRequest.Header = internalHeader
 
-	// Set the reqeust body and content length if needed
-	// Variable body's type is `*BodyStream`. If its value is nil, the `Body` field must be
-	// explicitly assigned `nil` value, otherwise nil pointer dereference will arise.
-	body := request.Body()
-	if body != nil && request.Length() != 0 { // body != nil and length == 0 regards unknown
-		httpRequest.Body = body
-		httpRequest.ContentLength = request.Length()
+	if request.Body() != nil {
+		if request.Length() > 0 {
+			httpRequest.ContentLength = request.Length()
+			httpRequest.Body = request.Body()
+		} else if request.Length() < 0 {
+			// if set body and ContentLength <= 0, will be chunked
+			httpRequest.Body = request.Body()
+		} // else {} body == nil and ContentLength == 0
 	}
 
 	// Set the proxy setting if needed

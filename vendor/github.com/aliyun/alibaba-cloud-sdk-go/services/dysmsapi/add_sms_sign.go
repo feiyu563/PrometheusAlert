@@ -21,7 +21,6 @@ import (
 )
 
 // AddSmsSign invokes the dysmsapi.AddSmsSign API synchronously
-// api document: https://help.aliyun.com/api/dysmsapi/addsmssign.html
 func (client *Client) AddSmsSign(request *AddSmsSignRequest) (response *AddSmsSignResponse, err error) {
 	response = CreateAddSmsSignResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) AddSmsSign(request *AddSmsSignRequest) (response *AddSmsSi
 }
 
 // AddSmsSignWithChan invokes the dysmsapi.AddSmsSign API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/addsmssign.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) AddSmsSignWithChan(request *AddSmsSignRequest) (<-chan *AddSmsSignResponse, <-chan error) {
 	responseChan := make(chan *AddSmsSignResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) AddSmsSignWithChan(request *AddSmsSignRequest) (<-chan *Ad
 }
 
 // AddSmsSignWithCallback invokes the dysmsapi.AddSmsSign API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/addsmssign.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) AddSmsSignWithCallback(request *AddSmsSignRequest, callback func(response *AddSmsSignResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -79,7 +74,7 @@ type AddSmsSignRequest struct {
 	ResourceOwnerId      requests.Integer          `position:"Query" name:"ResourceOwnerId"`
 	Remark               string                    `position:"Query" name:"Remark"`
 	SignName             string                    `position:"Query" name:"SignName"`
-	SignFileList         *[]AddSmsSignSignFileList `position:"Query" name:"SignFileList"  type:"Repeated"`
+	SignFileList         *[]AddSmsSignSignFileList `position:"Body" name:"SignFileList"  type:"Repeated"`
 	ResourceOwnerAccount string                    `position:"Query" name:"ResourceOwnerAccount"`
 	OwnerId              requests.Integer          `position:"Query" name:"OwnerId"`
 	SignSource           requests.Integer          `position:"Query" name:"SignSource"`
@@ -105,7 +100,8 @@ func CreateAddSmsSignRequest() (request *AddSmsSignRequest) {
 	request = &AddSmsSignRequest{
 		RpcRequest: &requests.RpcRequest{},
 	}
-	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "AddSmsSign", "dysms", "openAPI")
+	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "AddSmsSign", "", "")
+	request.Method = requests.POST
 	return
 }
 

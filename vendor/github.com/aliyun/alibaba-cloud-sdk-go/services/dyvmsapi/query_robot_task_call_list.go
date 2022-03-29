@@ -21,7 +21,6 @@ import (
 )
 
 // QueryRobotTaskCallList invokes the dyvmsapi.QueryRobotTaskCallList API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobottaskcalllist.html
 func (client *Client) QueryRobotTaskCallList(request *QueryRobotTaskCallListRequest) (response *QueryRobotTaskCallListResponse, err error) {
 	response = CreateQueryRobotTaskCallListResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) QueryRobotTaskCallList(request *QueryRobotTaskCallListRequ
 }
 
 // QueryRobotTaskCallListWithChan invokes the dyvmsapi.QueryRobotTaskCallList API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobottaskcalllist.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryRobotTaskCallListWithChan(request *QueryRobotTaskCallListRequest) (<-chan *QueryRobotTaskCallListResponse, <-chan error) {
 	responseChan := make(chan *QueryRobotTaskCallListResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) QueryRobotTaskCallListWithChan(request *QueryRobotTaskCall
 }
 
 // QueryRobotTaskCallListWithCallback invokes the dyvmsapi.QueryRobotTaskCallList API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobottaskcalllist.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryRobotTaskCallListWithCallback(request *QueryRobotTaskCallListRequest, callback func(response *QueryRobotTaskCallListResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -106,6 +101,7 @@ func CreateQueryRobotTaskCallListRequest() (request *QueryRobotTaskCallListReque
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "QueryRobotTaskCallList", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

@@ -21,7 +21,6 @@ import (
 )
 
 // IvrCall invokes the dyvmsapi.IvrCall API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/ivrcall.html
 func (client *Client) IvrCall(request *IvrCallRequest) (response *IvrCallResponse, err error) {
 	response = CreateIvrCallResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) IvrCall(request *IvrCallRequest) (response *IvrCallRespons
 }
 
 // IvrCallWithChan invokes the dyvmsapi.IvrCall API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/ivrcall.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) IvrCallWithChan(request *IvrCallRequest) (<-chan *IvrCallResponse, <-chan error) {
 	responseChan := make(chan *IvrCallResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) IvrCallWithChan(request *IvrCallRequest) (<-chan *IvrCallR
 }
 
 // IvrCallWithCallback invokes the dyvmsapi.IvrCall API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/ivrcall.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) IvrCallWithCallback(request *IvrCallRequest, callback func(response *IvrCallResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -113,6 +108,7 @@ func CreateIvrCallRequest() (request *IvrCallRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "IvrCall", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

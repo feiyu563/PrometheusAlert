@@ -21,7 +21,6 @@ import (
 )
 
 // ReportVoipProblems invokes the dyvmsapi.ReportVoipProblems API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/reportvoipproblems.html
 func (client *Client) ReportVoipProblems(request *ReportVoipProblemsRequest) (response *ReportVoipProblemsResponse, err error) {
 	response = CreateReportVoipProblemsResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) ReportVoipProblems(request *ReportVoipProblemsRequest) (re
 }
 
 // ReportVoipProblemsWithChan invokes the dyvmsapi.ReportVoipProblems API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/reportvoipproblems.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) ReportVoipProblemsWithChan(request *ReportVoipProblemsRequest) (<-chan *ReportVoipProblemsResponse, <-chan error) {
 	responseChan := make(chan *ReportVoipProblemsResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) ReportVoipProblemsWithChan(request *ReportVoipProblemsRequ
 }
 
 // ReportVoipProblemsWithCallback invokes the dyvmsapi.ReportVoipProblems API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/reportvoipproblems.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) ReportVoipProblemsWithCallback(request *ReportVoipProblemsRequest, callback func(response *ReportVoipProblemsResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -100,6 +95,7 @@ func CreateReportVoipProblemsRequest() (request *ReportVoipProblemsRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "ReportVoipProblems", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

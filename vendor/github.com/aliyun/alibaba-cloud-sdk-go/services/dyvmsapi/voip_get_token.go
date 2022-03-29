@@ -21,7 +21,6 @@ import (
 )
 
 // VoipGetToken invokes the dyvmsapi.VoipGetToken API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/voipgettoken.html
 func (client *Client) VoipGetToken(request *VoipGetTokenRequest) (response *VoipGetTokenResponse, err error) {
 	response = CreateVoipGetTokenResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) VoipGetToken(request *VoipGetTokenRequest) (response *Voip
 }
 
 // VoipGetTokenWithChan invokes the dyvmsapi.VoipGetToken API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/voipgettoken.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) VoipGetTokenWithChan(request *VoipGetTokenRequest) (<-chan *VoipGetTokenResponse, <-chan error) {
 	responseChan := make(chan *VoipGetTokenResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) VoipGetTokenWithChan(request *VoipGetTokenRequest) (<-chan
 }
 
 // VoipGetTokenWithCallback invokes the dyvmsapi.VoipGetToken API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/voipgettoken.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) VoipGetTokenWithCallback(request *VoipGetTokenRequest, callback func(response *VoipGetTokenResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -99,6 +94,7 @@ func CreateVoipGetTokenRequest() (request *VoipGetTokenRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "VoipGetToken", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

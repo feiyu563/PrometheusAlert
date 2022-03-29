@@ -21,7 +21,6 @@ import (
 )
 
 // DeleteSmsSign invokes the dysmsapi.DeleteSmsSign API synchronously
-// api document: https://help.aliyun.com/api/dysmsapi/deletesmssign.html
 func (client *Client) DeleteSmsSign(request *DeleteSmsSignRequest) (response *DeleteSmsSignResponse, err error) {
 	response = CreateDeleteSmsSignResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) DeleteSmsSign(request *DeleteSmsSignRequest) (response *De
 }
 
 // DeleteSmsSignWithChan invokes the dysmsapi.DeleteSmsSign API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/deletesmssign.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) DeleteSmsSignWithChan(request *DeleteSmsSignRequest) (<-chan *DeleteSmsSignResponse, <-chan error) {
 	responseChan := make(chan *DeleteSmsSignResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) DeleteSmsSignWithChan(request *DeleteSmsSignRequest) (<-ch
 }
 
 // DeleteSmsSignWithCallback invokes the dysmsapi.DeleteSmsSign API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/deletesmssign.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) DeleteSmsSignWithCallback(request *DeleteSmsSignRequest, callback func(response *DeleteSmsSignResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -96,7 +91,8 @@ func CreateDeleteSmsSignRequest() (request *DeleteSmsSignRequest) {
 	request = &DeleteSmsSignRequest{
 		RpcRequest: &requests.RpcRequest{},
 	}
-	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "DeleteSmsSign", "dysms", "openAPI")
+	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "DeleteSmsSign", "", "")
+	request.Method = requests.POST
 	return
 }
 

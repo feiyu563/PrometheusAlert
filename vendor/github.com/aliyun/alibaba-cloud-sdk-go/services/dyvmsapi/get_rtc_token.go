@@ -21,7 +21,6 @@ import (
 )
 
 // GetRtcToken invokes the dyvmsapi.GetRtcToken API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/getrtctoken.html
 func (client *Client) GetRtcToken(request *GetRtcTokenRequest) (response *GetRtcTokenResponse, err error) {
 	response = CreateGetRtcTokenResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) GetRtcToken(request *GetRtcTokenRequest) (response *GetRtc
 }
 
 // GetRtcTokenWithChan invokes the dyvmsapi.GetRtcToken API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/getrtctoken.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) GetRtcTokenWithChan(request *GetRtcTokenRequest) (<-chan *GetRtcTokenResponse, <-chan error) {
 	responseChan := make(chan *GetRtcTokenResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) GetRtcTokenWithChan(request *GetRtcTokenRequest) (<-chan *
 }
 
 // GetRtcTokenWithCallback invokes the dyvmsapi.GetRtcToken API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/getrtctoken.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) GetRtcTokenWithCallback(request *GetRtcTokenRequest, callback func(response *GetRtcTokenResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -99,6 +94,7 @@ func CreateGetRtcTokenRequest() (request *GetRtcTokenRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "GetRtcToken", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

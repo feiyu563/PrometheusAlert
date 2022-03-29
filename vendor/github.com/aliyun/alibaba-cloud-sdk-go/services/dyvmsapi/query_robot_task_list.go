@@ -21,7 +21,6 @@ import (
 )
 
 // QueryRobotTaskList invokes the dyvmsapi.QueryRobotTaskList API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobottasklist.html
 func (client *Client) QueryRobotTaskList(request *QueryRobotTaskListRequest) (response *QueryRobotTaskListResponse, err error) {
 	response = CreateQueryRobotTaskListResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) QueryRobotTaskList(request *QueryRobotTaskListRequest) (re
 }
 
 // QueryRobotTaskListWithChan invokes the dyvmsapi.QueryRobotTaskList API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobottasklist.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryRobotTaskListWithChan(request *QueryRobotTaskListRequest) (<-chan *QueryRobotTaskListResponse, <-chan error) {
 	responseChan := make(chan *QueryRobotTaskListResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) QueryRobotTaskListWithChan(request *QueryRobotTaskListRequ
 }
 
 // QueryRobotTaskListWithCallback invokes the dyvmsapi.QueryRobotTaskList API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryrobottasklist.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryRobotTaskListWithCallback(request *QueryRobotTaskListRequest, callback func(response *QueryRobotTaskListResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -89,10 +84,13 @@ type QueryRobotTaskListRequest struct {
 // QueryRobotTaskListResponse is the response struct for api QueryRobotTaskList
 type QueryRobotTaskListResponse struct {
 	*responses.BaseResponse
-	RequestId string `json:"RequestId" xml:"RequestId"`
-	Data      string `json:"Data" xml:"Data"`
-	Code      string `json:"Code" xml:"Code"`
-	Message   string `json:"Message" xml:"Message"`
+	RequestId  string `json:"RequestId" xml:"RequestId"`
+	Data       string `json:"Data" xml:"Data"`
+	PageSize   string `json:"PageSize" xml:"PageSize"`
+	PageNo     string `json:"PageNo" xml:"PageNo"`
+	TotalCount string `json:"TotalCount" xml:"TotalCount"`
+	Code       string `json:"Code" xml:"Code"`
+	Message    string `json:"Message" xml:"Message"`
 }
 
 // CreateQueryRobotTaskListRequest creates a request to invoke QueryRobotTaskList API
@@ -101,6 +99,7 @@ func CreateQueryRobotTaskListRequest() (request *QueryRobotTaskListRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "QueryRobotTaskList", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

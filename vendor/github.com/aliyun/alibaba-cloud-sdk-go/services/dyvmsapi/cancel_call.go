@@ -21,7 +21,6 @@ import (
 )
 
 // CancelCall invokes the dyvmsapi.CancelCall API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/cancelcall.html
 func (client *Client) CancelCall(request *CancelCallRequest) (response *CancelCallResponse, err error) {
 	response = CreateCancelCallResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) CancelCall(request *CancelCallRequest) (response *CancelCa
 }
 
 // CancelCallWithChan invokes the dyvmsapi.CancelCall API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/cancelcall.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) CancelCallWithChan(request *CancelCallRequest) (<-chan *CancelCallResponse, <-chan error) {
 	responseChan := make(chan *CancelCallResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) CancelCallWithChan(request *CancelCallRequest) (<-chan *Ca
 }
 
 // CancelCallWithCallback invokes the dyvmsapi.CancelCall API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/cancelcall.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) CancelCallWithCallback(request *CancelCallRequest, callback func(response *CancelCallResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -97,6 +92,7 @@ func CreateCancelCallRequest() (request *CancelCallRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "CancelCall", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

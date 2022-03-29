@@ -47,10 +47,16 @@ func init() {
 		orm.RegisterDataBase("default", "sqlite3", Db_name, 10)
 	case "mysql":
 		orm.RegisterDriver("mysql", orm.DRMySQL)
-		orm.RegisterDataBase("default", "mysql", beego.AppConfig.String("db_user")+":"+beego.AppConfig.String("db_password")+"@tcp("+beego.AppConfig.String("db_host")+":"+beego.AppConfig.String("db_port")+")/"+beego.AppConfig.String("db_name")+"?charset=utf8mb4")
+		dataSource := beego.AppConfig.String("db_user") + ":" + beego.AppConfig.String("db_password") + "@tcp(" + beego.AppConfig.String("db_host") + ":" + beego.AppConfig.String("db_port") + ")/" + beego.AppConfig.String("db_name") + "?charset=utf8mb4"
+		orm.RegisterDataBase("default", "mysql", dataSource)
+		orm.SetMaxIdleConns("default", 10)
+		orm.SetMaxOpenConns("default", 10)
 	case "postgres":
 		orm.RegisterDriver("postgres", orm.DRPostgres)
-		orm.RegisterDataBase("default", "postgres", "user="+beego.AppConfig.String("db_user")+" password="+beego.AppConfig.String("db_password")+" dbname="+beego.AppConfig.String("db_name")+" host="+beego.AppConfig.String("db_host")+" port="+beego.AppConfig.String("db_port")+" sslmode=disable")
+		dataSource := "user=" + beego.AppConfig.String("db_user") + " password=" + beego.AppConfig.String("db_password") + " dbname=" + beego.AppConfig.String("db_name") + " host=" + beego.AppConfig.String("db_host") + " port=" + beego.AppConfig.String("db_port") + " sslmode=disable"
+		orm.RegisterDataBase("default", "postgres", dataSource)
+		orm.SetMaxIdleConns("default", 10)
+		orm.SetMaxOpenConns("default", 10)
 	default:
 		// 检查数据库文件
 		Db_name := "./db/PrometheusAlertDB.db"
@@ -86,7 +92,7 @@ func main() {
 
 	// 定时删除日志
 	RecordLive, _ := beego.AppConfig.Int("RecordLive")
-	if (RecordLive == 1){
+	if RecordLive == 1 {
 		RecordLiveDay, _ := beego.AppConfig.Int("RecordLiveDay")
 		logs.Info("[main] 告警记录生存周期: %dd", RecordLiveDay)
 		c := cron.New(cron.WithSeconds())

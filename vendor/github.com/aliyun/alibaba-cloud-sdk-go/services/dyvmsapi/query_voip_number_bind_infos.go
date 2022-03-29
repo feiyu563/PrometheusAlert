@@ -21,7 +21,6 @@ import (
 )
 
 // QueryVoipNumberBindInfos invokes the dyvmsapi.QueryVoipNumberBindInfos API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryvoipnumberbindinfos.html
 func (client *Client) QueryVoipNumberBindInfos(request *QueryVoipNumberBindInfosRequest) (response *QueryVoipNumberBindInfosResponse, err error) {
 	response = CreateQueryVoipNumberBindInfosResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) QueryVoipNumberBindInfos(request *QueryVoipNumberBindInfos
 }
 
 // QueryVoipNumberBindInfosWithChan invokes the dyvmsapi.QueryVoipNumberBindInfos API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryvoipnumberbindinfos.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryVoipNumberBindInfosWithChan(request *QueryVoipNumberBindInfosRequest) (<-chan *QueryVoipNumberBindInfosResponse, <-chan error) {
 	responseChan := make(chan *QueryVoipNumberBindInfosResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) QueryVoipNumberBindInfosWithChan(request *QueryVoipNumberB
 }
 
 // QueryVoipNumberBindInfosWithCallback invokes the dyvmsapi.QueryVoipNumberBindInfos API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/queryvoipnumberbindinfos.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryVoipNumberBindInfosWithCallback(request *QueryVoipNumberBindInfosRequest, callback func(response *QueryVoipNumberBindInfosResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -98,6 +93,7 @@ func CreateQueryVoipNumberBindInfosRequest() (request *QueryVoipNumberBindInfosR
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "QueryVoipNumberBindInfos", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

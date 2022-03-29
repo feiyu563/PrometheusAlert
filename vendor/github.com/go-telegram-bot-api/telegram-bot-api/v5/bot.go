@@ -3,25 +3,21 @@
 package tgbotapi
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"time"
-
-	"github.com/technoweenie/multipartstreamer"
 )
 
 // HTTPClient is the type needed for the bot to perform HTTP requests.
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
-	PostForm(url string, data url.Values) (*http.Response, error)
 }
 
 // BotAPI allows you to interact with the Telegram Bot API.
@@ -81,22 +77,22 @@ func (bot *BotAPI) SetAPIEndpoint(apiEndpoint string) {
 	bot.apiEndpoint = apiEndpoint
 }
 
-func buildParams(in Params) (out url.Values) {
+func buildParams(in Params) url.Values {
 	if in == nil {
 		return url.Values{}
 	}
 
-	out = url.Values{}
+	out := url.Values{}
 
 	for key, value := range in {
 		out.Set(key, value)
 	}
 
-	return
+	return out
 }
 
 // MakeRequest makes a request to a specific endpoint with our token.
-func (bot *BotAPI) MakeRequest(endpoint string, params Params) (APIResponse, error) {
+func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, error) {
 	if bot.Debug {
 		log.Printf("Endpoint: %s, params: %v\n", endpoint, params)
 	}
@@ -105,16 +101,22 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (APIResponse, err
 
 	values := buildParams(params)
 
-	resp, err := bot.Client.PostForm(method, values)
+	req, err := http.NewRequest("POST", method, strings.NewReader(values.Encode()))
 	if err != nil {
-		return APIResponse{}, err
+		return &APIResponse{}, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := bot.Client.Do(req)
+	if err != nil {
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	var apiResp APIResponse
 	bytes, err := bot.decodeAPIResponse(resp.Body, &apiResp)
 	if err != nil {
-		return apiResp, err
+		return &apiResp, err
 	}
 
 	if bot.Debug {
@@ -128,120 +130,117 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (APIResponse, err
 			parameters = *apiResp.Parameters
 		}
 
-		return apiResp, Error{
+		return &apiResp, &Error{
 			Code:               apiResp.ErrorCode,
 			Message:            apiResp.Description,
 			ResponseParameters: parameters,
 		}
 	}
 
-	return apiResp, nil
+	return &apiResp, nil
 }
 
 // decodeAPIResponse decode response and return slice of bytes if debug enabled.
 // If debug disabled, just decode http.Response.Body stream to APIResponse struct
 // for efficient memory usage
-func (bot *BotAPI) decodeAPIResponse(responseBody io.Reader, resp *APIResponse) (_ []byte, err error) {
+func (bot *BotAPI) decodeAPIResponse(responseBody io.Reader, resp *APIResponse) ([]byte, error) {
 	if !bot.Debug {
 		dec := json.NewDecoder(responseBody)
-		err = dec.Decode(resp)
-		return
+		err := dec.Decode(resp)
+		return nil, err
 	}
 
-	// if debug, read reponse body
+	// if debug, read response body
 	data, err := ioutil.ReadAll(responseBody)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	err = json.Unmarshal(data, resp)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	return data, nil
 }
 
-// UploadFile makes a request to the API with a file.
-//
-// Requires the parameter to hold the file not be in the params.
-// File should be a string to a file path, a FileBytes struct,
-// a FileReader struct, or a url.URL.
-//
-// Note that if your FileReader has a size set to -1, it will read
-// the file into memory to calculate a size.
-func (bot *BotAPI) UploadFile(endpoint string, params Params, fieldname string, file interface{}) (APIResponse, error) {
-	ms := multipartstreamer.New()
+// UploadFiles makes a request to the API with files.
+func (bot *BotAPI) UploadFiles(endpoint string, params Params, files []RequestFile) (*APIResponse, error) {
+	r, w := io.Pipe()
+	m := multipart.NewWriter(w)
 
-	switch f := file.(type) {
-	case string:
-		ms.WriteFields(params)
+	// This code modified from the very helpful @HirbodBehnam
+	// https://github.com/go-telegram-bot-api/telegram-bot-api/issues/354#issuecomment-663856473
+	go func() {
+		defer w.Close()
+		defer m.Close()
 
-		fileHandle, err := os.Open(f)
-		if err != nil {
-			return APIResponse{}, err
-		}
-		defer fileHandle.Close()
-
-		fi, err := os.Stat(f)
-		if err != nil {
-			return APIResponse{}, err
+		for field, value := range params {
+			if err := m.WriteField(field, value); err != nil {
+				w.CloseWithError(err)
+				return
+			}
 		}
 
-		ms.WriteReader(fieldname, fileHandle.Name(), fi.Size(), fileHandle)
-	case FileBytes:
-		ms.WriteFields(params)
+		for _, file := range files {
+			if file.Data.NeedsUpload() {
+				name, reader, err := file.Data.UploadData()
+				if err != nil {
+					w.CloseWithError(err)
+					return
+				}
 
-		buf := bytes.NewBuffer(f.Bytes)
-		ms.WriteReader(fieldname, f.Name, int64(len(f.Bytes)), buf)
-	case FileReader:
-		ms.WriteFields(params)
+				part, err := m.CreateFormFile(file.Name, name)
+				if err != nil {
+					w.CloseWithError(err)
+					return
+				}
 
-		if f.Size != -1 {
-			ms.WriteReader(fieldname, f.Name, f.Size, f.Reader)
+				if _, err := io.Copy(part, reader); err != nil {
+					w.CloseWithError(err)
+					return
+				}
 
-			break
+				if closer, ok := reader.(io.ReadCloser); ok {
+					if err = closer.Close(); err != nil {
+						w.CloseWithError(err)
+						return
+					}
+				}
+			} else {
+				value := file.Data.SendData()
+
+				if err := m.WriteField(file.Name, value); err != nil {
+					w.CloseWithError(err)
+					return
+				}
+			}
 		}
-
-		data, err := ioutil.ReadAll(f.Reader)
-		if err != nil {
-			return APIResponse{}, err
-		}
-
-		buf := bytes.NewBuffer(data)
-
-		ms.WriteReader(fieldname, f.Name, int64(len(data)), buf)
-	case url.URL:
-		params[fieldname] = f.String()
-
-		ms.WriteFields(params)
-	default:
-		return APIResponse{}, errors.New(ErrBadFileType)
-	}
+	}()
 
 	if bot.Debug {
-		log.Printf("Endpoint: %s, fieldname: %s, params: %v, file: %T\n", endpoint, fieldname, params, file)
+		log.Printf("Endpoint: %s, params: %v, with %d files\n", endpoint, params, len(files))
 	}
 
 	method := fmt.Sprintf(bot.apiEndpoint, bot.Token, endpoint)
 
-	req, err := http.NewRequest("POST", method, nil)
+	req, err := http.NewRequest("POST", method, r)
 	if err != nil {
-		return APIResponse{}, err
+		return nil, err
 	}
 
-	ms.SetupRequest(req)
+	req.Header.Set("Content-Type", m.FormDataContentType())
 
 	resp, err := bot.Client.Do(req)
 	if err != nil {
-		return APIResponse{}, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	var apiResp APIResponse
 	bytes, err := bot.decodeAPIResponse(resp.Body, &apiResp)
 	if err != nil {
-		return apiResp, err
+		return &apiResp, err
 	}
 
 	if bot.Debug {
@@ -255,13 +254,13 @@ func (bot *BotAPI) UploadFile(endpoint string, params Params, fieldname string, 
 			parameters = *apiResp.Parameters
 		}
 
-		return apiResp, Error{
+		return &apiResp, &Error{
 			Message:            apiResp.Description,
 			ResponseParameters: parameters,
 		}
 	}
 
-	return apiResp, nil
+	return &apiResp, nil
 }
 
 // GetFileDirectURL returns direct URL to file
@@ -301,23 +300,40 @@ func (bot *BotAPI) IsMessageToMe(message Message) bool {
 	return strings.Contains(message.Text, "@"+bot.Self.UserName)
 }
 
+func hasFilesNeedingUpload(files []RequestFile) bool {
+	for _, file := range files {
+		if file.Data.NeedsUpload() {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Request sends a Chattable to Telegram, and returns the APIResponse.
-func (bot *BotAPI) Request(c Chattable) (APIResponse, error) {
+func (bot *BotAPI) Request(c Chattable) (*APIResponse, error) {
 	params, err := c.params()
 	if err != nil {
-		return APIResponse{}, err
+		return nil, err
 	}
 
-	switch t := c.(type) {
-	case Fileable:
-		if t.useExistingFile() {
-			return bot.MakeRequest(t.method(), params)
+	if t, ok := c.(Fileable); ok {
+		files := t.files()
+
+		// If we have files that need to be uploaded, we should delegate the
+		// request to UploadFile.
+		if hasFilesNeedingUpload(files) {
+			return bot.UploadFiles(t.method(), params, files)
 		}
 
-		return bot.UploadFile(t.method(), params, t.name(), t.getFile())
-	default:
-		return bot.MakeRequest(c.method(), params)
+		// However, if there are no files to be uploaded, there's likely things
+		// that need to be turned into params instead.
+		for _, file := range files {
+			params[file.Name] = file.Data.SendData()
+		}
 	}
+
+	return bot.MakeRequest(c.method(), params)
 }
 
 // Send will send a Chattable item to Telegram and provides the
@@ -336,9 +352,7 @@ func (bot *BotAPI) Send(c Chattable) (Message, error) {
 
 // SendMediaGroup sends a media group and returns the resulting messages.
 func (bot *BotAPI) SendMediaGroup(config MediaGroupConfig) ([]Message, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return nil, err
 	}
@@ -354,9 +368,7 @@ func (bot *BotAPI) SendMediaGroup(config MediaGroupConfig) ([]Message, error) {
 // It requires UserID.
 // Offset and Limit are optional.
 func (bot *BotAPI) GetUserProfilePhotos(config UserProfilePhotosConfig) (UserProfilePhotos, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return UserProfilePhotos{}, err
 	}
@@ -371,9 +383,7 @@ func (bot *BotAPI) GetUserProfilePhotos(config UserProfilePhotosConfig) (UserPro
 //
 // Requires FileID.
 func (bot *BotAPI) GetFile(config FileConfig) (File, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return File{}, err
 	}
@@ -387,14 +397,12 @@ func (bot *BotAPI) GetFile(config FileConfig) (File, error) {
 // GetUpdates fetches updates.
 // If a WebHook is set, this will not return any data!
 //
-// Offset, Limit, and Timeout are optional.
+// Offset, Limit, Timeout, and AllowedUpdates are optional.
 // To avoid stale items, set Offset to one higher than the previous item.
-// Set Timeout to a large number to reduce requests so you can get updates
+// Set Timeout to a large number to reduce requests, so you can get updates
 // instantly instead of having to wait between requests.
 func (bot *BotAPI) GetUpdates(config UpdateConfig) ([]Update, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return []Update{}, err
 	}
@@ -481,6 +489,27 @@ func (bot *BotAPI) ListenForWebhook(pattern string) UpdatesChannel {
 	return ch
 }
 
+// ListenForWebhookRespReqFormat registers a http handler for a single incoming webhook.
+func (bot *BotAPI) ListenForWebhookRespReqFormat(w http.ResponseWriter, r *http.Request) UpdatesChannel {
+	ch := make(chan Update, bot.Buffer)
+
+	func(w http.ResponseWriter, r *http.Request) {
+		update, err := bot.HandleUpdate(r)
+		if err != nil {
+			errMsg, _ := json.Marshal(map[string]string{"error": err.Error()})
+			w.WriteHeader(http.StatusBadRequest)
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write(errMsg)
+			return
+		}
+
+		ch <- *update
+		close(ch)
+	}(w, r)
+
+	return ch
+}
+
 // HandleUpdate parses and returns update received via webhook
 func (bot *BotAPI) HandleUpdate(r *http.Request) (*Update, error) {
 	if r.Method != http.MethodPost {
@@ -510,7 +539,7 @@ func WriteToHTTPResponse(w http.ResponseWriter, c Chattable) error {
 	}
 
 	if t, ok := c.(Fileable); ok {
-		if !t.useExistingFile() {
+		if hasFilesNeedingUpload(t.files()) {
 			return errors.New("unable to use http response to upload files")
 		}
 	}
@@ -525,9 +554,7 @@ func WriteToHTTPResponse(w http.ResponseWriter, c Chattable) error {
 
 // GetChat gets information about a chat.
 func (bot *BotAPI) GetChat(config ChatInfoConfig) (Chat, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return Chat{}, err
 	}
@@ -543,9 +570,7 @@ func (bot *BotAPI) GetChat(config ChatInfoConfig) (Chat, error) {
 // If none have been appointed, only the creator will be returned.
 // Bots are not shown, even if they are an administrator.
 func (bot *BotAPI) GetChatAdministrators(config ChatAdministratorsConfig) ([]ChatMember, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return []ChatMember{}, err
 	}
@@ -558,9 +583,7 @@ func (bot *BotAPI) GetChatAdministrators(config ChatAdministratorsConfig) ([]Cha
 
 // GetChatMembersCount gets the number of users in a chat.
 func (bot *BotAPI) GetChatMembersCount(config ChatMemberCountConfig) (int, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return -1, err
 	}
@@ -573,9 +596,7 @@ func (bot *BotAPI) GetChatMembersCount(config ChatMemberCountConfig) (int, error
 
 // GetChatMember gets a specific chat member.
 func (bot *BotAPI) GetChatMember(config GetChatMemberConfig) (ChatMember, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return ChatMember{}, err
 	}
@@ -588,9 +609,7 @@ func (bot *BotAPI) GetChatMember(config GetChatMemberConfig) (ChatMember, error)
 
 // GetGameHighScores allows you to get the high scores for a game.
 func (bot *BotAPI) GetGameHighScores(config GetGameHighScoresConfig) ([]GameHighScore, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return []GameHighScore{}, err
 	}
@@ -603,9 +622,7 @@ func (bot *BotAPI) GetGameHighScores(config GetGameHighScoresConfig) ([]GameHigh
 
 // GetInviteLink get InviteLink for a chat
 func (bot *BotAPI) GetInviteLink(config ChatInviteLinkConfig) (string, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return "", err
 	}
@@ -618,9 +635,7 @@ func (bot *BotAPI) GetInviteLink(config ChatInviteLinkConfig) (string, error) {
 
 // GetStickerSet returns a StickerSet.
 func (bot *BotAPI) GetStickerSet(config GetStickerSetConfig) (StickerSet, error) {
-	params, _ := config.params()
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return StickerSet{}, err
 	}
@@ -633,12 +648,7 @@ func (bot *BotAPI) GetStickerSet(config GetStickerSetConfig) (StickerSet, error)
 
 // StopPoll stops a poll and returns the result.
 func (bot *BotAPI) StopPoll(config StopPollConfig) (Poll, error) {
-	params, err := config.params()
-	if err != nil {
-		return Poll{}, err
-	}
-
-	resp, err := bot.MakeRequest(config.method(), params)
+	resp, err := bot.Request(config)
 	if err != nil {
 		return Poll{}, err
 	}
@@ -651,14 +661,12 @@ func (bot *BotAPI) StopPoll(config StopPollConfig) (Poll, error) {
 
 // GetMyCommands gets the currently registered commands.
 func (bot *BotAPI) GetMyCommands() ([]BotCommand, error) {
-	config := GetMyCommandsConfig{}
+	return bot.GetMyCommandsWithConfig(GetMyCommandsConfig{})
+}
 
-	params, err := config.params()
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := bot.MakeRequest(config.method(), params)
+// GetMyCommandsWithConfig gets the currently registered commands with a config.
+func (bot *BotAPI) GetMyCommandsWithConfig(config GetMyCommandsConfig) ([]BotCommand, error) {
+	resp, err := bot.Request(config)
 	if err != nil {
 		return nil, err
 	}
@@ -667,4 +675,52 @@ func (bot *BotAPI) GetMyCommands() ([]BotCommand, error) {
 	err = json.Unmarshal(resp.Result, &commands)
 
 	return commands, err
+}
+
+// CopyMessage copy messages of any kind. The method is analogous to the method
+// forwardMessage, but the copied message doesn't have a link to the original
+// message. Returns the MessageID of the sent message on success.
+func (bot *BotAPI) CopyMessage(config CopyMessageConfig) (MessageID, error) {
+	params, err := config.params()
+	if err != nil {
+		return MessageID{}, err
+	}
+
+	resp, err := bot.MakeRequest(config.method(), params)
+	if err != nil {
+		return MessageID{}, err
+	}
+
+	var messageID MessageID
+	err = json.Unmarshal(resp.Result, &messageID)
+
+	return messageID, err
+}
+
+// EscapeText takes an input text and escape Telegram markup symbols.
+// In this way we can send a text without being afraid of having to escape the characters manually.
+// Note that you don't have to include the formatting style in the input text, or it will be escaped too.
+// If there is an error, an empty string will be returned.
+//
+// parseMode is the text formatting mode (ModeMarkdown, ModeMarkdownV2 or ModeHTML)
+// text is the input string that will be escaped
+func EscapeText(parseMode string, text string) string {
+	var replacer *strings.Replacer
+
+	if parseMode == ModeHTML {
+		replacer = strings.NewReplacer("<", "&lt;", ">", "&gt;", "&", "&amp;")
+	} else if parseMode == ModeMarkdown {
+		replacer = strings.NewReplacer("_", "\\_", "*", "\\*", "`", "\\`", "[", "\\[")
+	} else if parseMode == ModeMarkdownV2 {
+		replacer = strings.NewReplacer(
+			"_", "\\_", "*", "\\*", "[", "\\[", "]", "\\]", "(",
+			"\\(", ")", "\\)", "~", "\\~", "`", "\\`", ">", "\\>",
+			"#", "\\#", "+", "\\+", "-", "\\-", "=", "\\=", "|",
+			"\\|", "{", "\\{", "}", "\\}", ".", "\\.", "!", "\\!",
+		)
+	} else {
+		return ""
+	}
+
+	return replacer.Replace(text)
 }

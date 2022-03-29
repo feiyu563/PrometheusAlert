@@ -21,7 +21,6 @@ import (
 )
 
 // BatchRobotSmartCall invokes the dyvmsapi.BatchRobotSmartCall API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/batchrobotsmartcall.html
 func (client *Client) BatchRobotSmartCall(request *BatchRobotSmartCallRequest) (response *BatchRobotSmartCallResponse, err error) {
 	response = CreateBatchRobotSmartCallResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) BatchRobotSmartCall(request *BatchRobotSmartCallRequest) (
 }
 
 // BatchRobotSmartCallWithChan invokes the dyvmsapi.BatchRobotSmartCall API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/batchrobotsmartcall.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) BatchRobotSmartCallWithChan(request *BatchRobotSmartCallRequest) (<-chan *BatchRobotSmartCallResponse, <-chan error) {
 	responseChan := make(chan *BatchRobotSmartCallResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) BatchRobotSmartCallWithChan(request *BatchRobotSmartCallRe
 }
 
 // BatchRobotSmartCallWithCallback invokes the dyvmsapi.BatchRobotSmartCall API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/batchrobotsmartcall.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) BatchRobotSmartCallWithCallback(request *BatchRobotSmartCallRequest, callback func(response *BatchRobotSmartCallResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -107,6 +102,7 @@ func CreateBatchRobotSmartCallRequest() (request *BatchRobotSmartCallRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "BatchRobotSmartCall", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

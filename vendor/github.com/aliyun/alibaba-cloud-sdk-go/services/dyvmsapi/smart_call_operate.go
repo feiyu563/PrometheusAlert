@@ -21,7 +21,6 @@ import (
 )
 
 // SmartCallOperate invokes the dyvmsapi.SmartCallOperate API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/smartcalloperate.html
 func (client *Client) SmartCallOperate(request *SmartCallOperateRequest) (response *SmartCallOperateResponse, err error) {
 	response = CreateSmartCallOperateResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) SmartCallOperate(request *SmartCallOperateRequest) (respon
 }
 
 // SmartCallOperateWithChan invokes the dyvmsapi.SmartCallOperate API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/smartcalloperate.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SmartCallOperateWithChan(request *SmartCallOperateRequest) (<-chan *SmartCallOperateResponse, <-chan error) {
 	responseChan := make(chan *SmartCallOperateResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) SmartCallOperateWithChan(request *SmartCallOperateRequest)
 }
 
 // SmartCallOperateWithCallback invokes the dyvmsapi.SmartCallOperate API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/smartcalloperate.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SmartCallOperateWithCallback(request *SmartCallOperateRequest, callback func(response *SmartCallOperateResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -99,6 +94,7 @@ func CreateSmartCallOperateRequest() (request *SmartCallOperateRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "SmartCallOperate", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

@@ -21,7 +21,6 @@ import (
 )
 
 // UnbindNumberAndVoipId invokes the dyvmsapi.UnbindNumberAndVoipId API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/unbindnumberandvoipid.html
 func (client *Client) UnbindNumberAndVoipId(request *UnbindNumberAndVoipIdRequest) (response *UnbindNumberAndVoipIdResponse, err error) {
 	response = CreateUnbindNumberAndVoipIdResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) UnbindNumberAndVoipId(request *UnbindNumberAndVoipIdReques
 }
 
 // UnbindNumberAndVoipIdWithChan invokes the dyvmsapi.UnbindNumberAndVoipId API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/unbindnumberandvoipid.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) UnbindNumberAndVoipIdWithChan(request *UnbindNumberAndVoipIdRequest) (<-chan *UnbindNumberAndVoipIdResponse, <-chan error) {
 	responseChan := make(chan *UnbindNumberAndVoipIdResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) UnbindNumberAndVoipIdWithChan(request *UnbindNumberAndVoip
 }
 
 // UnbindNumberAndVoipIdWithCallback invokes the dyvmsapi.UnbindNumberAndVoipId API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/unbindnumberandvoipid.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) UnbindNumberAndVoipIdWithCallback(request *UnbindNumberAndVoipIdRequest, callback func(response *UnbindNumberAndVoipIdResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -98,6 +93,7 @@ func CreateUnbindNumberAndVoipIdRequest() (request *UnbindNumberAndVoipIdRequest
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "UnbindNumberAndVoipId", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

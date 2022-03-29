@@ -21,7 +21,6 @@ import (
 )
 
 // ClickToDial invokes the dyvmsapi.ClickToDial API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/clicktodial.html
 func (client *Client) ClickToDial(request *ClickToDialRequest) (response *ClickToDialResponse, err error) {
 	response = CreateClickToDialResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) ClickToDial(request *ClickToDialRequest) (response *ClickT
 }
 
 // ClickToDialWithChan invokes the dyvmsapi.ClickToDial API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/clicktodial.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) ClickToDialWithChan(request *ClickToDialRequest) (<-chan *ClickToDialResponse, <-chan error) {
 	responseChan := make(chan *ClickToDialResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) ClickToDialWithChan(request *ClickToDialRequest) (<-chan *
 }
 
 // ClickToDialWithCallback invokes the dyvmsapi.ClickToDial API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/clicktodial.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) ClickToDialWithCallback(request *ClickToDialRequest, callback func(response *ClickToDialResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -105,6 +100,7 @@ func CreateClickToDialRequest() (request *ClickToDialRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "ClickToDial", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

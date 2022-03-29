@@ -21,7 +21,6 @@ import (
 )
 
 // AddRtcAccount invokes the dyvmsapi.AddRtcAccount API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/addrtcaccount.html
 func (client *Client) AddRtcAccount(request *AddRtcAccountRequest) (response *AddRtcAccountResponse, err error) {
 	response = CreateAddRtcAccountResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) AddRtcAccount(request *AddRtcAccountRequest) (response *Ad
 }
 
 // AddRtcAccountWithChan invokes the dyvmsapi.AddRtcAccount API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/addrtcaccount.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) AddRtcAccountWithChan(request *AddRtcAccountRequest) (<-chan *AddRtcAccountResponse, <-chan error) {
 	responseChan := make(chan *AddRtcAccountResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) AddRtcAccountWithChan(request *AddRtcAccountRequest) (<-ch
 }
 
 // AddRtcAccountWithCallback invokes the dyvmsapi.AddRtcAccount API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/addrtcaccount.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) AddRtcAccountWithCallback(request *AddRtcAccountRequest, callback func(response *AddRtcAccountResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -97,6 +92,7 @@ func CreateAddRtcAccountRequest() (request *AddRtcAccountRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "AddRtcAccount", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

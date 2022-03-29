@@ -21,7 +21,6 @@ import (
 )
 
 // QuerySmsSign invokes the dysmsapi.QuerySmsSign API synchronously
-// api document: https://help.aliyun.com/api/dysmsapi/querysmssign.html
 func (client *Client) QuerySmsSign(request *QuerySmsSignRequest) (response *QuerySmsSignResponse, err error) {
 	response = CreateQuerySmsSignResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) QuerySmsSign(request *QuerySmsSignRequest) (response *Quer
 }
 
 // QuerySmsSignWithChan invokes the dysmsapi.QuerySmsSign API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/querysmssign.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QuerySmsSignWithChan(request *QuerySmsSignRequest) (<-chan *QuerySmsSignResponse, <-chan error) {
 	responseChan := make(chan *QuerySmsSignResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) QuerySmsSignWithChan(request *QuerySmsSignRequest) (<-chan
 }
 
 // QuerySmsSignWithCallback invokes the dysmsapi.QuerySmsSign API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/querysmssign.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QuerySmsSignWithCallback(request *QuerySmsSignRequest, callback func(response *QuerySmsSignResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -99,7 +94,8 @@ func CreateQuerySmsSignRequest() (request *QuerySmsSignRequest) {
 	request = &QuerySmsSignRequest{
 		RpcRequest: &requests.RpcRequest{},
 	}
-	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "QuerySmsSign", "dysms", "openAPI")
+	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "QuerySmsSign", "", "")
+	request.Method = requests.POST
 	return
 }
 

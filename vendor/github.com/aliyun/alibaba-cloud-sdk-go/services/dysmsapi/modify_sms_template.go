@@ -21,7 +21,6 @@ import (
 )
 
 // ModifySmsTemplate invokes the dysmsapi.ModifySmsTemplate API synchronously
-// api document: https://help.aliyun.com/api/dysmsapi/modifysmstemplate.html
 func (client *Client) ModifySmsTemplate(request *ModifySmsTemplateRequest) (response *ModifySmsTemplateResponse, err error) {
 	response = CreateModifySmsTemplateResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) ModifySmsTemplate(request *ModifySmsTemplateRequest) (resp
 }
 
 // ModifySmsTemplateWithChan invokes the dysmsapi.ModifySmsTemplate API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/modifysmstemplate.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) ModifySmsTemplateWithChan(request *ModifySmsTemplateRequest) (<-chan *ModifySmsTemplateResponse, <-chan error) {
 	responseChan := make(chan *ModifySmsTemplateResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) ModifySmsTemplateWithChan(request *ModifySmsTemplateReques
 }
 
 // ModifySmsTemplateWithCallback invokes the dysmsapi.ModifySmsTemplate API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/modifysmstemplate.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) ModifySmsTemplateWithCallback(request *ModifySmsTemplateRequest, callback func(response *ModifySmsTemplateResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -100,7 +95,8 @@ func CreateModifySmsTemplateRequest() (request *ModifySmsTemplateRequest) {
 	request = &ModifySmsTemplateRequest{
 		RpcRequest: &requests.RpcRequest{},
 	}
-	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "ModifySmsTemplate", "dysms", "openAPI")
+	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "ModifySmsTemplate", "", "")
+	request.Method = requests.POST
 	return
 }
 

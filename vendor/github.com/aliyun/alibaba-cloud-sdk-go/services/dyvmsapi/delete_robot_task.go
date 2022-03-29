@@ -21,7 +21,6 @@ import (
 )
 
 // DeleteRobotTask invokes the dyvmsapi.DeleteRobotTask API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/deleterobottask.html
 func (client *Client) DeleteRobotTask(request *DeleteRobotTaskRequest) (response *DeleteRobotTaskResponse, err error) {
 	response = CreateDeleteRobotTaskResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) DeleteRobotTask(request *DeleteRobotTaskRequest) (response
 }
 
 // DeleteRobotTaskWithChan invokes the dyvmsapi.DeleteRobotTask API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/deleterobottask.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) DeleteRobotTaskWithChan(request *DeleteRobotTaskRequest) (<-chan *DeleteRobotTaskResponse, <-chan error) {
 	responseChan := make(chan *DeleteRobotTaskResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) DeleteRobotTaskWithChan(request *DeleteRobotTaskRequest) (
 }
 
 // DeleteRobotTaskWithCallback invokes the dyvmsapi.DeleteRobotTask API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/deleterobottask.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) DeleteRobotTaskWithCallback(request *DeleteRobotTaskRequest, callback func(response *DeleteRobotTaskResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -97,6 +92,7 @@ func CreateDeleteRobotTaskRequest() (request *DeleteRobotTaskRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "DeleteRobotTask", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

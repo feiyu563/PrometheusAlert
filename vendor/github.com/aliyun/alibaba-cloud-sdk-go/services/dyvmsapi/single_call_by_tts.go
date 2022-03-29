@@ -21,7 +21,6 @@ import (
 )
 
 // SingleCallByTts invokes the dyvmsapi.SingleCallByTts API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/singlecallbytts.html
 func (client *Client) SingleCallByTts(request *SingleCallByTtsRequest) (response *SingleCallByTtsResponse, err error) {
 	response = CreateSingleCallByTtsResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) SingleCallByTts(request *SingleCallByTtsRequest) (response
 }
 
 // SingleCallByTtsWithChan invokes the dyvmsapi.SingleCallByTts API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/singlecallbytts.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SingleCallByTtsWithChan(request *SingleCallByTtsRequest) (<-chan *SingleCallByTtsResponse, <-chan error) {
 	responseChan := make(chan *SingleCallByTtsResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) SingleCallByTtsWithChan(request *SingleCallByTtsRequest) (
 }
 
 // SingleCallByTtsWithCallback invokes the dyvmsapi.SingleCallByTts API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/singlecallbytts.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SingleCallByTtsWithCallback(request *SingleCallByTtsRequest, callback func(response *SingleCallByTtsResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -92,10 +87,10 @@ type SingleCallByTtsRequest struct {
 // SingleCallByTtsResponse is the response struct for api SingleCallByTts
 type SingleCallByTtsResponse struct {
 	*responses.BaseResponse
-	RequestId string `json:"RequestId" xml:"RequestId"`
-	CallId    string `json:"CallId" xml:"CallId"`
 	Code      string `json:"Code" xml:"Code"`
 	Message   string `json:"Message" xml:"Message"`
+	RequestId string `json:"RequestId" xml:"RequestId"`
+	CallId    string `json:"CallId" xml:"CallId"`
 }
 
 // CreateSingleCallByTtsRequest creates a request to invoke SingleCallByTts API
@@ -104,6 +99,7 @@ func CreateSingleCallByTtsRequest() (request *SingleCallByTtsRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "SingleCallByTts", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

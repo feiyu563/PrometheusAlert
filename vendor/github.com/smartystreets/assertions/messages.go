@@ -55,7 +55,7 @@ const (
 
 	shouldHaveBeenAValidInteger = "You must provide a valid integer (was %v)!"
 	shouldHaveBeenAValidLength  = "You must provide a valid positive integer (was %v)!"
-	shouldHaveHadLength         = "Expected collection to have length equal to [%v], but it's length was [%v] instead! contents: %+v"
+	shouldHaveHadLength         = "Expected collection to have length equal to [%v], but its length was [%v] instead! contents: %+v"
 
 	shouldHaveStartedWith    = "Expected      '%v'\nto start with '%v'\n(but it didn't)!"
 	shouldNotHaveStartedWith = "Expected          '%v'\nNOT to start with '%v'\n(but it did)!"

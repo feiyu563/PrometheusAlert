@@ -21,7 +21,6 @@ import (
 )
 
 // QueryCallDetailByCallId invokes the dyvmsapi.QueryCallDetailByCallId API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/querycalldetailbycallid.html
 func (client *Client) QueryCallDetailByCallId(request *QueryCallDetailByCallIdRequest) (response *QueryCallDetailByCallIdResponse, err error) {
 	response = CreateQueryCallDetailByCallIdResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) QueryCallDetailByCallId(request *QueryCallDetailByCallIdRe
 }
 
 // QueryCallDetailByCallIdWithChan invokes the dyvmsapi.QueryCallDetailByCallId API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/querycalldetailbycallid.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryCallDetailByCallIdWithChan(request *QueryCallDetailByCallIdRequest) (<-chan *QueryCallDetailByCallIdResponse, <-chan error) {
 	responseChan := make(chan *QueryCallDetailByCallIdResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) QueryCallDetailByCallIdWithChan(request *QueryCallDetailBy
 }
 
 // QueryCallDetailByCallIdWithCallback invokes the dyvmsapi.QueryCallDetailByCallId API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/querycalldetailbycallid.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) QueryCallDetailByCallIdWithCallback(request *QueryCallDetailByCallIdRequest, callback func(response *QueryCallDetailByCallIdResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -99,6 +94,7 @@ func CreateQueryCallDetailByCallIdRequest() (request *QueryCallDetailByCallIdReq
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "QueryCallDetailByCallId", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

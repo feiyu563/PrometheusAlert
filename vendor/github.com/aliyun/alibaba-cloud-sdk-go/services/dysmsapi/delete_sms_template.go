@@ -21,7 +21,6 @@ import (
 )
 
 // DeleteSmsTemplate invokes the dysmsapi.DeleteSmsTemplate API synchronously
-// api document: https://help.aliyun.com/api/dysmsapi/deletesmstemplate.html
 func (client *Client) DeleteSmsTemplate(request *DeleteSmsTemplateRequest) (response *DeleteSmsTemplateResponse, err error) {
 	response = CreateDeleteSmsTemplateResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) DeleteSmsTemplate(request *DeleteSmsTemplateRequest) (resp
 }
 
 // DeleteSmsTemplateWithChan invokes the dysmsapi.DeleteSmsTemplate API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/deletesmstemplate.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) DeleteSmsTemplateWithChan(request *DeleteSmsTemplateRequest) (<-chan *DeleteSmsTemplateResponse, <-chan error) {
 	responseChan := make(chan *DeleteSmsTemplateResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) DeleteSmsTemplateWithChan(request *DeleteSmsTemplateReques
 }
 
 // DeleteSmsTemplateWithCallback invokes the dysmsapi.DeleteSmsTemplate API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/deletesmstemplate.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) DeleteSmsTemplateWithCallback(request *DeleteSmsTemplateRequest, callback func(response *DeleteSmsTemplateResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -96,7 +91,8 @@ func CreateDeleteSmsTemplateRequest() (request *DeleteSmsTemplateRequest) {
 	request = &DeleteSmsTemplateRequest{
 		RpcRequest: &requests.RpcRequest{},
 	}
-	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "DeleteSmsTemplate", "dysms", "openAPI")
+	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "DeleteSmsTemplate", "", "")
+	request.Method = requests.POST
 	return
 }
 

@@ -21,7 +21,6 @@ import (
 )
 
 // VoipAddAccount invokes the dyvmsapi.VoipAddAccount API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/voipaddaccount.html
 func (client *Client) VoipAddAccount(request *VoipAddAccountRequest) (response *VoipAddAccountResponse, err error) {
 	response = CreateVoipAddAccountResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) VoipAddAccount(request *VoipAddAccountRequest) (response *
 }
 
 // VoipAddAccountWithChan invokes the dyvmsapi.VoipAddAccount API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/voipaddaccount.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) VoipAddAccountWithChan(request *VoipAddAccountRequest) (<-chan *VoipAddAccountResponse, <-chan error) {
 	responseChan := make(chan *VoipAddAccountResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) VoipAddAccountWithChan(request *VoipAddAccountRequest) (<-
 }
 
 // VoipAddAccountWithCallback invokes the dyvmsapi.VoipAddAccount API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/voipaddaccount.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) VoipAddAccountWithCallback(request *VoipAddAccountRequest, callback func(response *VoipAddAccountResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -97,6 +92,7 @@ func CreateVoipAddAccountRequest() (request *VoipAddAccountRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "VoipAddAccount", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

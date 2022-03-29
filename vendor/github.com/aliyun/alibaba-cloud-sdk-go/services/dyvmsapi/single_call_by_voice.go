@@ -21,7 +21,6 @@ import (
 )
 
 // SingleCallByVoice invokes the dyvmsapi.SingleCallByVoice API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/singlecallbyvoice.html
 func (client *Client) SingleCallByVoice(request *SingleCallByVoiceRequest) (response *SingleCallByVoiceResponse, err error) {
 	response = CreateSingleCallByVoiceResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) SingleCallByVoice(request *SingleCallByVoiceRequest) (resp
 }
 
 // SingleCallByVoiceWithChan invokes the dyvmsapi.SingleCallByVoice API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/singlecallbyvoice.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SingleCallByVoiceWithChan(request *SingleCallByVoiceRequest) (<-chan *SingleCallByVoiceResponse, <-chan error) {
 	responseChan := make(chan *SingleCallByVoiceResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) SingleCallByVoiceWithChan(request *SingleCallByVoiceReques
 }
 
 // SingleCallByVoiceWithCallback invokes the dyvmsapi.SingleCallByVoice API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/singlecallbyvoice.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SingleCallByVoiceWithCallback(request *SingleCallByVoiceRequest, callback func(response *SingleCallByVoiceResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -103,6 +98,7 @@ func CreateSingleCallByVoiceRequest() (request *SingleCallByVoiceRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "SingleCallByVoice", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

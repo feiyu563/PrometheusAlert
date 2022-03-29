@@ -21,7 +21,6 @@ import (
 )
 
 // SendSms invokes the dysmsapi.SendSms API synchronously
-// api document: https://help.aliyun.com/api/dysmsapi/sendsms.html
 func (client *Client) SendSms(request *SendSmsRequest) (response *SendSmsResponse, err error) {
 	response = CreateSendSmsResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) SendSms(request *SendSmsRequest) (response *SendSmsRespons
 }
 
 // SendSmsWithChan invokes the dysmsapi.SendSms API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/sendsms.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SendSmsWithChan(request *SendSmsRequest) (<-chan *SendSmsResponse, <-chan error) {
 	responseChan := make(chan *SendSmsResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) SendSmsWithChan(request *SendSmsRequest) (<-chan *SendSmsR
 }
 
 // SendSmsWithCallback invokes the dysmsapi.SendSms API asynchronously
-// api document: https://help.aliyun.com/api/dysmsapi/sendsms.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) SendSmsWithCallback(request *SendSmsRequest, callback func(response *SendSmsResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -101,7 +96,8 @@ func CreateSendSmsRequest() (request *SendSmsRequest) {
 	request = &SendSmsRequest{
 		RpcRequest: &requests.RpcRequest{},
 	}
-	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "SendSms", "dysms", "openAPI")
+	request.InitWithApiInfo("Dysmsapi", "2017-05-25", "SendSms", "", "")
+	request.Method = requests.POST
 	return
 }
 

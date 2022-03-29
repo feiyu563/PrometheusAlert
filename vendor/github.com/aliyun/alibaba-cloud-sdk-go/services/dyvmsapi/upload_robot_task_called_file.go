@@ -21,7 +21,6 @@ import (
 )
 
 // UploadRobotTaskCalledFile invokes the dyvmsapi.UploadRobotTaskCalledFile API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/uploadrobottaskcalledfile.html
 func (client *Client) UploadRobotTaskCalledFile(request *UploadRobotTaskCalledFileRequest) (response *UploadRobotTaskCalledFileResponse, err error) {
 	response = CreateUploadRobotTaskCalledFileResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) UploadRobotTaskCalledFile(request *UploadRobotTaskCalledFi
 }
 
 // UploadRobotTaskCalledFileWithChan invokes the dyvmsapi.UploadRobotTaskCalledFile API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/uploadrobottaskcalledfile.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) UploadRobotTaskCalledFileWithChan(request *UploadRobotTaskCalledFileRequest) (<-chan *UploadRobotTaskCalledFileResponse, <-chan error) {
 	responseChan := make(chan *UploadRobotTaskCalledFileResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) UploadRobotTaskCalledFileWithChan(request *UploadRobotTask
 }
 
 // UploadRobotTaskCalledFileWithCallback invokes the dyvmsapi.UploadRobotTaskCalledFile API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/uploadrobottaskcalledfile.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) UploadRobotTaskCalledFileWithCallback(request *UploadRobotTaskCalledFileRequest, callback func(response *UploadRobotTaskCalledFileResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -100,6 +95,7 @@ func CreateUploadRobotTaskCalledFileRequest() (request *UploadRobotTaskCalledFil
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "UploadRobotTaskCalledFile", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

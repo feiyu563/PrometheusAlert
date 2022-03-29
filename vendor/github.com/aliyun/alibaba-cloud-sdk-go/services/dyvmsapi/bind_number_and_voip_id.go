@@ -21,7 +21,6 @@ import (
 )
 
 // BindNumberAndVoipId invokes the dyvmsapi.BindNumberAndVoipId API synchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/bindnumberandvoipid.html
 func (client *Client) BindNumberAndVoipId(request *BindNumberAndVoipIdRequest) (response *BindNumberAndVoipIdResponse, err error) {
 	response = CreateBindNumberAndVoipIdResponse()
 	err = client.DoAction(request, response)
@@ -29,8 +28,6 @@ func (client *Client) BindNumberAndVoipId(request *BindNumberAndVoipIdRequest) (
 }
 
 // BindNumberAndVoipIdWithChan invokes the dyvmsapi.BindNumberAndVoipId API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/bindnumberandvoipid.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) BindNumberAndVoipIdWithChan(request *BindNumberAndVoipIdRequest) (<-chan *BindNumberAndVoipIdResponse, <-chan error) {
 	responseChan := make(chan *BindNumberAndVoipIdResponse, 1)
 	errChan := make(chan error, 1)
@@ -53,8 +50,6 @@ func (client *Client) BindNumberAndVoipIdWithChan(request *BindNumberAndVoipIdRe
 }
 
 // BindNumberAndVoipIdWithCallback invokes the dyvmsapi.BindNumberAndVoipId API asynchronously
-// api document: https://help.aliyun.com/api/dyvmsapi/bindnumberandvoipid.html
-// asynchronous document: https://help.aliyun.com/document_detail/66220.html
 func (client *Client) BindNumberAndVoipIdWithCallback(request *BindNumberAndVoipIdRequest, callback func(response *BindNumberAndVoipIdResponse, err error)) <-chan int {
 	result := make(chan int, 1)
 	err := client.AddAsyncTask(func() {
@@ -98,6 +93,7 @@ func CreateBindNumberAndVoipIdRequest() (request *BindNumberAndVoipIdRequest) {
 		RpcRequest: &requests.RpcRequest{},
 	}
 	request.InitWithApiInfo("Dyvmsapi", "2017-05-25", "BindNumberAndVoipId", "dyvms", "openAPI")
+	request.Method = requests.POST
 	return
 }
 

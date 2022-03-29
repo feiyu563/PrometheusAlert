@@ -10,7 +10,7 @@ import (
 
 // Roboter is the interface implemented by Robot that can send multiple types of messages.
 type Roboter interface {
-	SendMarkdown(MsgType string, ConfigID string, Content string, MentionedList string) error
+	Send(interface{}) error
 }
 
 // Robot represents a workwxbot custom robot that can send messages to groups.
@@ -24,15 +24,8 @@ func NewRobot(webhook string) Roboter {
 }
 
 // SendMarkdown send a markdown type message.
-func (r Robot) SendMarkdown(MsgType string, ConfigID string, Content string, MentionedList string) error {
-	return r.send(&BotMessage{
-		MsgType:       MsgType,
-		ProgramType:   programType,
-		IsSendNow:     isSendNow,
-		ConfigID:      ConfigID,
-		Content:       Content,
-		MentionedList: MentionedList,
-	})
+func (r Robot) Send(msg interface{}) error {
+	return r.send(msg)
 }
 
 type workRsp struct {
