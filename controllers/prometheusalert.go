@@ -181,16 +181,18 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				go SetRecord(AlertValue)
 				//提取 prometheus 告警消息中的 label，用于和告警路由比对
 				xalert := AlertValue.(map[string]interface{})
-				//路由处理
-				sMsg := AlertRouterSet(xalert, pMsg)
+				//路由处理,可能存在多个路由都匹配成功，所以这里返回的是个列表sMsg
+				pMsgs := AlertRouterSet(xalert, pMsg)
 
-				//发送消息
-				err, msg := TransformAlertMessage(p_alertmanager_json, &sMsg, PrometheusAlertTpl.Tpl, logsign)
-				if err != nil {
-					logs.Error(logsign, err.Error())
-					message = err.Error()
-				} else {
-					message = msg
+				for _, send_msg := range pMsgs {
+					//发送消息
+					err, msg := TransformAlertMessage(p_alertmanager_json, &send_msg, PrometheusAlertTpl.Tpl, logsign)
+					if err != nil {
+						logs.Error(logsign, err.Error())
+						message = err.Error()
+					} else {
+						message = msg
+					}
 				}
 
 			}
@@ -213,58 +215,68 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 }
 
 //路由处理
-func AlertRouterSet(xalert map[string]interface{}, RouterMsg PrometheusAlertMsg) PrometheusAlertMsg {
+func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg) []PrometheusAlertMsg {
+	return_Msgs := []PrometheusAlertMsg{}
+	//循环检测现有的路由规则，找到匹配的目标后，替换发送目标参数
 	for _, router_value := range GlobalAlertRouter {
+		//先判断是否需要进行路由处理
+		if PMsg.Type == router_value.Tpl.Tpltype {
+			rules := strings.Split(router_value.Rules, ",")
+			rules_num := len(rules)
+			rules_num_match := 0
 
-		rules := strings.Split(router_value.Rules, ",")
-		rules_num := len(rules)
-		rules_num_match := 0
-
-		for _, rule := range rules {
-			for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-				if rule == (label_key + "=" + label_value.(string)) {
-					rules_num_match += 1
+			for _, rule := range rules {
+				for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
+					if rule == (label_key + "=" + label_value.(string)) {
+						rules_num_match += 1
+					}
 				}
 			}
-		}
 
-		//判断如果路由规则匹配，需要追加url到现有的参数中
-		if rules_num == rules_num_match {
-			switch router_value.Tpl.Tpltype {
-			case "wx":
-				RouterMsg.Wxurl = router_value.UrlOrPhone
-				RouterMsg.AtSomeOne = router_value.AtSomeOne
-			//钉钉渠道
-			case "dd":
-				RouterMsg.Ddurl = router_value.UrlOrPhone
-				RouterMsg.AtSomeOne = router_value.AtSomeOne
-			//飞书渠道
-			case "fs":
-				RouterMsg.Fsurl = router_value.UrlOrPhone
-				RouterMsg.AtSomeOne = router_value.AtSomeOne
-			//Webhook渠道
-			case "webhook":
-				RouterMsg.WebHookUrl = router_value.UrlOrPhone
-				RouterMsg.AtSomeOne = router_value.AtSomeOne
-			//邮件
-			case "email":
-				RouterMsg.Email = router_value.UrlOrPhone
-				RouterMsg.AtSomeOne = router_value.AtSomeOne
-			//百度Hi(如流)
-			case "rl":
-				RouterMsg.GroupId = router_value.UrlOrPhone
-				RouterMsg.AtSomeOne = router_value.AtSomeOne
-			//短信、电话
-			case "txdx", "hwdx", "bddx", "alydx", "txdh", "alydh", "rlydh", "7moordx", "7moordh":
-				RouterMsg.Phone = router_value.UrlOrPhone
-				RouterMsg.AtSomeOne = router_value.AtSomeOne
-			//异常参数
-			default:
-				logs.Info("暂未支持的路由！")
+			//判断如果路由规则匹配，需要替换url到现有的参数中
+			if rules_num == rules_num_match {
+				switch router_value.Tpl.Tpltype {
+				case "wx":
+					PMsg.Wxurl = router_value.UrlOrPhone
+					PMsg.AtSomeOne = router_value.AtSomeOne
+				//钉钉渠道
+				case "dd":
+					PMsg.Ddurl = router_value.UrlOrPhone
+					PMsg.AtSomeOne = router_value.AtSomeOne
+				//飞书渠道
+				case "fs":
+					PMsg.Fsurl = router_value.UrlOrPhone
+					PMsg.AtSomeOne = router_value.AtSomeOne
+				//Webhook渠道
+				case "webhook":
+					PMsg.WebHookUrl = router_value.UrlOrPhone
+					PMsg.AtSomeOne = router_value.AtSomeOne
+				//邮件
+				case "email":
+					PMsg.Email = router_value.UrlOrPhone
+				//百度Hi(如流)
+				case "rl":
+					PMsg.GroupId = router_value.UrlOrPhone
+				//短信、电话
+				case "txdx", "hwdx", "bddx", "alydx", "txdh", "alydh", "rlydh", "7moordx", "7moordh":
+					PMsg.Phone = router_value.UrlOrPhone
+				//异常参数
+				default:
+					logs.Info("暂未支持的路由！")
+				}
+
+				//匹配路由完成加入返回列表
+				return_Msgs = append(return_Msgs, PMsg)
 			}
+
 		}
 	}
-	return RouterMsg
+
+	//如果没有路由匹配，则将传入的PMsg直接加入返回列表，等于是原路返回
+	if len(return_Msgs) == 0 {
+		return_Msgs = append(return_Msgs, PMsg)
+	}
+	return return_Msgs
 }
 
 func SetRecord(AlertValue interface{}) {
