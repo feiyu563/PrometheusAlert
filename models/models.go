@@ -9,8 +9,8 @@ import (
 // 分类
 type PrometheusAlertDB struct {
 	Id      int
-	Tpltype string
-	Tpluse  string
+	Tpltype string //发送类型如钉钉、企业微信、飞书等
+	Tpluse  string //接受目标如Prometheus、WebHook、graylog
 	Tplname string `orm:"index"`
 	Tpl     string `orm:"type(text)"`
 	Created time.Time
@@ -149,7 +149,7 @@ func RecordClean() {
 
 func RecordCleanByTime(RecordLiveDay int) {
 	o := orm.NewOrm()
-	o.Raw("delete from alert_record where created_time < ?",time.Now().AddDate(0,0,RecordLiveDay*-1)).Exec()
+	o.Raw("delete from alert_record where created_time < ?", time.Now().AddDate(0, 0, RecordLiveDay*-1)).Exec()
 }
 
 func AddAlertRecord(alertname, alertLevel, instance, job, startsAt, endsAt, summary, description, alertStatus string) error {
