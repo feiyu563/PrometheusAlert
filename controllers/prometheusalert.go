@@ -288,7 +288,7 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg) []Pr
 
 //处理告警记录
 func SetRecord(AlertValue interface{}) {
-	var Alertname, Status, Level, Instance, Job, Summary, Description, StartAt, EndAt string
+	var Alertname, Status, Level, Labels, Instance, Summary, Description, StartAt, EndAt string
 	xalert := AlertValue.(map[string]interface{})
 	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
 	StartAt = xalert["startsAt"].(string)
@@ -299,21 +299,30 @@ func SetRecord(AlertValue interface{}) {
 	}
 
 	Status = xalert["status"].(string)
+	//get labels
 
-	for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-		if label_key == "alertname" {
-			Alertname = label_value.(string)
-		}
-		if label_key == "level" {
-			Level = label_value.(string)
-		}
-		if label_key == "instance" {
-			Instance = label_value.(string)
-		}
-		if label_key == "job" {
-			Job = label_value.(string)
-		}
+	//get alertname
+	if xalert["labels"].(map[string]interface{})["alertname"] != nil {
+		Alertname = xalert["labels"].(map[string]interface{})["alertname"].(string)
 	}
+	if xalert["labels"].(map[string]interface{})["level"] != nil {
+		Level = xalert["labels"].(map[string]interface{})["level"].(string)
+	}
+	if xalert["labels"].(map[string]interface{})["instance"] != nil {
+		Instance = xalert["labels"].(map[string]interface{})["instance"].(string)
+	}
+	labelsJsonStr, err := json.Marshal(xalert["labels"].(map[string]interface{}))
+	if err != nil {
+		logs.Error("转换lables失败：", err)
+	} else {
+		Labels = string(labelsJsonStr)
+	}
+
+	//for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
+	//	if label_key == "job" {
+	//		Job = label_value.(string)
+	//	}
+	//}
 	//get description
 	if xalert["annotations"].(map[string]interface{})["description"] != nil {
 		Description = xalert["annotations"].(map[string]interface{})["description"].(string)
@@ -323,11 +332,11 @@ func SetRecord(AlertValue interface{}) {
 		Summary = xalert["annotations"].(map[string]interface{})["summary"].(string)
 	}
 
-	if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Instance, Job, StartAt, EndAt, Summary, Description, Status) {
+	if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Labels, Instance, StartAt, EndAt, Summary, Description, Status) {
 		models.AddAlertRecord(Alertname,
 			Level,
+			Labels,
 			Instance,
-			Job,
 			StartAt,
 			EndAt,
 			Summary,
@@ -345,7 +354,7 @@ func SetRecord(AlertValue interface{}) {
 			Status:      Status,
 			Instance:    Instance,
 			Level:       Level,
-			Job:         Job,
+			Labels:      Labels,
 			Summary:     Summary,
 			Description: Description,
 			StartsAt:    StartAt,

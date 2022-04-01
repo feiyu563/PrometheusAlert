@@ -188,6 +188,8 @@ receivers:
 
 #### 4.url参数新增 `split=true`，该参数仅针对Prometheus告警消息有效，作用是将Prometheus分组消息拆分成单条发送。默认开启，如果Prometheus一次告警附带的同分组的告警消息条数过多，可能会导致告警消息体过大。如需关闭请在url中加入split=false
 
+注意：此参数如设置为`split=false`，则PrometheusAlert web页面的路由和告警记录等功能将自动关闭，请谨慎。
+
 `示例：http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx&rr=true&split=false`
 
 
@@ -195,7 +197,7 @@ receivers:
 
 #### 6.模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
 
-#### 7.关于优先级问题：URL参数 > app.conf
+#### 7.关于优先级问题：路由功能 > URL参数 > app.conf
 
 
 ----------------------------------------------------------------------

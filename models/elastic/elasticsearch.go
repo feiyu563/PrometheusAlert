@@ -17,7 +17,7 @@ type AlertES struct {
 	Status      string    `json:"status"`
 	Instance    string    `json:"instance"`
 	Level       string    `json:"level"`
-	Job         string    `json:"job"`
+	Labels      string    `json:"labels"`
 	Summary     string    `json:"summary"`
 	Description string    `json:"description"`
 	StartsAt    string    `json:"startsAt"`
@@ -34,6 +34,7 @@ const mapping = `{
 				"status":       {"type": "keyword"},
 				"instance":     {"type": "keyword"},
 				"level":        {"type": "keyword"},
+				"labels":        {"type": "keyword"},
 				"startsAt":      {"type": "date"},
 				"endsAt":       {"type": "date"},
 				"created":      {"type": "date"},

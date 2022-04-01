@@ -9,7 +9,7 @@ type AlertRecord struct {
 	Id          int64
 	Alertname   string
 	AlertLevel  string
-	Job         string
+	Labels      string
 	Instance    string
 	StartsAt    string
 	EndsAt      string
@@ -29,10 +29,10 @@ func GetAllRecord() ([]*AlertRecord, error) {
 	return Record_all, err
 }
 
-func GetRecordExist(alertname, alertLevel, instance, job, startsAt, endsAt, summary, description, alertStatus string) bool {
+func GetRecordExist(alertname, alertLevel, lables, instance, startsAt, endsAt, summary, description, alertStatus string) bool {
 	o := orm.NewOrm()
 	qs := o.QueryTable("AlertRecord")
-	flag := qs.Filter("Alertname", alertname).Filter("AlertLevel", alertLevel).Filter("Job", job).Filter("Instance", instance).Filter("Summary", summary).Filter("Description", description).Filter("StartsAt", startsAt).Filter("EndsAt", endsAt).Filter("AlertStatus", alertStatus).Exist()
+	flag := qs.Filter("Alertname", alertname).Filter("AlertLevel", alertLevel).Filter("Labels", lables).Filter("Instance", instance).Filter("Summary", summary).Filter("Description", description).Filter("StartsAt", startsAt).Filter("EndsAt", endsAt).Filter("AlertStatus", alertStatus).Exist()
 	return flag
 }
 
@@ -46,7 +46,7 @@ func RecordCleanByTime(RecordLiveDay int) {
 	o.Raw("delete from alert_record where created_time < ?", time.Now().AddDate(0, 0, RecordLiveDay*-1)).Exec()
 }
 
-func AddAlertRecord(alertname, alertLevel, instance, job, startsAt, endsAt, summary, description, alertStatus string) error {
+func AddAlertRecord(alertname, alertLevel, labels, instance, startsAt, endsAt, summary, description, alertStatus string) error {
 	o := orm.NewOrm()
 	var err error
 
@@ -54,8 +54,8 @@ func AddAlertRecord(alertname, alertLevel, instance, job, startsAt, endsAt, summ
 		//Id: id,
 		Alertname:   alertname,
 		AlertLevel:  alertLevel,
+		Labels:      labels,
 		Instance:    instance,
-		Job:         job,
 		StartsAt:    startsAt,
 		EndsAt:      endsAt,
 		Summary:     summary,

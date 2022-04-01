@@ -60,11 +60,11 @@
 				    <th>开始时间</th>
 				    <th>结束时间</th>
 				    <th>级别</th>
-				    <th>Label</th>
 				    <th>Instance</th>
 				    <th>Summary</th>
 				    <th>Description</th>
 				    <th>告警状态</th>
+				    <th>Label</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -102,12 +102,6 @@
 					</td>
 					
 					<td>
-					<span class="badge bg-gray">
-					{{.Job}}
-					</span>
-					</td>
-					
-					<td>
 					<span class="badge bg-fuchsia">
 					{{.Instance}}
 					</span>
@@ -128,6 +122,13 @@
 					<td>
 					{{if eq .AlertStatus "firing"}}<span class="badge bg-danger">告警</span>{{else}}<span class="badge bg-success">恢复</span>{{end}}
 					</td>
+
+					<td>
+					<span class="badge bg-gray">
+					{{.Labels}}
+					</span>
+					</td>
+
 				</tr>
 				{{end}}
                   </tbody>
@@ -137,11 +138,11 @@
 				    <th>开始时间</th>
 				    <th>结束时间</th>
 				    <th>级别</th>
-				    <th>Job</th>
 				    <th>Instance</th>
 				    <th>Summary</th>
 				    <th>Description</th>
 				    <th>告警状态</th>
+				    <th>Label</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -166,6 +167,13 @@
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+	
+	
+	var tb = document.getElementById('example1');//获取表格的dom节点
+	var td = tb.rows[1].cells[8];//获取0行0列的td单元格
+	console.log(td);
+	//td.innerHTML = '222';//动态修改表格的内容为222
+	
   });
 </script>
 {{template "jshtml"}}

@@ -355,7 +355,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 				Status:      RMessage.Status,
 				Instance:    RMessage.Labels.Instance,
 				Level:       RMessage.Labels.Level,
-				Job:         RMessage.Labels.Job,
+				Labels:      RMessage.Labels.Job,
 				Summary:     RMessage.Annotations.Summary,
 				Description: RMessage.Annotations.Description,
 				StartsAt:    At,
