@@ -75,8 +75,6 @@ type PrometheusAlertMsg struct {
 	Split      string
 }
 
-//var Xlabels = make(map[string][]string)
-
 func (c *PrometheusAlertController) PrometheusAlert() {
 	logsign := "[" + LogsSign() + "]"
 	var p_json interface{}
@@ -167,6 +165,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 
 	var message string
 	if pMsg.Type != "" && PrometheusAlertTpl != nil {
+		//判断是否是来自 Prometheus的告警
 		if pMsg.Split != "false" && PrometheusAlertTpl.Tpluse == "Prometheus" {
 			//判断告警路由AlertRouter列表是否为空
 			if GlobalAlertRouter == nil {
@@ -185,9 +184,9 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				pMsgs := AlertRouterSet(xalert, pMsg)
 
 				for _, send_msg := range pMsgs {
-					logs.Debug("路由：" + send_msg.Type)
+					//logs.Debug("当前路由：", send_msg.Type)
 					//获取渲染后的模版
-					err, msg := TransformAlertMessage(p_alertmanager_json, PrometheusAlertTpl.Tpl)
+					err, msg := TransformAlertMessage(p_alertmanager_json, send_msg.Tpl)
 					if err != nil {
 						//失败不发送消息
 						logs.Error(logsign, err.Error())
@@ -243,6 +242,7 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg) []Pr
 		//判断如果路由规则匹配，需要替换url到现有的参数中
 		if rules_num == rules_num_match {
 			PMsg.Type = router_value.Tpl.Tpltype
+			PMsg.Tpl = router_value.Tpl.Tpl
 			switch router_value.Tpl.Tpltype {
 			case "wx":
 				PMsg.Wxurl = router_value.UrlOrPhone
@@ -286,9 +286,20 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg) []Pr
 	return return_Msgs
 }
 
+//处理告警记录
 func SetRecord(AlertValue interface{}) {
-	var Alertname, Level, Instance, Job, Summary, Description string
+	var Alertname, Status, Level, Instance, Job, Summary, Description, StartAt, EndAt string
 	xalert := AlertValue.(map[string]interface{})
+	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
+	StartAt = xalert["startsAt"].(string)
+	EndAt = xalert["endsAt"].(string)
+	if PCstTime == 1 {
+		StartAt = GetCSTtime(xalert["startsAt"].(string))
+		EndAt = GetCSTtime(xalert["endsAt"].(string))
+	}
+
+	Status = xalert["status"].(string)
+
 	for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
 		if label_key == "alertname" {
 			Alertname = label_value.(string)
@@ -302,27 +313,26 @@ func SetRecord(AlertValue interface{}) {
 		if label_key == "job" {
 			Job = label_value.(string)
 		}
-		//SetXlabels(label_key, label_value.(string))
 	}
-	for annotation_key, annotation_value := range xalert["annotations"].(map[string]interface{}) {
-		if annotation_key == "description" {
-			Description = annotation_value.(string)
-		}
-		if annotation_key == "summary" {
-			Summary = annotation_value.(string)
-		}
+	//get description
+	if xalert["annotations"].(map[string]interface{})["description"] != nil {
+		Description = xalert["annotations"].(map[string]interface{})["description"].(string)
+	}
+	//get summary
+	if xalert["annotations"].(map[string]interface{})["summary"] != nil {
+		Summary = xalert["annotations"].(map[string]interface{})["summary"].(string)
 	}
 
-	if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Instance, Job, xalert["startsAt"].(string), xalert["endsAt"].(string), Summary, Description, xalert["status"].(string)) {
+	if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Instance, Job, StartAt, EndAt, Summary, Description, Status) {
 		models.AddAlertRecord(Alertname,
 			Level,
 			Instance,
 			Job,
-			xalert["startsAt"].(string),
-			xalert["endsAt"].(string),
+			StartAt,
+			EndAt,
 			Summary,
 			Description,
-			xalert["status"].(string))
+			Status)
 	}
 
 	// 告警写入ES
@@ -332,21 +342,21 @@ func SetRecord(AlertValue interface{}) {
 		esIndex := "prometheusalert-" + strconv.Itoa(dty) + strconv.Itoa(dtm)
 		alert := &elastic.AlertES{
 			Alertname:   Alertname,
-			Status:      xalert["status"].(string),
+			Status:      Status,
 			Instance:    Instance,
 			Level:       Level,
 			Job:         Job,
 			Summary:     Summary,
 			Description: Description,
-			StartsAt:    xalert["startsAt"].(string),
-			EndsAt:      xalert["endsAt"].(string),
+			StartsAt:    StartAt,
+			EndsAt:      EndAt,
 			Created:     dt,
 		}
 		elastic.Insert(esIndex, alert)
 	}
 }
 
-//消息模版化并发送告警
+//消息模版化
 func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg string) {
 	funcMap := template.FuncMap{
 		"GetCSTtime": GetCSTtime,
@@ -388,6 +398,7 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 	return nil, buf.String()
 }
 
+//发送消息
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	var ReturnMsg string

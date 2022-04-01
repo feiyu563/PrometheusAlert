@@ -8,3 +8,4 @@ build.sh
 build.bat
 README.MD
 dist/
+old_delete/

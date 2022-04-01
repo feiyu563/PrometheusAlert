@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+func LogsSign() string {
+	return strconv.FormatInt(time.Now().UnixNano(), 10)
+}
+
 //转换时间戳到时间字符串
 func GetTime(timeStr interface{}, timeFormat ...string) string {
 	var R_Time string
