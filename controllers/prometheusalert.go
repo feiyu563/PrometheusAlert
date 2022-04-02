@@ -181,19 +181,19 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				//提取 prometheus 告警消息中的 label，用于和告警路由比对
 				xalert := AlertValue.(map[string]interface{})
 				//路由处理,可能存在多个路由都匹配成功，所以这里返回的是个列表sMsg
-				pMsgs := AlertRouterSet(xalert, pMsg)
-
-				for _, send_msg := range pMsgs {
-					//logs.Debug("当前路由：", send_msg.Type)
+				Return_pMsgs := AlertRouterSet(xalert, pMsg, PrometheusAlertTpl.Tpl)
+				for _, Return_pMsg := range Return_pMsgs {
+					//logs.Debug("当前模版：", Return_pMsg.TplName)
 					//获取渲染后的模版
-					err, msg := TransformAlertMessage(p_alertmanager_json, send_msg.Tpl)
+					err, msg := TransformAlertMessage(p_alertmanager_json, Return_pMsg.Tpl)
+
 					if err != nil {
 						//失败不发送消息
 						logs.Error(logsign, err.Error())
 						message = err.Error()
 					} else {
 						//发送消息
-						message = SendMessagePrometheusAlert(msg, &send_msg, logsign)
+						message = SendMessagePrometheusAlert(msg, &Return_pMsg, logsign)
 					}
 
 				}
@@ -202,6 +202,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		} else {
 			//获取渲染后的模版
 			err, msg := TransformAlertMessage(p_json, PrometheusAlertTpl.Tpl)
+
 			if err != nil {
 				logs.Error(logsign, err.Error())
 				message = err.Error()
@@ -220,9 +221,10 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 }
 
 //路由处理
-func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg) []PrometheusAlertMsg {
+func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl string) []PrometheusAlertMsg {
 	return_Msgs := []PrometheusAlertMsg{}
 	//原有的参数不变
+	PMsg.Tpl = Tpl
 	return_Msgs = append(return_Msgs, PMsg)
 	//循环检测现有的路由规则，找到匹配的目标后，替换发送目标参数
 	for _, router_value := range GlobalAlertRouter {
@@ -278,11 +280,6 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg) []Pr
 
 	}
 
-	//如果没有路由匹配，则将传入的PMsg直接加入返回列表，等于是原路返回
-	//if len(return_Msgs) == 0 {
-	//	return_Msgs = append(return_Msgs, PMsg)
-	//}
-
 	return return_Msgs
 }
 
@@ -318,11 +315,6 @@ func SetRecord(AlertValue interface{}) {
 		Labels = string(labelsJsonStr)
 	}
 
-	//for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-	//	if label_key == "job" {
-	//		Job = label_value.(string)
-	//	}
-	//}
 	//get description
 	if xalert["annotations"].(map[string]interface{})["description"] != nil {
 		Description = xalert["annotations"].(map[string]interface{})["description"].(string)
@@ -403,7 +395,6 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 		return err, ""
 	}
 
-	//ReturnMsg := SendMessagePrometheusAlert(buf.String(), pmsg, logsign)
 	return nil, buf.String()
 }
 
