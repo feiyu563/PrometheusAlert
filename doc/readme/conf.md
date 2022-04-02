@@ -2,6 +2,12 @@
 
 PrometheusAlert配置文件中定义了丰富的配置项，默认配置即可满足开箱即用。并且配置文件中每项配置都加入了详细的注释，非常明确的指出了每个配置项的功能和定义。
 
+app.conf中的配置一般为PrometheusAlert的默认配置或兜底的配置，即在PrometheusAlert自定义模板接口未指定部分参数时，或默认从app.conf中读取相关默认配置。
+
+app.conf中的配置可以保持默认或不进行配置，使用过程中，大部分参数可以在自定义模板接口的url参数中动态指定即可。
+
+注意：此配置文件中不需要的配置项保持默认即可，请勿删除！！！否则可能导致程序运行异常！！！
+
 ```
 #---------------------↓全局配置-----------------------
 appname = PrometheusAlert
@@ -34,8 +40,6 @@ phonecalllevel=4
 defaultphone=xxxxxxxx
 #故障恢复是否启用电话通知0为关闭,1为开启
 phonecallresolved=0
-#自动告警抑制(自动告警抑制是默认同一个告警源的告警信息只发送告警级别最高的第一条告警信息,其他消息默认屏蔽,这么做的目的是为了减少相同告警来源的消息数量,防止告警炸弹,0为关闭,1为开启)
-silent=0
 #是否前台输出file or console
 logtype=file
 #日志文件路径
@@ -49,6 +53,12 @@ db_driver=sqlite3
 #db_user=root
 #db_password=root
 #db_name=prometheusalert
+#是否开启告警记录 0为关闭,1为开启
+AlertRecord=0
+#是否开启告警记录定时删除 0为关闭,1为开启
+RecordLive=0
+#告警记录定时删除周期，单位天
+RecordLiveDay=7
 # 是否将告警记录写入es7，0为关闭，1为开启
 alert_to_es=0
 # es地址，是[]string
@@ -58,7 +68,6 @@ to_es_url=http://localhost:9200
 # es用户和密码
 # to_es_user=username
 # to_es_pwd=password
-
 
 #---------------------↓webhook-----------------------
 #是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
@@ -140,7 +149,7 @@ ALY_DH_TtsCode=xxxxxxxx
 
 #---------------------↓容联云接口-----------------------
 #是否开启容联云电话告警通道,可同时开始多个通道0为关闭,1为开启
-RLY_DH_open-rlydh=0
+open-rlydh=0
 #容联云基础接口地址
 RLY_URL=https://app.cloopen.com:8883/2013-12-26/Accounts/
 #容联云后台SID
@@ -194,7 +203,7 @@ TG_TOKEN=xxxxx
 TG_MODE_CHAN=0
 #tg用户ID
 TG_USERID=xxxxx
-#tg频道name
+#tg频道name或者id, 频道name需要以@开始
 TG_CHANNAME=xxxxx
 #tg api地址, 可以配置为代理地址
 #TG_API_PROXY="https://api.telegram.org/bot%s/%s"
@@ -233,11 +242,11 @@ TXY_DX_SIGNATURE_ID=xxxxx
 
 #---------------------↓百度Hi(如流)-----------------------
 #是否开启百度Hi(如流)告警通道,可同时开始多个通道0为关闭,1为开启
-open-ruliu=1
+open-ruliu=0
 #默认百度Hi(如流)机器人地址
-BDRL_URL=https://api.im.baidu.com/api/msg/groupmsgsend?access_token=d29df350638ff2475d910bce7464f8c33
+BDRL_URL=https://api.im.baidu.com/api/msg/groupmsgsend?access_token=xxxxxxxxxxxxxx
 #百度Hi(如流)群ID
-BDRL_ID=23278773
+BDRL_ID=123456
 #---------------------↓bark接口-----------------------
 #是否开启telegram告警通道,可同时开始多个通道0为关闭,1为开启
 open-bark=0

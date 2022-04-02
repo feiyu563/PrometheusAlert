@@ -9,8 +9,13 @@
 ![graylog2](../graylog2.png)
 
 在弹出的窗口中填入名称和对应的PrometheusAlert的接口地址（接口地址可以去PrometheusAlert的自定义模板页面获取）即可(graylog各版本消息有区别，默认PrometheusAlert集成了graylog2和graylog3的消息模版，其他版本的模版需要自行定义):
+
+参考地址：`http://[prometheus-alert-center]:8080/prometheusalert?type=dd&tpl=graylog3-dd&ddurl=钉钉机器人地址&at=18888888888	`
+
 ![graylog3](../graylog3.png)
+
 PrometheusAlert的自定义模板页面
+
 ![graylog3](../graylog5.png)
 
 配置完成后,点击```Test```测试下是否能够正常接收告警消息即可

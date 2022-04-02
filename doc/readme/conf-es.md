@@ -4,11 +4,6 @@
 - 客户端适配的是ES7.x版本!
 - 索引根据年月动态创建`prometheusalert-YYMM`(如prometheusalert-202112)
 
-
-<br/>
-<br/>
-
-
 ## es相关配置
 
 ```conf
@@ -27,17 +22,12 @@ to_es_url=http://localhost:9200
 # to_es_pwd=password
 ```
 
-
-<br/>
-<br/>
-
-
 ## Kibana展示效果
 
 可直接创建索引模式展示告警记录。还可以自行创建表格、柱状图等展示。
 
-![kibana-index](/doc/images/kibana-index.png)
+![kibana-index](../images/kibana-index.png)
 
 <br/>
 
-![kibana-table](/doc/images/kibana-table.png)
+![kibana-table](../images/kibana-table.png)

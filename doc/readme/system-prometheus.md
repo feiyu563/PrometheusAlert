@@ -7,6 +7,7 @@
 通过自定义告警消息模版的方式(使用web页面上的自定义模版)
 
 参考alertmanager配置参考：
+
 ```
 global:
   resolve_timeout: 5m
@@ -19,7 +20,7 @@ route:
 receivers:
 - name: 'web.hook.prometheusalert'
   webhook_configs:
-  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&split=true&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxx&at=18888888888'
+  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxx&at=18888888888'
 ```
 
 详细配置也可参考：[推荐 任意告警源（自定义消息模版）接入配置](customtpl.md)

@@ -25,7 +25,7 @@ func GetAllRecord() ([]*AlertRecord, error) {
 	o := orm.NewOrm()
 	Record_all := make([]*AlertRecord, 0)
 	qs := o.QueryTable("AlertRecord")
-	_, err := qs.All(&Record_all)
+	_, err := qs.OrderBy("-id").All(&Record_all)
 	return Record_all, err
 }
 
