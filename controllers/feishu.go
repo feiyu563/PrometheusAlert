@@ -124,7 +124,7 @@ func PostToFeiShuv2(title, text, Fsurl, userEmail, logsign string) string {
 		emails := strings.Split(userEmail, ",")
 		emailtext := ""
 		for _, email := range emails {
-			emailtext += "<at email=" + email + "></at>"
+			emailtext += "<at email=" + email + " id=" + email + "></at>"
 		}
 		SendContent += emailtext
 	}
