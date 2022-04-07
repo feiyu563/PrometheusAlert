@@ -228,16 +228,32 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 	return_Msgs = append(return_Msgs, PMsg)
 	//循环检测现有的路由规则，找到匹配的目标后，替换发送目标参数
 	for _, router_value := range GlobalAlertRouter {
-
-		rules := strings.Split(router_value.Rules, ",")
-		rules_num := len(rules)
+		LabelMap := []LabelMap{}
+		//将rules转换为列表
+		json.Unmarshal([]byte(router_value.Rules), &LabelMap)
+		rules_num := len(LabelMap)
 		rules_num_match := 0
 
-		for _, rule := range rules {
+		for _, rule := range LabelMap {
 			for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-				if rule == (label_key + "=" + label_value.(string)) {
-					rules_num_match += 1
+				//这里需要分两部分处理，一部分是正则规则，一部分是非正则规则
+				if rule.Regex {
+					//正则部分比对
+					if rule.Name == label_key {
+						tz := regexp.MustCompile(rule.Value)
+						if len(tz.FindAllString(label_value.(string), -1)) > 0 {
+							rules_num_match += 1
+						}
+					}
+
+				} else {
+					//非正则部分比对
+					if rule.Name == label_key && rule.Value == label_value.(string) {
+						rules_num_match += 1
+					}
+
 				}
+
 			}
 		}
 

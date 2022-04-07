@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
+	"encoding/json"
 	"github.com/astaxie/beego/logs"
 	"strconv"
 )
@@ -39,27 +40,38 @@ func (c *MainController) RouterAdd() {
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
+type AlertRouterJson struct {
+	RouterId    string
+	RouterName  string
+	RouterTplId string
+	RouterPurl  string
+	RouterPat   string
+	Rules       []LabelMap
+}
+
+type LabelMap struct {
+	Name  string
+	Value string
+	Regex bool
+}
+
 func (c *MainController) AddRouter() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
 		return
 	}
-	//获取表单信息
-	tid := c.Input().Get("id")
-	name := c.Input().Get("name")
-	tpl_id := c.Input().Get("tpl_id")
-	rules := c.Input().Get("rules")
-	purl := c.Input().Get("purl")
-	pat := c.Input().Get("pat")
-	var err error
-	if len(tid) == 0 {
-		id, _ := strconv.Atoi(tid)
-		tpl_id_int, _ := strconv.Atoi(tpl_id)
-		err = models.AddAlertRouter(id, tpl_id_int, name, rules, purl, pat)
+	WebAlertRouterJson := AlertRouterJson{}
+	logsign := "[" + LogsSign() + "]"
+	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &WebAlertRouterJson)
+	rules, err := json.Marshal(WebAlertRouterJson.Rules)
+	if WebAlertRouterJson.RouterId == "" {
+		tpl_id_int, _ := strconv.Atoi(WebAlertRouterJson.RouterTplId)
+		err = models.AddAlertRouter(0, tpl_id_int, WebAlertRouterJson.RouterName, string(rules), WebAlertRouterJson.RouterPurl, WebAlertRouterJson.RouterPat)
 	} else {
-		id, _ := strconv.Atoi(tid)
-		tpl_id_int, _ := strconv.Atoi(tpl_id)
-		err = models.UpdateAlertRouter(id, tpl_id_int, name, rules, purl, pat)
+		id, _ := strconv.Atoi(WebAlertRouterJson.RouterId)
+		tpl_id_int, _ := strconv.Atoi(WebAlertRouterJson.RouterTplId)
+		err = models.UpdateAlertRouter(id, tpl_id_int, WebAlertRouterJson.RouterName, string(rules), WebAlertRouterJson.RouterPurl, WebAlertRouterJson.RouterPat)
 	}
 	var resp interface{}
 	resp = err

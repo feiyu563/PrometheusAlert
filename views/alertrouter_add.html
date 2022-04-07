@@ -84,15 +84,49 @@
 
 			<br />
 			
+			<div id="labelx">
 			  <div class="row">
-				<div class="col-12">
+				<div class="col-3">
 				  <!-- text input -->
 				  <div class="form-group">
-					<label>路由规则: 取自Prometheus告警消息的lable值,支持多个label</label>
-					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="规则如 app=nginx,env=test">
+					<label>Label Name: 可以去告警记录中查询</label>
+					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="如 app">
+				  </div>
+				</div>
+				
+				<div class="col-3">
+				  <!-- text input -->
+				  <div class="form-group">
+					<label>Label Value: 可以去告警记录中查询</label>
+					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="如 nginx">
+				  </div>
+				</div>
+
+				
+				<div class="col-1 d-flex align-items-center">
+				  <!-- text input -->
+					<div class="form-check">
+					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox">
+					  <label class="form-check-label">Regex</label>
+					</div>
+				</div>
+				
+			  </div>
+			  
+			<br />
+			</div>
+			
+			
+			
+			  <div class="row">
+				<div class="col-sm-6">
+				  <!-- text input -->
+				  <div class="form-group">
+					<button id='labeladd' type="button" class="btn btn-info btn-flat"><i class="far fa-plus-square"></i></button>
 				  </div>
 				</div>
 			  </div>
+			  
 
 			<br />
 
@@ -158,6 +192,16 @@
 <script>
 $(function () {
 	typeChange();
+	
+	$('#labeladd').click(function(){
+	    var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="如 app"> 				  </div> 				</div> 				 				<div class="col-3"> 				 				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="如 nginx"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox"> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  				<div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
+		$('#labelx').append(labeldiv)
+	});
+
+	$(".labelx").delegate('#labeldel','click',function(){
+		$(this).parent().parent().parent().remove();
+	});
+
 })
 function typeChange(){
  var tpl_id = document.getElementById("tpl_id");
@@ -219,32 +263,53 @@ function typeChange(){
 }
 
 function savetpl(){
-var uname=document.getElementById("rules");
-if (uname.value.length==0){
-	alert('路由规则不能为空');
-	return
-};
-var ucontent=document.getElementById("purl");
-if (ucontent.value.length==0){
-	alert('url 或 手机号参数不能为空');
-	return
-};
 
-$.ajax({
-	type: "POST",
-	dataType: "json",
-	url: '{{ urlfor "MainController.AddRouter"}}',
-	data: $('#formtpl').serialize(),
-	success: function (result) {
-		console.log(result);
-		if (result == null) {
-			alert("告警路由保存成功!");
-			window.location.replace("/alertrouter")
-		} else {
-			alert("告警路由保存失败!");
+	var uname=document.getElementById("rules");
+	if (uname.value.length==0){
+		alert('路由规则不能为空');
+		return
+	};
+	var ucontent=document.getElementById("purl");
+	if (ucontent.value.length==0){
+		alert('url 或 手机号参数不能为空');
+		return
+	};
+	//取到所有rules
+	var RouterRules =new Array();
+	$("#labelx > div").each(function() {
+		var LabelMap={
+			Name: $(this).find("#rules").val(),
+			Value: $(this).find("#rulesvalue").val(),
+			Regex: $(this).find("#rulesregex").is(":checked")
+
 		};
-	},
-});
+		RouterRules.push(LabelMap);
+	});
+
+	var alert_router_json_str={
+		RouterId: $('#id').val(),
+		RouterName: $('#name').val(),
+		RouterTplId: $('#tpl_id').val(),
+		RouterPurl: $('#purl').val(),
+		RouterPat: $('#pat').val(),
+		Rules: RouterRules
+	};
+
+	var json_data = JSON.stringify(alert_router_json_str);
+	$.ajax({
+		type: "POST",
+		dataType: "json",
+		url: '{{ urlfor "MainController.AddRouter"}}',
+		data: json_data,
+		success: function (result) {
+			if (result == null) {
+				alert("告警路由保存成功!");
+				window.location.replace("/alertrouter")
+			} else {
+				alert("告警路由保存失败!");
+			};
+		},
+	});
 
 }
 </script>

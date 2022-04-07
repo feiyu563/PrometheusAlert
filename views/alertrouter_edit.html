@@ -47,7 +47,7 @@
         <div class="card-body">
 
 			<form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
-			<input type="hidden" name="id" value="{{.AlertRouter.Id}}">
+			<input id="id" type="hidden" name="id" value="{{.AlertRouter.Id}}">
 			
 			  <div class="row">
 				<div class="col-sm-6">
@@ -82,15 +82,18 @@
 
 			<br />
 			
+			<div id="labelx"></div>
+			
+			
 			  <div class="row">
-				<div class="col-12">
+				<div class="col-sm-6">
 				  <!-- text input -->
 				  <div class="form-group">
-					<label>路由规则: 取自Prometheus告警消息的lable值,支持多个label</label>
-					<input type="text" id="rules" class="form-control" name="rules" value="{{.AlertRouter.Rules}}"  placeholder="规则如 app=nginx,env=test">
+					<button id='labeladd' type="button" class="btn btn-info btn-flat"><i class="far fa-plus-square"></i></button>
 				  </div>
 				</div>
 			  </div>
+			  
 
 			<br />
 
@@ -156,7 +159,32 @@
 <script>
 $(function () {
 	typeChange();
+	loadRules();
+	$('#labeladd').click(function(){
+	    var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div> 				 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox"> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  				<div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
+		$('#labelx').append(labeldiv)
+	});
+	
+	$('#labeldel').click(function(){
+		$('#labelx').append(labeldiv)
+	});
 })
+function loadRules(){
+	var rules_str={{.AlertRouter.Rules}};
+	var rules_data = JSON.parse(rules_str);
+	rules_data.forEach(function(rule_data){
+		var ischeck=""
+		if (rule_data.Regex){
+			ischeck="checked"
+		} else {
+			ischeck=""
+		}
+		var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value="'+rule_data.Name+'"  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div> 				 				<div class="col-3"> 				   				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value="'+rule_data.Value+'"  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox" '+ischeck+'> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  <div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
+		$('#labelx').append(labeldiv)
+	});
+	
+}
+
 function typeChange(){
  var tpl_id = document.getElementById("tpl_id");
  var tpltype = document.getElementById("tpltype");
@@ -209,32 +237,54 @@ function typeChange(){
 }
 
 function savetpl(){
-var uname=document.getElementById("rules");
-if (uname.value.length==0){
-	alert('路由规则不能为空');
-	return
-};
-var ucontent=document.getElementById("purl");
-if (ucontent.value.length==0){
-	alert('url 或 手机号参数不能为空');
-	return
-};
+	var uname=document.getElementById("rules");
+	if (uname.value.length==0){
+		alert('路由规则不能为空');
+		return
+	};
+	var ucontent=document.getElementById("purl");
+	if (ucontent.value.length==0){
+		alert('url 或 手机号参数不能为空');
+		return
+	};
 
-$.ajax({
-	type: "POST",
-	dataType: "json",
-	url: '{{ urlfor "MainController.AddRouter"}}',
-	data: $('#formtpl').serialize(),
-	success: function (result) {
-		console.log(result);
-		if (result == null) {
-			alert("告警路由保存成功!");
-			window.location.replace("/alertrouter")
-		} else {
-			alert("告警路由保存失败!");
+	//取到所有rules
+	var RouterRules =new Array();
+	$("#labelx > div").each(function() {
+		var LabelMap={
+			Name: $(this).find("#rules").val(),
+			Value: $(this).find("#rulesvalue").val(),
+			Regex: $(this).find("#rulesregex").is(":checked")
+
 		};
-	},
-});
+		RouterRules.push(LabelMap);
+	});
+
+	var alert_router_json_str={
+		RouterId: $('#id').val(),
+		RouterName: $('#name').val(),
+		RouterTplId: $('#tpl_id').val(),
+		RouterPurl: $('#purl').val(),
+		RouterPat: $('#pat').val(),
+		Rules: RouterRules
+	};
+
+	var json_data = JSON.stringify(alert_router_json_str);
+	$.ajax({
+		type: "POST",
+		dataType: "json",
+		url: '{{ urlfor "MainController.AddRouter"}}',
+		data: json_data,
+		success: function (result) {
+			console.log(result);
+			if (result == null) {
+				alert("告警路由保存成功!");
+				window.location.replace("/alertrouter")
+			} else {
+				alert("告警路由保存失败!");
+			};
+		},
+	});
 
 }
 </script>

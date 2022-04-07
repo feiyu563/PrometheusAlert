@@ -54,7 +54,7 @@
         <div class="card-body">
 
 
-			<table class="table table-hover">
+			<table id="example1" class="table table-hover">
 				<thead>
 					<tr>
 						<th style="display:none;">Id</th>
@@ -69,34 +69,38 @@
 					</tr>
 				</thead>
 				<tbody id="tpllist" >
-					{{range .AlertRouter}}
+					{{range $k,$v:= .AlertRouter}}
 					<tr>
 						<th style="display:none;">{{.Id}}</th>
-						<th>{{.Name}}</th>
-						<th>{{.Tpl.Tplname}}</th>
+						<th>{{$v.Name}}</th>
+						<th>{{$v.Tpl.Tplname}}</th>
 						<th>
-                           {{if eq .Tpl.Tpltype "dd"}}钉钉{{end}}
-                           {{if eq .Tpl.Tpltype "wx"}}企业微信{{end}}
-                           {{if eq .Tpl.Tpltype "workwechat"}}企业微信应用{{end}}
-                           {{if eq .Tpl.Tpltype "fs"}}飞书{{end}}
-                           {{if eq .Tpl.Tpltype "webhook"}}WebHook{{end}}
-                           {{if eq .Tpl.Tpltype "txdx"}}腾讯云短信{{end}}
-                           {{if eq .Tpl.Tpltype "txdh"}}腾讯云电话{{end}}
-                           {{if eq .Tpl.Tpltype "alydx"}}阿里云短信{{end}}
-                           {{if eq .Tpl.Tpltype "alydh"}}阿里云电话{{end}}
-                           {{if eq .Tpl.Tpltype "hwdx"}}华为云短信{{end}}
-                           {{if eq .Tpl.Tpltype "bddx"}}百度云短信{{end}}
-                           {{if eq .Tpl.Tpltype "rlydh"}}容联云电话{{end}}
-                           {{if eq .Tpl.Tpltype "7moordx"}}七陌短信{{end}}
-                           {{if eq .Tpl.Tpltype "7moordh"}}七陌语音电话{{end}}
-                           {{if eq .Tpl.Tpltype "email"}}Email{{end}}
-						   {{if eq .Tpl.Tpltype "tg"}}Telegram{{end}}
-						   {{if eq .Tpl.Tpltype "rl"}}百度Hi(如流){{end}}
-						   {{if eq .Tpl.Tpltype "bark"}}Bark(iPhone推送){{end}}
+                           {{if eq $v.Tpl.Tpltype "dd"}}钉钉{{end}}
+                           {{if eq $v.Tpl.Tpltype "wx"}}企业微信{{end}}
+                           {{if eq $v.Tpl.Tpltype "workwechat"}}企业微信应用{{end}}
+                           {{if eq $v.Tpl.Tpltype "fs"}}飞书{{end}}
+                           {{if eq $v.Tpl.Tpltype "webhook"}}WebHook{{end}}
+                           {{if eq $v.Tpl.Tpltype "txdx"}}腾讯云短信{{end}}
+                           {{if eq $v.Tpl.Tpltype "txdh"}}腾讯云电话{{end}}
+                           {{if eq $v.Tpl.Tpltype "alydx"}}阿里云短信{{end}}
+                           {{if eq $v.Tpl.Tpltype "alydh"}}阿里云电话{{end}}
+                           {{if eq $v.Tpl.Tpltype "hwdx"}}华为云短信{{end}}
+                           {{if eq $v.Tpl.Tpltype "bddx"}}百度云短信{{end}}
+                           {{if eq $v.Tpl.Tpltype "rlydh"}}容联云电话{{end}}
+                           {{if eq $v.Tpl.Tpltype "7moordx"}}七陌短信{{end}}
+                           {{if eq $v.Tpl.Tpltype "7moordh"}}七陌语音电话{{end}}
+                           {{if eq $v.Tpl.Tpltype "email"}}Email{{end}}
+						   {{if eq $v.Tpl.Tpltype "tg"}}Telegram{{end}}
+						   {{if eq $v.Tpl.Tpltype "rl"}}百度Hi(如流){{end}}
+						   {{if eq $v.Tpl.Tpltype "bark"}}Bark(iPhone推送){{end}}
                         </th>
-                        <th>{{.Tpl.Tpluse}}</th>
-						<th>{{.Rules}}</th>
-						<th>{{.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
+                        <th>{{$v.Tpl.Tpluse}}</th>
+						
+						<th>
+						{{$v.Rules}}
+						</th>
+						
+						<th>{{$v.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
 						<th>
 						<a href="/alertrouter/edit?id={{.Id}}" class="btn btn-default bg-success">
 							<i class="fa fa-edit"></i> Edit
@@ -130,6 +134,25 @@
   <!-- /.content-wrapper -->
 {{template "endhtml"}}
 <script>
-
+$(function () {
+	var tb = document.getElementById('example1');
+	var td = tb.rows[1].cells[5];
+    for(var i=1,rows=tb.rows.length; i<rows; i++){
+        var td = tb.rows[i].cells[5];
+		var str = td.innerHTML;
+		var obj = JSON.parse(str);
+		var table_str = ""
+		for(var p in obj){
+		  console.log(obj[p]);
+			if (obj[p].Regex){
+				ischeck="正则"
+			} else {
+				ischeck="普通"
+			}
+		  table_str = table_str + '<span class="badge bg-info">'+obj[p].Name+' = '+obj[p].Value+' | '+ischeck+'</span><br />'
+		}
+		td.innerHTML = table_str;
+    }
+})
 </script>
 {{template "jshtml"}}
