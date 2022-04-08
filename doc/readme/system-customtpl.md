@@ -36,7 +36,7 @@ route:
 receivers:
 - name: 'PrometheusAlert'
   webhook_configs:
-  - url: 'http://[YOUR-PrometheusAlert-URL]/prometheusalert?type=dd&tpl=prometheus-dingding'
+  - url: 'http://[YOUR-PrometheusAlert-URL]/prometheusalert?type=dd&tpl=prometheus-dd'
 ```
 
 配置完成后，重启或者reload Alertmanager，使配置生效。

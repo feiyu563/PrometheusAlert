@@ -12,6 +12,7 @@ PrometheusAlert的告警路由目前仅支持Prometheus的告警消息。
 ## 路由功能使用案例
 
 假设默认的Prometheus Alertmanager配置如下：
+
 ```
 global:
   resolve_timeout: 5m

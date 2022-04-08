@@ -4,9 +4,9 @@
 
 ### 配置方法
 
-通过自定义告警消息模版的方式(使用web页面上的自定义模版)
+### 1.更改Alertmanager的配置，将所有告警信息都转发到PrometheusAlert,参考如下Alertmanager配置如下：
 
-参考alertmanager配置参考：
+PS:示例内容是默认选择的钉钉机器人的自定义模板`prometheus-dd`，如使用其他接收端，请更改Url参数中的`type`和`tpl`即可，具体接口参数可参考  [接口说明](base-restful.md)
 
 ```
 global:
@@ -23,8 +23,10 @@ receivers:
   - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxx&at=18888888888'
 ```
 
-详细配置也可参考：[推荐 任意告警源（自定义消息模版）接入配置](customtpl.md)
+配置完成后，重启或者reload Alertmanager，使配置生效即可。
 
 最终告警效果:
 
 ![prometheus1](../prometheus.png)
+
+更多自定义模版详细使用也可参考：[推荐 任意告警源（自定义消息模版）接入配置](customtpl.md)
