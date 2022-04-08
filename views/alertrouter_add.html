@@ -195,11 +195,11 @@ $(function () {
 	
 	$('#labeladd').click(function(){
 	    var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="如 app"> 				  </div> 				</div> 				 				<div class="col-3"> 				 				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="如 nginx"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox"> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  				<div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
-		$('#labelx').append(labeldiv)
+		$('#labelx').append(labeldiv);
 	});
 
-	$(".labelx").delegate('#labeldel','click',function(){
-		$(this).parent().parent().parent().remove();
+	$("#labelx").delegate('#labeldel','click',function(){
+		$(this).parents(".row").remove();
 	});
 
 })

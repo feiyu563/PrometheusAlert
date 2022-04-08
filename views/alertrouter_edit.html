@@ -165,9 +165,10 @@ $(function () {
 		$('#labelx').append(labeldiv)
 	});
 	
-	$('#labeldel').click(function(){
-		$('#labelx').append(labeldiv)
+	$("#labelx").delegate('#labeldel','click',function(){
+		$(this).parents(".row").remove();
 	});
+	
 })
 function loadRules(){
 	var rules_str={{.AlertRouter.Rules}};
