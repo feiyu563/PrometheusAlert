@@ -145,6 +145,19 @@ func (c *GitlabController) GitlabDingding() {
 	c.ServeJSON()
 }
 
+// GitlabFeishu sends gitlab webhook events to feishu v2 robot
+func (c *GitlabController) GitlabFeishu() {
+	event := GitlabEvent{}
+	eventType := c.Ctx.Request.Header.Get("X-Gitlab-Event")
+	fsurl := c.GetString("fsurl")
+	logsign := "[" + LogsSign() + "]"
+	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &event)
+	c.Data["json"] = sendGitlabEvent(4, event, eventType, logsign, fsurl)
+	logs.Info(logsign, c.Data["json"])
+	c.ServeJSON()
+}
+
 func genWXtext(event GitlabEvent, eventType string) string {
 	var WXtext, WXbasetext, WXothertext string
 

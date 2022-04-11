@@ -49,6 +49,7 @@ func init() {
 	// gitlab
 	beego.Router("/gitlab/weixin", &controllers.GitlabController{}, "post:GitlabWeixin")
 	beego.Router("/gitlab/dingding", &controllers.GitlabController{}, "post:GitlabDingding")
+	beego.Router("/gitlab/feishu", &controllers.GitlabController{}, "post:GitlabFeishu")
 	// Todo
 	// Email
 	// Feishu

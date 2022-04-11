@@ -1,0 +1,12 @@
+2022/04/11 15:30:41.643 [I] [proc.go:255]  [main] 构建的Go版本: go1.17.5
+2022/04/11 15:30:41.643 [I] [proc.go:255]  [main] 应用当前版本: 
+2022/04/11 15:30:41.643 [I] [proc.go:255]  [main] 应用当前提交: 
+2022/04/11 15:30:41.643 [I] [proc.go:255]  [main] 应用构建时间: 
+2022/04/11 15:30:41.644 [I] [proc.go:255]  [main] 应用构建用户: 
+2022/04/11 15:30:41.671 [I] [asm_amd64.s:1581]  http server Running on http://0.0.0.0:8080
+2022/04/11 15:31:29.892 [I] [value.go:543]  [1649662289892117000] 
+2022/04/11 15:31:29.892 [I] [gitlab.go:500]  [1649662289892117000] [feishuv2] {"msg_type":"interactive","email":"244217140@qq.com","card":{"config":{"wide_screen_mode":true,"enable_forward":true},"elements":[{"tag":"div","text":{"content":"[Gitlab事件通知]()\n**事件类型**: \n**仓库链接**: []()\n**程序暂未处理的事件**","tag":"lark_md"},"content":"","elements":null},{"tag":"hr","text":{"content":"","tag":""},"content":"","elements":null},{"tag":"note","text":{"content":"","tag":""},"content":"","elements":[{"tag":"lark_md","text":{"content":"","tag":""},"content":"","elements":null}]}],"header":{"title":{"content":"","tag":"plain_text"},"template":"red"}}}
+
+2022/04/11 15:31:30.233 [I] [gitlab.go:500]  [1649662289892117000] [feishuv2] : {"Extra":null,"StatusCode":0,"StatusMessage":"success"}
+2022/04/11 15:31:30.233 [I] [value.go:543]  [1649662289892117000] 消息发送完成!
+2022/04/11 15:31:30.233 [D] [server.go:2879]  |      127.0.0.1|[97;42m 200 [0m| 341.365571ms|   match|[97;46m POST    [0m /gitlab/feishu   r:/gitlab/feishu
