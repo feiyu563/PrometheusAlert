@@ -22,6 +22,7 @@
 
 - 企业微信机器人(`/gitlab/weixin?wxurl=xxx`)
 - 钉钉机器人(`/gitlab/dingding?ddurl=xxx`)
+- 飞书机器人(`/gitlab/dingding?fsurl=xxx`)
 
 地址不支持写多个，如需要多个，可创建多个gitlab webhoook。
 
@@ -42,4 +43,8 @@
 钉钉机器人效果:
 
 ![push-dingding](../images/gitlab_push_dingding.png)
+
+飞书机器人效果:
+
+![push-feishu](../images/gitlab_push_feishu.png)
 
