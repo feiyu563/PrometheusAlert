@@ -78,9 +78,10 @@ curl http://localhost:8080/health
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
 如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.7/linux.zip)
 
-# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.7/linux.zip && unzip linux.zip &&cd linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.7/linux.zip && unzip linux.zip
 
 #运行PrometheusAlert
+# chmod 755 PrometheusAlert (需要给执行权限)
 # ./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
 
 #启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
