@@ -29,4 +29,4 @@ receivers:
 
 ![prometheus1](../prometheus.png)
 
-更多自定义模版详细使用也可参考：[推荐 任意告警源（自定义消息模版）接入配置](customtpl.md)
+更多自定义模版详细使用也可参考：[★ 进阶用法--自定义模版](system-customtpl.md)
