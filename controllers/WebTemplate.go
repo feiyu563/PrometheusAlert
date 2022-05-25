@@ -60,6 +60,7 @@ func (c *MainController) AddTpl() {
 		resp = err
 		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
 	}
+	GlobalAlertRouter, _ = models.GetAllAlertRouter()
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
