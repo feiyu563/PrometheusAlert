@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"bytes"
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"text/template"
 )
 
 func (c *MainController) AlertTest() {
@@ -105,22 +103,11 @@ func (c *MainController) MarkdownTest() {
 		TplContent := c.Input().Get("tplcontent")
 		json.Unmarshal([]byte(JsonContent), &p_json)
 
-		funcMap := template.FuncMap{
-			"GetCSTtime": GetCSTtime,
-			"TimeFormat": TimeFormat,
-			"GetTime":    GetTime,
-		}
-		buf := new(bytes.Buffer)
-		tpl, err := template.New("").Funcs(funcMap).Parse(TplContent)
+		err, tpl := TransformAlertMessage(p_json, TplContent)
 		if err != nil {
 			resp = err.Error()
 		} else {
-			err = tpl.Execute(buf, p_json)
-			if err != nil {
-				resp = err.Error()
-			} else {
-				resp = buf.String()
-			}
+			resp = tpl
 		}
 		c.Data["json"] = resp
 		c.ServeJSON()
