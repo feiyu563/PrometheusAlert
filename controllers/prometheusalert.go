@@ -398,6 +398,12 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 		"stringSlice": func(s ...string) []string {
 			return s
 		},
+		"SplitString": func(pstring string, start int, stop int) string {
+			if stop < 0 {
+				return pstring[start : len(pstring)+stop]
+			}
+			return pstring[start:stop]
+		},
 	}
 
 	buf := new(bytes.Buffer)

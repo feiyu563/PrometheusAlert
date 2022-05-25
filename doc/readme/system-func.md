@@ -141,3 +141,40 @@ ruleId: {{.RuleId}}
 dimensions: {{.Dimensions}}
 **当前值：{{.CurValue}}**
 ```
+
+### 4 `SplitString` 函数仅支持在PrometheusAlert的自定义模版中使用，该函数主要用于截取字符串
+
+用法示例: 
+
+原始json为：{"Instance": "192.168.1.110:9100"}
+
+需求：需要截取IP值 `192.168.1.110`
+
+示例：`{{SplitString .Instance 0 -5}}` 或 `{{SplitString .Instance 0 13}}`
+
+参数解释：SplitString需要三个参数，原始字符串、截取开始位置、截取结束位置；截取结束位置如果为负数，则相当于取字符串总长度+负数得出的位置。
+
+特别说明：`SplitString`函数
+
+目前支持两种使用方式：
+
+- 使用默认时间字符串格式输出 `{{GetTime .Timestamp}}` ,如：
+
+```
+ALiYun {{.AlertState}}信息
+>**{{.AlertName}}**
+>告警级别: {{.TriggerLevel}}
+开始时间: {{.Timestamp}}
+故障主机: {{SplitString .Instance 0 -5}}
+------------详细信息--------------
+metricName: {{.MetricName}}
+expression: {{.Expression}}
+signature: {{.Signature}}
+metricProject: {{.MetricProject}}
+userId: {{.UserId}}
+namespace: {{.Namespace}}
+preTriggerLevel: {{.PreTriggerLevel}}
+ruleId: {{.RuleId}}
+dimensions: {{.Dimensions}}
+**当前值：{{.CurValue}}**
+```
