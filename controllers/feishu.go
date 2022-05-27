@@ -131,7 +131,7 @@ func PostToFeiShuv2(title, text, Fsurl, userEmail, logsign string) string {
 
 	u := FSMessagev2{
 		MsgType: "interactive",
-		Email:   "244217140@qq.com",
+		Email:   "xxxxxxxxxxx@qq.com",
 		Card: Cards{
 			Config: Conf{
 				WideScreenMode: true,

@@ -36,7 +36,7 @@ func PostToDingDing(title, text, Ddurl, AtSomeOne, logsign string) string {
 	if Isatall == 0 {
 		Atall = false
 	}
-	atMobile := []string{"15395105573"}
+	atMobile := []string{"15888888888"}
 	SendText := text
 	if AtSomeOne != "" {
 		atMobile = strings.Split(AtSomeOne, ",")
