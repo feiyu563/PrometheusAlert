@@ -100,3 +100,21 @@ helm upgrade --install monitor prometheusalert -n monitoring
     db_name=prometheusalert
     ```
 - 重启PrometheusAlert，这样即完成配置PrometheusAlert使用mysql数据库作为默认后端存储。
+
+--------------------------------------------------------------------
+
+PrometheusAlert语音播报插件部署
+----
+- PrometheusAlert语音播报插件目前仅支持windows系统部署
+
+插件存放在源码`PrometheusAlertVoice`目录下，可直接运行
+
+默认配置文件`setup.ini`
+
+```
+[SERVER]
+#配置插件监听端口
+PORT=9999
+#设置语音播报语速的快慢，该参数的范围是从-10到10之间
+SPEED=1
+```

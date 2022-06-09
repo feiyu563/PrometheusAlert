@@ -136,6 +136,7 @@ PrometheusAlert具备如下特性
  - 增加支持将Prometheus告警记录写入到Elasticsearch7.x，可通过Kibana进行界面查看告警记录和配置表格导出。
  - 增加支持将Gitlab webhook event推送到企微和钉钉。
  - 增加告警路由和告警记录功能，可通过页面查看告警历史和操作告警消息路由。
+ - 增加告警语音播报插件。
 
 ---------------------
 
@@ -190,6 +191,7 @@ PrometheusAlert具备如下特性
   * [Bark告警配置](doc/readme/conf-bark.md)
   * [百度Hi(如流)告警配置](doc/readme/conf-ruliu.md)
   * [告警记录-ES接入配置](doc/readme/conf-es.md)
+  * [语音播报](doc/readme/conf-voice.md)
 
 * [【告警系统接入PrometheusAlert配置】](doc/readme/system.md)
   * [Prometheus 接入配置](doc/readme/system-prometheus.md)
