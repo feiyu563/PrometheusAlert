@@ -514,6 +514,9 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	// Bark
 	case "bark":
 		ReturnMsg += SendBark(message, logsign)
+	// Bark
+	case "voice":
+		ReturnMsg += SendVoice(message, logsign)
 	//异常参数
 	default:
 		ReturnMsg = "参数错误"

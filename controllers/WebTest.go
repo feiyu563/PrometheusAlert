@@ -79,6 +79,10 @@ func (c *MainController) AlertTest() {
 		TgMessage := "PrometheusAlertCenter测试告警"
 		ret := SendBark(TgMessage, logsign)
 		c.Data["json"] = ret
+	case "voice":
+		vMessage := "Prometheus Alert Center 测试告警"
+		ret := SendVoice(vMessage, logsign)
+		c.Data["json"] = ret
 	default:
 		c.Data["json"] = "hahaha!"
 	}
