@@ -23,9 +23,9 @@ docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prome
 
 ```
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.7/linux.zip)
+如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.8.1/linux.zip)
 
-# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.7/linux.zip && unzip linux.zip && cd linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.8.1/linux.zip && unzip linux.zip && cd linux/
 
 #，下载好后解压并进入解压后的文件夹
 
@@ -41,7 +41,7 @@ docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prome
 
 ```
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如windows版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.7/windows.zip)
+如windows版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.8.1/windows.zip)
 
 #进入程序目录并双击运行 PrometheusAlert.exe即可
 cd windows/
@@ -84,12 +84,7 @@ helm upgrade --install monitor prometheusalert -n monitoring
     ```
     CREATE DATABASE prometheusalert CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
     ```
-- 2.利用`Navicat`或命令行将`db目录`中的 `prometheusalert.sql` 导入数据库`prometheusalert`
-    ```
-    use prometheusalert
-    source prometheusalert.sql
-    ```
-- 3.开启PrometheusAlert配置文件中关于mysql的配置 conf/app.conf，数据库名称与上面创建的数据一致
+- 2.开启PrometheusAlert配置文件中关于mysql的配置 conf/app.conf，数据库名称与上面创建的数据一致,并启动PrometheusAlert，PrometheusAlert启动时会自动初始化数据库表。
 
     ```
     #数据库驱动，支持sqlite3，mysql,如使用mysql，请开启db_host,db_user,db_password,db_name的注释
@@ -99,13 +94,18 @@ helm upgrade --install monitor prometheusalert -n monitoring
     db_password=root
     db_name=prometheusalert
     ```
-- 重启PrometheusAlert，这样即完成配置PrometheusAlert使用mysql数据库作为默认后端存储。
+- 3.利用`Navicat`或命令行将`db目录`中的 `prometheusalert.sql` 导入数据库`prometheusalert`
+    ```
+    use prometheusalert
+    source prometheusalert.sql
+    ```
+- 4.重启PrometheusAlert，这样即完成配置PrometheusAlert使用mysql数据库作为默认后端存储。
 
 --------------------------------------------------------------------
 
 PrometheusAlert语音播报插件部署
 ----
-- PrometheusAlert语音播报插件目前仅支持windows系统部署
+- PrometheusAlert语音播报插件目前仅支持windows系统部署，用于将从PrometheusAlert接收到的告警消息文本转换为语音播报给用户。
 
 插件存放在源码`PrometheusAlertVoice`目录下，可直接运行
 
@@ -117,4 +117,5 @@ PrometheusAlert语音播报插件部署
 PORT=9999
 #设置语音播报语速的快慢，该参数的范围是从-10到10之间
 SPEED=1
+TITLE=PrometheusAlert语音播报
 ```

@@ -99,11 +99,14 @@ curl http://localhost:8080/health
 
 ```
 docker run -d \
+-p 8080:8080 \
 -e PA_LOGIN_USER=prometheusalert \
 -e PA_LOGIN_PASSWORD=prometheusalert \
 -e PA_TITLE=PrometheusAlert \
 -e PA_OPEN_FEISHU=1 \
-feiyu563/prometheus-alert
+-e PA_OPEN_DINGDING=1 \
+-e PA_OPEN_WEIXIN=1 \
+feiyu563/prometheus-alert:latest
 ```
 
 所有的配置文件内容请[点击此处](https://github.com/feiyu563/PrometheusAlert/blob/master/conf/app-example.conf)查看

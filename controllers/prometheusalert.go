@@ -399,7 +399,7 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 			return s
 		},
 		"SplitString": func(pstring string, start int, stop int) string {
-			beego.Error("SplitString", pstring)
+			beego.Debug("SplitString", pstring)
 			if stop < 0 {
 				return pstring[start : len(pstring)+stop]
 			}
