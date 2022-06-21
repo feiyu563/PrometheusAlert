@@ -73,3 +73,24 @@ ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx
 #是否开启 @所有人(0为关闭,1为开启)
 dd_isatall=1
 ```
+
+**如何使用**
+
+以Prometheus配合自定义模板为例：
+
+Prometheus配置参考：
+
+```
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['instance']
+  group_wait: 10m
+  group_interval: 10s
+  repeat_interval: 10m
+  receiver: 'web.hook.prometheusalert'
+receivers:
+- name: 'web.hook.prometheusalert'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=钉钉机器人地址,钉钉机器人地址2&at=18888888888,18888888889'
+```

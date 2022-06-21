@@ -140,6 +140,7 @@ PrometheusAlert具备如下特性
  - 增加支持将Gitlab webhook event推送到企微和钉钉。
  - 增加告警路由和告警记录功能，可通过页面查看告警历史和操作告警消息路由。
  - 增加告警语音播报插件。
+ - 增加支持飞书机器人应用。
 
 ---------------------
 
@@ -195,6 +196,7 @@ PrometheusAlert具备如下特性
   * [百度Hi(如流)告警配置](doc/readme/conf-ruliu.md)
   * [告警记录-ES接入配置](doc/readme/conf-es.md)
   * [语音播报](doc/readme/conf-voice.md)
+  * [飞书机器人应用](doc/readme/conf-feishuapp.md)
 
 * [【告警系统接入PrometheusAlert配置】](doc/readme/system.md)
   * [Prometheus 接入配置](doc/readme/system-prometheus.md)

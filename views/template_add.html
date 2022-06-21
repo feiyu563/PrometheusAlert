@@ -84,6 +84,7 @@
 					<option value="tg">Telegram</option>
 					<option value="rl">百度Hi(如流)</option>
 					<option value="voice">语音播报</option>
+					<option value="fsapp">飞书机器人应用</option>
 					</select>
 				  </div>
 				</div>
@@ -129,7 +130,7 @@
 			<br />
 
 			  <div class="row">
-				<div class="col-sm-6">
+				<div id="Purl" class="col-sm-6">
 				  <!-- text input -->
 				  <div class="form-group">
 					<label id="typestr">钉钉机器人地址</label>
@@ -201,41 +202,61 @@ function typeChange(){
  
  if (typeSelect=="dd"){
 	typeStr.innerText="钉钉机器人地址";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="wx"){
 	typeStr.innerText="微信机器人地址";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="fs"){
 	typeStr.innerText="飞书机器人地址";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(typeSelect=="fsapp"){
+	typeStr.innerText="飞书 用户open_id、user_id、union_ids、部门open_department_id";
+	document.getElementById("Purl").style.display="none";
+	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(typeSelect=="voice"){
+	typeStr.innerText="";
+	document.getElementById("Purl").style.display="none";
+	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="webhook"){
 	typeStr.innerText="WebHook地址";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="email"){
 	typeStr.innerText="邮箱(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="rl"){
 	typeStr.innerText="百度Hi(如流)群id";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="workwechat"){
 	typeStr.innerText="接受用户";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="";
 	document.getElementById("Tag").style.display="";
  } else{
 	typeStr.innerText="手机号";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
@@ -287,6 +308,8 @@ function sendtest(){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxurl='+upurl.value+'&at='+upat.value;
 	} else if(utype.value=="fs"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&fsurl='+upurl.value+'&at='+upat.value;
+	} else if(utype.value=="fsapp"){
+	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&at='+upat.value;
 	} else if(utype.value=="webhook"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value;
 	} else if(utype.value=="email"){

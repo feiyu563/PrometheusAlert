@@ -98,7 +98,7 @@
 			<br />
 
 			  <div class="row">
-				<div class="col-sm-6">
+				<div id="Purl" class="col-sm-6">
 				  <!-- text input -->
 				  <div class="form-group">
 					<label id="typestr">钉钉机器人地址</label>
@@ -194,31 +194,49 @@ function typeChange(){
  
  if (tpltype.value=="dd"){
 	typeStr.innerText="钉钉机器人地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="wx"){
 	typeStr.innerText="微信机器人地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="fs"){
 	typeStr.innerText="飞书机器人地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="fsapp"){
+	typeStr.innerText="飞书 用户open_id、user_id、union_ids、部门open_department_id";
+	document.getElementById("Purl").style.display="none";
+	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="voice"){
+	typeStr.innerText="";
+	document.getElementById("Purl").style.display="none";
+	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="webhook"){
 	typeStr.innerText="webhook地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="email"){
 	typeStr.innerText="邮箱(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="rl"){
 	typeStr.innerText="百度Hi(如流)群id";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
@@ -228,8 +246,10 @@ function typeChange(){
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="";
 	document.getElementById("Tag").style.display="";*/
+	
  } else{
 	typeStr.innerText="手机号(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";

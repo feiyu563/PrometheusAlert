@@ -109,7 +109,18 @@ type FSMessagev2 struct {
 	Card    Cards  `json:"card"`
 }
 
-func PostToFeiShuv2(title, text, Fsurl, userEmail, logsign string) string {
+type TenantAccessMeg struct {
+	AppId     string `json:"app_id"`
+	AppSecret string `json:"app_secret"`
+}
+
+type TenantAccessResp struct {
+	Code              int    `json:"code"`
+	Msg               string `json:"msg"`
+	TenantAccessToken string `json:"tenant_access_token"`
+}
+
+func PostToFeiShuv2(title, text, Fsurl, userOpenId, logsign string) string {
 	var color string
 	if strings.Count(text, "resolved") > 0 && strings.Count(text, "firing") > 0 {
 		color = "orange"
@@ -120,13 +131,13 @@ func PostToFeiShuv2(title, text, Fsurl, userEmail, logsign string) string {
 	}
 
 	SendContent := text
-	if userEmail != "" {
-		emails := strings.Split(userEmail, ",")
-		emailtext := ""
-		for _, email := range emails {
-			emailtext += "<at email=" + email + " id=" + email + "></at>"
+	if userOpenId != "" {
+		OpenIds := strings.Split(userOpenId, ",")
+		OpenIdtext := ""
+		for _, OpenId := range OpenIds {
+			OpenIdtext += "<at user_id=" + OpenId + " id=" + OpenId + "></at>"
 		}
-		SendContent += emailtext
+		SendContent += OpenIdtext
 	}
 
 	u := FSMessagev2{

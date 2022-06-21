@@ -517,6 +517,9 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	// Bark
 	case "voice":
 		ReturnMsg += SendVoice(message, logsign)
+	//飞书APP渠道
+	case "fsapp":
+		ReturnMsg += PostToFeiShuApp(Title+"告警消息", message, pmsg.AtSomeOne, logsign)
 	//异常参数
 	default:
 		ReturnMsg = "参数错误"

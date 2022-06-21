@@ -254,6 +254,9 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 				}
 			}
 		}
+		//发送消息到飞书应用
+		PostToFeiShuApp(Title+titleend, fstext, RMessage.Annotations.AtSomeOne, logsign)
+
 		//发送消息到Email
 		if remail == "" && RMessage.Annotations.Email == "" {
 			Emails := beego.AppConfig.String("Default_emails")

@@ -51,3 +51,25 @@ open-weixin=1
 #默认企业微信机器人地址
 wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
 ```
+
+
+**如何使用**
+
+以Prometheus配合自定义模板为例：
+
+Prometheus配置参考：
+
+```
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['instance']
+  group_wait: 10m
+  group_interval: 10s
+  repeat_interval: 10m
+  receiver: 'web.hook.prometheusalert'
+receivers:
+- name: 'web.hook.prometheusalert'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=wx&tpl=prometheus-wx&wxurl=微信机器人地址,微信机器人地址2&at=zhangsan,lisi'
+```

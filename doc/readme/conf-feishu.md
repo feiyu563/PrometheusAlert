@@ -42,3 +42,25 @@ open-feishu=1
 #默认飞书机器人地址
 fsurl=https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxxxxxxxxxxx
 ```
+
+
+**如何使用**
+
+以Prometheus配合自定义模板为例：
+
+Prometheus配置参考：
+
+```
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['instance']
+  group_wait: 10m
+  group_interval: 10s
+  repeat_interval: 10m
+  receiver: 'web.hook.prometheusalert'
+receivers:
+- name: 'web.hook.prometheusalert'
+  webhook_configs:
+  - url: 'http://[prometheusalert_url]:8080/prometheusalert?type=fs&tpl=prometheus-fs&fsurl=飞书机器人地址,飞书机器人地址2'
+```
