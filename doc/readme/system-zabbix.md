@@ -6,8 +6,7 @@ PrometheusAlert For zabbix采用C/S方式。需要现在zabbix-server上部署za
 
 ```
 #进入到zabbix-server所在服务器
-git clone https://github.com/feiyu563/PrometheusAlert.git
-cp PrometheusAlert/example/linux/zabbixclient /usr/lib/zabbix/alertscripts/
+wget https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/zabbixclient/zabbixclient -O /usr/lib/zabbix/alertscripts/zabbixclient
 chown zabbix:zabbix /usr/lib/zabbix/alertscripts/zabbixclient
 chmod 755 /usr/lib/zabbix/alertscripts/zabbixclient
 ```
