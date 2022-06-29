@@ -443,10 +443,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "dd":
 		Ddurl := strings.Split(pmsg.Ddurl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToDingDing(Title+"告警消息", message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
+			ReturnMsg += PostToDingDing(Title, message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Ddurl {
-				ReturnMsg += PostToDingDing(Title+"告警消息", message, url, pmsg.AtSomeOne, logsign)
+				ReturnMsg += PostToDingDing(Title, message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
@@ -454,10 +454,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "fs":
 		Fsurl := strings.Split(pmsg.Fsurl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToFS(Title+"告警消息", message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
+			ReturnMsg += PostToFS(Title, message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Fsurl {
-				ReturnMsg += PostToFS(Title+"告警消息", message, url, pmsg.AtSomeOne, logsign)
+				ReturnMsg += PostToFS(Title, message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
@@ -519,7 +519,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 		ReturnMsg += SendVoice(message, logsign)
 	//飞书APP渠道
 	case "fsapp":
-		ReturnMsg += PostToFeiShuApp(Title+"告警消息", message, pmsg.AtSomeOne, logsign)
+		ReturnMsg += PostToFeiShuApp(Title, message, pmsg.AtSomeOne, logsign)
 	//异常参数
 	default:
 		ReturnMsg = "参数错误"

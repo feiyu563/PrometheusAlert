@@ -16,6 +16,7 @@ func init() {
 	beego.Router("/template/addtpl", &controllers.MainController{}, "post:AddTpl")
 	beego.Router("/template/edit", &controllers.MainController{}, "get,post:TemplateEdit")
 	beego.Router("/template/del", &controllers.MainController{}, "get:TemplateDel")
+	beego.Router("/template/import", &controllers.MainController{}, "post:ImportTpl")
 	//test
 	beego.Router("/alerttest", &controllers.MainController{}, "post:AlertTest")
 	beego.Router("/markdowntest", &controllers.MainController{}, "get,post:MarkdownTest")

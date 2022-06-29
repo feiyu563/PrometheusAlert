@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
+	"encoding/json"
 	"github.com/astaxie/beego/logs"
 	"strconv"
+	"strings"
 )
 
 //template page
@@ -64,6 +66,35 @@ func (c *MainController) AddTpl() {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
+
+func (c *MainController) ImportTpl() {
+	var imTpl []*models.PrometheusAlertDB
+	logs.Debug(strings.Replace(string(c.Ctx.Input.RequestBody), "\n", "", -1))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &imTpl)
+	if len(imTpl) > 0 {
+		var resp []string
+		for _, v := range imTpl {
+			err := models.AddTpl(v.Id, v.Tplname, v.Tpltype, v.Tpluse, v.Tpl)
+			var strs string
+			if err != nil {
+				strs = v.Tplname + "：" + err.Error() + "\n"
+			} else {
+				strs = v.Tplname + "：导入完成\n"
+			}
+			resp = append(resp, strs)
+		}
+
+		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
+		GlobalAlertRouter, _ = models.GetAllAlertRouter()
+		c.Data["json"] = resp
+		c.ServeJSON()
+	} else {
+		c.Data["json"] = "模版文件解析失败！"
+		c.ServeJSON()
+	}
+
+}
+
 func (c *MainController) TemplateEdit() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)

@@ -43,12 +43,19 @@
           <h3 class="card-title"></h3>
 
           <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <!--<button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
               <i class="fas fa-minus"></i>
             </button>
             <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
               <i class="fas fa-times"></i>
-            </button>
+            </button>-->
+            <input type="file" id="files"/>
+			<a onclick="importTemplate();" href="javascript:void(0);" class="btn btn-default bg-info">
+				<i class="fas fa-file mr-2"></i> 导入模版
+			</a>
+			<a onclick="exportTemplate();" href="javascript:void(0);" class="btn btn-default bg-success">
+				<i class="fas fa-file mr-2"></i> 导出全部模版
+			</a>
           </div>
         </div>
         <div class="card-body">
@@ -138,11 +145,53 @@ var td_array=new Array();
 var td_length=document.getElementById("tpllist");
 var myurl=window.location.origin;
 for(var m=0;m<td_length.rows.length;m++){
-td_length.rows[m].cells[3].innerHTML=(myurl+td_length.rows[m].cells[3].innerHTML).replace(/\s/gi,'');
+	td_length.rows[m].cells[3].innerHTML=(myurl+td_length.rows[m].cells[3].innerHTML).replace(/\s/gi,'');
 //uresturl.innerHTML=myurl+uresturl.innerHTML;
 }
 
-//uresturl.innerHTML=myurl+uresturl.innerHTML;
-//console.log(uresturl.innerHTML);
+function exportTemplate(){
+    let data = {{.Template}}
+    var content = JSON.stringify(data);
+    var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "prometheus-alert-template.json");
+}
+
+function importTemplate() {
+   var inputElement = document.getElementById("files");
+   var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
+   if (selectedFile == null){
+	  alert('请点击选择文件，先选中需要导入的模版文件');
+   } else {
+     var name = selectedFile.name;//读取选中文件的文件名
+     var size = selectedFile.size;//读取选中文件的大小
+     var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
+     reader.readAsText(selectedFile);//读取文件的内容
+
+      reader.onload = function(){
+          let tpljson = JSON.parse(this.result);
+          $.ajax({
+          	type: "POST",
+          	dataType: "json",
+          	url: '{{ urlfor "MainController.ImportTpl"}}',
+          	data: JSON.stringify(tpljson),
+			contentType : "application/json",
+          	success: function (result) {
+          		console.log(result);
+          		if (result == null) {
+          			alert("模版导入成功!");
+          		} else {
+          			alert(result);
+          		};
+          	},
+          });
+
+
+
+      };
+   };
+
+}
+ 
+ 
 </script>
 {{template "jshtml"}}
