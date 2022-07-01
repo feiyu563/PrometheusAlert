@@ -28,6 +28,5 @@ to_es_url=http://localhost:9200
 
 ![kibana-index](../images/kibana-index.png)
 
-<br/>
 
 ![kibana-table](../images/kibana-table.png)

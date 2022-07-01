@@ -1,4 +1,4 @@
-PrometheusAlert全家桶企业微信应用配置说明
+# PrometheusAlert全家桶企业微信应用配置说明
 
 -----------------
 

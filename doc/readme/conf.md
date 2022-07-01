@@ -1,4 +1,4 @@
-## PrometheusAlert配置文件说明
+# PrometheusAlert配置文件说明
 
 PrometheusAlert配置文件中定义了丰富的配置项，默认配置即可满足开箱即用。并且配置文件中每项配置都加入了详细的注释，非常明确的指出了每个配置项的功能和定义。
 

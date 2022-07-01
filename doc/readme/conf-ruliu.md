@@ -1,4 +1,4 @@
-PrometheusAlert全家桶百度Hi(如流)配置说明
+# PrometheusAlert全家桶百度Hi(如流)配置说明
 
 -----------------
 
@@ -6,7 +6,7 @@ PrometheusAlert全家桶百度Hi(如流)配置说明
 
 在企业群右上角点击【机器人图标】-【添加机器人】-【创建机器人】，添加机器人进群后，可获取机器人的Webhook地址,可参下图：
 
-![ruliu1](../ruliu1.png)
+![ruliu1](../images/ruliu1.png)
 
 百度Hi(如流)目前支持Markdown类型消息
 

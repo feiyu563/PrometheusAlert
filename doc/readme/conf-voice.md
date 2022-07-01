@@ -1,4 +1,4 @@
-PrometheusAlert全家桶语音播报配置说明
+# PrometheusAlert全家桶语音播报配置说明
 
 -----------------
 
@@ -10,7 +10,7 @@ WebHook--> PrometheusAlert --> PrometheusAlert语音播报组件
 
 语音播报插件目前仅支持windows系统。
 
-![voice](../voice_app.png)
+![voice](../images/voice_app.png)
 
 ```
 #---------------------↓语音播报-----------------------

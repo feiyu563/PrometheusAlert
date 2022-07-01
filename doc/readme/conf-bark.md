@@ -1,4 +1,4 @@
-PrometheusAlert全家桶Bark配置说明
+# PrometheusAlert全家桶Bark配置说明
 
 -----------------
 

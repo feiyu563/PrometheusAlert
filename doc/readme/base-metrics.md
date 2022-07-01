@@ -1,4 +1,4 @@
-## PrometheusAlert Metrics接口说明
+# PrometheusAlert Metrics接口说明
 
 PrometheusAlert默认支持Metrics，可通过Prometheus进行收集指标信息，目前该功能处于测试阶段，欢迎体验及提供建议。
 

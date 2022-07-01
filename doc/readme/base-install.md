@@ -1,6 +1,7 @@
-## 安装部署PrometheusAlert
+# 安装部署PrometheusAlert
 
-部署方式
+## 部署方式
+
 ----
 
 PrometheusAlert可以部署在本地和云平台上，支持windows、linux、公有云、私有云、混合云、容器和kubernetes。你可以根据实际场景或需求，选择相应的方式来部署PrometheusAlert：
@@ -77,7 +78,8 @@ helm upgrade --install monitor prometheusalert -n monitoring
 ```
 --------------------------------------------------------------------
 
-配置PrometheusAlert使用mysql作为后端数据存储
+## 配置PrometheusAlert使用mysql作为后端数据存储
+
 ----
 - PrometheusAlert默认使用sqlite3作为后端自定义模板的存储，这种方式适合于单机部署，满足绝大部分生产场景使用。考虑到部分企业对于服务的高可用要求较高，同时也为了让PrometheusAlert更易于横向扩展，用户可以更改PrometheusAlert的默认存储为mysql。（推荐使用mysql 5.7及以上版本）
 - 1.创建数据库
@@ -103,7 +105,8 @@ helm upgrade --install monitor prometheusalert -n monitoring
 
 --------------------------------------------------------------------
 
-PrometheusAlert语音播报插件部署
+## PrometheusAlert语音播报插件部署
+
 ----
 - PrometheusAlert语音播报插件目前仅支持windows系统部署，用于将从PrometheusAlert接收到的告警消息文本转换为语音播报给用户。
 

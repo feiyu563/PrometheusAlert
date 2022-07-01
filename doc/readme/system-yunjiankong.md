@@ -1,4 +1,4 @@
- **阿里云-云监控 接入配置**
+# 阿里云-云监控 接入配置
  
 首先到阿里云管理后台，继续如下：
 
@@ -30,6 +30,6 @@ dimensions: {{.Dimensions}}
 
 5.单击确认。如图
 
-![sonar1](../yunjiankong.png)
+![sonar1](../images/yunjiankong.png)
 
 这样后面云监控触发告警后，PrometheusAlert就可以收到对应的告警信息，并实现告警。

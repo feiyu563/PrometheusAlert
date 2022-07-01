@@ -1,8 +1,8 @@
-## Prometheus接入配置
+# Prometheus接入配置
 
 --------------------------------------
 
-### 配置方法
+## 配置方法
 
 ### 1.更改Alertmanager的配置，将所有告警信息都转发到PrometheusAlert,参考如下Alertmanager配置如下：
 
@@ -27,6 +27,6 @@ receivers:
 
 最终告警效果:
 
-![prometheus1](../prometheus.png)
+![prometheus1](../images/prometheus.png)
 
 更多自定义模版详细使用也可参考：[★ 进阶用法--自定义模版](system-customtpl.md)

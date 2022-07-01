@@ -1,4 +1,4 @@
-## 容联云电话告警配置
+# 容联云电话告警配置
 
 登录地址：https://www.yuntongxun.com/member/main
 
@@ -10,7 +10,7 @@
 
 所需配置信息：
 
-![rly](../ronglianyun.png)
+![rly](../images/ronglianyun.png)
 
 容联云语音相关配置：
 

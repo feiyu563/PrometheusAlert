@@ -1,16 +1,16 @@
-## PrometheusAlert接口说明
+# PrometheusAlert接口说明
 
 --------------------------------------
 
 PrometheusAlert 目前提供以下几类接口，分别对应各自接入端，负责解析各自接口传入或者传出的消息。
 
-### prometheusalert自定义模版接口
+## prometheusalert自定义模版接口
 
 ```
 /prometheusalert   #自定义模版接口，可通过Dashboard自定义模版后，支持任意WebHook接入
 ```
 
-#### Url参数解释：
+### Url参数解释：
 
 - `type=?`：指定消息转发的目标类型，如钉钉、企业微信、飞书等；`该参数为必选参数`
 
