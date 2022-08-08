@@ -96,7 +96,19 @@
 			  
 
 			<br />
+			<div class="row">
 
+					<div class="col-sm-6">
+						<!-- select -->
+						<div class="form-group">
+							<label>是否发送恢复告警</label>
+							<select class="form-control" name="send_resolved" id="send_resolved">
+							</select>
+						</div>
+					</div>
+
+				</div>
+			<br />
 			  <div class="row">
 				<div id="Purl" class="col-sm-6">
 				  <!-- text input -->
@@ -160,6 +172,7 @@
 $(function () {
 	typeChange();
 	loadRules();
+	loadSendResolved();
 	$('#labeladd').click(function(){
 	    var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div> 				 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox"> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  				<div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
 		$('#labelx').append(labeldiv)
@@ -170,6 +183,19 @@ $(function () {
 	});
 	
 })
+
+function loadSendResolved(){
+	var select = document.getElementById('send_resolved');
+	var sendResolved={{.AlertRouter.SendResolved}};
+	if (sendResolved === false) {
+		select.insertAdjacentHTML('beforeend', `<option value="false" selected>不发送</option>`)
+		select.insertAdjacentHTML('beforeend', `<option value="true" >发送</option>`)
+	} else {
+		select.insertAdjacentHTML('beforeend', `<option value="false" >不发送</option>`)
+		select.insertAdjacentHTML('beforeend', `<option value="true" selected>发送</option>`)
+	}
+}
+
 function loadRules(){
 	var rules_str={{.AlertRouter.Rules}};
 	var rules_data = JSON.parse(rules_str);
@@ -281,12 +307,19 @@ function savetpl(){
 		RouterRules.push(LabelMap);
 	});
 
+	//获取send_resolved值, 转为Boolean类型
+	var send_resolved = document.getElementById("send_resolved").value;
+	if (send_resolved === "true" || send_resolved === "false"){
+		send_resolved=send_resolved==='true'
+	}
+
 	var alert_router_json_str={
 		RouterId: $('#id').val(),
 		RouterName: $('#name').val(),
 		RouterTplId: $('#tpl_id').val(),
 		RouterPurl: $('#purl').val(),
 		RouterPat: $('#pat').val(),
+		RouterSendResolved: send_resolved,
 		Rules: RouterRules
 	};
 

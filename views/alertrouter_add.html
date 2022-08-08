@@ -115,7 +115,7 @@
 			  
 			<br />
 			</div>
-			
+
 			
 			
 			  <div class="row">
@@ -128,6 +128,21 @@
 			  </div>
 			  
 
+			<br />
+			<div class="row">
+
+					<div class="col-sm-6">
+						<!-- select -->
+						<div class="form-group">
+							<label>是否发送恢复告警</label>
+							<select class="form-control" name="send_resolved" id="send_resolved" >
+								<option value="true">发送</option>
+								<option value="false">不发送</option>
+							</select>
+						</div>
+					</div>
+
+				</div>
 			<br />
 
 			  <div class="row">
@@ -305,12 +320,19 @@ function savetpl(){
 		RouterRules.push(LabelMap);
 	});
 
+	//获取send_resolved值, 转为Boolean类型
+	var send_resolved = document.getElementById("send_resolved").value;
+	if (send_resolved === "true" || send_resolved === "false"){
+		send_resolved=send_resolved==='true'
+	}
+
 	var alert_router_json_str={
 		RouterId: $('#id').val(),
 		RouterName: $('#name').val(),
 		RouterTplId: $('#tpl_id').val(),
 		RouterPurl: $('#purl').val(),
 		RouterPat: $('#pat').val(),
+		RouterSendResolved: send_resolved,
 		Rules: RouterRules
 	};
 
