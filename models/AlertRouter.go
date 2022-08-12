@@ -6,33 +6,35 @@ import (
 )
 
 type AlertRouter struct {
-	Id         int `orm:"index"`
-	Name       string
-	Tpl        *PrometheusAlertDB `orm:"rel(fk)"`
-	Rules      string
-	UrlOrPhone string
-	AtSomeOne  string
-	Created    time.Time
+	Id           int `orm:"index"`
+	Name         string
+	Tpl          *PrometheusAlertDB `orm:"rel(fk)"`
+	Rules        string
+	UrlOrPhone   string
+	AtSomeOne    string
+	SendResolved bool
+	Created      time.Time
 }
 
-func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string) error {
+func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, sendResolved bool) error {
 	tpl, _ := GetTpl(tplid)
 	o := orm.NewOrm()
 	AlertRouter_table := &AlertRouter{
-		Id:         id,
-		Name:       name,
-		Tpl:        tpl,
-		Rules:      rules,
-		UrlOrPhone: url_or_phone,
-		AtSomeOne:  at_some_one,
-		Created:    time.Now(),
+		Id:           id,
+		Name:         name,
+		Tpl:          tpl,
+		Rules:        rules,
+		UrlOrPhone:   url_or_phone,
+		AtSomeOne:    at_some_one,
+		SendResolved: sendResolved,
+		Created:      time.Now(),
 	}
 	// 插入数据
 	_, err := o.Insert(AlertRouter_table)
 	return err
 }
 
-func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string) error {
+func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, sendResolved bool) error {
 	tpl, _ := GetTpl(tplid)
 	o := orm.NewOrm()
 	router_update := &AlertRouter{Id: id}
@@ -44,6 +46,7 @@ func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one
 		router_update.Rules = rules
 		router_update.UrlOrPhone = url_or_phone
 		router_update.AtSomeOne = at_some_one
+		router_update.SendResolved = sendResolved
 		router_update.Created = time.Now()
 		_, err := o.Update(router_update)
 		return err

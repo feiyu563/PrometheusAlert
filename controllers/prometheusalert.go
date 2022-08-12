@@ -234,6 +234,13 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 		rules_num := len(LabelMap)
 		rules_num_match := 0
 
+		//判断如果是恢复告警, 并且设置不发送恢复告警, 则跳过
+		if xalert["status"] == "resolved" && router_value.SendResolved == false {
+			alertName := xalert["labels"].(map[string]interface{})["alertname"].(string)
+			logs.Info("告警名称：", alertName, "路由规则：", router_value.Name, "路由类型：", router_value.Tpl.Tpltype, "路由恢复告警：", router_value.SendResolved)
+			continue
+		}
+
 		for _, rule := range LabelMap {
 			for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
 				//这里需要分两部分处理，一部分是正则规则，一部分是非正则规则
