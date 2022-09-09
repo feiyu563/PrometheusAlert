@@ -218,6 +218,7 @@ $(function () {
 	});
 
 })
+
 function typeChange(){
  var tpl_id = document.getElementById("tpl_id");
  var tpltype = document.getElementById("tpltype");
@@ -301,11 +302,6 @@ function savetpl(){
 	var uname=document.getElementById("rules");
 	if (uname.value.length==0){
 		alert('路由规则不能为空');
-		return
-	};
-	var ucontent=document.getElementById("purl");
-	if (ucontent.value.length==0){
-		alert('url 或 手机号参数不能为空');
 		return
 	};
 	//取到所有rules
