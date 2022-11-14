@@ -86,6 +86,11 @@
 					<option value="voice">语音播报</option>
 					<option value="fsapp">飞书机器人应用</option>
 					</select>
+                    <label id="contentTypeLabel" style="display: none;">请求的content-type</label>
+                    <select class="form-control" id="contentType" name="contentType" style="display: none;">
+                        <option value="application/json" selected="selected">application/json</option>
+					    <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+                    </select>
 				  </div>
 				</div>
 				<div class="col-sm-6">
@@ -206,60 +211,80 @@ function typeChange(){
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  } else if(typeSelect=="wx"){
 	typeStr.innerText="微信机器人地址";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  } else if(typeSelect=="fs"){
 	typeStr.innerText="飞书机器人地址";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  } else if(typeSelect=="fsapp"){
 	typeStr.innerText="飞书 用户open_id、user_id、union_ids、部门open_department_id";
 	document.getElementById("Purl").style.display="none";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  } else if(typeSelect=="voice"){
 	typeStr.innerText="";
 	document.getElementById("Purl").style.display="none";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  } else if(typeSelect=="webhook"){
 	typeStr.innerText="WebHook地址";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="";
+    document.getElementById("contentType").style.display="";
  } else if(typeSelect=="email"){
 	typeStr.innerText="邮箱(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  } else if(typeSelect=="rl"){
 	typeStr.innerText="百度Hi(如流)群id";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  } else if(typeSelect=="workwechat"){
 	typeStr.innerText="接受用户";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="";
 	document.getElementById("Tag").style.display="";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  } else{
 	typeStr.innerText="手机号";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("contentTypeLabel").style.display="none";
+    document.getElementById("contentType").style.display="none";
  }
  
 }
@@ -301,6 +326,7 @@ function sendtest(){
 	var upat=document.getElementById("pat");
 	var upparty=document.getElementById("pparty");
 	var uptag=document.getElementById("ptag");
+    // var webhookContentType=document.;
 	var sendurl="";
 	if (utype.value=="dd"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&ddurl='+upurl.value+'&at='+upat.value;
@@ -311,7 +337,7 @@ function sendtest(){
 	} else if(utype.value=="fsapp"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&at='+upat.value;
 	} else if(utype.value=="webhook"){
-	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value;
+	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value+'&webhookContentType=??';
 	} else if(utype.value=="email"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
 	} else if(utype.value=="rl"){
