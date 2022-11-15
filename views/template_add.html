@@ -326,7 +326,7 @@ function sendtest(){
 	var upat=document.getElementById("pat");
 	var upparty=document.getElementById("pparty");
 	var uptag=document.getElementById("ptag");
-    // var webhookContentType=document.;
+	var ucontentType=document.getElementById("contentType")
 	var sendurl="";
 	if (utype.value=="dd"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&ddurl='+upurl.value+'&at='+upat.value;
@@ -337,7 +337,7 @@ function sendtest(){
 	} else if(utype.value=="fsapp"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&at='+upat.value;
 	} else if(utype.value=="webhook"){
-	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value+'&webhookContentType=??';
+	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value+'&webhookContentType='+ucontentType.value;
 	} else if(utype.value=="email"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
 	} else if(utype.value=="rl"){

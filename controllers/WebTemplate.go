@@ -4,6 +4,7 @@ import (
 	"PrometheusAlert/models"
 	"encoding/json"
 	"github.com/astaxie/beego/logs"
+        "github.com/astaxie/beego"
 	"strconv"
 	"strings"
 )
@@ -49,7 +50,6 @@ func (c *MainController) AddTpl() {
 	t_use := c.Input().Get("use")
 	content := c.Input().Get("content")
 	contentType := c.Input().Get("contentType")
-	fmt.Println(" ========== 修改, contentType", contentType)
 	var err error
 	if len(tid) == 0 {
 		id, _ := strconv.Atoi(tid)
