@@ -4,6 +4,7 @@ import (
 	"PrometheusAlert/models"
 	"encoding/json"
 	"github.com/astaxie/beego/logs"
+        "github.com/astaxie/beego"
 	"strconv"
 	"strings"
 )
@@ -41,19 +42,21 @@ func (c *MainController) AddTpl() {
 		c.Redirect("/login", 302)
 		return
 	}
+
 	//获取表单信息
 	tid := c.Input().Get("id")
 	name := c.Input().Get("name")
 	t_tpye := c.Input().Get("type")
 	t_use := c.Input().Get("use")
 	content := c.Input().Get("content")
+	contentType := c.Input().Get("contentType")
 	var err error
 	if len(tid) == 0 {
 		id, _ := strconv.Atoi(tid)
-		err = models.AddTpl(id, name, t_tpye, t_use, content)
+		err = models.AddTpl(id, name, t_tpye, t_use, content, contentType)
 	} else {
 		id, _ := strconv.Atoi(tid)
-		err = models.UpdateTpl(id, name, t_tpye, t_use, content)
+		err = models.UpdateTpl(id, name, t_tpye, t_use, content, contentType)
 	}
 	var resp interface{}
 	if err != nil {
@@ -74,7 +77,7 @@ func (c *MainController) ImportTpl() {
 	if len(imTpl) > 0 {
 		var resp []string
 		for _, v := range imTpl {
-			err := models.AddTpl(v.Id, v.Tplname, v.Tpltype, v.Tpluse, v.Tpl)
+			err := models.AddTpl(v.Id, v.Tplname, v.Tpltype, v.Tpluse, v.Tpl, v.WebhookContentType)
 			var strs string
 			if err != nil {
 				strs = v.Tplname + "：" + err.Error() + "\n"
@@ -111,6 +114,7 @@ func (c *MainController) TemplateEdit() {
 		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
 	}
 	c.Data["Template"] = Template
+	c.Data["contentType"] = GetWebhookContentType(Template)
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
@@ -127,4 +131,14 @@ func (c *MainController) TemplateDel() {
 		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
 	}
 	c.Redirect("/template", 302)
+}
+
+func GetWebhookContentType(tpl *models.PrometheusAlertDB) string {
+	if tpl.WebhookContentType != "" {
+		return tpl.WebhookContentType
+	} else if beego.AppConfig.String("wh_contenttype") != "" {
+		return beego.AppConfig.String("wh_contenttype")
+	} else {
+		return "application/json"
+	}
 }

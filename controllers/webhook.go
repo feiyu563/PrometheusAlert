@@ -4,14 +4,15 @@ import (
 	"PrometheusAlert/models"
 	"bytes"
 	"crypto/tls"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
-func PostToWebhook(text, WebhookUrl, logsign string) string {
+func PostToWebhook(text, WebhookUrl, logsign string, contentType string) string {
 	logs.Info(logsign, "[Webhook]", text)
 	JsonMsg := bytes.NewReader([]byte(text))
 	var tr *http.Transport
@@ -29,7 +30,10 @@ func PostToWebhook(text, WebhookUrl, logsign string) string {
 		}
 	}
 	client := &http.Client{Transport: tr}
-	res, err := client.Post(WebhookUrl, "application/json", JsonMsg)
+	if contentType == "" {
+		contentType = "application/json"
+	}
+	res, err := client.Post(WebhookUrl, contentType, JsonMsg)
 	if err != nil {
 		logs.Error(logsign, "[Webhook]", err.Error())
 	}

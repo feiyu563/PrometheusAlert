@@ -58,21 +58,22 @@ type AliyunAlert struct {
 }
 
 type PrometheusAlertMsg struct {
-	Tpl        string
-	Type       string
-	Ddurl      string
-	Wxurl      string
-	Fsurl      string
-	Phone      string
-	WebHookUrl string
-	ToUser     string
-	Email      string
-	ToParty    string
-	ToTag      string
-	GroupId    string
-	AtSomeOne  string
-	RoundRobin string
-	Split      string
+	Tpl                string
+	Type               string
+	Ddurl              string
+	Wxurl              string
+	Fsurl              string
+	Phone              string
+	WebHookUrl         string
+	ToUser             string
+	Email              string
+	ToParty            string
+	ToTag              string
+	GroupId            string
+	AtSomeOne          string
+	RoundRobin         string
+	Split              string
+	WebhookContentType string
 }
 
 func (c *PrometheusAlertController) PrometheusAlert() {
@@ -124,6 +125,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		pMsg.Fsurl = beego.AppConfig.String("fsurl")
 	}
 	pMsg.WebHookUrl = c.Input().Get("webhookurl")
+	pMsg.WebhookContentType = c.Input().Get("webhookContentType")
 	pMsg.Phone = c.Input().Get("phone")
 	if pMsg.Phone == "" && (pMsg.Type == "txdx" || pMsg.Type == "hwdx" || pMsg.Type == "bddx" || pMsg.Type == "alydx" || pMsg.Type == "txdh" || pMsg.Type == "alydh" || pMsg.Type == "rlydh" || pMsg.Type == "7moordx" || pMsg.Type == "7moordh") {
 		pMsg.Phone = GetUserPhone(1)
@@ -472,10 +474,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "webhook":
 		Fwebhookurl := strings.Split(pmsg.WebHookUrl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToWebhook(message, DoBalance(Fwebhookurl), logsign)
+			ReturnMsg += PostToWebhook(message, DoBalance(Fwebhookurl), logsign, pmsg.WebhookContentType)
 		} else {
 			for _, url := range Fwebhookurl {
-				ReturnMsg += PostToWebhook(message, url, logsign)
+				ReturnMsg += PostToWebhook(message, url, logsign, pmsg.WebhookContentType)
 			}
 		}
 

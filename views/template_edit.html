@@ -89,6 +89,13 @@
 					<option value="voice" {{if eq .Template.Tpltype "voice"}}selected="selected"{{end}}>语音播报</option>
 					<option value="fsapp" {{if eq .Template.Tpltype "fsapp"}}selected="selected"{{end}}>飞书机器人应用</option>
 					</select>
+                    {{if eq .Template.Tpltype "webhook"}}
+                    <label>请求的content-type</label>
+                    <select class="form-control" id="contentType" name="contentType">
+                        <option value="application/json" {{if eq .contentType "application/json"}}selected="selected"{{end}}>application/json</option>
+					    <option value="application/x-www-form-urlencoded" {{if eq .contentType "application/x-www-form-urlencoded"}}selected="selected"{{end}}>application/x-www-form-urlencoded</option>
+                    </select>
+                    {{end}}
 				  </div>
 				</div>
 				
@@ -310,6 +317,7 @@ function sendtest(){
 	var upparty=document.getElementById("pparty");
 	var uptag=document.getElementById("ptag");
 	var upgroupid=document.getElementById("pgroupid");
+	var ucontentType = document.getElementById('contentType')
 	var sendurl="";
 	if (utype.value=="dd"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&ddurl='+upurl.value+'&at='+upat.value;
@@ -320,7 +328,7 @@ function sendtest(){
 	} else if(utype.value=="fsapp"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&at='+upat.value;
 	} else if(utype.value=="webhook"){
-	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value;
+	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value+'&webhookContentType='+ucontentType.value;
 	} else if(utype.value=="email"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
 	} else if(utype.value=="rl"){
