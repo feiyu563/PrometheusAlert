@@ -89,9 +89,10 @@ helm upgrade --install monitor prometheusalert -n monitoring
 - 2.开启PrometheusAlert配置文件中关于mysql的配置 conf/app.conf，数据库名称与上面创建的数据一致,并启动PrometheusAlert，PrometheusAlert启动时会自动初始化数据库表。
 
     ```
-    #数据库驱动，支持sqlite3，mysql,如使用mysql，请开启db_host,db_user,db_password,db_name的注释
+    #数据库驱动，支持sqlite3，mysql,如使用mysql，请开启db_host,db_port,db_user,db_password,db_name的注释
     db_driver=mysql
-    db_host=127.0.0.1:3306
+    db_host=127.0.0.1
+	db_port=3306
     db_user=root
     db_password=root
     db_name=prometheusalert
