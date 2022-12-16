@@ -12,6 +12,7 @@ import (
 // SendEmail
 func SendEmail(EmailBody, Emails, EmailTitleCustomize, logsign string) string {
 	open := beego.AppConfig.String("open-email")
+	titlecustomize := beego.AppConfig.String("email-title-customize")
 	if open != "1" {
 		logs.Info(logsign, "[email]", "email未配置未开启状态,请先配置open-email为1")
 		return "eamil未配置未开启状态,请先配置open-email为1"
@@ -20,10 +21,14 @@ func SendEmail(EmailBody, Emails, EmailTitleCustomize, logsign string) string {
 	serverPort, _ := beego.AppConfig.Int("Email_port")
 	fromEmail := beego.AppConfig.String("Email_user")
 	Passwd := beego.AppConfig.String("Email_password")
-	// EmailTitle := beego.AppConfig.String("Email_title")
 	EmailTitle := EmailTitleCustomize
 	//Emails= xxx1@qq.com,xxx2@qq.com,xxx3@qq.com
 	SendToEmails := []string{}
+
+	if titlecustomize != "1" {
+		EmailTitle = beego.AppConfig.String("Email_title")
+	}
+
 	m := gomail.NewMessage()
 	if len(Emails) == 0 {
 		return "收件人不能为空"
