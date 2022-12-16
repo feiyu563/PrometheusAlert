@@ -49,7 +49,7 @@ func (c *MainController) AlertTest() {
             <h3>PrometheusAlert邮件告警测试</h3>
 			欢迎使用<a href ="https://feiyu563.gitee.io">PrometheusAlert</a><br>
 			`
-		ret := SendEmail(TestEmailMessage, beego.AppConfig.String("Default_emails"), logsign)
+		ret := SendEmail(TestEmailMessage, beego.AppConfig.String("Default_emails"), beego.AppConfig.String("Email_title"), logsign)
 		c.Data["json"] = ret
 	case "7moordx":
 		MobileMessage := "PrometheusAlertCenter测试告警"

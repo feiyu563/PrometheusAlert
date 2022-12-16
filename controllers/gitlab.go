@@ -470,10 +470,11 @@ func sendGitlabEvent(typeid int, event GitlabEvent, eventType, logsign, sendURL 
 	// 1 email
 	case 1:
 		EmailMessage := ""
+		EmailTitleCustomize := beego.AppConfig.String("Email_title")
 		if sendURL == "" {
 			sendURL = beego.AppConfig.String("Default_emails")
 		}
-		SendEmail(EmailMessage, sendURL, logsign)
+		SendEmail(EmailMessage, sendURL, EmailTitleCustomize, logsign)
 	// 2 dingding robot
 	case 2:
 		DDtext := genDDtext(event, eventType)

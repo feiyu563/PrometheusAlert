@@ -58,22 +58,23 @@ type AliyunAlert struct {
 }
 
 type PrometheusAlertMsg struct {
-	Tpl                string
-	Type               string
-	Ddurl              string
-	Wxurl              string
-	Fsurl              string
-	Phone              string
-	WebHookUrl         string
-	ToUser             string
-	Email              string
-	ToParty            string
-	ToTag              string
-	GroupId            string
-	AtSomeOne          string
-	RoundRobin         string
-	Split              string
-	WebhookContentType string
+	Tpl                 string
+	Type                string
+	Ddurl               string
+	Wxurl               string
+	Fsurl               string
+	Phone               string
+	WebHookUrl          string
+	ToUser              string
+	Email               string
+	EmailTitleCustomize string
+	ToParty             string
+	ToTag               string
+	GroupId             string
+	AtSomeOne           string
+	RoundRobin          string
+	Split               string
+	WebhookContentType  string
 }
 
 func (c *PrometheusAlertController) PrometheusAlert() {
@@ -225,6 +226,8 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 //路由处理
 func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl string) []PrometheusAlertMsg {
 	return_Msgs := []PrometheusAlertMsg{}
+	//自定义邮件头，目前是通过获取Prometheus告警内容的summary得到
+	PMsg.EmailTitleCustomize = xalert["annotations"].(map[string]interface{})["summary"].(string)
 	//原有的参数不变
 	PMsg.Tpl = Tpl
 	return_Msgs = append(return_Msgs, PMsg)
@@ -480,7 +483,6 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 				ReturnMsg += PostToWebhook(message, url, logsign, pmsg.WebhookContentType)
 			}
 		}
-
 	//腾讯云短信
 	case "txdx":
 		ReturnMsg += PostTXmessage(message, pmsg.Phone, logsign)
@@ -510,7 +512,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 		ReturnMsg += Post7MOORphonecall(message, pmsg.Phone, logsign)
 	//邮件
 	case "email":
-		ReturnMsg += SendEmail(message, pmsg.Email, logsign)
+		ReturnMsg += SendEmail(message, pmsg.Email, pmsg.EmailTitleCustomize, logsign)
 	// Telegram
 	case "tg":
 		ReturnMsg += SendTG(message, logsign)

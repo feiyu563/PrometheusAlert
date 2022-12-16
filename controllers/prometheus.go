@@ -4,13 +4,12 @@ import (
 	"PrometheusAlert/models"
 	"PrometheusAlert/models/elastic"
 	"encoding/json"
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 )
 
 type PrometheusController struct {
@@ -109,7 +108,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
 	Record := beego.AppConfig.String("AlertRecord")
 	alertToES := beego.AppConfig.DefaultString("alert_to_es", "0")
-	var ddtext, wxtext, fstext, MobileMessage, PhoneCallMessage, EmailMessage, titleend, rltext string
+	var ddtext, wxtext, fstext, MobileMessage, PhoneCallMessage, EmailMessage, EmailTitleCustomize, titleend, rltext string
 	//对分组消息进行排序
 	AlerMessage := message.Alerts
 	sort.Sort(AlerMessages(AlerMessage))
@@ -260,14 +259,14 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		//发送消息到Email
 		if remail == "" && RMessage.Annotations.Email == "" {
 			Emails := beego.AppConfig.String("Default_emails")
-			SendEmail(EmailMessage, Emails, logsign)
+			SendEmail(EmailMessage, Emails, EmailTitleCustomize, logsign)
 		} else {
 			if remail != "" {
-				SendEmail(EmailMessage, remail, logsign)
+				SendEmail(EmailMessage, remail, EmailTitleCustomize, logsign)
 			}
 			if RMessage.Annotations.Email != "" {
 				Emails := RMessage.Annotations.Email
-				SendEmail(EmailMessage, Emails, logsign)
+				SendEmail(EmailMessage, Emails, EmailTitleCustomize, logsign)
 			}
 		}
 		//发送消息到短信
