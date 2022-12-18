@@ -39,8 +39,6 @@ COPY conf/app-example.conf conf/app.conf
 
 COPY db db
 
-COPY logs logs
-
 COPY static static
 
 COPY views views
