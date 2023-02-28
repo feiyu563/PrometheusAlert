@@ -9,6 +9,7 @@ import (
 	"path"
 	"runtime"
 
+	"PrometheusAlert/controllers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
@@ -72,6 +73,8 @@ func init() {
 	// 注册模型
 	orm.RegisterModel(new(models.PrometheusAlertDB), new(models.AlertRecord), new(models.AlertRouter))
 	orm.RunSyncdb("default", false, true)
+	// Redis Init Conn
+	controllers.InitRedisLockClient()
 }
 
 func main() {

@@ -35,8 +35,13 @@ github.com/baidubce/bce-sdk-go/util
 github.com/baidubce/bce-sdk-go/util/log
 # github.com/beorn7/perks v1.0.1
 github.com/beorn7/perks/quantile
-# github.com/cespare/xxhash/v2 v2.1.2
+# github.com/bsm/redislock v0.9.0
+## explicit
+github.com/bsm/redislock
+# github.com/cespare/xxhash/v2 v2.2.0
 github.com/cespare/xxhash/v2
+# github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f
+github.com/dgryski/go-rendezvous
 # github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 ## explicit
 github.com/go-gomail/gomail
@@ -106,6 +111,16 @@ github.com/prometheus/common/model
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
+# github.com/redis/go-redis/v9 v9.0.1
+## explicit
+github.com/redis/go-redis/v9
+github.com/redis/go-redis/v9/internal
+github.com/redis/go-redis/v9/internal/hashtag
+github.com/redis/go-redis/v9/internal/hscan
+github.com/redis/go-redis/v9/internal/pool
+github.com/redis/go-redis/v9/internal/proto
+github.com/redis/go-redis/v9/internal/rand
+github.com/redis/go-redis/v9/internal/util
 # github.com/robfig/cron/v3 v3.0.1
 ## explicit
 github.com/robfig/cron/v3
