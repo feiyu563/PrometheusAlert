@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine3.17 as builder
+FROM golang:1.16-alpine3.12 as builder
 
 WORKDIR $GOPATH/src/github.com/feiyu563/PrometheusAlert
 
@@ -15,7 +15,7 @@ COPY . $GOPATH/src/github.com/feiyu563/PrometheusAlert
 RUN make build
 
 # -----------------------------------------------------------------------------
-FROM alpine:3.17
+FROM alpine:3.12
 
 LABEL maintainer="jikun.zhang"
 
@@ -33,6 +33,8 @@ HEALTHCHECK --start-period=10s --interval=20s --timeout=3s --retries=3 \
 WORKDIR /app
 
 COPY --from=builder /go/src/github.com/feiyu563/PrometheusAlert/PrometheusAlert .
+
+COPY db/PrometheusAlertDB.db /opt/PrometheusAlertDB.db
 
 COPY conf/app-example.conf conf/app.conf
 

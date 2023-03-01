@@ -4,7 +4,6 @@ import (
 	"PrometheusAlert/models"
 	"PrometheusAlert/models/elastic"
 	"bytes"
-	"context"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -223,7 +222,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-// 路由处理
+//路由处理
 func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl string) []PrometheusAlertMsg {
 	return_Msgs := []PrometheusAlertMsg{}
 	//原有的参数不变
@@ -309,7 +308,7 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 	return return_Msgs
 }
 
-// 处理告警记录
+//处理告警记录
 func SetRecord(AlertValue interface{}) {
 	var Alertname, Status, Level, Labels, Instance, Summary, Description, StartAt, EndAt string
 	xalert := AlertValue.(map[string]interface{})
@@ -383,7 +382,7 @@ func SetRecord(AlertValue interface{}) {
 	}
 }
 
-// 消息模版化
+//消息模版化
 func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg string) {
 	funcMap := template.FuncMap{
 		"GetCSTtime": GetCSTtime,
@@ -431,11 +430,9 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 	return nil, buf.String()
 }
 
-// 发送消息
+//发送消息
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	Title := beego.AppConfig.String("title")
-	redisOpen := beego.AppConfig.String("open-redis")
-	ctx := context.Background()
 	var ReturnMsg string
 	models.AlertsFromCounter.WithLabelValues("/prometheusalert").Add(1)
 	ChartsJson.Prometheusalert += 1
@@ -443,17 +440,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	//微信渠道
 	case "wx":
 		Wxurl := strings.Split(pmsg.Wxurl, ",")
-		if redisOpen == "1" && pmsg.RoundRobin != "true" {
-			for _, url := range Wxurl {
-				// 每分钟的峰值 Send 不超过 100 条
-				lock, _ := NewRedisLock(ctx, url, 60*time.Second, 100*time.Millisecond, 600)
-				ReturnMsg += PostToWeiXin(message, url, pmsg.AtSomeOne, logsign)
-				time.Sleep(300 * time.Microsecond)
-				if lock != nil {
-					lock.Release(ctx)
-				}
-			}
-		} else if pmsg.RoundRobin == "true" {
+		if pmsg.RoundRobin == "true" {
 			ReturnMsg += PostToWeiXin(message, DoBalance(Wxurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Wxurl {
@@ -475,17 +462,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	//飞书渠道
 	case "fs":
 		Fsurl := strings.Split(pmsg.Fsurl, ",")
-		if redisOpen == "1" && pmsg.RoundRobin != "true" {
-			for _, url := range Fsurl {
-				// 每分钟的峰值 Send 不超过 100 条
-				lock, _ := NewRedisLock(ctx, url, 60*time.Second, 100*time.Millisecond, 600)
-				ReturnMsg += PostToFS(Title, message, url, pmsg.AtSomeOne, logsign)
-				time.Sleep(300 * time.Microsecond)
-				if lock != nil {
-					lock.Release(ctx)
-				}
-			}
-		} else if pmsg.RoundRobin == "true" {
+		if pmsg.RoundRobin == "true" {
 			ReturnMsg += PostToFS(Title, message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Fsurl {
