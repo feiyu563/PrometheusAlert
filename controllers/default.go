@@ -30,7 +30,7 @@ type DashboardJson struct {
 	Graylog         int `json:"graylog"`
 	Prometheus      int `json:"prometheus"`
 	Prometheusalert int `json:"prometheusalert"`
-	Aliyun          int `json:"prometheusalert"`
+	Aliyun          int `json:"aliyun"`
 }
 
 var ChartsJson DashboardJson
