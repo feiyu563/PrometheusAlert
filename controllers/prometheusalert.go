@@ -167,6 +167,10 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 
 	var message string
 	if pMsg.Type != "" && PrometheusAlertTpl != nil {
+		AlertChild := p_alertmanager_json["alerts"].([]interface{})
+		for _, AlertValue := range AlertChild {
+			go SetRecord(AlertValue)
+		}
 		//判断是否是来自 Prometheus的告警
 		if pMsg.Split != "false" && PrometheusAlertTpl.Tpluse == "Prometheus" {
 			//判断告警路由AlertRouter列表是否为空
@@ -174,12 +178,10 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				//刷新告警路由AlertRouter
 				GlobalAlertRouter, _ = models.GetAllAlertRouter()
 			}
-			Alerts_Value, _ := p_alertmanager_json["alerts"].([]interface{})
-			//拆分告警消息
-			for _, AlertValue := range Alerts_Value {
-				p_alertmanager_json["alerts"] = Alerts_Value[0:0]
+			//拆分告警消息，逐条发送
+			for _, AlertValue := range AlertChild {
+				p_alertmanager_json["alerts"] = AlertChild[0:0]
 				p_alertmanager_json["alerts"] = append(p_alertmanager_json["alerts"].([]interface{}), AlertValue)
-				go SetRecord(AlertValue)
 				//提取 prometheus 告警消息中的 label，用于和告警路由比对
 				xalert := AlertValue.(map[string]interface{})
 				//路由处理,可能存在多个路由都匹配成功，所以这里返回的是个列表sMsg
@@ -222,7 +224,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-//路由处理
+// 路由处理
 func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl string) []PrometheusAlertMsg {
 	return_Msgs := []PrometheusAlertMsg{}
 	//原有的参数不变
@@ -308,7 +310,7 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 	return return_Msgs
 }
 
-//处理告警记录
+// 处理告警记录
 func SetRecord(AlertValue interface{}) {
 	var Alertname, Status, Level, Labels, Instance, Summary, Description, StartAt, EndAt string
 	xalert := AlertValue.(map[string]interface{})
@@ -382,7 +384,7 @@ func SetRecord(AlertValue interface{}) {
 	}
 }
 
-//消息模版化
+// 消息模版化
 func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg string) {
 	funcMap := template.FuncMap{
 		"GetCSTtime": GetCSTtime,
@@ -430,7 +432,7 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 	return nil, buf.String()
 }
 
-//发送消息
+// 发送消息
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	var ReturnMsg string
