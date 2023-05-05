@@ -351,7 +351,8 @@ func SetRecord(AlertValue interface{}) {
 		Summary = xalert["annotations"].(map[string]interface{})["summary"].(string)
 	}
 
-	if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Labels, Instance, StartAt, EndAt, Summary, Description, Status) {
+	//if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Labels, Instance, StartAt, EndAt, Summary, Description, Status) {
+	if beego.AppConfig.String("AlertRecord") == "1" {
 		models.AddAlertRecord(Alertname,
 			Level,
 			Labels,
