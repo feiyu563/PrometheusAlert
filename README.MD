@@ -173,7 +173,7 @@ feiyu563/prometheus-alert:latest
 
 ### 目录
 
-* [FlashDuty产品介绍入口](https://flashcat.cloud/product/flashduty/)
+* [FlashDuty【降噪、排班、告警升级、抑制、分析】](https://flashcat.cloud/product/flashduty/)
 * [【PrometheusAlert入门】](doc/readme/base-install.md)
   * [安装部署PrometheusAlert](doc/readme/base-install.md)
   * [接口说明](doc/readme/base-restful.md)
