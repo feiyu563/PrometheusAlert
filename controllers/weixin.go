@@ -21,6 +21,28 @@ type WXMessage struct {
 	Markdown Mark   `json:"markdown"`
 }
 
+var client *http.Client
+
+func init() {
+	var tr *http.Transport
+	maxIdleConns, _ := beego.AppConfig.Int("MaxIdleConns")
+	tr = &http.Transport{MaxIdleConns: maxIdleConns}
+	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
+		proxy := func(_ *http.Request) (*url.URL, error) {
+			return url.Parse(proxyUrl)
+		}
+		tr = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			Proxy:           proxy,
+		}
+	} else {
+		tr = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+	}
+	client = &http.Client{Transport: tr}
+}
+
 func PostToWeiXin(text, WXurl, atuserid, logsign string) string {
 	open := beego.AppConfig.String("open-weixin")
 	if open != "1" {
@@ -44,21 +66,21 @@ func PostToWeiXin(text, WXurl, atuserid, logsign string) string {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
 	logs.Info(logsign, "[weixin]", b)
-	var tr *http.Transport
-	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
-		proxy := func(_ *http.Request) (*url.URL, error) {
-			return url.Parse(proxyUrl)
-		}
-		tr = &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-			Proxy:           proxy,
-		}
-	} else {
-		tr = &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		}
-	}
-	client := &http.Client{Transport: tr}
+	//var tr *http.Transport
+	//if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
+	//	proxy := func(_ *http.Request) (*url.URL, error) {
+	//		return url.Parse(proxyUrl)
+	//	}
+	//	tr = &http.Transport{
+	//		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	//		Proxy:           proxy,
+	//	}
+	//} else {
+	//	tr = &http.Transport{
+	//		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	//	}
+	//}
+	//client := &http.Client{Transport: tr}
 	res, err := client.Post(WXurl, "application/json", b)
 	if err != nil {
 		logs.Error(logsign, "[weixin]", err.Error())
