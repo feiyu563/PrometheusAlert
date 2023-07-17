@@ -130,10 +130,16 @@ func main() {
 	orm.Debug = true
 	logtype := beego.AppConfig.String("logtype")
 	if logtype == "console" {
-		logs.SetLogger(logtype)
+		err := logs.SetLogger(logtype)
+		if err != nil {
+			return
+		}
 	} else if logtype == "file" {
 		logpath := beego.AppConfig.String("logpath")
-		logs.SetLogger(logtype, `{"filename":"`+logpath+`"}`)
+		err := logs.SetLogger(logtype, `{"filename":"`+logpath+`"}`)
+		if err != nil {
+			return
+		}
 	}
 	// 输出应用信息
 	logs.Info("[main] 构建的Go版本: %s", GoVersion)
