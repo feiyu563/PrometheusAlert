@@ -24,6 +24,7 @@ type DashboardJson struct {
 	Webhook         int `json:"webhook"`
 	Weixin          int `json:"weixin"`
 	Workwechat      int `json:"workwechat"`
+	Voice           int `json:"voice"`
 	Zabbix          int `json:"zabbix"`
 	Grafana         int `json:"grafana"`
 	Graylog         int `json:"graylog"`

@@ -85,7 +85,7 @@
 					
 					<td>
 					
-					{{if eq .EndsAt "0001-01-01T00:00:00Z"}}<span class="badge bg-warning">持续中</span>{{else}}<span class="badge bg-success">{{.EndsAt}}</span>{{end}}
+					{{if eq .EndsAt "0001-01-01T00:00:00Z"}}<span class="badge bg-warning">持续中</span>{{else}}{{if eq .EndsAt "0001-01-01 08:00:00"}}<span class="badge bg-warning">持续中</span>{{else}}<span class="badge bg-success">{{.EndsAt}}</span>{{end}}{{end}}
 					
 					</td>
 					<td> <!-- 0 信息,1 警告,2 一般严重,3 严重,4 灾难 -->
@@ -124,9 +124,10 @@
 					</td>
 
 					<td>
-					<span class="badge bg-gray">
-						{{.Labels}}
-					</span>
+					{{.Labels}}
+					<!--<span class="badge bg-gray">
+						
+					</span>-->
 					</td>
 
 				</tr>
@@ -167,6 +168,22 @@
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+	
+	var tb = document.getElementById('example1');//获取表格的dom节点
+	var td = tb.rows[1].cells[8];//获取0行0列的td单元格
+	//td.innerHTML = '222';//动态修改表格的内容为222
+    for(var i=1,rows=tb.rows.length; i<rows-1; i++){
+        var td = tb.rows[i].cells[8];//获取0行0列的td单元格
+		var str = td.innerHTML;
+		var obj = JSON.parse(str);
+		var table_str = ""
+		for(var p in obj){
+		  //console.log(p + " " + obj[p]);
+		  table_str = table_str + '<span class="badge bg-gray">'+p+'='+obj[p]+'</span><br />'
+		}
+		td.innerHTML = table_str;
+    }
+	
   });
 </script>
 {{template "jshtml"}}

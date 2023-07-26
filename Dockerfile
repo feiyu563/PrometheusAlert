@@ -24,6 +24,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone && \
     apk del tzdata && \
+	mkdir -p /app/logs && \
     apk update && apk upgrade && apk add --no-cache sqlite-libs curl sqlite
 
 HEALTHCHECK --start-period=10s --interval=20s --timeout=3s --retries=3 \
@@ -38,8 +39,6 @@ COPY db/PrometheusAlertDB.db /opt/PrometheusAlertDB.db
 COPY conf/app-example.conf conf/app.conf
 
 COPY db db
-
-COPY logs logs
 
 COPY static static
 

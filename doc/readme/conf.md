@@ -1,0 +1,280 @@
+# PrometheusAlert配置文件说明
+
+PrometheusAlert配置文件中定义了丰富的配置项，默认配置即可满足开箱即用。并且配置文件中每项配置都加入了详细的注释，非常明确的指出了每个配置项的功能和定义。
+
+app.conf中的配置一般为PrometheusAlert的默认配置或兜底的配置，即在PrometheusAlert自定义模板接口未指定部分参数时，或默认从app.conf中读取相关默认配置。
+
+app.conf中的配置可以保持默认或不进行配置，使用过程中，大部分参数可以在自定义模板接口的url参数中动态指定即可。
+
+注意：此配置文件中不需要的配置项保持默认即可，请勿删除！！！否则可能导致程序运行异常！！！
+
+```
+#---------------------↓全局配置-----------------------
+appname = PrometheusAlert
+#登录用户名
+login_user=prometheusalert
+#登录密码
+login_password=prometheusalert
+#监听地址
+httpaddr = "0.0.0.0"
+#监听端口
+httpport = 8080
+runmode = dev
+#设置代理 proxy = http://123.123.123.123:8080
+proxy =
+#开启JSON请求
+copyrequestbody = true
+#告警消息标题
+title=PrometheusAlert
+#链接到告警平台地址
+GraylogAlerturl=http://graylog.org
+#钉钉告警 告警logo图标地址
+logourl=https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png
+#钉钉告警 恢复logo图标地址
+rlogourl=https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/doc/alert-center.png
+#短信告警级别(等于3就进行短信告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
+messagelevel=3
+#电话告警级别(等于4就进行语音告警) 告警级别定义 0 信息,1 警告,2 一般严重,3 严重,4 灾难
+phonecalllevel=4
+#默认拨打号码(页面测试短信和电话功能需要配置此项)
+defaultphone=xxxxxxxx
+#故障恢复是否启用电话通知0为关闭,1为开启
+phonecallresolved=0
+#是否前台输出file or console
+logtype=file
+#日志文件路径
+logpath=logs/prometheusalertcenter.log
+#转换Prometheus,graylog告警消息的时区为CST时区(如默认已经是CST时区，请勿开启)
+prometheus_cst_time=0
+#数据库驱动，支持sqlite3，mysql,postgres如使用mysql或postgres，请开启db_host,db_port,db_user,db_password,db_name的注释
+db_driver=sqlite3
+#db_host=127.0.0.1
+#db_port=3306
+#db_user=root
+#db_password=root
+#db_name=prometheusalert
+#是否开启告警记录 0为关闭,1为开启
+AlertRecord=0
+#是否开启告警记录定时删除 0为关闭,1为开启
+RecordLive=0
+#告警记录定时删除周期，单位天
+RecordLiveDay=7
+# 是否将告警记录写入es7，0为关闭，1为开启
+alert_to_es=0
+# es地址，是[]string
+# beego.Appconfig.Strings读取配置为[]string，使用";"而不是","
+to_es_url=http://localhost:9200
+# to_es_url=http://es1:9200;http://es2:9200;http://es3:9200
+# es用户和密码
+# to_es_user=username
+# to_es_pwd=password
+
+#---------------------↓webhook-----------------------
+#是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
+open-dingding=1
+#默认钉钉机器人地址
+ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx
+#是否开启 @所有人(0为关闭,1为开启)
+dd_isatall=1
+
+#是否开启微信告警通道,可同时开始多个通道0为关闭,1为开启
+open-weixin=1
+#默认企业微信机器人地址
+wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
+
+#是否开启飞书告警通道,可同时开始多个通道0为关闭,1为开启
+open-feishu=0
+#默认飞书机器人地址
+fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
+
+#---------------------↓腾讯云接口-----------------------
+#是否开启腾讯云短信告警通道,可同时开始多个通道0为关闭,1为开启
+open-txdx=0
+#腾讯云短信接口key
+TXY_DX_appkey=xxxxx
+#腾讯云短信模版ID 腾讯云短信模版配置可参考 prometheus告警:{1}
+TXY_DX_tpl_id=xxxxx
+#腾讯云短信sdk app id
+TXY_DX_sdkappid=xxxxx
+#腾讯云短信签名 根据自己审核通过的签名来填写
+TXY_DX_sign=腾讯云
+
+#是否开启腾讯云电话告警通道,可同时开始多个通道0为关闭,1为开启
+open-txdh=0
+#腾讯云电话接口key
+TXY_DH_phonecallappkey=xxxxx
+#腾讯云电话模版ID
+TXY_DH_phonecalltpl_id=xxxxx
+#腾讯云电话sdk app id
+TXY_DH_phonecallsdkappid=xxxxx
+
+#---------------------↓华为云接口-----------------------
+#是否开启华为云短信告警通道,可同时开始多个通道0为关闭,1为开启
+open-hwdx=0
+#华为云短信接口key
+HWY_DX_APP_Key=xxxxxxxxxxxxxxxxxxxxxx
+#华为云短信接口Secret
+HWY_DX_APP_Secret=xxxxxxxxxxxxxxxxxxxxxx
+#华为云APP接入地址(端口接口地址)
+HWY_DX_APP_Url=https://rtcsms.cn-north-1.myhuaweicloud.com:10743
+#华为云短信模板ID
+HWY_DX_Templateid=xxxxxxxxxxxxxxxxxxxxxx
+#华为云签名名称，必须是已审核通过的，与模板类型一致的签名名称,按照自己的实际签名填写
+HWY_DX_Signature=华为云
+#华为云签名通道号
+HWY_DX_Sender=xxxxxxxxxx
+
+#---------------------↓阿里云接口-----------------------
+#是否开启阿里云短信告警通道,可同时开始多个通道0为关闭,1为开启
+open-alydx=0
+#阿里云短信主账号AccessKey的ID
+ALY_DX_AccessKeyId=xxxxxxxxxxxxxxxxxxxxxx
+#阿里云短信接口密钥
+ALY_DX_AccessSecret=xxxxxxxxxxxxxxxxxxxxxx
+#阿里云短信签名名称
+ALY_DX_SignName=阿里云
+#阿里云短信模板ID
+ALY_DX_Template=xxxxxxxxxxxxxxxxxxxxxx
+
+#是否开启阿里云电话告警通道,可同时开始多个通道0为关闭,1为开启
+open-alydh=0
+#阿里云电话主账号AccessKey的ID
+ALY_DH_AccessKeyId=xxxxxxxxxxxxxxxxxxxxxx
+#阿里云电话接口密钥
+ALY_DH_AccessSecret=xxxxxxxxxxxxxxxxxxxxxx
+#阿里云电话被叫显号，必须是已购买的号码
+ALY_DX_CalledShowNumber=xxxxxxxxx
+#阿里云电话文本转语音（TTS）模板ID
+ALY_DH_TtsCode=xxxxxxxx
+
+#---------------------↓容联云接口-----------------------
+#是否开启容联云电话告警通道,可同时开始多个通道0为关闭,1为开启
+open-rlydh=0
+#容联云基础接口地址
+RLY_URL=https://app.cloopen.com:8883/2013-12-26/Accounts/
+#容联云后台SID
+RLY_ACCOUNT_SID=xxxxxxxxxxx
+#容联云api-token
+RLY_ACCOUNT_TOKEN=xxxxxxxxxx
+#容联云app_id
+RLY_APP_ID=xxxxxxxxxxxxx
+
+#---------------------↓邮件配置-----------------------
+#是否开启邮件
+open-email=0
+#邮件发件服务器地址
+Email_host=smtp.qq.com
+#邮件发件服务器端口
+Email_port=465
+#邮件帐号
+Email_user=xxxxxxx@qq.com
+#邮件密码
+Email_password=xxxxxx
+#邮件标题
+Email_title=运维告警
+#默认发送邮箱
+Default_emails=xxxxx@qq.com,xxxxx@qq.com
+
+#---------------------↓七陌云接口-----------------------
+#是否开启七陌短信告警通道,可同时开始多个通道0为关闭,1为开启
+open-7moordx=0
+#七陌账户ID
+7MOOR_ACCOUNT_ID=Nxxx
+#七陌账户APISecret
+7MOOR_ACCOUNT_APISECRET=xxx
+#七陌账户短信模板编号
+7MOOR_DX_TEMPLATENUM=n
+#注意：七陌短信变量这里只用一个var1，在代码里写死了。
+#-----------
+#是否开启七陌webcall语音通知告警通道,可同时开始多个通道0为关闭,1为开启
+open-7moordh=0
+#请在七陌平台添加虚拟服务号、文本节点
+#七陌账户webcall的虚拟服务号
+7MOOR_WEBCALL_SERVICENO=xxx
+# 文本节点里被替换的变量，我配置的是text。如果被替换的变量不是text，请修改此配置
+7MOOR_WEBCALL_VOICE_VAR=text
+
+#---------------------↓telegram接口-----------------------
+#是否开启telegram告警通道,可同时开始多个通道0为关闭,1为开启
+open-tg=0
+#tg机器人token
+TG_TOKEN=xxxxx
+#tg消息模式 个人消息或者频道消息 0为关闭(推送给个人)，1为开启(推送给频道)
+TG_MODE_CHAN=0
+#tg用户ID
+TG_USERID=xxxxx
+#tg频道name或者id, 频道name需要以@开始
+TG_CHANNAME=xxxxx
+#tg api地址, 可以配置为代理地址
+#TG_API_PROXY="https://api.telegram.org/bot%s/%s"
+
+#---------------------↓workwechat接口-----------------------
+#是否开启workwechat告警通道,可同时开始多个通道0为关闭,1为开启
+open-workwechat=0
+# 企业ID
+WorkWechat_CropID=xxxxx
+# 应用ID
+WorkWechat_AgentID=xxxx
+# 应用secret
+WorkWechat_AgentSecret=xxxx
+# 接受用户
+WorkWechat_ToUser="zhangsan|lisi"
+# 接受部门
+WorkWechat_ToParty="ops|dev"
+# 接受标签
+WorkWechat_ToTag=""
+# 消息类型, 暂时只支持markdown
+# WorkWechat_Msgtype = "markdown"
+
+#---------------------↓百度云接口-----------------------
+#是否开启百度云短信告警通道,可同时开始多个通道0为关闭,1为开启
+open-baidudx=0
+#百度云短信接口AK(ACCESS_KEY_ID)
+BDY_DX_AK=xxxxx
+#百度云短信接口SK(SECRET_ACCESS_KEY)
+BDY_DX_SK=xxxxx
+#百度云短信ENDPOINT（ENDPOINT参数需要用指定区域的域名来进行定义，如服务所在区域为北京，则为）
+BDY_DX_ENDPOINT=http://smsv3.bj.baidubce.com
+#百度云短信模版ID,根据自己审核通过的模版来填写(模版支持一个参数code：如prometheus告警:{code})
+BDY_DX_TEMPLATE_ID=xxxxx
+#百度云短信签名ID，根据自己审核通过的签名来填写
+TXY_DX_SIGNATURE_ID=xxxxx
+
+#---------------------↓百度Hi(如流)-----------------------
+#是否开启百度Hi(如流)告警通道,可同时开始多个通道0为关闭,1为开启
+open-ruliu=0
+#默认百度Hi(如流)机器人地址
+BDRL_URL=https://api.im.baidu.com/api/msg/groupmsgsend?access_token=xxxxxxxxxxxxxx
+#百度Hi(如流)群ID
+BDRL_ID=123456
+#---------------------↓bark接口-----------------------
+#是否开启telegram告警通道,可同时开始多个通道0为关闭,1为开启
+open-bark=0
+#bark默认地址, 建议自行部署bark-server
+BARK_URL=https://api.day.app
+#bark key, 多个key使用分割
+BARK_KEYS=xxxxx
+# 复制, 推荐开启
+BARK_COPY=1
+# 历史记录保存,推荐开启
+BARK_ARCHIVE=1
+# 消息分组
+BARK_GROUP=PrometheusAlert
+
+#---------------------↓语音播报-----------------------
+#语音播报需要配合语音播报插件才能使用
+#是否开启语音播报通道,0为关闭,1为开启
+open-voice=1
+VOICE_IP=127.0.0.1
+VOICE_PORT=9999
+
+#---------------------↓飞书机器人应用-----------------------
+#是否开启feishuapp告警通道,可同时开始多个通道0为关闭,1为开启
+open-feishuapp=1
+# APPID
+FEISHU_APPID=cli_xxxxxxxxxxxxx
+# APPSECRET
+FEISHU_APPSECRET=xxxxxxxxxxxxxxxxxxxxxx
+# 可填飞书 用户open_id、user_id、union_ids、部门open_department_id
+AT_USER_ID="xxxxxxxx"
+```

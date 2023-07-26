@@ -58,21 +58,22 @@ type AliyunAlert struct {
 }
 
 type PrometheusAlertMsg struct {
-	Tpl        string
-	Type       string
-	Ddurl      string
-	Wxurl      string
-	Fsurl      string
-	Phone      string
-	WebHookUrl string
-	ToUser     string
-	Email      string
-	ToParty    string
-	ToTag      string
-	GroupId    string
-	AtSomeOne  string
-	RoundRobin string
-	Split      string
+	Tpl                string
+	Type               string
+	Ddurl              string
+	Wxurl              string
+	Fsurl              string
+	Phone              string
+	WebHookUrl         string
+	ToUser             string
+	Email              string
+	ToParty            string
+	ToTag              string
+	GroupId            string
+	AtSomeOne          string
+	RoundRobin         string
+	Split              string
+	WebhookContentType string
 }
 
 func (c *PrometheusAlertController) PrometheusAlert() {
@@ -124,6 +125,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		pMsg.Fsurl = beego.AppConfig.String("fsurl")
 	}
 	pMsg.WebHookUrl = c.Input().Get("webhookurl")
+	pMsg.WebhookContentType = c.Input().Get("webhookContentType")
 	pMsg.Phone = c.Input().Get("phone")
 	if pMsg.Phone == "" && (pMsg.Type == "txdx" || pMsg.Type == "hwdx" || pMsg.Type == "bddx" || pMsg.Type == "alydx" || pMsg.Type == "txdh" || pMsg.Type == "alydh" || pMsg.Type == "rlydh" || pMsg.Type == "7moordx" || pMsg.Type == "7moordh") {
 		pMsg.Phone = GetUserPhone(1)
@@ -228,16 +230,39 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 	return_Msgs = append(return_Msgs, PMsg)
 	//循环检测现有的路由规则，找到匹配的目标后，替换发送目标参数
 	for _, router_value := range GlobalAlertRouter {
-
-		rules := strings.Split(router_value.Rules, ",")
-		rules_num := len(rules)
+		LabelMap := []LabelMap{}
+		//将rules转换为列表
+		json.Unmarshal([]byte(router_value.Rules), &LabelMap)
+		rules_num := len(LabelMap)
 		rules_num_match := 0
 
-		for _, rule := range rules {
+		//判断如果是恢复告警, 并且设置不发送恢复告警, 则跳过
+		if xalert["status"] == "resolved" && router_value.SendResolved == false {
+			alertName := xalert["labels"].(map[string]interface{})["alertname"].(string)
+			logs.Info("告警名称：", alertName, "路由规则：", router_value.Name, "路由类型：", router_value.Tpl.Tpltype, "路由恢复告警：", router_value.SendResolved)
+			continue
+		}
+
+		for _, rule := range LabelMap {
 			for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-				if rule == (label_key + "=" + label_value.(string)) {
-					rules_num_match += 1
+				//这里需要分两部分处理，一部分是正则规则，一部分是非正则规则
+				if rule.Regex {
+					//正则部分比对
+					if rule.Name == label_key {
+						tz := regexp.MustCompile(rule.Value)
+						if len(tz.FindAllString(label_value.(string), -1)) > 0 {
+							rules_num_match += 1
+						}
+					}
+
+				} else {
+					//非正则部分比对
+					if rule.Name == label_key && rule.Value == label_value.(string) {
+						rules_num_match += 1
+					}
+
 				}
+
 			}
 		}
 
@@ -382,6 +407,13 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 		"stringSlice": func(s ...string) []string {
 			return s
 		},
+		"SplitString": func(pstring string, start int, stop int) string {
+			beego.Debug("SplitString", pstring)
+			if stop < 0 {
+				return pstring[start : len(pstring)+stop]
+			}
+			return pstring[start:stop]
+		},
 	}
 
 	buf := new(bytes.Buffer)
@@ -420,10 +452,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "dd":
 		Ddurl := strings.Split(pmsg.Ddurl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToDingDing(Title+"告警消息", message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
+			ReturnMsg += PostToDingDing(Title, message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Ddurl {
-				ReturnMsg += PostToDingDing(Title+"告警消息", message, url, pmsg.AtSomeOne, logsign)
+				ReturnMsg += PostToDingDing(Title, message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
@@ -431,10 +463,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "fs":
 		Fsurl := strings.Split(pmsg.Fsurl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToFS(Title+"告警消息", message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
+			ReturnMsg += PostToFS(Title, message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Fsurl {
-				ReturnMsg += PostToFS(Title+"告警消息", message, url, pmsg.AtSomeOne, logsign)
+				ReturnMsg += PostToFS(Title, message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
@@ -442,10 +474,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "webhook":
 		Fwebhookurl := strings.Split(pmsg.WebHookUrl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToWebhook(message, DoBalance(Fwebhookurl), logsign)
+			ReturnMsg += PostToWebhook(message, DoBalance(Fwebhookurl), logsign, pmsg.WebhookContentType)
 		} else {
 			for _, url := range Fwebhookurl {
-				ReturnMsg += PostToWebhook(message, url, logsign)
+				ReturnMsg += PostToWebhook(message, url, logsign, pmsg.WebhookContentType)
 			}
 		}
 
@@ -491,6 +523,12 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	// Bark
 	case "bark":
 		ReturnMsg += SendBark(message, logsign)
+	// Bark
+	case "voice":
+		ReturnMsg += SendVoice(message, logsign)
+	//飞书APP渠道
+	case "fsapp":
+		ReturnMsg += PostToFeiShuApp(Title, message, pmsg.AtSomeOne, logsign)
 	//异常参数
 	default:
 		ReturnMsg = "参数错误"

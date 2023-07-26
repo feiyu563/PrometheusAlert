@@ -1,4 +1,4 @@
-## 感谢您对PrometheusAlert项目的支持
+# 感谢您对PrometheusAlert项目的支持
 
 ##### 如果PrometheusAlert能够对您有所帮助，我深感荣幸，同时也请将PrometheusAlert项目推荐给其他需要的朋友，希望这个项目可以帮助到更多的运维、开发的兄弟们。
 
@@ -7,10 +7,10 @@
 -----------------------------------------
 * 支付宝
 
-![dashboard](../zhifubao.png)
+![dashboard](../images/zhifubao.png)
 
 -----------------------------------------
 
 * 微信钱包
 
-![dashboard](../wxpay.png)
+![dashboard](../images/wxpay.png)

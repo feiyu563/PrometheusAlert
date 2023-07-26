@@ -26,7 +26,7 @@ func PostHWmessage(Messages string, PhoneNumbers, logsign string) string {
 	hwtplid := beego.AppConfig.String("HWY_DX_Templateid")
 	hwsign := beego.AppConfig.String("HWY_DX_Signature")
 	sender := beego.AppConfig.String("HWY_DX_Sender")
-	//mobile格式:"15395105573,16619875573"
+	//mobile格式:"15888888888,16666666666"
 	//生成header
 	now := time.Now().Format("2006-01-02T15:04:05Z")
 	nonce := "7226249334"

@@ -278,6 +278,9 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 				}
 			}
 		}
+		//发送消息到飞书应用
+		PostToFeiShuApp(Title+titleend, fstext, RMessage.Annotations.AtSomeOne, logsign)
+
 		//发送消息到Email
 		if remail == "" && RMessage.Annotations.Email == "" {
 			Emails := beego.AppConfig.String("Default_emails")
@@ -349,6 +352,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		SendTG(PhoneCallMessage, logsign)
 		// 发送消息到Bark
 		SendBark(PhoneCallMessage, logsign)
+		SendVoice(PhoneCallMessage, logsign)
 		// 推送消息到企业微信
 		SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), wxtext, logsign)
 

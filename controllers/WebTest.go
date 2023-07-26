@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"bytes"
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"text/template"
 )
 
 func (c *MainController) AlertTest() {
@@ -17,11 +15,11 @@ func (c *MainController) AlertTest() {
 		c.Data["json"] = ret
 	case "dd":
 		ddtext := "## [PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "#### 测试告警\n\n" + "###### 告警级别：测试\n\n##### PrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToDingDing("PrometheusAlert", ddtext, beego.AppConfig.String("ddurl"), "15395105573", logsign)
+		ret := PostToDingDing("PrometheusAlert", ddtext, beego.AppConfig.String("ddurl"), "15888888888", logsign)
 		c.Data["json"] = ret
 	case "fs":
 		fstext := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "测试告警\n\n" + "告警级别：测试\n\nPrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
-		ret := PostToFS("PrometheusAlert", fstext, beego.AppConfig.String("fsurl"), "244217140@qq.com", logsign)
+		ret := PostToFS("PrometheusAlert", fstext, beego.AppConfig.String("fsurl"), "xxxxxxxxxxx@qq.com", logsign)
 		c.Data["json"] = ret
 	case "txdx":
 		MobileMessage := "PrometheusAlertCenter测试告警"
@@ -81,6 +79,14 @@ func (c *MainController) AlertTest() {
 		TgMessage := "PrometheusAlertCenter测试告警"
 		ret := SendBark(TgMessage, logsign)
 		c.Data["json"] = ret
+	case "voice":
+		vMessage := "Prometheus Alert Center 测试告警"
+		ret := SendVoice(vMessage, logsign)
+		c.Data["json"] = ret
+	case "fsapp":
+		fstext := "[PrometheusAlert](https://github.com/feiyu563/PrometheusAlert)\n\n" + "测试告警\n\n" + "告警级别：测试\n\nPrometheusAlert\n\n" + "![PrometheusAlert](" + beego.AppConfig.String("logourl") + ")"
+		ret := PostToFeiShuApp("PrometheusAlert", fstext, beego.AppConfig.String("AT_USER_ID"), logsign)
+		c.Data["json"] = ret
 	default:
 		c.Data["json"] = "hahaha!"
 	}
@@ -105,22 +111,11 @@ func (c *MainController) MarkdownTest() {
 		TplContent := c.Input().Get("tplcontent")
 		json.Unmarshal([]byte(JsonContent), &p_json)
 
-		funcMap := template.FuncMap{
-			"GetCSTtime": GetCSTtime,
-			"TimeFormat": TimeFormat,
-			"GetTime":    GetTime,
-		}
-		buf := new(bytes.Buffer)
-		tpl, err := template.New("").Funcs(funcMap).Parse(TplContent)
+		err, tpl := TransformAlertMessage(p_json, TplContent)
 		if err != nil {
 			resp = err.Error()
 		} else {
-			err = tpl.Execute(buf, p_json)
-			if err != nil {
-				resp = err.Error()
-			} else {
-				resp = buf.String()
-			}
+			resp = tpl
 		}
 		c.Data["json"] = resp
 		c.ServeJSON()

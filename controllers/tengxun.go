@@ -53,7 +53,7 @@ func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 	sdkappid := beego.AppConfig.String("TXY_DX_sdkappid")
 	sign := beego.AppConfig.String("TXY_DX_sign")
 	//腾讯短信接口算法部分
-	//mobile格式:"15395105573,16619875573"
+	//mobile格式:"15888888888,16666666666"
 	TXmobile := Mobiles{}
 	TXmobiles := []Mobiles{}
 	mobiles := strings.Split(PhoneNumbers, ",")

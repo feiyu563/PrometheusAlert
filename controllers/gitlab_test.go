@@ -112,4 +112,13 @@ func TestSendGitlabEvent(t *testing.T) {
 			t.Errorf("发送gitlab push event消息到钉钉失败: %s", resp)
 		}
 	}
+	fsUrl := beego.AppConfig.DefaultString("fsurl","")
+	if fsUrl == "" {
+		t.Log("fsUrl为空, 消息未能发送到飞书机器人。")
+	} else {
+		resp := sendGitlabEvent(4, event, "Push Hook", "", fsUrl)
+		if resp != "消息发送完成!" {
+			t.Errorf("发送gitlab push event消息到飞书失败: %s", resp)
+		}
+	}
 }

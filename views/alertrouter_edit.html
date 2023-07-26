@@ -47,7 +47,7 @@
         <div class="card-body">
 
 			<form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
-			<input type="hidden" name="id" value="{{.AlertRouter.Id}}">
+			<input id="id" type="hidden" name="id" value="{{.AlertRouter.Id}}">
 			
 			  <div class="row">
 				<div class="col-sm-6">
@@ -82,20 +82,35 @@
 
 			<br />
 			
+			<div id="labelx"></div>
+			
+			
 			  <div class="row">
-				<div class="col-12">
+				<div class="col-sm-6">
 				  <!-- text input -->
 				  <div class="form-group">
-					<label>路由规则: 取自Prometheus告警消息的lable值,支持多个label</label>
-					<input type="text" id="rules" class="form-control" name="rules" value="{{.AlertRouter.Rules}}"  placeholder="规则如 app=nginx,env=test">
+					<button id='labeladd' type="button" class="btn btn-info btn-flat"><i class="far fa-plus-square"></i></button>
 				  </div>
 				</div>
 			  </div>
+			  
 
 			<br />
+			<div class="row">
 
+					<div class="col-sm-6">
+						<!-- select -->
+						<div class="form-group">
+							<label>是否发送恢复告警</label>
+							<select class="form-control" name="send_resolved" id="send_resolved">
+							</select>
+						</div>
+					</div>
+
+				</div>
+			<br />
 			  <div class="row">
-				<div class="col-sm-6">
+				<div id="Purl" class="col-sm-6">
 				  <!-- text input -->
 				  <div class="form-group">
 					<label id="typestr">钉钉机器人地址</label>
@@ -156,7 +171,47 @@
 <script>
 $(function () {
 	typeChange();
+	loadRules();
+	loadSendResolved();
+	$('#labeladd').click(function(){
+	    var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div> 				 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox"> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  				<div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
+		$('#labelx').append(labeldiv)
+	});
+	
+	$("#labelx").delegate('#labeldel','click',function(){
+		$(this).parents(".row").remove();
+	});
+	
 })
+
+function loadSendResolved(){
+	var select = document.getElementById('send_resolved');
+	var sendResolved={{.AlertRouter.SendResolved}};
+	if (sendResolved === false) {
+		select.insertAdjacentHTML('beforeend', `<option value="false" selected>不发送</option>`)
+		select.insertAdjacentHTML('beforeend', `<option value="true" >发送</option>`)
+	} else {
+		select.insertAdjacentHTML('beforeend', `<option value="false" >不发送</option>`)
+		select.insertAdjacentHTML('beforeend', `<option value="true" selected>发送</option>`)
+	}
+}
+
+function loadRules(){
+	var rules_str={{.AlertRouter.Rules}};
+	var rules_data = JSON.parse(rules_str);
+	rules_data.forEach(function(rule_data){
+		var ischeck=""
+		if (rule_data.Regex){
+			ischeck="checked"
+		} else {
+			ischeck=""
+		}
+		var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value="'+rule_data.Name+'"  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div> 				 				<div class="col-3"> 				   				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value="'+rule_data.Value+'"  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox" '+ischeck+'> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  <div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
+		$('#labelx').append(labeldiv)
+	});
+	
+}
+
 function typeChange(){
  var tpl_id = document.getElementById("tpl_id");
  var tpltype = document.getElementById("tpltype");
@@ -165,31 +220,49 @@ function typeChange(){
  
  if (tpltype.value=="dd"){
 	typeStr.innerText="钉钉机器人地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="wx"){
 	typeStr.innerText="微信机器人地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="fs"){
 	typeStr.innerText="飞书机器人地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="fsapp"){
+	typeStr.innerText="飞书 用户open_id、user_id、union_ids、部门open_department_id";
+	document.getElementById("Purl").style.display="none";
+	document.getElementById("Pat").style.display="";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
+ } else if(tpltype.value=="voice"){
+	typeStr.innerText="";
+	document.getElementById("Purl").style.display="none";
+	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="webhook"){
 	typeStr.innerText="webhook地址(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="email"){
 	typeStr.innerText="邮箱(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="rl"){
 	typeStr.innerText="百度Hi(如流)群id";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
@@ -199,8 +272,10 @@ function typeChange(){
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="";
 	document.getElementById("Tag").style.display="";*/
+	
  } else{
 	typeStr.innerText="手机号(多个请以,隔开)";
+	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
@@ -209,32 +284,56 @@ function typeChange(){
 }
 
 function savetpl(){
-var uname=document.getElementById("rules");
-if (uname.value.length==0){
-	alert('路由规则不能为空');
-	return
-};
-var ucontent=document.getElementById("purl");
-if (ucontent.value.length==0){
-	alert('url 或 手机号参数不能为空');
-	return
-};
+	var uname=document.getElementById("rules");
+	if (uname.value.length==0){
+		alert('路由规则不能为空');
+		return
+	};
 
-$.ajax({
-	type: "POST",
-	dataType: "json",
-	url: '{{ urlfor "MainController.AddRouter"}}',
-	data: $('#formtpl').serialize(),
-	success: function (result) {
-		console.log(result);
-		if (result == null) {
-			alert("告警路由保存成功!");
-			window.location.replace("/alertrouter")
-		} else {
-			alert("告警路由保存失败!");
+	//取到所有rules
+	var RouterRules =new Array();
+	$("#labelx > div").each(function() {
+		var LabelMap={
+			Name: $(this).find("#rules").val(),
+			Value: $(this).find("#rulesvalue").val(),
+			Regex: $(this).find("#rulesregex").is(":checked")
+
 		};
-	},
-});
+		RouterRules.push(LabelMap);
+	});
+
+	//获取send_resolved值, 转为Boolean类型
+	var send_resolved = document.getElementById("send_resolved").value;
+	if (send_resolved === "true" || send_resolved === "false"){
+		send_resolved=send_resolved==='true'
+	}
+
+	var alert_router_json_str={
+		RouterId: $('#id').val(),
+		RouterName: $('#name').val(),
+		RouterTplId: $('#tpl_id').val(),
+		RouterPurl: $('#purl').val(),
+		RouterPat: $('#pat').val(),
+		RouterSendResolved: send_resolved,
+		Rules: RouterRules
+	};
+
+	var json_data = JSON.stringify(alert_router_json_str);
+	$.ajax({
+		type: "POST",
+		dataType: "json",
+		url: '{{ urlfor "MainController.AddRouter"}}',
+		data: json_data,
+		success: function (result) {
+			console.log(result);
+			if (result == null) {
+				alert("告警路由保存成功!");
+				window.location.replace("/alertrouter")
+			} else {
+				alert("告警路由保存失败!");
+			};
+		},
+	});
 
 }
 </script>

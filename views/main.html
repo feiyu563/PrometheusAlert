@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PrometheusAlert | 控制中心</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="/static/plugins/fontawesome-free/css/all.min.css">
   <!-- DataTables -->
@@ -62,14 +60,14 @@
 			
               <li class="nav-item">
                 <a href="/template" {{if .IsTemplate}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-heart nav-icon"></i>
                   <p>自定义模版</p>
                 </a>
               </li>
 			  
               <li class="nav-item">
                 <a href="/markdowntest" {{if .IsMarkDownTest}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="far fa-image nav-icon"></i>
                   <p>Markdown测试</p>
                 </a>
               </li>
@@ -79,7 +77,7 @@
 		  
           <li {{if .IsAlertManageMenu}}class="nav-item menu-open"{{else}}class="nav-item"{{end}}>
             <a href="#" {{if .IsAlertManageMenu}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-              <i class="nav-icon fas fa-tree"></i>
+              <i class="nav-icon fa fa-bell"></i>
               <p>
                 告警管理
                 <i class="fas fa-angle-left right"></i>
@@ -97,21 +95,21 @@
 			  
               <li class="nav-item">
                 <a href="/alertrouter" {{if .IsAlertRouter}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-inbox nav-icon"></i>
                   <p>告警路由</p>
                 </a>
               </li>
 
               <li class="nav-item">
                 <a href="/record" {{if .IsRecord}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-book nav-icon"></i>
                   <p>告警记录查询</p>
                 </a>
               </li>
 
               <li class="nav-item">
                 <a href="/test" {{if .IsTest}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-bullhorn nav-icon"></i>
                   <p>告警测试</p>
                 </a>
               </li>
@@ -259,7 +257,7 @@
 
           <li class="nav-item">
             <a href="https://github.com/feiyu563/PrometheusAlert/issues" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon far fa-envelope"></i>
               <p>
                 帮助
                 <span class="right badge badge-danger">New</span>
@@ -315,6 +313,7 @@
 <script src="/static/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="/static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="/static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="/static/dist/js/FileSaver.js"></script>
 {{end}}
 
 {{define "jshtml"}}

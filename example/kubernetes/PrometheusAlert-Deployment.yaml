@@ -37,8 +37,6 @@ data:
     defaultphone=xxxxxxxx
     #故障恢复是否启用电话通知0为关闭,1为开启
     phonecallresolved=0
-    #自动告警抑制(自动告警抑制是默认同一个告警源的告警信息只发送告警级别最高的第一条告警信息,其他消息默认屏蔽,这么做的目的是为了减少相同告警来源的消息数量,防止告警炸弹,0为关闭,1为开启)
-    silent=0
     #是否前台输出file or console
     logtype=file
     #日志文件路径
@@ -54,6 +52,10 @@ data:
     #db_name=prometheusalert
     #是否开启告警记录 0为关闭,1为开启
     AlertRecord=0
+    #是否开启告警记录定时删除 0为关闭,1为开启
+    RecordLive=0
+    #告警记录定时删除周期，单位天
+    RecordLiveDay=7
     # 是否将告警记录写入es7，0为关闭，1为开启
     alert_to_es=0
     # es地址，是[]string
@@ -63,7 +65,7 @@ data:
     # es用户和密码
     # to_es_user=username
     # to_es_pwd=password
-
+    
     #---------------------↓webhook-----------------------
     #是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
     open-dingding=1
@@ -144,7 +146,7 @@ data:
     
     #---------------------↓容联云接口-----------------------
     #是否开启容联云电话告警通道,可同时开始多个通道0为关闭,1为开启
-    RLY_DH_open-rlydh=0
+    open-rlydh=0
     #容联云基础接口地址
     RLY_URL=https://app.cloopen.com:8883/2013-12-26/Accounts/
     #容联云后台SID
@@ -198,7 +200,7 @@ data:
     TG_MODE_CHAN=0
     #tg用户ID
     TG_USERID=xxxxx
-    #tg频道name
+    #tg频道name或者id, 频道name需要以@开始
     TG_CHANNAME=xxxxx
     #tg api地址, 可以配置为代理地址
     #TG_API_PROXY="https://api.telegram.org/bot%s/%s"
@@ -255,6 +257,23 @@ data:
     BARK_ARCHIVE=1
     # 消息分组
     BARK_GROUP=PrometheusAlert
+    
+    #---------------------↓语音播报-----------------------
+    #语音播报需要配合语音播报插件才能使用
+    #是否开启语音播报通道,0为关闭,1为开启
+    open-voice=1
+    VOICE_IP=127.0.0.1
+    VOICE_PORT=9999
+    
+    #---------------------↓飞书机器人应用-----------------------
+    #是否开启feishuapp告警通道,可同时开始多个通道0为关闭,1为开启
+    open-feishuapp=1
+    # APPID
+    FEISHU_APPID=cli_xxxxxxxxxxxxx
+    # APPSECRET
+    FEISHU_APPSECRET=xxxxxxxxxxxxxxxxxxxxxx
+    # 可填飞书 用户open_id、user_id、union_ids、部门open_department_id
+    AT_USER_ID="xxxxxxxx"
   user.csv: |
     2019年4月10日,15888888881,小张,15999999999,备用联系人小陈,15999999998,备用联系人小赵
     2019年4月11日,15888888882,小李,15999999999,备用联系人小陈,15999999998,备用联系人小赵

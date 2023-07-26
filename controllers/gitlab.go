@@ -145,6 +145,19 @@ func (c *GitlabController) GitlabDingding() {
 	c.ServeJSON()
 }
 
+// GitlabFeishu sends gitlab webhook events to feishu v2 robot
+func (c *GitlabController) GitlabFeishu() {
+	event := GitlabEvent{}
+	eventType := c.Ctx.Request.Header.Get("X-Gitlab-Event")
+	fsurl := c.GetString("fsurl")
+	logsign := "[" + LogsSign() + "]"
+	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
+	json.Unmarshal(c.Ctx.Input.RequestBody, &event)
+	c.Data["json"] = sendGitlabEvent(4, event, eventType, logsign, fsurl)
+	logs.Info(logsign, c.Data["json"])
+	c.ServeJSON()
+}
+
 func genWXtext(event GitlabEvent, eventType string) string {
 	var WXtext, WXbasetext, WXothertext string
 
@@ -350,6 +363,108 @@ func genDDtext(event GitlabEvent, eventType string) string {
 	return DDtext
 }
 
+func genFStext(event GitlabEvent, eventType string) string {
+	var FStext, FSbasetext, FSothertext string
+
+	// 有些payload中不同时包含project和repository信息，因此需要判断下
+	var name, homepage string
+	if event.Project.Name != "" {
+		name = event.Project.Name
+		homepage = event.Project.Homepage
+	} else {
+		name = event.Repository.Name
+		homepage = event.Repository.Homepage
+	}
+
+	FSbasetext = "[Gitlab事件通知](" + homepage + ")\n" +
+		"**事件类型**: " + eventType + "\n" +
+		"**仓库链接**: [" + name + "](" + homepage + ")\n"
+
+	switch eventType {
+	case "Push Hook":
+		FSothertext = "**提交用户**: " + event.Username + "(@" + event.UserUsername + ")\n" +
+			"**当前Ref**: " + event.Ref + "\n" +
+			"**当前提交**: " + event.CheckoutSha + "\n"
+		if len(event.Commits) != 0 {
+			FSothertext = FSothertext + "**提交信息**: \n" + "\n" + event.Commits[len(event.Commits)-1].Message
+		}
+	case "Tag Push Hook":
+		FSothertext = "**提交用户**: " + event.Username + "(@" + event.UserUsername + ")\n" +
+			"**当前Ref**: " + event.Ref + "\n" +
+			"**当前提交**: " + event.CheckoutSha + "\n"
+		if len(event.Commits) != 0 {
+			FSothertext = FSothertext + "**提交信息**: \n" + "\n" + event.Commits[0].Message
+		}
+	case "Merge Request Hook":
+		FSothertext = "**提交用户**: " + event.User.Name + "(@" + event.User.Username + ")\n" +
+			"**源分支**: " + event.ObjectAttributes.SourceBranch + "\n" +
+			"**目标分支**: " + event.ObjectAttributes.TargetBranch + "\n" +
+			"**合并请求链接**: [" + event.ObjectAttributes.Title + "](" + event.ObjectAttributes.Url + ")\n" +
+			"**合并请求状态**: " + event.ObjectAttributes.Action + "\n"
+		if len(event.Assignees) != 0 {
+			FSothertext = FSothertext + "**分配给**: @" + event.Assignees[0].Username + "\n"
+		}
+		// 描述内容可能有多行，放最后
+		FSothertext = FSothertext + "**合并请求描述**:\n" + "\n" + event.ObjectAttributes.Description
+	case "Issue Hook":
+		FSothertext = "**提交用户**: " + event.User.Name + "(@" + event.User.Username + ")\n" +
+			"**议题链接**: [" + event.ObjectAttributes.Title + "](" + event.ObjectAttributes.Url + ")\n" +
+			"**议题状态**: " + event.ObjectAttributes.Action + "\n"
+		if len(event.Assignees) != 0 {
+			FSothertext = FSothertext + "**分配给**: @" + event.Assignees[0].Username + "\n"
+		}
+		FSothertext = FSothertext + "**议题描述**:\n" + "\n" + event.ObjectAttributes.Description
+	case "Pipeline Hook":
+		FSothertext = "**提交用户**: " + event.User.Name + "(@" + event.User.Username + ")\n" +
+			"**Ref**: " + event.ObjectAttributes.Ref + "\n" +
+			"**Sha**: " + event.ObjectAttributes.Sha + "\n" +
+			"**源**: " + event.ObjectAttributes.Source + "\n" +
+			"**状态**: " + event.ObjectAttributes.Status + "\n"
+	case "Job Hook":
+		FSothertext = "**提交用户**: " + event.User.Name + "\n" +
+			"**当前Ref**: " + event.Ref + "\n" +
+			"**当前Sha**: " + event.Sha + "\n" +
+			"**当前环境**: " + event.Environment + "\n" +
+			"**构建名称**: " + event.BuildName + "\n" +
+			"**构建阶段**: " + event.BuildStage + "\n" +
+			"**构建状态**: " + event.BuildStatus + "\n" +
+			"**Runner状态**: " + strconv.FormatBool(event.Runner.Active) + "\n" +
+			"**Runner类型**: " + event.Runner.RunnerType + "\n" +
+			"**Runner是否共享**: " + strconv.FormatBool(event.Runner.IsShared) + "\n" +
+			"**Runner描述**: " + event.Runner.Description + "\n"
+	case "Note Hook":
+		FSothertext = "**提交用户**: " + event.User.Name + "(@" + event.User.Username + ")\n" +
+			"**评论地址**: [" + event.ObjectAttributes.Url + "](" + event.ObjectAttributes.Url + ")\n" +
+			"**评论类型**: " + event.ObjectAttributes.NoteableType + "\n" +
+			"**评论内容**:\n" + "\n" + event.ObjectAttributes.Note
+	case "Wiki Page Hook":
+		FSothertext = "**提交用户**: " + event.User.Name + "(@" + event.User.Username + ")\n" +
+			"**Wiki链接**: [" + event.ObjectAttributes.Title + "](" + event.Wiki.WebUrl + ")\n" +
+			"**Wiki状态**: " + event.ObjectAttributes.Action + "\n" +
+			"**提交消息**:\n" + "\n" + event.ObjectAttributes.Message
+	case "Deployment Hook":
+		FSothertext = "**提交用户**: " + event.User.Name + "(@" + event.User.Username + ")\n" +
+			"**部署状态**: " + event.Status + "\n" +
+			"**部署环境**: " + event.Environment + "\n" +
+			"**部署地址**: " + event.DeploymentUrl + "\n"
+	case "Feature Flag Hook":
+		FSothertext = "**提交用户**: " + event.User.Username + "(@" + event.User.Name + ")\n" +
+			"**功能标志名称**: " + event.ObjectAttributes.Name + "\n" +
+			"**功能标志状态**: " + strconv.FormatBool(event.ObjectAttributes.Active) + "\n" +
+			"**功能标志描述**:\n" + "\n" + event.ObjectAttributes.Description
+	case "Release Hook":
+		FSothertext = "**发布链接**: [" + event.Name + "](" + event.Url + ")\n" +
+			"**发布状态**: " + event.Action + "\n" +
+			"**发布版本**: " + event.Tag + "\n" +
+			"**发布描述**:\n" + "\n" + event.Description
+	default:
+		FSothertext = "**程序暂未处理的事件**"
+	}
+
+	FStext = FSbasetext + FSothertext
+	return FStext
+}
+
 func sendGitlabEvent(typeid int, event GitlabEvent, eventType, logsign, sendURL string) string {
 	switch typeid {
 	// 1 email
@@ -375,6 +490,14 @@ func sendGitlabEvent(typeid int, event GitlabEvent, eventType, logsign, sendURL 
 		// Todo
 		// @somebody
 		PostToWeiXin(WXtext, sendURL, "", logsign)
+	case 4:
+		FStext := genFStext(event, eventType)
+		if sendURL == "" {
+			sendURL = beego.AppConfig.String("fsurl")
+		}
+		// Todo
+		// @somebody
+		PostToFeiShuv2(eventType, FStext, sendURL, "", logsign)
 	default:
 		return "未知的发送端，消息没有发送。"
 	}
