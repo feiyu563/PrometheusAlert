@@ -34,47 +34,37 @@ PrometheusAlert是开源的运维告警中心消息转发系统，支持主流�
 
 应用信息和构建相关的命令都写入了Makefile，请确保安装`make`, `git`, `go`命令。如有特定需要，请自行修改Makefile。
 
-```bash
+```sh
 # 默认
 make
 
-# 只运行构建
+# 构建
 make build
 
-# 运行 go fmt
-make format
+# 清理构建
+make clean
 
-# 运行 go vet
-make vet
+# 运行 fmt/vet/test
+make format/vet/test
 
-# 运行 go test
-make test
+# 构建镜像，推送镜像，运行镜像
+make docker/docker-push/docker-test
 
-# 构建镜像
-make docker
-
-# 推送镜像
-make docker-push
-
-# 运行镜像测试
-make docker-test
-
-
-# 运行
+# 本地测试运行
+make clean && make build
 copy conf/app-example.conf conf/app.conf
-./PrometheusAlert
+build/bin/PrometheusAlert
+
 # 测试应用健康
 curl http://localhost:8080/health
 ```
 
-
 <br/>
 <br/>
-
 
 ## 启动
 
-```
+```sh
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
 如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.7/linux.zip)
 
@@ -85,6 +75,10 @@ curl http://localhost:8080/health
 
 #启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
 #默认登录帐号和密码在app.conf中有配置
+
+# 使用 supervisor 来守护启动。
+# 配置参考 example/supervisor/prometheusalert.ini
+# 如果需要将日志输出到控制台，请修改 app.conf 中 logtype=console
 ```
 
 ## Docker 启动
@@ -136,6 +130,7 @@ PrometheusAlert具备如下特性
  - 增加随机轮询，目前仅针对ddurl，fsurl，wxurl有效，默认情况下如果上述Url配置的是多个地址，则多个地址全部发送，如开启该选项，则从多个地址中随机取一个地址发送，主要是为了避免消息发送频率过高导致触发部分机器人拦截消息
  - 增加支持将Prometheus告警记录写入到Elasticsearch7.x，可通过Kibana进行界面查看告警记录和配置表格导出。
  - 增加支持将Gitlab webhook event推送到企微和钉钉。
+ - 增加告警组，可以将通知媒介写到告警组里面，便于配置和修改。
 
 ---------------------
 
@@ -178,6 +173,7 @@ PrometheusAlert具备如下特性
   * [七陌短信和电话告警配置](doc/readme/7moor.md)
   * [TeleGram告警配置](doc/readme/tg.md)
   * [百度Hi(如流)告警配置](doc/readme/ruliu.md)
+  * [告警组配置](doc/readme/alertgroup.md)
 * [【告警源配置】](doc/readme/prometheus.md)
   * [★★★★★ 推荐 任意告警源（自定义消息模版）接入配置](doc/readme/customtpl.md)
   * [Prometheus 接入配置](doc/readme/prometheus.md)
