@@ -24,9 +24,9 @@ docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prome
 
 ```
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.8.1/linux.zip)
+如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9/linux.zip)
 
-# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.8.1/linux.zip && unzip linux.zip && cd linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9/linux.zip && unzip linux.zip && cd linux/
 
 #，下载好后解压并进入解压后的文件夹
 
@@ -42,7 +42,7 @@ docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prome
 
 ```
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如windows版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.8.1/windows.zip)
+如windows版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9/windows.zip)
 
 #进入程序目录并双击运行 PrometheusAlert.exe即可
 cd windows/
@@ -96,11 +96,8 @@ helm upgrade --install monitor prometheusalert -n monitoring
     db_password=root
     db_name=prometheusalert
     ```
-- 3.利用`Navicat`或命令行将`db目录`中的 `prometheusalert.sql` 导入数据库`prometheusalert`
-    ```
-    use prometheusalert
-    source prometheusalert.sql
-    ```
+- 3.打开PrometheusAlert web页面，进入菜单模版管理-->自定义模板-->选择文件，将`db目录`中的 `prometheus-alert-template.json`导入，刷新页面即可
+
 - 4.重启PrometheusAlert，这样即完成配置PrometheusAlert使用mysql数据库作为默认后端存储。
 
 --------------------------------------------------------------------
