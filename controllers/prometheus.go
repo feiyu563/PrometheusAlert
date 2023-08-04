@@ -405,7 +405,9 @@ func Alertgroup(alertgroup string) map[string]string {
 	}
 
 	ags := strings.Split(alertgroup, ",")
-	var wxurl, ddurl, fsurl, email, phone, groupid string
+	// url likes: url1,url2...
+	var wxurl, ddurl, fsurl, email, phone, groupid, webhookurl string
+
 	// Assembling multiple alertgroups of url together
 	for _, v := range ags {
 		wxurl = wxurl + "," + beego.AppConfig.String(v+"::wxurl")
@@ -414,15 +416,17 @@ func Alertgroup(alertgroup string) map[string]string {
 		phone = phone + "," + beego.AppConfig.String(v+"::phone")
 		email = email + "," + beego.AppConfig.String(v+"::email")
 		groupid = groupid + "," + beego.AppConfig.String(v+"::groupid")
+		webhookurl = webhookurl + "," + beego.AppConfig.String(v+"::webhookurl")
 	}
 
 	agMap = map[string]string{
-		"wxurl":   URLDeduplication(wxurl),
-		"ddurl":   URLDeduplication(ddurl),
-		"fsurl":   URLDeduplication(fsurl),
-		"phone":   URLDeduplication(phone),
-		"email":   URLDeduplication(email),
-		"groupid": URLDeduplication(groupid),
+		"wxurl":      URLDeduplication(wxurl),
+		"ddurl":      URLDeduplication(ddurl),
+		"fsurl":      URLDeduplication(fsurl),
+		"phone":      URLDeduplication(phone),
+		"email":      URLDeduplication(email),
+		"groupid":    URLDeduplication(groupid),
+		"webhookurl": URLDeduplication(webhookurl),
 	}
 
 	return agMap
@@ -438,6 +442,8 @@ func URLDeduplication(url string) string {
 
 	uniqueMap := make(map[string]bool)
 	for _, s := range urlSlice {
+		// Remove space at the begin or end.
+		s = strings.TrimSpace(s)
 		uniqueMap[s] = true
 	}
 
@@ -454,4 +460,14 @@ func URLDeduplication(url string) string {
 	newURL := strings.Join(uniqueSlice, ",")
 
 	return newURL
+}
+
+// checkURL checks urls and return non-nil url
+func checkURL(urls ...string) string {
+	for _, url := range urls {
+		if len(strings.TrimSpace(url)) != 0 {
+			return url
+		}
+	}
+	return ""
 }

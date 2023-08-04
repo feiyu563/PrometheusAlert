@@ -5,14 +5,15 @@ import (
 	"PrometheusAlert/models/elastic"
 	"bytes"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	tmplhtml "html/template"
 	"regexp"
 	"strconv"
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 type PrometheusAlertController struct {
@@ -110,50 +111,43 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		json.Unmarshal(c.Ctx.Input.RequestBody, &p_alertmanager_json)
 	}
 
+	// alertgroup
+	alertgroup := c.Input().Get("alertgroup")
+	openAg := beego.AppConfig.String("open-alertgroup")
+	var agMap map[string]string
+	if openAg == "1" && len(alertgroup) != 0 {
+		agMap = Alertgroup(alertgroup)
+	}
+
 	pMsg.Type = c.Input().Get("type")
 	pMsg.Tpl = c.Input().Get("tpl")
-	pMsg.Ddurl = c.Input().Get("ddurl")
-	if pMsg.Ddurl == "" {
-		pMsg.Ddurl = beego.AppConfig.String("ddurl")
-	}
-	pMsg.Wxurl = c.Input().Get("wxurl")
-	if pMsg.Wxurl == "" {
-		pMsg.Wxurl = beego.AppConfig.String("wxurl")
-	}
-	pMsg.Fsurl = c.Input().Get("fsurl")
-	if pMsg.Fsurl == "" {
-		pMsg.Fsurl = beego.AppConfig.String("fsurl")
-	}
-	pMsg.WebHookUrl = c.Input().Get("webhookurl")
-	pMsg.WebhookContentType = c.Input().Get("webhookContentType")
-	pMsg.Phone = c.Input().Get("phone")
+
+	// 告警组适合处理以逗号分隔的多个值
+	pMsg.Ddurl = checkURL(agMap["ddurl"], c.Input().Get("ddurl"), beego.AppConfig.String("ddurl"))
+	pMsg.Wxurl = checkURL(agMap["wxurl"], c.Input().Get("wxurl"), beego.AppConfig.String("wxurl"))
+	pMsg.Fsurl = checkURL(agMap["fsurl"], c.Input().Get("fsurl"), beego.AppConfig.String("fsurl"))
+	pMsg.Email = checkURL(agMap["email"], c.Input().Get("email"), beego.AppConfig.String("fsurl"))
+	pMsg.GroupId = checkURL(agMap["groupid"], c.Input().Get("groupid"), beego.AppConfig.String("BDRL_ID"))
+
+	pMsg.Phone = checkURL(agMap["phone"], c.Input().Get("phone"))
 	if pMsg.Phone == "" && (pMsg.Type == "txdx" || pMsg.Type == "hwdx" || pMsg.Type == "bddx" || pMsg.Type == "alydx" || pMsg.Type == "txdh" || pMsg.Type == "alydh" || pMsg.Type == "rlydh" || pMsg.Type == "7moordx" || pMsg.Type == "7moordh") {
 		pMsg.Phone = GetUserPhone(1)
 	}
-	pMsg.Email = c.Input().Get("email")
-	if pMsg.Email == "" {
-		pMsg.Email = beego.AppConfig.String("Default_emails")
-	}
-	pMsg.ToUser = c.Input().Get("wxuser")
-	if pMsg.ToUser == "" {
-		pMsg.ToUser = beego.AppConfig.String("WorkWechat_ToUser")
-	}
-	pMsg.ToParty = c.Input().Get("wxparty")
-	if pMsg.ToParty == "" {
-		pMsg.ToParty = beego.AppConfig.String("WorkWechat_ToParty")
-	}
-	pMsg.ToTag = c.Input().Get("wxtag")
-	if pMsg.ToTag == "" {
-		pMsg.ToTag = beego.AppConfig.String("WorkWechat_ToTag")
-	}
-	pMsg.GroupId = c.Input().Get("groupid")
-	if pMsg.GroupId == "" {
-		pMsg.GroupId = beego.AppConfig.String("BDRL_ID")
-	}
+
+	pMsg.WebHookUrl = checkURL(agMap["webhookurl"], c.Input().Get("webhookurl"))
+	// webhookContenType, rr, split, workwechat 是单个值，因此不写入告警组。
+	pMsg.WebhookContentType = c.Input().Get("webhookContentType")
+
+	pMsg.ToUser = checkURL(c.Input().Get("wxuser"), beego.AppConfig.String("WorkWechat_ToUser"))
+	pMsg.ToParty = checkURL(c.Input().Get("wxparty"), beego.AppConfig.String("WorkWechat_ToUser"))
+	pMsg.ToTag = checkURL(c.Input().Get("wxtag"), beego.AppConfig.String("WorkWechat_ToUser"))
+
+	// dd, wx, fsv2 的 at 格式不一样，放在告警组里不好处理和组装。
 	pMsg.AtSomeOne = c.Input().Get("at")
 	pMsg.RoundRobin = c.Input().Get("rr")
 	//该配置仅适用于alertmanager的消息,用于判断是否需要拆分alertmanager告警消息
 	pMsg.Split = c.Input().Get("split")
+
 	//模版加载进内存处理,防止告警过多频繁查库
 	var PrometheusAlertTpl *models.PrometheusAlertDB
 	if GlobalPrometheusAlertTpl == nil {
@@ -222,7 +216,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-//路由处理
+// 路由处理
 func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl string) []PrometheusAlertMsg {
 	return_Msgs := []PrometheusAlertMsg{}
 	//原有的参数不变
@@ -308,7 +302,7 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 	return return_Msgs
 }
 
-//处理告警记录
+// 处理告警记录
 func SetRecord(AlertValue interface{}) {
 	var Alertname, Status, Level, Labels, Instance, Summary, Description, StartAt, EndAt string
 	xalert := AlertValue.(map[string]interface{})
@@ -382,7 +376,7 @@ func SetRecord(AlertValue interface{}) {
 	}
 }
 
-//消息模版化
+// 消息模版化
 func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg string) {
 	funcMap := template.FuncMap{
 		"GetCSTtime": GetCSTtime,
@@ -430,7 +424,7 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 	return nil, buf.String()
 }
 
-//发送消息
+// 发送消息
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	var ReturnMsg string

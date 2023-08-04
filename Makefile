@@ -1,19 +1,18 @@
 SHELL:=/bin/sh
-.PHONY: all vet test build clean docker docker-push docker-test
+.PHONY: all format vet test build clean docker docker-push docker-test
 
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io
 
+pkgs	= $(shell go list ./... | grep -v vendor/)
+
 # path related
 MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
-MKFILE_DIR := $(dir $(MKFILE_PATH))
-RELEASE_DIR := ${MKFILE_DIR}/build/bin
-
-pkgs	= $(shell go list ./... | grep -v vendor/)
+MKFILE_DIR  := $(dir $(MKFILE_PATH))
 
 DOCKER_IMAGE_NAME ?= feiyu563/prometheus-alert
 
-BRANCH 		?= $(shell git rev-parse --abbrev-ref HEAD)
+BRANCH      ?= $(shell git rev-parse --abbrev-ref HEAD)
 BUILDDATE   ?= $(shell date -I'seconds')
 BUILDUSER   ?= $(shell whoami)@$(shell hostname)
 REVISION    ?= $(shell git rev-parse HEAD)
@@ -26,8 +25,8 @@ VERSION_LDFLAGS := \
 	-X main.BuildDate=$(BUILDDATE)
 
 # go source files, ignore vendor directory
-SOURCE = $(shell find ${MKFILE_DIR} -type f -name "*.go")
-TARGET = ${RELEASE_DIR}/PrometheusAlert
+SOURCE = $(shell find ${MKFILE_DIR} -path "${MKFILE_DIR}vendor" -prune -o -type f -name "*.go" -print)
+TARGET = ${MKFILE_DIR}/PrometheusAlert
 
 all: ${TARGET}
 
@@ -35,7 +34,6 @@ ${TARGET}: ${SOURCE}
 	@echo ">> building code"
 	go mod tidy
 	go mod vendor
-	mkdir -p ${RELEASE_DIR}
 	go build -ldflags "$(VERSION_LDFLAGS)" -o ${TARGET}
 
 format:
@@ -54,7 +52,7 @@ build: all
 
 clean:
 	@echo ">> cleaning build"
-	rm -rf ${MKFILE_DIR}build
+	rm  ${TARGET}
 
 docker:
 	@echo ">> building docker image"
