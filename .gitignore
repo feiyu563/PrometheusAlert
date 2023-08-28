@@ -1,4 +1,5 @@
 conf/app.conf
+conf/alertgroup.conf
 PrometheusAlert
 PrometheusAlert.exe
 logo
@@ -6,5 +7,7 @@ logo
 logs/
 example/linux
 example/windows
-vendor
+vendor/
 old_delete/
+build/*
+.vscode/
