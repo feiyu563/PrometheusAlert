@@ -379,12 +379,13 @@ func SetRecord(AlertValue interface{}) {
 // 消息模版化
 func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg string) {
 	funcMap := template.FuncMap{
-		"GetCSTtime": GetCSTtime,
-		"TimeFormat": TimeFormat,
-		"GetTime":    GetTime,
-		"toUpper":    strings.ToUpper,
-		"toLower":    strings.ToLower,
-		"title":      strings.Title,
+		"GetTimeDuration": GetTimeDuration,
+		"GetCSTtime":      GetCSTtime,
+		"TimeFormat":      TimeFormat,
+		"GetTime":         GetTime,
+		"toUpper":         strings.ToUpper,
+		"toLower":         strings.ToLower,
+		"title":           strings.Title,
 		// join is equal to strings.Join but inverts the argument order
 		// for easier pipelining in templates.
 		"join": func(sep string, s []string) string {

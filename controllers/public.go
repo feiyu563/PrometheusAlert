@@ -2,20 +2,22 @@ package controllers
 
 import (
 	"bufio"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
+	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 func LogsSign() string {
 	return strconv.FormatInt(time.Now().UnixNano(), 10)
 }
 
-//转换时间戳到时间字符串
+// 转换时间戳到时间字符串
 func GetTime(timeStr interface{}, timeFormat ...string) string {
 	var R_Time string
 	//判断传入的timeStr是否为float64类型，如gerrit消息中时间戳就是float64
@@ -39,7 +41,31 @@ func GetTime(timeStr interface{}, timeFormat ...string) string {
 	return R_Time
 }
 
-//转换UTC时区到CST
+// 转换时间为持续时长
+func GetTimeDuration(date string) string {
+	var tm = "N/A"
+	if date != "" {
+		T1 := date[0:10]
+		T2 := date[11:19]
+		T3 := T1 + " " + T2
+		tm2, _ := time.Parse("2006-01-02 15:04:05", T3)
+		sub := time.Now().UTC().Sub(tm2.UTC())
+
+		t := int64(sub.Seconds())
+		if t > 86400 {
+			tm = fmt.Sprintf("%dd%dh", t/86400, t%86400/3600)
+		} else if t > 3600 {
+			tm = fmt.Sprintf("%dh%dm", t/3600, t%3600/60)
+		} else if t > 60 {
+			tm = fmt.Sprintf("%dh%dm", t/60, t%60)
+		} else {
+			tm = fmt.Sprintf("%ds", t)
+		}
+	}
+	return tm
+}
+
+// 转换UTC时区到CST
 func GetCSTtime(date string) string {
 	var tm string
 	tm = time.Now().Format("2006-01-02 15:04:05")
@@ -67,7 +93,7 @@ func TimeFormat(timestr, format string) string {
 	}
 }
 
-//获取用户号码
+// 获取用户号码
 func GetUserPhone(neednum int) string {
 	//判断是否存在user.csv文件
 	Num := beego.AppConfig.String("defaultphone")
