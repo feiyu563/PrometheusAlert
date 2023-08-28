@@ -61,7 +61,6 @@ curl http://localhost:8080/health
 
 <br/>
 
-=======
 -------------------------------------
 
 ## 启动
@@ -136,6 +135,7 @@ feiyu563/prometheus-alert:latest
  - 增加告警语音播报插件。
  - 增加支持飞书机器人应用。
  - 增加告警组，可以将通知媒介写到告警组里面，便于配置和修改。
+ - 增加热加载配置接口
 
 -------------------------------------
 
@@ -198,6 +198,7 @@ feiyu563/prometheus-alert:latest
   * [语音播报](doc/readme/conf-voice.md)
   * [飞书机器人应用](doc/readme/conf-feishuapp.md)
   * [告警组配置](doc/readme/alertgroup.md)
+  * [热加载配置](doc/readme/hotreload.md)
 
 * [【告警系统接入PrometheusAlert配置】](doc/readme/system.md)
   * [Prometheus 接入配置](doc/readme/system-prometheus.md)

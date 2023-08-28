@@ -51,9 +51,9 @@ func init() {
 	beego.Router("/gitlab/weixin", &controllers.GitlabController{}, "post:GitlabWeixin")
 	beego.Router("/gitlab/dingding", &controllers.GitlabController{}, "post:GitlabDingding")
 	beego.Router("/gitlab/feishu", &controllers.GitlabController{}, "post:GitlabFeishu")
-	// Todo
-	// Email
-	// Feishu
+
+	// hotreload
+	beego.Router("/-/reload", &controllers.ConfigController{}, "post:Reload")
 
 	//已经下线的接口
 	//beego.Router("/prometheus/dingding", &controllers.PrometheusController{},"post:PrometheusRouter")
