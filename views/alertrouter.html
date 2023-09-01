@@ -1,160 +1,185 @@
 {{template "main" .}}
-  <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+<!-- Navbar -->
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="/alertrouter" class="nav-link">告警管理</a>
-      </li>
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/alertrouter" class="nav-link">告警管理</a>
+        </li>
     </ul>
 
-  </nav>
-  <!-- /.navbar -->
+</nav>
+<!-- /.navbar -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>告警路由</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-				<a href="/alertrouter/add" class="btn btn-default bg-warning">
-					<i class="fas fa-file mr-2"></i> 添加路由
-				</a>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-4">
+                    <h1>告警路由</h1>
+                </div>
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <span class="input-group-text">路由名称</span>
+                        <input id="router_name" type="text" aria-label="路由名称" class="form-control" value="{{.SearchName}}">
+                    </div>
+
+                </div>
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <span class="input-group-text">webhook</span>
+                        <input id="webhook" type="text" aria-label="webhook" class="form-control" value="{{.SearchWebhook}}">
+                        <button class="btn btn-outline-secondary btn-search" type="button" id="button-addon2">搜索</button>
+                    </div>
+
+                </div>
+                <div class="col-sm-4">
+                    <ol class="breadcrumb float-sm-right">
+                        <a href="/alertrouter/add" class="btn btn-default bg-warning">
+                            <i class="fas fa-file mr-2"></i> 添加路由
+                        </a>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
     </section>
 
     <!-- Main content -->
     <section class="content">
 
-      <!-- Default box -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title" style="color:red">** 告警路由目前仅支持 Prometheus</h3>
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title" style="color:red">** 告警路由目前仅支持 Prometheus</h3>
 
-          <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-              <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
 
 
-			<table id="example1" class="table table-hover">
-				<thead>
-					<tr>
-						<th style="display:none;">Id</th>
-						<th>路由名称</th>
-						<th>生效模版</th>
-						<th>模版类型</th>
-						<th>模版用途</th>
-						<th>路由规则</th>
-						<th>创建时间</th>
-						<th>编辑</th>
-						<th>删除</th>
-					</tr>
-				</thead>
-				<tbody id="tpllist" >
-					{{range $k,$v:= .AlertRouter}}
-					<tr>
-						<th style="display:none;">{{.Id}}</th>
-						<th>{{$v.Name}}</th>
-						<th>{{$v.Tpl.Tplname}}</th>
-						<th>
-                           {{if eq $v.Tpl.Tpltype "dd"}}钉钉{{end}}
-                           {{if eq $v.Tpl.Tpltype "wx"}}企业微信{{end}}
-                           {{if eq $v.Tpl.Tpltype "workwechat"}}企业微信应用{{end}}
-                           {{if eq $v.Tpl.Tpltype "fs"}}飞书{{end}}
-                           {{if eq $v.Tpl.Tpltype "webhook"}}WebHook{{end}}
-                           {{if eq $v.Tpl.Tpltype "txdx"}}腾讯云短信{{end}}
-                           {{if eq $v.Tpl.Tpltype "txdh"}}腾讯云电话{{end}}
-                           {{if eq $v.Tpl.Tpltype "alydx"}}阿里云短信{{end}}
-                           {{if eq $v.Tpl.Tpltype "alydh"}}阿里云电话{{end}}
-                           {{if eq $v.Tpl.Tpltype "hwdx"}}华为云短信{{end}}
-                           {{if eq $v.Tpl.Tpltype "bddx"}}百度云短信{{end}}
-                           {{if eq $v.Tpl.Tpltype "rlydh"}}容联云电话{{end}}
-                           {{if eq $v.Tpl.Tpltype "7moordx"}}七陌短信{{end}}
-                           {{if eq $v.Tpl.Tpltype "7moordh"}}七陌语音电话{{end}}
-                           {{if eq $v.Tpl.Tpltype "email"}}Email{{end}}
-						   {{if eq $v.Tpl.Tpltype "tg"}}Telegram{{end}}
-						   {{if eq $v.Tpl.Tpltype "rl"}}百度Hi(如流){{end}}
-						   {{if eq $v.Tpl.Tpltype "bark"}}Bark(iPhone推送){{end}}
-						   {{if eq $v.Tpl.Tpltype "voice"}}语音播报{{end}}
-						   {{if eq $v.Tpl.Tpltype "fsapp"}}飞书机器人应用{{end}}
+                <table id="example1" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th style="display:none;">Id</th>
+                        <th>路由名称</th>
+                        <th>生效模版</th>
+                        <th>模版类型</th>
+                        <th>模版用途</th>
+                        <th>路由规则</th>
+                        <th>创建时间</th>
+                        <th>编辑</th>
+                        <th>删除</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tpllist">
+                    {{range $k,$v:= .AlertRouter}}
+                    <tr>
+                        <th style="display:none;">{{.Id}}</th>
+                        <th>{{$v.Name}}</th>
+                        <th>{{$v.Tpl.Tplname}}</th>
+                        <th>
+                            {{if eq $v.Tpl.Tpltype "dd"}}钉钉{{end}}
+                            {{if eq $v.Tpl.Tpltype "wx"}}企业微信{{end}}
+                            {{if eq $v.Tpl.Tpltype "workwechat"}}企业微信应用{{end}}
+                            {{if eq $v.Tpl.Tpltype "fs"}}飞书{{end}}
+                            {{if eq $v.Tpl.Tpltype "webhook"}}WebHook{{end}}
+                            {{if eq $v.Tpl.Tpltype "txdx"}}腾讯云短信{{end}}
+                            {{if eq $v.Tpl.Tpltype "txdh"}}腾讯云电话{{end}}
+                            {{if eq $v.Tpl.Tpltype "alydx"}}阿里云短信{{end}}
+                            {{if eq $v.Tpl.Tpltype "alydh"}}阿里云电话{{end}}
+                            {{if eq $v.Tpl.Tpltype "hwdx"}}华为云短信{{end}}
+                            {{if eq $v.Tpl.Tpltype "bddx"}}百度云短信{{end}}
+                            {{if eq $v.Tpl.Tpltype "rlydh"}}容联云电话{{end}}
+                            {{if eq $v.Tpl.Tpltype "7moordx"}}七陌短信{{end}}
+                            {{if eq $v.Tpl.Tpltype "7moordh"}}七陌语音电话{{end}}
+                            {{if eq $v.Tpl.Tpltype "email"}}Email{{end}}
+                            {{if eq $v.Tpl.Tpltype "tg"}}Telegram{{end}}
+                            {{if eq $v.Tpl.Tpltype "rl"}}百度Hi(如流){{end}}
+                            {{if eq $v.Tpl.Tpltype "bark"}}Bark(iPhone推送){{end}}
+                            {{if eq $v.Tpl.Tpltype "voice"}}语音播报{{end}}
+                            {{if eq $v.Tpl.Tpltype "fsapp"}}飞书机器人应用{{end}}
                         </th>
                         <th>{{$v.Tpl.Tpluse}}</th>
-						
-						<th>
-						{{$v.Rules}}
-						</th>
-						
-						<th>{{$v.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
-						<th>
-						<a href="/alertrouter/edit?id={{.Id}}" class="btn btn-default bg-success">
-							<i class="fa fa-edit"></i> Edit
-						</a>
-						</th>
-						<th>
-						<a href="javascript:if(confirm('确实要删除吗?'))location='/alertrouter/del?id={{.Id}}'" class="btn btn-default bg-danger">
-							<i class="fa fa-trash"></i> Delete
-						</a>
-						</th>
 
-					</tr>
-					{{end}}
-				</tbody>
-			</table>
+                        <th>
+                            {{$v.Rules}}
+                        </th>
+
+                        <th>{{$v.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
+                        <th>
+                            <a href="/alertrouter/edit?id={{.Id}}" class="btn btn-default bg-success">
+                                <i class="fa fa-edit"></i> Edit
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:if(confirm('确实要删除吗?'))location='/alertrouter/del?id={{.Id}}'"
+                               class="btn btn-default bg-danger">
+                                <i class="fa fa-trash"></i> Delete
+                            </a>
+                        </th>
+
+                    </tr>
+                    {{end}}
+                    </tbody>
+                </table>
 
 
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
 
+            </div>
+            <!-- /.card-footer-->
         </div>
-        <!-- /.card-body -->
-        <div class="card-footer">
-          
-        </div>
-        <!-- /.card-footer-->
-      </div>
-      <!-- /.card -->
+        <!-- /.card -->
 
     </section>
     <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+</div>
+<!-- /.content-wrapper -->
 {{template "endhtml"}}
 <script>
-$(function () {
-	var tb = document.getElementById('example1');
-	var td = tb.rows[1].cells[5];
-    for(var i=1,rows=tb.rows.length; i<rows; i++){
-        var td = tb.rows[i].cells[5];
-		var str = td.innerHTML;
-		var obj = JSON.parse(str);
-		var table_str = ""
-		for(var p in obj){
-		  console.log(obj[p]);
-			if (obj[p].Regex){
-				ischeck="正则"
-			} else {
-				ischeck="普通"
-			}
-		  table_str = table_str + '<span class="badge bg-info">'+obj[p].Name+' = '+obj[p].Value+' | '+ischeck+'</span><br />'
-		}
-		td.innerHTML = table_str;
-    }
-})
+    $(function () {
+        var tb = document.getElementById('example1');
+        if (tb.rows[1]){
+            var td = tb.rows[1].cells[5];
+            for (var i = 1, rows = tb.rows.length; i < rows; i++) {
+                var td = tb.rows[i].cells[5];
+                var str = td.innerHTML;
+                var obj = JSON.parse(str);
+                var table_str = ""
+                for (var p in obj) {
+                    console.log(obj[p]);
+                    if (obj[p].Regex) {
+                        ischeck = "正则"
+                    } else {
+                        ischeck = "普通"
+                    }
+                    table_str = table_str + '<span class="badge bg-info">' + obj[p].Name + ' = ' + obj[p].Value + ' | ' + ischeck + '</span><br />'
+                }
+                td.innerHTML = table_str;
+            }
+        }
+
+        $(".btn-search").on( "click",function (e){
+          let name = $("#router_name").val()
+            let webhook = $("#webhook").val()
+            let url = "/alertrouter?name="+name+"&webhook="+webhook
+            window.location.href=url
+        })
+    })
+
 </script>
 {{template "jshtml"}}

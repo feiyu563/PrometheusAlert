@@ -3,13 +3,13 @@ package controllers
 import (
 	"PrometheusAlert/models"
 	"encoding/json"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-        "github.com/astaxie/beego"
 	"strconv"
 	"strings"
 )
 
-//template page
+// template page
 func (c *MainController) Template() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
@@ -26,7 +26,7 @@ func (c *MainController) Template() {
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
 }
 
-//template add
+// template add
 func (c *MainController) TemplateAdd() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
@@ -65,7 +65,7 @@ func (c *MainController) AddTpl() {
 		resp = err
 		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
 	}
-	GlobalAlertRouter, _ = models.GetAllAlertRouter()
+	GlobalAlertRouter, _ = models.GetAllAlertRouter(models.AlertRouterQuery{})
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
@@ -88,7 +88,7 @@ func (c *MainController) ImportTpl() {
 		}
 
 		GlobalPrometheusAlertTpl, _ = models.GetAllTpl()
-		GlobalAlertRouter, _ = models.GetAllAlertRouter()
+		GlobalAlertRouter, _ = models.GetAllAlertRouter(models.AlertRouterQuery{})
 		c.Data["json"] = resp
 		c.ServeJSON()
 	} else {

@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-//router
+// router
 func (c *MainController) AlertRouter() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
@@ -16,14 +16,19 @@ func (c *MainController) AlertRouter() {
 	c.Data["IsAlertRouter"] = true
 	c.Data["IsAlertManageMenu"] = true
 	c.TplName = "alertrouter.html"
-
-	GlobalAlertRouter, _ = models.GetAllAlertRouter()
+	query := models.AlertRouterQuery{}
+	query.Name = c.GetString("name", "")
+	query.Webhook = c.GetString("webhook", "")
+	//刷新告警路由AlertRouter
+	GlobalAlertRouter, _ = models.GetAllAlertRouter(query)
 	c.Data["AlertRouter"] = GlobalAlertRouter
 
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
+	c.Data["SearchName"] = query.Name
+	c.Data["SearchWebhook"] = query.Webhook
 }
 
-//router add
+// router add
 func (c *MainController) RouterAdd() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
@@ -83,7 +88,7 @@ func (c *MainController) AddRouter() {
 	c.ServeJSON()
 }
 
-//router edit
+// router edit
 func (c *MainController) RouterEdit() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
