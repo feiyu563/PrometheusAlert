@@ -53,7 +53,7 @@ make docker/docker-push/docker-test
 # 本地测试运行
 make clean && make build
 copy conf/app-example.conf conf/app.conf
-build/bin/PrometheusAlert
+./PrometheusAlert
 
 # 测试应用健康
 curl http://localhost:8080/health
@@ -136,6 +136,7 @@ feiyu563/prometheus-alert:latest
  - 增加支持飞书机器人应用。
  - 增加告警组，可以将通知媒介写到告警组里面，便于配置和修改。
  - 增加热加载配置接口
+ - 增加钉钉加签
 
 -------------------------------------
 
