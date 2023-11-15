@@ -16,6 +16,11 @@ type AlertRouter struct {
 	Created      time.Time
 }
 
+type AlertRouterQuery struct {
+	Name    string
+	Webhook string
+}
+
 func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, sendResolved bool) error {
 	tpl, _ := GetTpl(tplid)
 	o := orm.NewOrm()
@@ -61,10 +66,16 @@ func DelAlertRouter(id int) error {
 	return err
 }
 
-func GetAllAlertRouter() ([]*AlertRouter, error) {
+func GetAllAlertRouter(query AlertRouterQuery) ([]*AlertRouter, error) {
 	o := orm.NewOrm()
 	Tpl_all := make([]*AlertRouter, 0)
 	qs := o.QueryTable("AlertRouter")
+	if len(query.Name) > 0 {
+		qs = qs.Filter("name__icontains", query.Name)
+	}
+	if len(query.Webhook) > 0 {
+		qs = qs.Filter("url_or_phone__istartswith", query.Webhook)
+	}
 	_, err := qs.RelatedSel().All(&Tpl_all)
 	return Tpl_all, err
 }

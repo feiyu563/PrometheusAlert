@@ -165,8 +165,11 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		if pMsg.Split != "false" && PrometheusAlertTpl.Tpluse == "Prometheus" {
 			//判断告警路由AlertRouter列表是否为空
 			if GlobalAlertRouter == nil {
+				query := models.AlertRouterQuery{}
+				query.Name = c.GetString("name", "")
+				query.Webhook = c.GetString("webhook", "")
 				//刷新告警路由AlertRouter
-				GlobalAlertRouter, _ = models.GetAllAlertRouter()
+				GlobalAlertRouter, _ = models.GetAllAlertRouter(query)
 			}
 			Alerts_Value, _ := p_alertmanager_json["alerts"].([]interface{})
 			//拆分告警消息
