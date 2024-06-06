@@ -5,9 +5,9 @@ import (
 	"PrometheusAlert/models/elastic"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	tmplhtml "html/template"
 	"regexp"
-	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -362,7 +362,7 @@ func SetRecord(AlertValue interface{}) {
 	if beego.AppConfig.DefaultString("alert_to_es", "0") == "1" {
 		dt := time.Now()
 		dty, dtm := dt.Year(), int(dt.Month())
-		esIndex := "prometheusalert-" + strconv.Itoa(dty) + strconv.Itoa(dtm)
+		esIndex := fmt.Sprintf("prometheusalert-%d%02d", dty, dtm)
 		alert := &elastic.AlertES{
 			Alertname:   Alertname,
 			Status:      Status,
@@ -375,7 +375,7 @@ func SetRecord(AlertValue interface{}) {
 			EndsAt:      EndAt,
 			Created:     dt,
 		}
-		elastic.Insert(esIndex, alert)
+		go elastic.Insert(esIndex, *alert)
 	}
 }
 

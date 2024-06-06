@@ -4,6 +4,7 @@ import (
 	"PrometheusAlert/models"
 	"PrometheusAlert/models/elastic"
 	"encoding/json"
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -30,6 +31,7 @@ type Labels struct {
 	Job          string `json:"job"`
 	Hostgroup    string `json:"hostgroup,omitempty"`
 	Hostname     string `json:"hostname,omitempty"`
+	Cloud        string `json:"cloud"`
 }
 
 // Annotations are promtheus annotions.
@@ -376,8 +378,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 			dt := time.Now()
 			dty, dtm := dt.Year(), int(dt.Month())
 			// example esIndex: prometheusalert-202112
-			esIndex := "prometheusalert-" + strconv.Itoa(dty) + strconv.Itoa(dtm)
-			// Index a prometheusalert (using JSON serialization)
+			esIndex := fmt.Sprintf("prometheusalert-%d%02d", dty, dtm)
 			alert := &elastic.AlertES{
 				Alertname:   RMessage.Labels.Alertname,
 				Status:      RMessage.Status,
@@ -389,8 +390,11 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 				StartsAt:    At,
 				EndsAt:      Et,
 				Created:     dt,
+				Cloud:       RMessage.Labels.Cloud,
+				Hostgroup:   RMessage.Labels.Hostgroup,
+				Hostnmae:    RMessage.Labels.Hostname,
 			}
-			elastic.Insert(esIndex, alert)
+			go elastic.Insert(esIndex, *alert)
 		}
 	}
 	return "告警消息发送完成."
