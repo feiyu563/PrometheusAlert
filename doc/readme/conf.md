@@ -68,6 +68,10 @@ to_es_url=http://localhost:9200
 # es用户和密码
 # to_es_user=username
 # to_es_pwd=password
+# 长连接最大空闲数
+maxIdleConns=100
+# 热更新配置文件
+open-hotreload=0
 
 #---------------------↓webhook-----------------------
 #是否开启钉钉告警通道,可同时开始多个通道0为关闭,1为开启
@@ -76,6 +80,9 @@ open-dingding=1
 ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxxx
 #是否开启 @所有人(0为关闭,1为开启)
 dd_isatall=1
+#是否开启钉钉机器人加签，0为关闭,1为开启
+# 使用方法：https://oapi.dingtalk.com/robot/send?access_token=XXXXXX&secret=mysecret
+open-dingding-secret=0
 
 #是否开启微信告警通道,可同时开始多个通道0为关闭,1为开启
 open-weixin=1
@@ -83,9 +90,11 @@ open-weixin=1
 wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxx
 
 #是否开启飞书告警通道,可同时开始多个通道0为关闭,1为开启
-open-feishu=0
+open-feishu=1
 #默认飞书机器人地址
 fsurl=https://open.feishu.cn/open-apis/bot/hook/xxxxxxxxx
+# webhook 发送 http 请求的 contentType, 如 application/json, application/x-www-form-urlencoded，不配置默认 application/json
+wh_contenttype=application/json
 
 #---------------------↓腾讯云接口-----------------------
 #是否开启腾讯云短信告警通道,可同时开始多个通道0为关闭,1为开启
@@ -277,4 +286,27 @@ FEISHU_APPID=cli_xxxxxxxxxxxxx
 FEISHU_APPSECRET=xxxxxxxxxxxxxxxxxxxxxx
 # 可填飞书 用户open_id、user_id、union_ids、部门open_department_id
 AT_USER_ID="xxxxxxxx"
+
+
+#---------------------↓告警组-----------------------
+# 有其他新增的配置段，请放在告警组的上面
+# 暂时仅针对 PrometheusContronller 中的 /prometheus/alert 路由
+# 告警组如果放在了 wx, dd... 那部分的上分，beego section 取 url 值不太对。
+# 所以这里使用 include 来包含另告警组配置
+
+# 是否启用告警组功能
+open-alertgroup=0
+
+# 自定义的告警组既可以写在这里，也可以写在单独的文件里。
+# 写在单独的告警组配置里更便于修改。
+# include "alertgroup.conf"
+
+#---------------------↓kafka地址-----------------------
+# kafka服务器的地址
+open-kafka=1
+kafka_server = 127.0.0.1:9092
+# 写入消息的kafka topic
+kafka_topic = devops
+# 用户标记该消息是来自PrometheusAlert,一般无需修改
+kafka_key = PrometheusAlert
 ```

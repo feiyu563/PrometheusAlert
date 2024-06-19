@@ -14,7 +14,7 @@ mkdir /etc/prometheusalert-center/
 wget https://raw.githubusercontent.com/feiyu563/PrometheusAlert/master/conf/app-example.conf -O /etc/prometheusalert-center/app.conf
 
 #启动PrometheusAlert并挂载配置文件
-docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prometheusalert-center feiyu563/prometheus-alert:latest
+docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prometheusalert-center feiyu563/prometheus-alert:v4.9.1
 
 #启动后可使用浏览器打开以下地址查看：http://127.0.0.1:8080
 #默认登录帐号和密码在app.conf中有配置
@@ -24,9 +24,9 @@ docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prome
 
 ```
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9/linux.zip)
+如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9.1/linux.zip)
 
-# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9/linux.zip && unzip linux.zip && cd linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9.1/linux.zip && unzip linux.zip && cd linux/
 
 #，下载好后解压并进入解压后的文件夹
 
@@ -42,7 +42,7 @@ docker run -d -p 8080:8080 -v /etc/prometheusalert-center:/app/conf --name prome
 
 ```
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如windows版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9/windows.zip)
+如windows版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9.1/windows.zip)
 
 #进入程序目录并双击运行 PrometheusAlert.exe即可
 cd windows/
