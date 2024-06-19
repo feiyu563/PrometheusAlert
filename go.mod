@@ -1,25 +1,19 @@
 module PrometheusAlert
 
-
 go 1.20
-
 
 require (
 	github.com/IBM/sarama v1.43.2
 	github.com/aliyun/alibaba-cloud-sdk-go v1.62.771
 	github.com/astaxie/beego v1.12.3
-
 	github.com/baidubce/bce-sdk-go v0.9.183
-
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
-
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/prometheus/client_golang v1.19.1
-
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.9.0
@@ -27,7 +21,6 @@ require (
 )
 
 require (
-
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
