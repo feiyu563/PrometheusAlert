@@ -43,7 +43,7 @@ open-alertgroup=1
 # sa 组
 [ag-sa]
 wxurl=wxurl1,wxurl2
-ddurl=ddurl1
+ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxx&secret=xx
 phone=13x,15x
 
 # 自定义的告警组配置
@@ -70,7 +70,7 @@ phone=13x,17x,18x
 # 自定义模板告警组示例，目前仅处理了以下这些参数
 [customtpl]
 wxurl=wxurl1,wxurl2
-ddurl=ddurl1,ddurl2
+ddurl=ddurl1,https://oapi.dingtalk.com/robot/send?access_token=xxx&secret=xx
 fsurl=fsurl1,fsurl2
 email=email1,email2
 phone=phone1,phone2
