@@ -88,6 +88,7 @@
 					<option value="rl" {{if eq .Template.Tpltype "rl"}}selected="selected"{{end}}>百度Hi(如流)</option>
 					<option value="voice" {{if eq .Template.Tpltype "voice"}}selected="selected"{{end}}>语音播报</option>
 					<option value="fsapp" {{if eq .Template.Tpltype "fsapp"}}selected="selected"{{end}}>飞书机器人应用</option>
+					<option value="kafka" {{if eq .Template.Tpltype "kafka"}}selected="selected"{{end}}>Kafka</option>
 					</select>
                     {{if eq .Template.Tpltype "webhook"}}
                     <label>请求的content-type</label>
@@ -269,6 +270,12 @@ function typeChange(){
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="";
 	document.getElementById("Tag").style.display="";
+ } else if(typeSelect=="kafka"){
+	 typeStr.innerText="Kafka";
+	 document.getElementById("Purl").style.display="none";
+	 document.getElementById("Pat").style.display="none";
+	 document.getElementById("Party").style.display="none";
+	 document.getElementById("Tag").style.display="none";
  } else{
 	typeStr.innerText="手机号";
 	document.getElementById("Purl").style.display="";
@@ -335,6 +342,8 @@ function sendtest(){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&groupid='+upurl.value;
 	} else if(utype.value=="workwechat"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxuser='+upurl.value+'&wxparty='+upparty.value+'&wxtag='+uptag.value;
+	} else if(utype.value=="kafka"){
+		sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value;
 	} else{
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&phone='+upurl.value;
 	}

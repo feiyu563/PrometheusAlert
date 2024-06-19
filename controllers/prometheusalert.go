@@ -527,6 +527,9 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	//飞书APP渠道
 	case "fsapp":
 		ReturnMsg += PostToFeiShuApp(Title, message, pmsg.AtSomeOne, logsign)
+	//kafka渠道
+	case "kafka":
+		ReturnMsg += SendKafka(message, logsign)
 	//异常参数
 	default:
 		ReturnMsg = "参数错误"

@@ -18,7 +18,7 @@
 
 ## 项目介绍
 
-PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube。阿里云-云监控，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)等。
+PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube。阿里云-云监控，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)，Kafka等。
 
 ![it](doc/images/it.png)
 
@@ -112,9 +112,9 @@ curl http://localhost:8080/health
 
 ```sh
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9/linux.zip)
+如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9.1/linux.zip)
 
-# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9/linux.zip && unzip linux.zip &&cd linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9.1/linux.zip && unzip linux.zip &&cd linux/
 
 #运行PrometheusAlert
 # ./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
@@ -148,7 +148,7 @@ docker run -d \
 -e PA_OPEN_FEISHU=1 \
 -e PA_OPEN_DINGDING=1 \
 -e PA_OPEN_WEIXIN=1 \
-feiyu563/prometheus-alert:latest
+feiyu563/prometheus-alert:v4.9.1
 ```
 
 <br/>
@@ -254,6 +254,7 @@ PrometheusAlert 具备如下特性：
   * [告警记录-ES接入配置](doc/readme/conf-es.md)
   * [语音播报](doc/readme/conf-voice.md)
   * [飞书机器人应用](doc/readme/conf-feishuapp.md)
+  * [告警消息转发至Kafka配置](doc/readme/conf-kafka.md)
   * [告警组配置](doc/readme/alertgroup.md)
   * [热加载配置](doc/readme/hotreload.md)
 

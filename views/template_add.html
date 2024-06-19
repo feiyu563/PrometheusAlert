@@ -85,6 +85,7 @@
 					<option value="rl">百度Hi(如流)</option>
 					<option value="voice">语音播报</option>
 					<option value="fsapp">飞书机器人应用</option>
+					<option value="kafka">Kafka</option>
 					</select>
                     <label id="contentTypeLabel" style="display: none;">请求的content-type</label>
                     <select class="form-control" id="contentType" name="contentType" style="display: none;">
@@ -277,6 +278,14 @@ function typeChange(){
 	document.getElementById("Tag").style.display="";
     document.getElementById("contentTypeLabel").style.display="none";
     document.getElementById("contentType").style.display="none";
+ } else if(typeSelect=="kafka"){
+	 typeStr.innerText="Kafka";
+	 document.getElementById("Purl").style.display="none";
+	 document.getElementById("Pat").style.display="none";
+	 document.getElementById("Party").style.display="none";
+	 document.getElementById("Tag").style.display="none";
+	 document.getElementById("contentTypeLabel").style.display="none";
+	 document.getElementById("contentType").style.display="none";
  } else{
 	typeStr.innerText="手机号";
 	document.getElementById("Purl").style.display="";
@@ -344,6 +353,8 @@ function sendtest(){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&groupid='+upurl.value;
 	} else if(utype.value=="workwechat"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&wxuser='+upurl.value+'&wxparty='+upparty.value+'&wxtag='+uptag.value;
+	} else if(utype.value=="kafka"){
+		sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value;
 	} else{
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&phone='+upurl.value;
 	}
