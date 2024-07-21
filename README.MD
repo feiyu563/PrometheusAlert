@@ -97,7 +97,7 @@ make docker/docker-push/docker-test
 
 # 本地测试运行
 make clean && make build
-copy conf/app-example.conf conf/app.conf
+cp conf/app-example.conf conf/app.conf
 ./PrometheusAlert
 
 # 测试应用健康
