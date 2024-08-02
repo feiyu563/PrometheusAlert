@@ -29,6 +29,13 @@ PrometheusAlert是开源的运维告警中心消息转发系统，支持主流�
 
 <br/>
 
+## 在线体验
+
+[在线演示](https://prometheus-alert.zeabur.app)
+
+默认用户名：prometheusalert
+默认密码：prometheusalert
+
 ## 项目架构
 
 PrometheusAlert 后端使用了 [beego](https://github.com/beego/beego) 框架，前端使用了 [AdminLTE](https://github.com/ColorlibHQ/AdminLTE) （基于 Bootstrap 和 Jquery）模板。
