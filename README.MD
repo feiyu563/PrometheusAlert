@@ -26,6 +26,7 @@ PrometheusAlert是开源的运维告警中心消息转发系统，支持主流�
 
 * 如果这个项目能为您带来帮助，我将感到非常荣幸！同时非常欢迎您加入PrometheusAlert全家桶的微信群一起探讨关于PrometheusAlert新一期的开发计划。
 * PrometheusAlert的成长离不开所有爱好运维和开发的朋友们的支持！如果您也对这个项目感兴趣，请点击一下 Star 以示鼓励，谢谢
+* [全球一站式式运维平台之CloudOpenDevOps](https://github.com/opendevops-cn/opendevops/)
 
 <br/>
 
