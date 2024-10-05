@@ -50,7 +50,7 @@ func (c *LoginController) Post() {
 	//return
 }
 
-//检查cookie是否为登录状态
+// 检查cookie是否为登录状态
 func CheckAccount(mycookie *context.Context) bool {
 	ck, err := mycookie.Request.Cookie("username")
 	if err != nil {

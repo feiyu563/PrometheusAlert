@@ -18,7 +18,7 @@ type ZabbixMessage struct {
 	ZabbixType    string `json:"zabbixtype"`    //告警类型
 }
 
-//zabbix告警消息入口
+// zabbix告警消息入口
 func (c *ZabbixController) ZabbixAlert() {
 	alert := ZabbixMessage{}
 	logsign := "[" + LogsSign() + "]"

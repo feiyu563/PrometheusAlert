@@ -5,7 +5,7 @@ import (
 	"github.com/astaxie/beego/logs"
 )
 
-//Record page
+// Record page
 func (c *MainController) Record() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)

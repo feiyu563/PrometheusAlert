@@ -17,14 +17,14 @@ import (
 	"time"
 )
 
-//腾讯短信接口sha256编码
+// 腾讯短信接口sha256编码
 func getSha256Code(s string) string {
 	h := sha256.New()
 	h.Write([]byte(s))
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-//腾讯短信接口消息格式
+// 腾讯短信接口消息格式
 type Mobiles struct {
 	Mobile     string `json:"mobile"`
 	Nationcode string `json:"nationcode"`
@@ -41,7 +41,7 @@ type TXmessage struct {
 	Tpl_id int       `json:"tpl_id"`
 }
 
-//腾讯短信子程序
+// 腾讯短信子程序
 func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-txdx")
 	if open != "1" {
@@ -117,7 +117,7 @@ func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 	return string(result)
 }
 
-//腾讯语音提醒接口
+// 腾讯语音提醒接口
 type TXphonecall struct {
 	Ext       string   `json:"ext"`
 	Tpl_id    int      `json:"tpl_id"`
@@ -128,7 +128,7 @@ type TXphonecall struct {
 	Time      int      `json:"time"`
 }
 
-//腾讯语音子程序
+// 腾讯语音子程序
 func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-txdh")
 	if open != "1" {

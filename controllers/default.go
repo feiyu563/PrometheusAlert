@@ -45,7 +45,7 @@ type MainController struct {
 	beego.Controller
 }
 
-//main page
+// main page
 func (c *MainController) Get() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)

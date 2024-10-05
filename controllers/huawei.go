@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-//华为云短信子程序
+// 华为云短信子程序
 func PostHWmessage(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-hwdx")
 	if open != "1" {

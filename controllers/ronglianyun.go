@@ -16,7 +16,7 @@ import (
 	"github.com/astaxie/beego/logs"
 )
 
-//定义语音请求body结构体
+// 定义语音请求body结构体
 type BodyStr struct {
 	To          string `json:"to"`
 	MediaName   string `json:"mediaName"`
@@ -33,7 +33,7 @@ type BodyStr struct {
 	Bgsound     string `json:"bgsound"`
 }
 
-//生成sig，auth
+// 生成sig，auth
 func GetSigAuth() (string, string) {
 
 	accountSid := beego.AppConfig.String("RLY_ACCOUNT_SID")

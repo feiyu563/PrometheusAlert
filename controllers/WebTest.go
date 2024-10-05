@@ -93,7 +93,7 @@ func (c *MainController) AlertTest() {
 	c.ServeJSON()
 }
 
-//markdown test
+// markdown test
 func (c *MainController) MarkdownTest() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
@@ -123,7 +123,7 @@ func (c *MainController) MarkdownTest() {
 
 }
 
-//test page
+// test page
 func (c *MainController) Test() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
