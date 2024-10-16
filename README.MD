@@ -18,7 +18,7 @@
 
 ## 项目介绍
 
-PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube。阿里云-云监控，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)，Kafka等，同时推荐可以关注一下[CloudOpenDevOps](https://github.com/opendevops-cn/opendevops/) CloudOpenDevOps简称CODO，是一款为用户提供企业多混合云、自动化运维、完全开源的云管理平台。
+PrometheusAlert是开源的运维告警中心消息转发系统，支持主流的监控系统Prometheus、Zabbix，日志系统Graylog2，Graylog3、数据可视化系统Grafana、SonarQube。阿里云-云监控，以及所有支持WebHook接口的系统发出的预警消息，支持将收到的这些消息发送到钉钉，微信，email，飞书，腾讯短信，腾讯电话，阿里云短信，阿里云电话，华为短信，百度云短信，容联云电话，七陌短信，七陌语音，TeleGram，百度Hi(如流)，Kafka等。
 
 ![it](doc/images/it.png)
 
@@ -208,7 +208,6 @@ PrometheusAlert 具备如下特性：
 
 ## 致谢以下伙伴对PrometheusAlert的贡献
 
- - [@cyancow](https://github.com/cyancow)
  - [@birkh8792](https://github.com/birkh8792)
  - [@minibear2333](https://github.com/minibear2333)
  - [@bigdimple](https://github.com/bigdimple)
