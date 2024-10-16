@@ -4,6 +4,7 @@
 
 - 支持 ES 7.x 和 8.x 版本。（ES 从 v7 到 v8 有一些变化，但主要的 API 设计上是保持兼容的。）
 - 索引根据年月动态创建 `prometheusalert-YYMM`(如prometheusalert-202112)
+- 支持 ES HTTPS。
 
 <br/>
 <br/>
@@ -19,6 +20,8 @@ alert_to_es=0
 to_es_url=http://localhost:9200
 # 多个地址
 # to_es_url=http://es1:9200;http://es2:9200;http://es3:9200
+# 多个 https 地址，程序里会跳过 https 证书检查
+# to_es_url=https://es1:9200;https://es2:9200;https://es3:9200
 
 # 是否有认证，es用户和密码, 无认证则不需要填写。
 # to_es_user=username

@@ -3,7 +3,9 @@ package elastic
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
+	"net/http"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -44,10 +46,17 @@ func init() {
 		esPwd := beego.AppConfig.DefaultString("to_es_pwd", "")
 
 		var err error
+		// skip es https ca checks
+		tlsConfig := &tls.Config{
+			InsecureSkipVerify: true,
+		}
 		cfg := elasticsearch.Config{
 			Addresses: esURL,
 			Username:  esUser,
 			Password:  esPwd,
+			Transport: &http.Transport{
+				TLSClientConfig: tlsConfig,
+			},
 		}
 		esClient, err = elasticsearch.NewClient(cfg)
 
