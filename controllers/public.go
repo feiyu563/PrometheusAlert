@@ -42,24 +42,46 @@ func GetTime(timeStr interface{}, timeFormat ...string) string {
 }
 
 // 转换时间为持续时长
-func GetTimeDuration(date string) string {
+func GetTimeDuration(startTime string,endTime string) string {
 	var tm = "N/A"
-	if date != "" {
-		T1 := date[0:10]
-		T2 := date[11:19]
-		T3 := T1 + " " + T2
-		tm2, _ := time.Parse("2006-01-02 15:04:05", T3)
-		sub := time.Now().UTC().Sub(tm2.UTC())
+	if startTime != "" && endTime != "" {
+		starT1 := startTime[0:10]
+		starT2 := startTime[11:19]
+		starT3 := starT1 + " " + starT2
+		startm2, err := time.Parse("2006-01-02 15:04:05", starT3)
+		if err != nil {
+			return tm // 如果解析失败，则返回N/A
+		}
+
+		endT1 := endTime[0:10]
+		endT2 := endTime[11:19]
+		endT3 := endT1 + " " + endT2
+		endm2, err := time.Parse("2006-01-02 15:04:05", endT3)
+		if err != nil {
+			return tm // 如果解析失败，则返回N/A
+		}
+
+		sub := endm2.UTC().Sub(startm2.UTC())
 
 		t := int64(sub.Seconds())
-		if t > 86400 {
-			tm = fmt.Sprintf("%dd%dh", t/86400, t%86400/3600)
-		} else if t > 3600 {
-			tm = fmt.Sprintf("%dh%dm", t/3600, t%3600/60)
-		} else if t > 60 {
-			tm = fmt.Sprintf("%dh%dm", t/60, t%60)
+		if t >= 86400 {
+			days := t / 86400
+			hours := (t % 86400) / 3600
+			tm = fmt.Sprintf("%dd%dh", days, hours)
 		} else {
-			tm = fmt.Sprintf("%ds", t)
+			hours := t / 3600
+			minutes := (t % 3600) / 60
+			if hours > 0 {
+				tm = fmt.Sprintf("%dh%dm", hours, minutes)
+			} else {
+				// 如果小时为0，则只显示分钟和秒
+				seconds := t % 60
+				tm = fmt.Sprintf("%dm%ds", minutes, seconds)
+				if minutes == 0 {
+					// 如果分钟也为0，则只显示秒
+					tm = fmt.Sprintf("%ds", seconds)
+				}
+			}
 		}
 	}
 	return tm
