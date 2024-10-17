@@ -126,7 +126,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	pMsg.Ddurl = checkURL(agMap["ddurl"], c.Input().Get("ddurl"), beego.AppConfig.String("ddurl"))
 	pMsg.Wxurl = checkURL(agMap["wxurl"], c.Input().Get("wxurl"), beego.AppConfig.String("wxurl"))
 	pMsg.Fsurl = checkURL(agMap["fsurl"], c.Input().Get("fsurl"), beego.AppConfig.String("fsurl"))
-	pMsg.Email = checkURL(agMap["email"], c.Input().Get("email"), beego.AppConfig.String("fsurl"))
+	pMsg.Email = checkURL(agMap["email"], c.Input().Get("email"), beego.AppConfig.String("email"))
 	pMsg.GroupId = checkURL(agMap["groupid"], c.Input().Get("groupid"), beego.AppConfig.String("BDRL_ID"))
 
 	pMsg.Phone = checkURL(agMap["phone"], c.Input().Get("phone"))
