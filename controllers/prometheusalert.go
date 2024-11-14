@@ -267,18 +267,30 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 		if rules_num == rules_num_match {
 			PMsg.Type = router_value.Tpl.Tpltype
 			PMsg.Tpl = router_value.Tpl.Tpl
+			atSomeOne := router_value.AtSomeOne
+			if router_value.AtSomeOneRR {
+				openIds := strings.Split(router_value.AtSomeOne, ",")
+				if len(openIds) > 1 {
+					// 用自1970年1月1日以来的天数取余计算
+					duration := time.Since(time.Unix(0, 0))
+					days := duration.Hours() / 24
+					i := int(days) % len(openIds)
+					atSomeOne = openIds[i]
+				}
+			}
+
 			switch router_value.Tpl.Tpltype {
 			case "wx":
 				PMsg.Wxurl = router_value.UrlOrPhone
-				PMsg.AtSomeOne = router_value.AtSomeOne
+				PMsg.AtSomeOne = atSomeOne
 			//钉钉渠道
 			case "dd":
 				PMsg.Ddurl = router_value.UrlOrPhone
-				PMsg.AtSomeOne = router_value.AtSomeOne
+				PMsg.AtSomeOne = atSomeOne
 			//飞书渠道
 			case "fs":
 				PMsg.Fsurl = router_value.UrlOrPhone
-				PMsg.AtSomeOne = router_value.AtSomeOne
+				PMsg.AtSomeOne = atSomeOne
 			//Webhook渠道
 			case "webhook":
 				PMsg.WebHookUrl = router_value.UrlOrPhone
