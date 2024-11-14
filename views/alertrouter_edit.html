@@ -118,13 +118,20 @@
 				  </div>
 				</div>
 
-				<div id="Pat" class="col-sm-6">
+				<div id="Pat" class="col-sm-5">
 				  <!-- text input -->
 				  <div class="form-group">
 					<label id="typestr">@某人</label>
 					<input type="text" id="pat" class="form-control" name="pat" value="{{.AlertRouter.AtSomeOne}}"  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，">
 					<!-- <input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱"> -->
 				  </div>
+				</div>
+
+				<div id="Patrr" class="col-sm-1">
+					<div class="form-check">
+					  <input id="patrr" class="form-check-input" name="patrr" type="checkbox">
+					  <label class="form-check-label">轮询@某人</label>
+					</div>
 				</div>
 
 				<div id="Party" class="col-sm-6" style="display:none">
@@ -173,6 +180,7 @@ $(function () {
 	typeChange();
 	loadRules();
 	loadSendResolved();
+	loadAtSomeOneRR();
 	$('#labeladd').click(function(){
 	    var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div> 				 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="规则如 app=nginx,env=test"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox"> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  				<div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
 		$('#labelx').append(labeldiv)
@@ -212,6 +220,14 @@ function loadRules(){
 	
 }
 
+function loadAtSomeOneRR(){
+	var checkbox = document.getElementById('patrr');
+	var atSomeOneRR={{.AlertRouter.AtSomeOneRR}};
+	if (atSomeOneRR === true) {
+		checkbox.checked = true
+	}
+}
+
 function typeChange(){
  var tpl_id = document.getElementById("tpl_id");
  var tpltype = document.getElementById("tpltype");
@@ -222,48 +238,56 @@ function typeChange(){
 	typeStr.innerText="钉钉机器人地址(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
+	document.getElementById("Patrr").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="wx"){
 	typeStr.innerText="微信机器人地址(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
+	document.getElementById("Patrr").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="fs"){
 	typeStr.innerText="飞书机器人地址(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
+	document.getElementById("Patrr").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="fsapp"){
 	typeStr.innerText="飞书 用户open_id、user_id、union_ids、部门open_department_id";
 	document.getElementById("Purl").style.display="none";
 	document.getElementById("Pat").style.display="";
+	document.getElementById("Patrr").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="voice"){
 	typeStr.innerText="";
 	document.getElementById("Purl").style.display="none";
 	document.getElementById("Pat").style.display="none";
+	document.getElementById("Patrr").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="webhook"){
 	typeStr.innerText="webhook地址(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
+	document.getElementById("Patrr").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="email"){
 	typeStr.innerText="邮箱(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
+	document.getElementById("Patrr").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="rl"){
 	typeStr.innerText="百度Hi(如流)群id";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
+	document.getElementById("Patrr").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="workwechat"){
@@ -277,6 +301,7 @@ function typeChange(){
 	typeStr.innerText="手机号(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
+	document.getElementById("Patrr").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  }
@@ -314,6 +339,7 @@ function savetpl(){
 		RouterTplId: $('#tpl_id').val(),
 		RouterPurl: $('#purl').val(),
 		RouterPat: $('#pat').val(),
+		RouterPatRR: $("#patrr").is(":checked"),
 		RouterSendResolved: send_resolved,
 		Rules: RouterRules
 	};

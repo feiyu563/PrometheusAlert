@@ -12,6 +12,7 @@ type AlertRouter struct {
 	Rules        string
 	UrlOrPhone   string
 	AtSomeOne    string
+	AtSomeOneRR  bool
 	SendResolved bool
 	Created      time.Time
 }
@@ -21,7 +22,7 @@ type AlertRouterQuery struct {
 	Webhook string
 }
 
-func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, sendResolved bool) error {
+func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, at_some_one_rr bool, sendResolved bool) error {
 	tpl, _ := GetTpl(tplid)
 	o := orm.NewOrm()
 	AlertRouter_table := &AlertRouter{
@@ -31,6 +32,7 @@ func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one st
 		Rules:        rules,
 		UrlOrPhone:   url_or_phone,
 		AtSomeOne:    at_some_one,
+		AtSomeOneRR:  at_some_one_rr,
 		SendResolved: sendResolved,
 		Created:      time.Now(),
 	}
@@ -39,7 +41,7 @@ func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one st
 	return err
 }
 
-func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, sendResolved bool) error {
+func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, at_some_one_rr bool, sendResolved bool) error {
 	tpl, _ := GetTpl(tplid)
 	o := orm.NewOrm()
 	router_update := &AlertRouter{Id: id}
@@ -51,6 +53,7 @@ func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one
 		router_update.Rules = rules
 		router_update.UrlOrPhone = url_or_phone
 		router_update.AtSomeOne = at_some_one
+		router_update.AtSomeOneRR = at_some_one_rr
 		router_update.SendResolved = sendResolved
 		router_update.Created = time.Now()
 		_, err := o.Update(router_update)
