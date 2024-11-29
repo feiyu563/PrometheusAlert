@@ -286,14 +286,16 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		//发送消息到Email
 		if remail == "" && RMessage.Annotations.Email == "" {
 			Emails := beego.AppConfig.String("Default_emails")
-			SendEmail(EmailMessage, Emails, logsign)
+			EmailTitle := beego.AppConfig.String("Email_title")
+			SendEmail(EmailMessage, Emails, EmailTitle, logsign)
 		} else {
+			EmailTitle := beego.AppConfig.String("Email_title")
 			if remail != "" {
-				SendEmail(EmailMessage, remail, logsign)
+				SendEmail(EmailMessage, remail, EmailTitle, logsign)
 			}
 			if RMessage.Annotations.Email != "" {
 				Emails := RMessage.Annotations.Email
-				SendEmail(EmailMessage, Emails, logsign)
+				SendEmail(EmailMessage, Emails, EmailTitle, logsign)
 			}
 		}
 		//发送消息到短信

@@ -68,6 +68,7 @@ type PrometheusAlertMsg struct {
 	WebHookUrl         string
 	ToUser             string
 	Email              string
+	EmailTitle         string
 	ToParty            string
 	ToTag              string
 	GroupId            string
@@ -141,6 +142,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	pMsg.ToUser = checkURL(c.Input().Get("wxuser"), beego.AppConfig.String("WorkWechat_ToUser"))
 	pMsg.ToParty = checkURL(c.Input().Get("wxparty"), beego.AppConfig.String("WorkWechat_ToUser"))
 	pMsg.ToTag = checkURL(c.Input().Get("wxtag"), beego.AppConfig.String("WorkWechat_ToUser"))
+	pMsg.EmailTitle = checkURL(c.Input().Get("emailtitle"), beego.AppConfig.String("Email_title"))
 
 	// dd, wx, fsv2 的 at 格式不一样，放在告警组里不好处理和组装。
 	pMsg.AtSomeOne = c.Input().Get("at")
@@ -520,7 +522,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 		ReturnMsg += Post7MOORphonecall(message, pmsg.Phone, logsign)
 	//邮件
 	case "email":
-		ReturnMsg += SendEmail(message, pmsg.Email, logsign)
+		ReturnMsg += SendEmail(message, pmsg.Email, pmsg.EmailTitle, logsign)
 	// Telegram
 	case "tg":
 		ReturnMsg += SendTG(message, logsign)

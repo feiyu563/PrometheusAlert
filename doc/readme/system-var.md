@@ -23,8 +23,15 @@
 `示例：http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx,https://oapi.dingtalk.com/robot/send?access_token=xxxxxx&rr=true&split=false`
 
 
-#### 5.自定义模板使用的是go语言的template模版，可以参考默认模版的一些语法来进行自定义。
+#### 5.url参数新增 `emailtitle=运维监控中心`，该参数仅针对email有效，作用是替换app.conf中的Email_title邮件标题配置，实现动态定义邮件标题
 
-#### 6.模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
+注意：此参数如设置为`split=false`，则PrometheusAlert web页面的路由和告警记录等功能将自动关闭，请谨慎。
 
-#### 7.关于优先级问题：路由功能 > URL参数 > app.conf
+`示例：http://[prometheusalert_url]:8080/prometheusalert?type=email&tpl=prometheus-email&email=xxxx@xxx.com&emailtitle=运维监控中心`
+
+
+#### 6.自定义模板使用的是go语言的template模版，可以参考默认模版的一些语法来进行自定义。
+
+#### 7.模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
+
+#### 8.关于优先级问题：路由功能 > URL参数 > app.conf
