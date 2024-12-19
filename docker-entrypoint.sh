@@ -12,7 +12,7 @@ if env | grep -q '^PA_.\+=.\+'; then
             echo "\"PA_${VAR_NAME}\" in Environment variable contains '-',this will be ignored."
             continue
         fi
-        CONF_ITEM=$(grep -Eio "${VAR_NAME/_/-}|${VAR_NAME}" /app/conf/app.conf)
+        CONF_ITEM=$(grep -Eio "${VAR_NAME/_/-}|${VAR_NAME}" /app/conf/app.conf|tail -n 1)
         if [[ -z ${CONF_ITEM} ]]; then
             echo "\"PA_${VAR_NAME}\" in Environment variable not found from config file"
             continue
