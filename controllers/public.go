@@ -87,20 +87,38 @@ func GetTimeDuration(startTime string,endTime string) string {
 	return tm
 }
 
-// 转换UTC时区到CST
+// 转换任意时区到CST
 func GetCSTtime(date string) string {
-	var tm string
-	tm = time.Now().Format("2006-01-02 15:04:05")
-	if date != "" {
-		T1 := date[0:10]
-		T2 := date[11:19]
-		T3 := T1 + " " + T2
-		tm2, _ := time.Parse("2006-01-02 15:04:05", T3)
-		h, _ := time.ParseDuration("-1h")
-		tm3 := tm2.Add(-8 * h)
-		tm = tm3.Format("2006-01-02 15:04:05")
+	var t time.Time
+	if date == "" {
+		// 获取当前时间并转换为 CST
+		t = time.Now().In(cstLoc)
+	} else {
+		parsedTime, err := parseDate(date)
+		if err != nil {
+			// 处理错误，例如返回空字符串或日志记录
+			return ""
+		}
+		// 转换为 CST 时区
+		t = parsedTime.In(cstLoc)
 	}
-	return tm
+	return t.Format("2006-01-02 15:04:05")
+}
+
+// 解析日期字符串，支持带时区和固定格式
+func parseDate(date string) (time.Time, error) {
+	// 尝试常见带时区的格式（如 RFC3339）
+	t, err := time.Parse(time.RFC3339, date)
+	if err == nil {
+		return t, nil
+	}
+	// 尝试无时区格式，假设为 UTC
+	t, err = time.ParseInLocation("2006-01-02 15:04:05", date, time.UTC)
+	if err == nil {
+		return t, nil
+	}
+	// 可根据需要添加更多格式
+	return time.Time{}, fmt.Errorf("无法解析时间：%s", date)
 }
 
 func TimeFormat(timestr, format string) string {
