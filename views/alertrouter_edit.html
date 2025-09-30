@@ -346,6 +346,7 @@ function savetpl(){
 
 	var json_data = JSON.stringify(alert_router_json_str);
 	$.ajax({
+        contentType: "application/json",
 		type: "POST",
 		dataType: "json",
 		url: '{{ urlfor "MainController.AddRouter"}}',
