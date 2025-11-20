@@ -3,8 +3,10 @@ package controllers
 import (
 	"PrometheusAlert/models"
 	"encoding/json"
-	"github.com/astaxie/beego/logs"
+	"io"
 	"strconv"
+
+	"github.com/astaxie/beego/logs"
 )
 
 // router
@@ -68,9 +70,15 @@ func (c *MainController) AddRouter() {
 		return
 	}
 	WebAlertRouterJson := AlertRouterJson{}
-	logsign := "[" + LogsSign() + "]"
-	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
-	json.Unmarshal(c.Ctx.Input.RequestBody, &WebAlertRouterJson)
+
+	body, _ := io.ReadAll(c.Ctx.Request.Body)
+	logsign := "[" + LogsSign() + ",]"
+	logs.Info(logsign, string(body))
+	err := json.Unmarshal(body, &WebAlertRouterJson)
+	if err != nil {
+		logs.Error(err)
+		return
+	}
 	rules, err := json.Marshal(WebAlertRouterJson.Rules)
 	if WebAlertRouterJson.RouterId == "" {
 		tpl_id_int, _ := strconv.Atoi(WebAlertRouterJson.RouterTplId)
