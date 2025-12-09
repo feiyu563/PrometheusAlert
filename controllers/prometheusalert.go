@@ -79,6 +79,8 @@ type PrometheusAlertMsg struct {
 }
 
 func (c *PrometheusAlertController) PrometheusAlert() {
+	Title := beego.AppConfig.String("title")
+
 	logsign := "[" + LogsSign() + "]"
 	var p_json interface{}
 	//针对prometheus的消息特殊处理
@@ -187,14 +189,19 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 					//logs.Debug("当前模版：", Return_pMsg.TplName)
 					//获取渲染后的模版
 					err, msg := TransformAlertMessage(p_alertmanager_json, Return_pMsg.Tpl)
+					title_err, title_msg := TransformAlertMessage(p_json, Title)
 
 					if err != nil {
 						//失败不发送消息
 						logs.Error(logsign, err.Error())
 						message = err.Error()
 					} else {
-						//发送消息
-						message = SendMessagePrometheusAlert(msg, &Return_pMsg, logsign)
+						if title_err != nil {
+							logs.Error(logsign, title_err.Error())
+							message = SendMessagePrometheusAlert(Title, msg, &Return_pMsg, logsign)
+						} else {
+							message = SendMessagePrometheusAlert(title_msg, msg, &Return_pMsg, logsign)
+						}
 					}
 
 				}
@@ -203,13 +210,19 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		} else {
 			//获取渲染后的模版
 			err, msg := TransformAlertMessage(p_json, PrometheusAlertTpl.Tpl)
+			title_err, title_msg := TransformAlertMessage(p_json, Title)
 
 			if err != nil {
 				logs.Error(logsign, err.Error())
 				message = err.Error()
 			} else {
 				//发送消息
-				message = SendMessagePrometheusAlert(msg, &pMsg, logsign)
+				if title_err != nil {
+					logs.Error(logsign, title_err.Error())
+					message = SendMessagePrometheusAlert(Title, msg, &pMsg, logsign)
+				} else {
+					message = SendMessagePrometheusAlert(title_msg, msg, &pMsg, logsign)
+				}
 			}
 		}
 
@@ -443,8 +456,7 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 }
 
 // 发送消息
-func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
-	Title := beego.AppConfig.String("title")
+func SendMessagePrometheusAlert(title, message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	var ReturnMsg string
 	models.AlertsFromCounter.WithLabelValues("/prometheusalert").Add(1)
 	ChartsJson.Prometheusalert += 1
@@ -464,10 +476,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "dd":
 		Ddurl := strings.Split(pmsg.Ddurl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToDingDing(Title, message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
+			ReturnMsg += PostToDingDing(title, message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Ddurl {
-				ReturnMsg += PostToDingDing(Title, message, url, pmsg.AtSomeOne, logsign)
+				ReturnMsg += PostToDingDing(title, message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
@@ -475,10 +487,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "fs":
 		Fsurl := strings.Split(pmsg.Fsurl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToFS(Title, message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
+			ReturnMsg += PostToFS(title, message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Fsurl {
-				ReturnMsg += PostToFS(Title, message, url, pmsg.AtSomeOne, logsign)
+				ReturnMsg += PostToFS(title, message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
@@ -540,7 +552,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 		ReturnMsg += SendVoice(message, logsign)
 	//飞书APP渠道
 	case "fsapp":
-		ReturnMsg += PostToFeiShuApp(Title, message, pmsg.AtSomeOne, logsign)
+		ReturnMsg += PostToFeiShuApp(title, message, pmsg.AtSomeOne, logsign)
 	//kafka渠道
 	case "kafka":
 		ReturnMsg += SendKafka(message, logsign)
