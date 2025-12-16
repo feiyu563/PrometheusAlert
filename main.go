@@ -1,6 +1,7 @@
 package main
 
 import (
+	"PrometheusAlert/controllers"
 	"PrometheusAlert/models"
 	_ "PrometheusAlert/routers"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -119,7 +120,15 @@ func init() {
 	}
 	// 注册模型
 	orm.RegisterModel(new(models.PrometheusAlertDB), new(models.AlertRecord), new(models.AlertRouter))
-	err := orm.RunSyncdb("default", false, true)
+	
+	// 初始化去重聚合模块
+	err := models.InitDeduplicationAggregation()
+	if err != nil {
+		logs.Error("[main] 初始化去重聚合模块失败: %v", err)
+		return
+	}
+	
+	err = orm.RunSyncdb("default", false, true)
 	if err != nil {
 		logs.Error(err)
 		return
@@ -155,6 +164,9 @@ func main() {
 		}
 		c.Start()
 	}
+	// 初始化告警处理器
+	controllers.InitAlertProcessor()
+	
 	models.MetricsInit()
 	beego.Handler("/metrics", promhttp.Handler())
 	beego.Run()

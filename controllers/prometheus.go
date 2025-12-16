@@ -85,7 +85,63 @@ func (c *PrometheusController) PrometheusAlert() {
 	alert := Prometheus{}
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
+	logs.Info(logsign+" ===== 开始处理Prometheus告警 =====")
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
+
+	// 使用告警处理器进行去重和聚合处理
+	processor := GetGlobalAlertProcessor()
+	logs.Info(logsign+" 告警处理器状态: processor=%v, enabled=%v", processor != nil, processor != nil && processor.IsEnabled())
+	if processor != nil && processor.IsEnabled() {
+		filteredAlerts := make([]Alerts, 0)
+		
+		for _, alertItem := range alert.Alerts {
+			// 将Alerts结构体转换为map格式
+			alertMap := map[string]interface{}{
+				"alertname":    alertItem.Labels.Alertname,
+				"instance":     alertItem.Labels.Instance,
+				"status":       alertItem.Status,
+				"startsAt":     alertItem.StartsAt,
+				"endsAt":       alertItem.EndsAt,
+				"labels": map[string]interface{}{
+					"alertname": alertItem.Labels.Alertname,
+					"instance":  alertItem.Labels.Instance,
+					"severity":  alertItem.Labels.Severity,
+					"job":       alertItem.Labels.Job,
+				},
+				"annotations": map[string]interface{}{
+					"summary":     alertItem.Annotations.Summary,
+					"description": alertItem.Annotations.Description,
+				},
+			}
+			
+			result, err := processor.ProcessAlert(alertMap, "prometheus")
+			if err != nil {
+				logs.Error(logsign+" 告警处理器处理失败: %v", err)
+				// 处理失败时仍然发送告警
+				filteredAlerts = append(filteredAlerts, alertItem)
+				continue
+			}
+			
+			// 如果告警应该发送，添加到过滤后的列表
+			if result.ShouldSend {
+				logs.Info(logsign+" 告警通过去重检查: %s, 动作: %s", alertItem.Labels.Alertname, result.Action)
+				filteredAlerts = append(filteredAlerts, alertItem)
+			} else {
+				logs.Info(logsign+" 告警被抑制: %s, 原因: %s", alertItem.Labels.Alertname, result.Reason)
+			}
+		}
+		
+		// 如果所有告警都被抑制，直接返回
+		if len(filteredAlerts) == 0 {
+			c.Data["json"] = "所有告警已被去重或聚合处理"
+			logs.Info(logsign, c.Data["json"])
+			c.ServeJSON()
+			return
+		}
+		
+		// 更新告警列表为过滤后的列表
+		alert.Alerts = filteredAlerts
+	}
 
 	var wxurl, ddurl, fsurl, phone, email, groupid string
 	// check whether to open alertgroup

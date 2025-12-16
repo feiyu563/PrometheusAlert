@@ -55,6 +55,29 @@ func init() {
 	// hotreload
 	beego.Router("/-/reload", &controllers.ConfigController{}, "post:Reload")
 
+	// 去重管理API
+	beego.Router("/api/dedup/stats", &controllers.DeduplicationController{}, "get:GetStats")
+	beego.Router("/api/dedup/alerts", &controllers.DeduplicationController{}, "get:GetCachedAlerts")
+	beego.Router("/api/dedup/clear", &controllers.DeduplicationController{}, "post:ClearCache")
+	beego.Router("/api/dedup/toggle", &controllers.DeduplicationController{}, "post:Toggle")
+	beego.Router("/api/dedup/suppress", &controllers.DeduplicationController{}, "post:SuppressAlert")
+	beego.Router("/api/dedup/unsuppress", &controllers.DeduplicationController{}, "post:UnsuppressAlert")
+	beego.Router("/api/dedup/reload", &controllers.DeduplicationController{}, "post:ReloadConfig")
+	beego.Router("/api/dedup/config", &controllers.DeduplicationController{}, "get:GetConfig")
+	beego.Router("/api/dedup/config", &controllers.DeduplicationController{}, "post:UpdateConfig")
+	beego.Router("/api/dedup/history", &controllers.DeduplicationController{}, "get:GetHistory")
+	beego.Router("/api/dedup/export", &controllers.DeduplicationController{}, "get:ExportCache")
+
+	// 聚合管理API
+	beego.Router("/api/aggregation/stats", &controllers.AggregationController{}, "get:GetStats")
+	beego.Router("/api/aggregation/groups", &controllers.AggregationController{}, "get:GetActiveGroups")
+	beego.Router("/api/aggregation/flush", &controllers.AggregationController{}, "post:FlushGroup")
+	beego.Router("/api/aggregation/clear", &controllers.AggregationController{}, "post:ClearAllGroups")
+	beego.Router("/api/aggregation/toggle", &controllers.AggregationController{}, "post:Toggle")
+	beego.Router("/api/aggregation/history", &controllers.AggregationController{}, "get:GetHistory")
+	beego.Router("/api/aggregation/search", &controllers.AggregationController{}, "get:SearchRecords")
+	beego.Router("/api/aggregation/detail", &controllers.AggregationController{}, "get:GetRecordDetail")
+
 	//已经下线的接口
 	//beego.Router("/prometheus/dingding", &controllers.PrometheusController{},"post:PrometheusRouter")
 	//beego.Router("/prometheus/weixin", &controllers.PrometheusController{},"post:PrometheusRouter")
