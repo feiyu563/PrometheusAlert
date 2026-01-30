@@ -80,6 +80,7 @@ type PrometheusAlertMsg struct {
 
 func (c *PrometheusAlertController) PrometheusAlert() {
 	logsign := "[" + LogsSign() + "]"
+	var message string
 	var p_json interface{}
 	//针对prometheus的消息特殊处理
 	p_alertmanager_json := make(map[string]interface{})
@@ -107,7 +108,11 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		AliyunAlertJson.Timestamp = c.Input().Get("timestamp")
 		p_json = AliyunAlertJson
 	} else {
-		json.Unmarshal(c.Ctx.Input.RequestBody, &p_json)
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &p_json)
+		if err != nil {
+			message = "请求body不是合法json."
+			logs.Error(logsign, message)
+		}
 		//针对prometheus的消息特殊处理
 		json.Unmarshal(c.Ctx.Input.RequestBody, &p_alertmanager_json)
 	}
@@ -161,7 +166,6 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		}
 	}
 
-	var message string
 	if pMsg.Type != "" && PrometheusAlertTpl != nil {
 		//判断是否是来自 Prometheus的告警
 		if pMsg.Split != "false" && PrometheusAlertTpl.Tpluse == "Prometheus" {
