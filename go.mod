@@ -1,6 +1,8 @@
 module PrometheusAlert
 
-go 1.20
+go 1.23.0
+
+toolchain go1.24.1
 
 require (
 	github.com/IBM/sarama v1.43.2

@@ -76,6 +76,8 @@ type PrometheusAlertMsg struct {
 	RoundRobin         string
 	Split              string
 	WebhookContentType string
+	UseAlertName       string // 使用告警名称作为告警消息的预览词
+	AlertName          string // 告警标题名称
 }
 
 func (c *PrometheusAlertController) PrometheusAlert() {
@@ -149,6 +151,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	pMsg.RoundRobin = c.Input().Get("rr")
 	//该配置仅适用于alertmanager的消息,用于判断是否需要拆分alertmanager告警消息
 	pMsg.Split = c.Input().Get("split")
+	pMsg.UseAlertName = c.Input().Get("usealertname")
 
 	//模版加载进内存处理,防止告警过多频繁查库
 	var PrometheusAlertTpl *models.PrometheusAlertDB
@@ -181,6 +184,14 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				go SetRecord(AlertValue)
 				//提取 prometheus 告警消息中的 label，用于和告警路由比对
 				xalert := AlertValue.(map[string]interface{})
+
+				if pMsg.UseAlertName == "true" {
+					// 获取告警名称
+					pMsg.AlertName = xalert["labels"].(map[string]interface{})["alertname"].(string)
+				} else {
+					pMsg.AlertName = beego.AppConfig.String("title")
+				}
+
 				//路由处理,可能存在多个路由都匹配成功，所以这里返回的是个列表sMsg
 				Return_pMsgs := AlertRouterSet(xalert, pMsg, PrometheusAlertTpl.Tpl)
 				for _, Return_pMsg := range Return_pMsgs {
@@ -201,6 +212,16 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 
 			}
 		} else {
+			if pMsg.UseAlertName == "true" {
+				// 获取告警名称，以第一个告警名称作为消息提示信息
+				Alerts_Value := p_alertmanager_json["alerts"].([]interface{})
+				if len(Alerts_Value) > 0 {
+					pMsg.AlertName = Alerts_Value[0].(map[string]interface{})["labels"].(map[string]interface{})["alertname"].(string)
+				}
+			} else {
+				pMsg.AlertName = beego.AppConfig.String("title")
+			}
+
 			//获取渲染后的模版
 			err, msg := TransformAlertMessage(p_json, PrometheusAlertTpl.Tpl)
 
@@ -444,7 +465,10 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 
 // 发送消息
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
-	Title := beego.AppConfig.String("title")
+	// Title := beego.AppConfig.String("title")
+	// 获取告警名称
+	alertName := pmsg.AlertName
+	fmt.Printf("alertName: %s\n", alertName)
 	var ReturnMsg string
 	models.AlertsFromCounter.WithLabelValues("/prometheusalert").Add(1)
 	ChartsJson.Prometheusalert += 1
@@ -464,10 +488,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "dd":
 		Ddurl := strings.Split(pmsg.Ddurl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToDingDing(Title, message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
+			ReturnMsg += PostToDingDing(alertName, message, DoBalance(Ddurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Ddurl {
-				ReturnMsg += PostToDingDing(Title, message, url, pmsg.AtSomeOne, logsign)
+				ReturnMsg += PostToDingDing(alertName, message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
@@ -475,10 +499,10 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	case "fs":
 		Fsurl := strings.Split(pmsg.Fsurl, ",")
 		if pmsg.RoundRobin == "true" {
-			ReturnMsg += PostToFS(Title, message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
+			ReturnMsg += PostToFS(alertName, message, DoBalance(Fsurl), pmsg.AtSomeOne, logsign)
 		} else {
 			for _, url := range Fsurl {
-				ReturnMsg += PostToFS(Title, message, url, pmsg.AtSomeOne, logsign)
+				ReturnMsg += PostToFS(alertName, message, url, pmsg.AtSomeOne, logsign)
 			}
 		}
 
@@ -540,7 +564,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 		ReturnMsg += SendVoice(message, logsign)
 	//飞书APP渠道
 	case "fsapp":
-		ReturnMsg += PostToFeiShuApp(Title, message, pmsg.AtSomeOne, logsign)
+		ReturnMsg += PostToFeiShuApp(alertName, message, pmsg.AtSomeOne, logsign)
 	//kafka渠道
 	case "kafka":
 		ReturnMsg += SendKafka(message, logsign)
