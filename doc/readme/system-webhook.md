@@ -21,7 +21,7 @@ PrometheusAlert WebHook是实现将PrometheusAlert收到的消息转发给除了
 }
 ```
 
-- 如果我们需要将PrometheusAlert接收到的Prometheus发过来的告警转发到该接口，且需要满足该接口的json协议，则需要先在PrometheusAlert自定义模板页面新建一个WebHook的模版。模板的内容参考如下：
+- 如果我们需要将PrometheusAlert接收到的Prometheus发过来的告警转发到该接口，且需要满足该接口的`json`协议，则需要先在PrometheusAlert自定义模板页面新建一个WebHook的模版。模板的内容参考如下：
 ```
 {
 	"receiver": "{{.receiver}}",
