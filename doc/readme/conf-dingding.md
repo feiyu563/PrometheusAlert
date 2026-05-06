@@ -2,7 +2,7 @@
 
 ## 开启钉钉机器人
 
-打开钉钉,进入钉钉群中,选择群设置-->智能群助手-->添加机器人-->自定义，可参下图：
+打开钉钉,进入钉钉群中,选择`群设置`-->`智能群助手`-->`添加机器人`-->`自定义`，可参下图：
 
 ![ding](../images/dingding1.png)
 
@@ -24,7 +24,7 @@
 
 ![ding4](../images/dingding5.png)
 
-钉钉目前支持只支持markdown语法的子集，具体支持的元素如下：
+钉钉目前支持只支持 `markdown` 语法的子集，具体支持的元素如下：
 
 ```md
 标题
@@ -56,6 +56,7 @@
 1. item1
 2. item2
 ```
+钉钉官方文档：https://open.dingtalk.com/document/dingstart/custom-bot-send-message-type
 
 <br/>
 <br/>
@@ -70,9 +71,9 @@
 
 如果配置文件中启用了钉钉加签认证，但 webhook url 并没有传递 parm secret，那么程序将返回不加签的地址。也就是说，PrometheusAlert 配置中启用钉钉加签并不会影响不加签的机器人。
 
-[issue:363](https://github.com/feiyu563/PrometheusAlert/issues/363) 关于自定义模板使用 URL 传递 ddurl 和签名报错，需要修改使用方法。
+[issue:363](https://github.com/feiyu563/PrometheusAlert/issues/363) 关于自定义模板使用 URL 传递 `ddurl` 和签名报错，需要修改使用方法。
 
-在自定义模板 URL 参数的 ddurl 里面可能有多个地址，有的加签，有的不加签。因此代码不太好处理，暂时没有解决。建议使用告警组或将 `&` 符号替换为 `%26` 编码。
+在自定义模板 URL 参数的 `ddurl` 里面可能有多个地址，有的加签，有的不加签。因此代码不太好处理，暂时没有解决。建议使用告警组或将 `&` 符号替换为 `%26` 编码。
 
 默认模板、配置文件和使用告警组的钉钉加签是正常的。
 
@@ -95,12 +96,34 @@ https://oapi.dingtalk.com/robot/send?access_token=XXX
 ```
 
 <br/>
+告警组配置示例：
+
+```conf
+## app.conf
+...
+# ---------------------↓告警组-----------------------                     
+# 有其他新增的配置段，请放在告警组的上面                                 
+# 暂时仅针对 PrometheusContronller 中的 /prometheus/alert 路由           
+# 告警组如果放在了 wx, dd... 那部分的上分，beego section 取 url 值不太对。
+# 所以这里使用 include 来包含另告警组配置                                
+# 是否启用告警组功能                                                     
+open-alertgroup=1                                                        
+
+[ag-alert]                                                                                                                                                                                         
+ddurl=https://oapi.dingtalk.com/robot/send?access_token=435xxx&secret=SECxxx
+
+[ag-low-level]                                                                                                                                                                                     
+ddurl=https://oapi.dingtalk.com/robot/send?access_token=bf1xxx&secret=SECxxx
+
+[ag-biz-alert]                                                                                                                                                                                     
+ddurl=https://oapi.dingtalk.com/robot/send?access_token=b9cxxx&secret=SECxxx
+```
 
 自定义模板 URL 参数传递地址配置如下:
 
 ```conf
-# 使用告警组配置地址
-http://prometheusalert:8080/prometheusalert?type=dd&tpl=prometheus-dd&alertgroup=xxx&at=xxx
+# 使用告警组配置地址，使用告警组组名
+http://prometheusalert:8080/prometheusalert?type=dd&tpl=prometheus-dd&alertgroup=alert&at=xxx
 
 # 需要把 & 特殊字符转义为 %26 编码字符
 # 单个地址
