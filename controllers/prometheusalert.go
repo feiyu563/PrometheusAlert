@@ -213,10 +213,10 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 			}
 		} else {
 			if pMsg.UseAlertName == "true" {
-				// 获取告警名称，以第一个告警名称作为消息提示信息
-				Alerts_Value := p_alertmanager_json["alerts"].([]interface{})
-				if len(Alerts_Value) > 0 {
-					pMsg.AlertName = Alerts_Value[0].(map[string]interface{})["labels"].(map[string]interface{})["alertname"].(string)
+				// 获取告警名称，以第一个告警名称作为消息的预览文字
+				AlertsValue := p_alertmanager_json["alerts"].([]interface{})
+				if len(AlertsValue) > 0 {
+					pMsg.AlertName = AlertsValue[0].(map[string]interface{})["labels"].(map[string]interface{})["alertname"].(string)
 				}
 			} else {
 				pMsg.AlertName = beego.AppConfig.String("title")
@@ -468,7 +468,6 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	// Title := beego.AppConfig.String("title")
 	// 获取告警名称
 	alertName := pmsg.AlertName
-	fmt.Printf("alertName: %s\n", alertName)
 	var ReturnMsg string
 	models.AlertsFromCounter.WithLabelValues("/prometheusalert").Add(1)
 	ChartsJson.Prometheusalert += 1
