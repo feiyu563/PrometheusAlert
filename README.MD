@@ -50,13 +50,10 @@ PrometheusAlert 后端使用了 [beego](https://github.com/beego/beego) 框架�
 ├── main.go
 ├── Makefile
 ├── models：模型
-├── PrometheusAlert：二进制文件
 ├── PrometheusAlertVoicePlugin
 ├── README.MD
 ├── routers：路由
 ├── static：静态资源
-├── swagger
-├── tests：测试
 ├── views：前端模板
 └── zabbixclient
 ```
