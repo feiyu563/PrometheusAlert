@@ -148,7 +148,7 @@ docker run -d \
 -e PA_OPEN_FEISHU=1 \
 -e PA_OPEN_DINGDING=1 \
 -e PA_OPEN_WEIXIN=1 \
-feiyu563/prometheus-alert:v4.9.1
+feiyu563/prometheus-alert:master
 ```
 
 <br/>
