@@ -4,6 +4,7 @@ import (
 	"PrometheusAlert/models"
 	"encoding/json"
 	"github.com/astaxie/beego/logs"
+	"github.com/astaxie/beego/orm"
 	"strconv"
 )
 
@@ -46,20 +47,24 @@ func (c *MainController) RouterAdd() {
 }
 
 type AlertRouterJson struct {
-	RouterId           string
-	RouterName         string
-	RouterTplId        string
-	RouterPurl         string
-	RouterPat          string
-	RouterPatRR        bool
-	RouterSendResolved bool
-	Rules              []LabelMap
+	RouterId             string
+	RouterName           string
+	RouterTplId          string
+	RouterPurl           string
+	RouterPat            string
+	RouterPatRR          bool
+	RouterSendResolved   bool
+	RouterStatus         int
+	RouterTimeRangeStart string
+	RouterTimeRangeEnd   string
+	Rules                []LabelMap
 }
 
 type LabelMap struct {
-	Name  string
-	Value string
-	Regex bool
+	Name     string
+	Value    string
+	Regex    bool
+	Operator string
 }
 
 func (c *MainController) AddRouter() {
@@ -74,12 +79,43 @@ func (c *MainController) AddRouter() {
 	rules, err := json.Marshal(WebAlertRouterJson.Rules)
 	if WebAlertRouterJson.RouterId == "" {
 		tpl_id_int, _ := strconv.Atoi(WebAlertRouterJson.RouterTplId)
-		err = models.AddAlertRouter(0, tpl_id_int, WebAlertRouterJson.RouterName, string(rules), WebAlertRouterJson.RouterPurl, WebAlertRouterJson.RouterPat, WebAlertRouterJson.RouterPatRR, WebAlertRouterJson.RouterSendResolved)
+		err = models.AddAlertRouter(0, tpl_id_int, WebAlertRouterJson.RouterName, string(rules), WebAlertRouterJson.RouterPurl, WebAlertRouterJson.RouterPat, WebAlertRouterJson.RouterPatRR, WebAlertRouterJson.RouterSendResolved, WebAlertRouterJson.RouterStatus, WebAlertRouterJson.RouterTimeRangeStart, WebAlertRouterJson.RouterTimeRangeEnd)
 	} else {
 		id, _ := strconv.Atoi(WebAlertRouterJson.RouterId)
 		tpl_id_int, _ := strconv.Atoi(WebAlertRouterJson.RouterTplId)
-		err = models.UpdateAlertRouter(id, tpl_id_int, WebAlertRouterJson.RouterName, string(rules), WebAlertRouterJson.RouterPurl, WebAlertRouterJson.RouterPat, WebAlertRouterJson.RouterPatRR, WebAlertRouterJson.RouterSendResolved)
+		err = models.UpdateAlertRouter(id, tpl_id_int, WebAlertRouterJson.RouterName, string(rules), WebAlertRouterJson.RouterPurl, WebAlertRouterJson.RouterPat, WebAlertRouterJson.RouterPatRR, WebAlertRouterJson.RouterSendResolved, WebAlertRouterJson.RouterStatus, WebAlertRouterJson.RouterTimeRangeStart, WebAlertRouterJson.RouterTimeRangeEnd)
 	}
+	var resp interface{}
+	resp = err
+	if err != nil {
+		resp = err.Error()
+	}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+// router status toggle
+func (c *MainController) RouterChangeStatus() {
+	if !CheckAccount(c.Ctx) {
+		c.Data["json"] = "unauthorized"
+		c.ServeJSON()
+		return
+	}
+	id, _ := strconv.Atoi(c.Input().Get("id"))
+	status, _ := strconv.Atoi(c.Input().Get("status"))
+
+	o := orm.NewOrm()
+	router := &models.AlertRouter{Id: id}
+	err := o.Read(router)
+	if err == nil {
+		router.Status = status
+		_, err = o.Update(router, "Status")
+		if err == nil {
+			// Refresh memory cache
+			GlobalAlertRouter, _ = models.GetAllAlertRouter(models.AlertRouterQuery{})
+		}
+	}
+
 	var resp interface{}
 	resp = err
 	if err != nil {

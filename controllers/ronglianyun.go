@@ -57,12 +57,13 @@ func PostRLYphonecall(CallMessage, PhoneNumber, logsign string) string {
 	accountSid := beego.AppConfig.String("RLY_ACCOUNT_SID")
 
 	if open != "1" {
-		logs.Info(logsign, "[rlyphonecall]", "容联云语音接口未配置未开启状态,请先配置open-rlydh为1")
-		return "容联云语音接口未配置未开启状态,请先配置open-txdh为1"
+		logs.Warn(logsign, "[rlyphonecall] [channel-disabled] Ronglianyun Voice is not enabled (open-rlydh != 1)")
+		return "容联云语音接口未配置未开启状态,请先配置open-rlydh为1"
 	}
 
 	appId := beego.AppConfig.String("RLY_APP_ID")
 	url := beego.AppConfig.String("RLY_URL")
+	logs.Info(logsign, "[rlyphonecall] [send-attempt] Target CalledNumber:", PhoneNumber, "| AppId:", appId, "| MediaTxt:", CallMessage)
 	//整合body字符
 	var Body BodyStr
 	Body.To = PhoneNumber
@@ -71,7 +72,7 @@ func PostRLYphonecall(CallMessage, PhoneNumber, logsign string) string {
 	Body.PlayTimes = "3" //此处定义默认重复三次
 	BodyData, err := json.Marshal(Body)
 	if err != nil {
-		logs.Error(logsign, "[rlyphonecall]", err)
+		logs.Error(logsign, "[rlyphonecall] [payload-marshal-failed] Error:", err.Error())
 	}
 
 	//获取sig，auth信息
@@ -87,22 +88,25 @@ func PostRLYphonecall(CallMessage, PhoneNumber, logsign string) string {
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", urlPath, bytes.NewBuffer([]byte(string(BodyData))))
 	if err != nil {
-		// handle error
-		logs.Error(logsign, "[rlyphonecall]", err)
+		logs.Error(logsign, "[rlyphonecall] [request-init-failed] Error:", err.Error())
+		return err.Error()
 	}
 	//设置表头
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", encodeAuth)
 	resp, err := client.Do(req)
 	if err != nil {
-		logs.Error(logsign, "[rlyphonecall]", err.Error())
+		logs.Error(logsign, "[rlyphonecall] [send-failed] Target CalledNumber:", PhoneNumber, "| Error:", err.Error())
+		return err.Error()
 	}
 	defer resp.Body.Close()
 
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {
-		logs.Error(logsign, "[rlyphonecall]", err)
+		logs.Error(logsign, "[rlyphonecall] [read-response-failed] Target CalledNumber:", PhoneNumber, "| Error:", err.Error())
+		return err.Error()
 	}
 	models.AlertToCounter.WithLabelValues("rlydx").Add(1)
 	ChartsJson.Rlydx += 1
+	logs.Info(logsign, "[rlyphonecall] [send-success] Target CalledNumber:", PhoneNumber, "| Response:", string(body))
 	return string(body)
 }

@@ -45,13 +45,15 @@ type TXmessage struct {
 func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-txdx")
 	if open != "1" {
-		logs.Info(logsign, "[txmessage]", "腾讯短信接口未配置未开启状态,请先配置open-txdx为1")
+		logs.Warn(logsign, "[txmessage] [channel-disabled] Tencent Cloud SMS is not enabled (open-txdx != 1)")
 		return "腾讯短信接口未配置未开启状态,请先配置open-txdx为1"
 	}
 	strAppKey := beego.AppConfig.String("TXY_DX_appkey")
 	tpl_id, _ := beego.AppConfig.Int("TXY_DX_tpl_id")
 	sdkappid := beego.AppConfig.String("TXY_DX_sdkappid")
 	sign := beego.AppConfig.String("TXY_DX_sign")
+	
+	logs.Info(logsign, "[txmessage] [send-attempt] Target PhoneNumbers:", PhoneNumbers, "| TplId:", tpl_id, "| Params:", Messages)
 	//腾讯短信接口算法部分
 	//mobile格式:"15888888888,16666666666"
 	TXmobile := Mobiles{}
@@ -79,7 +81,6 @@ func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign, "[txmessage]", b)
 
 	var tr *http.Transport
 	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
@@ -96,24 +97,24 @@ func PostTXmessage(Messages string, PhoneNumbers, logsign string) string {
 		}
 	}
 
-	//res,err := http.Post(Ddurl, "application/json", b)
-	//resp, err := http.PostForm(url,url.Values{"key": {"Value"}, "id": {"123"}})
 	client := &http.Client{Transport: tr}
 	res, err := client.Post(TXurl, "application/json", b)
 
 	if err != nil {
-		logs.Error(logsign, "[txmessage]", err.Error())
+		logs.Error(logsign, "[txmessage] [send-failed] Target PhoneNumbers:", PhoneNumbers, "| Error:", err.Error())
+		return err.Error()
 	}
 
 	defer res.Body.Close()
 	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign, "[txmessage]", err.Error())
+		logs.Error(logsign, "[txmessage] [read-response-failed] Target PhoneNumbers:", PhoneNumbers, "| Error:", err.Error())
+		return err.Error()
 	}
 
 	models.AlertToCounter.WithLabelValues("txdx").Add(1)
 	ChartsJson.Txdx += 1
-	logs.Info(logsign, "[txmessage]", string(result))
+	logs.Info(logsign, "[txmessage] [send-success] Target PhoneNumbers:", PhoneNumbers, "| Response:", string(result))
 	return string(result)
 }
 
@@ -132,7 +133,7 @@ type TXphonecall struct {
 func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-txdh")
 	if open != "1" {
-		logs.Info(logsign, "[txphonecall]", "腾讯语音接口未配置未开启状态,请先配置open-txdh为1")
+		logs.Warn(logsign, "[txphonecall] [channel-disabled] Tencent Cloud Voice is not enabled (open-txdh != 1)")
 		return "腾讯语音接口未配置未开启状态,请先配置open-txdh为1"
 	}
 	strAppKey := beego.AppConfig.String("TXY_DH_phonecallappkey")
@@ -142,6 +143,7 @@ func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 	TXmobile := Mobiles{}
 	mobiles := strings.Split(PhoneNumbers, ",")
 	for _, m := range mobiles {
+		logs.Info(logsign, "[txphonecall] [send-attempt] Target CalledNumber:", m, "| TplId:", tpl_id, "| Params:", Messages)
 		TXmobile.Mobile = m
 		TXmobile.Nationcode = "86"
 		strRand := "7226249334"
@@ -159,7 +161,7 @@ func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 			Time:      intTime,
 		}
 		res := PhoneCallPost(TXurl, u, logsign)
-		logs.Info(logsign, "[txphonecall]", res)
+		logs.Info(logsign, "[txphonecall] [send-success] Target CalledNumber:", m, "| Response:", res)
 	}
 	models.AlertToCounter.WithLabelValues("txdh").Add(1)
 	ChartsJson.Txdh += 1
@@ -169,18 +171,19 @@ func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 func PhoneCallPost(url string, u TXphonecall, logsign string) string {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign, "[txphonecall]", b)
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
 	res, err := client.Post(url, "application/json", b)
 	if err != nil {
+		logs.Error(logsign, "[txphonecall] [send-failed] Target CalledNumber:", u.Tel.Mobile, "| Error:", err.Error())
 		return err.Error()
 	}
 	defer res.Body.Close()
 	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
+		logs.Error(logsign, "[txphonecall] [read-response-failed] Target CalledNumber:", u.Tel.Mobile, "| Error:", err.Error())
 		return err.Error()
 	}
 	return string(result)

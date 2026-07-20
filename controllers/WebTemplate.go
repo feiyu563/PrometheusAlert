@@ -50,13 +50,20 @@ func (c *MainController) AddTpl() {
 	t_use := c.Input().Get("use")
 	content := c.Input().Get("content")
 	contentType := c.Input().Get("contentType")
+	
+	// 持久化预设终端参数
+	targetUrl := c.Input().Get("purl")
+	atSomeOne := c.Input().Get("pat")
+	wxParty := c.Input().Get("pparty")
+	wxTag := c.Input().Get("ptag")
+
 	var err error
 	if len(tid) == 0 {
 		id, _ := strconv.Atoi(tid)
-		err = models.AddTpl(id, name, t_tpye, t_use, content, contentType)
+		err = models.AddTpl(id, name, t_tpye, t_use, content, contentType, targetUrl, atSomeOne, wxParty, wxTag)
 	} else {
 		id, _ := strconv.Atoi(tid)
-		err = models.UpdateTpl(id, name, t_tpye, t_use, content, contentType)
+		err = models.UpdateTpl(id, name, t_tpye, t_use, content, contentType, targetUrl, atSomeOne, wxParty, wxTag)
 	}
 	var resp interface{}
 	if err != nil {
@@ -77,7 +84,8 @@ func (c *MainController) ImportTpl() {
 	if len(imTpl) > 0 {
 		var resp []string
 		for _, v := range imTpl {
-			err := models.AddTpl(v.Id, v.Tplname, v.Tpltype, v.Tpluse, v.Tpl, v.WebhookContentType)
+			// 支持导入新版包含默认目的地数据的模板，并向下物理兼容旧模板
+			err := models.AddTpl(v.Id, v.Tplname, v.Tpltype, v.Tpluse, v.Tpl, v.WebhookContentType, v.TplTargetUrl, v.TplAtSomeOne, v.TplWxParty, v.TplWxTag)
 			var strs string
 			if err != nil {
 				strs = v.Tplname + "：" + err.Error() + "\n"

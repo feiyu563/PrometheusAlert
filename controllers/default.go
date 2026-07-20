@@ -3,6 +3,7 @@ package controllers
 import (
 	"PrometheusAlert/models"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 type DashboardJson struct {
@@ -16,7 +17,6 @@ type DashboardJson struct {
 	Dingding        int `json:"dingding"`
 	Email           int `json:"email"`
 	Feishu          int `json:"feishu"`
-	Hwdx            int `json:"hwdx"`
 	Rlydx           int `json:"rlydx"`
 	Ruliu           int `json:"ruliu"`
 	Txdx            int `json:"txdx"`
@@ -45,6 +45,14 @@ type MainController struct {
 	beego.Controller
 }
 
+func (c *MainController) Prepare() {
+	title := beego.AppConfig.String("title")
+	if title == "" {
+		title = "PrometheusAlert"
+	}
+	c.Data["AppTitle"] = title
+}
+
 //main page
 func (c *MainController) Get() {
 	if !CheckAccount(c.Ctx) {
@@ -53,8 +61,13 @@ func (c *MainController) Get() {
 	}
 	c.Data["IsIndex"] = true
 	c.TplName = "index.html"
-	c.Data["ChartsJson"] = ChartsJson
 	c.Data["IsLogin"] = CheckAccount(c.Ctx)
+
+	stats, err := models.GetDashboardStats()
+	if err != nil {
+		logs.Error("Failed to get dashboard statistics:", err.Error())
+	}
+	c.Data["Stats"] = stats
 }
 
 // Health returns Hello 200

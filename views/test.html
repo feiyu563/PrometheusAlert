@@ -10,7 +10,6 @@
         <a href="/test" class="nav-link">告警管理</a>
       </li>
     </ul>
-
   </nav>
   <!-- /.navbar -->
 
@@ -32,236 +31,259 @@
 
       <!-- Default box -->
       <div class="card">
-        <div class="card-header">
-          <h3 class="card-title" style="color:red">** 告警测试功能主要是通过发送测试消息校验配置文件的正确性</h3>
-
+        <div class="card-header bg-navy">
+          <h3 class="card-title"><i class="fas fa-flask mr-1"></i> 通道配置文件一键调试与告警测试</h3>
           <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse" title="Collapse">
               <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-              <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
         <div class="card-body">
-         
-			<table class="table table-hover">
+          <div class="table-responsive">
+			<table id="alertTestTable" class="table table-bordered table-hover mb-0" style="width:100%;">
 				<thead>
-					<tr>
-						<th>ID</th>
-						<th>名称</th>
-						<th>操作</th>
+					<tr class="bg-light text-center">
+						<th style="width: 100px;">序号 (ID)</th>
+						<th>物理通道名称</th>
+						<th style="width: 250px;">一键执行测试</th>
 					</tr>
 				</thead>
 				<tbody>
-
-					<tr>
-						<th>1</th>
-						<th>钉钉</th>
-						<th>
-						<a id="dd" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">1</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fab fa-envira mr-1"></i> 钉钉机器人 (dd)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="dd" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>2</th>
-						<th>企业微信</th>
-						<th>
-						<a id="wx" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">2</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fab fa-weixin mr-1"></i> 企业微信群机器人 (wx)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="wx" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>3</th>
-						<th>飞书</th>
-						<th>
-						<a id="fs" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">3</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-paper-plane text-info mr-1"></i> 飞书群机器人 (fs)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="fs" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>4</th>
-						<th>腾讯云语音电话</th>
-						<th>
-						<a id="txdh" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">4</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-phone-alt text-success mr-1"></i> 腾讯云语音电话 (txdh)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="txdh" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>5</th>
-						<th>腾讯云短信</th>
-						<th>
-						<a id="txdx" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">5</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-sms text-info mr-1"></i> 腾讯云短信服务 (txdx)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="txdx" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>6</th>
-						<th>阿里云语音电话</th>
-						<th>
-						<a id="alydh" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">6</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-phone-volume text-success mr-1"></i> 阿里云语音电话 (alydh)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="alydh" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>7</th>
-						<th>阿里云短信</th>
-						<th>
-						<a id="alydx" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">7</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-comment-dots text-info mr-1"></i> 阿里云短信服务 (alydx)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="alydx" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>8</th>
-						<th>容联云语音电话</th>
-						<th>
-						<a id="rlydh" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">8</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-headset text-success mr-1"></i> 容联云语音电话 (rlydh)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="rlydh" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>9</th>
-						<th>华为云短信</th>
-						<th>
-						<a id="hwdx" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">9</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-envelope text-secondary mr-1"></i> 电子邮箱发送 (email)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="email" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>10</th>
-						<th>Email</th>
-						<th>
-						<a id="email" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">10</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-mobile-alt text-info mr-1"></i> 七陌短信服务 (7moordx)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="7moordx" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>11</th>
-						<th>七陌短信</th>
-						<th>
-						<a id="7moordx" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">11</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-tty text-success mr-1"></i> 七陌语音电话 (7moordh)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="7moordh" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>12</th>
-						<th>七陌语音电话</th>
-						<th>
-						<a id="7moordh" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">12</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fab fa-telegram-plane mr-1"></i> Telegram 推送 (tg)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="tg" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
+					</tr>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">13</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fab fa-weixin mr-1"></i> 企业微信自建应用 (workwechat)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="workwechat" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>13</th>
-						<th>Telegram</th>
-						<th>
-						<a id="tg" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
-					</tr>
-					<tr>
-						<th>14</th>
-						<th>企业微信应用</th>
-						<th>
-						<a id="workwechat" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">14</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-sms text-info mr-1"></i> 百度云短信服务 (bddx)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="bddx" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>15</th>
-						<th>百度云短信</th>
-						<th>
-						<a id="bddx" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
-					</tr>
-
-					<tr>
-						<th>16</th>
-						<th>百度Hi(如流)</th>
-						<th>
-						<a id="bdrl" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">15</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-comments text-primary mr-1"></i> 百度Hi (如流 - bdrl)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="bdrl" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 					
-					<tr>
-						<th>17</th>
-						<th>Bark(iPhone推送)</th>
-						<th>
-						<a id="bark" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">16</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-bell text-secondary mr-1"></i> Bark(iPhone 推送) (bark)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="bark" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 					
-					<tr>
-						<th>18</th>
-						<th>语音播报</th>
-						<th>
-						<a id="voice" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">17</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-volume-up text-success mr-1"></i> 本地 TCP 语音播报 (voice)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="voice" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>19</th>
-						<th>飞书机器人应用</th>
-						<th>
-						<a id="fsapp" class="btn btn-default btn-flat">
-						  <i class="fas fa-bullhorn"></i> 告警测试
-						</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">18</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-feather-alt text-info mr-1"></i> 飞书自建机器人应用 (fsapp)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+						<button id="fsapp" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+						  <i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+						</button>
+						</td>
 					</tr>
 
-					<tr>
-						<th>20</th>
-						<th>Kafka</th>
-						<th>
-							<a id="kafka" class="btn btn-default btn-flat">
-								<i class="fas fa-bullhorn"></i> 告警测试
-							</a>
-						</th>
+					<tr class="text-center">
+						<td style="vertical-align: middle;"><span class="badge badge-light p-2">19</span></td>
+						<td style="vertical-align: middle; font-weight: bold; text-align: left;">
+                            <span class="badge bg-purple p-2" style="font-size: 13px;"><i class="fas fa-database text-warning mr-1"></i> Kafka 队列分发 (kafka)</span>
+                        </td>
+						<td style="vertical-align: middle;">
+							<button id="kafka" class="btn btn-sm btn-outline-warning text-dark font-weight-bold test-btn">
+								<i class="fas fa-paper-plane mr-1"></i> 发送测试消息
+							</button>
+						</td>
 					</tr>
 
 				</tbody>
 			</table>
-
+          </div>
         </div>
         <!-- /.card-body -->
-        <div class="card-footer">
-          短信和电话请提前配置好app.conf中的[defaultphone]配置项
+        <div class="card-footer bg-light">
+          <i class="fas fa-info-circle text-info"></i> <strong>提示：</strong>测试短信和电话通道时，请提前配置好 <code>app-example.conf</code> 或您使用的 <code>app.conf</code> 中对应的 <code>defaultphone</code>（默认接收测试手机号）配置项。
         </div>
         <!-- /.card-footer-->
       </div>
@@ -274,11 +296,45 @@
 {{template "endhtml"}}
 <script>
 $(function(){
- $(".btn").click(function(){
-   $.post("/alerttest",{mtype:$(this).attr("id")},function(result){
-	 alert(result);
-	 });
+  // Initialize DataTable with local quick search and paging
+  $("#alertTestTable").DataTable({
+      "responsive": false,
+      "paging": true,
+      "lengthChange": true, 
+      "autoWidth": false,
+      "info": true,
+      "ordering": true,
+      "pageLength": 10,
+      "language": {
+           "search": "极速过滤通道:",
+           "lengthMenu": "每页显示 _MENU_ 条记录",
+           "zeroRecords": "没有找到对应的测试通道",
+           "info": "第 _PAGE_ 页 (总共 _PAGES_ 页，共 _TOTAL_ 条记录)",
+           "infoEmpty": "无记录可用",
+           "infoFiltered": "(从 _MAX_ 条记录中过滤)",
+           "paginate": {
+              "first": "首页",
+              "previous": "上一页",
+              "next": "下一页",
+              "last": "末页"
+           }
+      }
   });
-})
+
+  // Event delegation to support datatable searches and filtering
+  $(document).on("click", ".test-btn", function(){
+      var self = this;
+      var originalHtml = $(self).html();
+      $(self).prop("disabled", true).removeClass("btn-outline-warning").addClass("btn-secondary").html('<i class="fas fa-spinner fa-spin mr-1"></i> 发送中...');
+      
+      $.post("/alerttest", { mtype: $(self).attr("id") }, function(result){
+          alert(result);
+          $(self).prop("disabled", false).removeClass("btn-secondary").addClass("btn-outline-warning").html(originalHtml);
+      }).fail(function() {
+          alert("发送请求失败，请检查网络或服务端配置");
+          $(self).prop("disabled", false).removeClass("btn-secondary").addClass("btn-outline-warning").html(originalHtml);
+      });
+  });
+});
 </script>
 {{template "jshtml"}}

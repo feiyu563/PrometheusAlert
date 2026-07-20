@@ -13,14 +13,20 @@ import (
 func PostALYmessage(Messages, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-alydx")
 	if open != "1" {
-		logs.Info(logsign, "[alymessage]", "阿里云短信接口未配置未开启状态,请先配置open-alydx为1")
+		logs.Warn(logsign, "[alymessage] [channel-disabled] Alibaba Cloud SMS is not enabled (open-alydx != 1)")
 		return "阿里云短信接口未配置未开启状态,请先配置open-alydx为1"
 	}
 	AccessKeyId := beego.AppConfig.String("ALY_DX_AccessKeyId")
 	AccessSecret := beego.AppConfig.String("ALY_DX_AccessSecret")
 	SignName := beego.AppConfig.String("ALY_DX_SignName")
 	Template := beego.AppConfig.String("ALY_DX_Template")
+	
+	logs.Info(logsign, "[alymessage] [send-attempt] Target PhoneNumbers:", PhoneNumbers, "| SignName:", SignName, "| Template:", Template, "| Param:", Messages)
 	client, err := dysmsapi.NewClientWithAccessKey("cn-hangzhou", AccessKeyId, AccessSecret)
+	if err != nil {
+		logs.Error(logsign, "[alymessage] [client-init-failed] Error:", err.Error())
+		return err.Error()
+	}
 
 	request := dysmsapi.CreateSendSmsRequest()
 	request.Scheme = "https"
@@ -31,9 +37,10 @@ func PostALYmessage(Messages, PhoneNumbers, logsign string) string {
 	response, err := client.SendSms(request)
 
 	if err != nil {
-		logs.Error(logsign, "[alymessage]", err.Error())
+		logs.Error(logsign, "[alymessage] [send-failed] Target PhoneNumbers:", PhoneNumbers, "| Error:", err.Error())
+		return err.Error()
 	}
-	logs.Info(logsign, "[alymessage]", response)
+	logs.Info(logsign, "[alymessage] [send-success] Target PhoneNumbers:", PhoneNumbers, "| Code:", response.Code, "| Message:", response.Message, "| RequestId:", response.RequestId)
 	models.AlertToCounter.WithLabelValues("alydx").Add(1)
 	ChartsJson.Alydx += 1
 	return response.Message
@@ -41,7 +48,7 @@ func PostALYmessage(Messages, PhoneNumbers, logsign string) string {
 func PostALYphonecall(Messages string, PhoneNumbers, logsign string) string {
 	open := beego.AppConfig.String("open-alydh")
 	if open != "1" {
-		logs.Info(logsign, "[alyphonecall]", "阿里云电话接口未配置未开启状态,请先配置open-alydh为1")
+		logs.Warn(logsign, "[alyphonecall] [channel-disabled] Alibaba Cloud Voice is not enabled (open-alydh != 1)")
 		return "阿里云电话接口未配置未开启状态,请先配置open-alydh为1"
 	}
 	AccessKeyId := beego.AppConfig.String("ALY_DH_AccessKeyId")
@@ -51,7 +58,12 @@ func PostALYphonecall(Messages string, PhoneNumbers, logsign string) string {
 
 	mobiles := strings.Split(PhoneNumbers, ",")
 	for _, m := range mobiles {
+		logs.Info(logsign, "[alyphonecall] [send-attempt] Target CalledNumber:", m, "| CalledShowNumber:", CalledShowNumber, "| TtsCode:", TtsCode, "| Param Msg:", Messages)
 		client, err := dyvmsapi.NewClientWithAccessKey("cn-hangzhou", AccessKeyId, AccessSecret)
+		if err != nil {
+			logs.Error(logsign, "[alyphonecall] [client-init-failed] Target CalledNumber:", m, "| Error:", err.Error())
+			continue
+		}
 		request := dyvmsapi.CreateSingleCallByTtsRequest()
 		request.Scheme = "https"
 		request.CalledShowNumber = CalledShowNumber
@@ -62,9 +74,10 @@ func PostALYphonecall(Messages string, PhoneNumbers, logsign string) string {
 
 		response, err := client.SingleCallByTts(request)
 		if err != nil {
-			logs.Error(logsign, "[alyphonecall]", err.Error())
+			logs.Error(logsign, "[alyphonecall] [send-failed] Target CalledNumber:", m, "| Error:", err.Error())
+			continue
 		}
-		logs.Info(logsign, "[alyphonecall]", response)
+		logs.Info(logsign, "[alyphonecall] [send-success] Target CalledNumber:", m, "| Code:", response.Code, "| Message:", response.Message, "| CallId:", response.CallId, "| RequestId:", response.RequestId)
 	}
 	models.AlertToCounter.WithLabelValues("alydh").Add(1)
 	ChartsJson.Alydh += 1

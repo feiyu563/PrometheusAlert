@@ -84,7 +84,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	//针对prometheus的消息特殊处理
 	p_alertmanager_json := make(map[string]interface{})
 	pMsg := PrometheusAlertMsg{}
-	logs.Debug(logsign, strings.Replace(string(c.Ctx.Input.RequestBody), "\n", "", -1))
+	logs.Info(logsign, "[webhook] [received] Method:", c.Ctx.Input.Method(), "| URL:", c.Ctx.Input.URI(), "| RemoteIP:", c.Ctx.Input.IP(), "| Body:", strings.Replace(string(c.Ctx.Input.RequestBody), "\n", "", -1))
 	if c.Input().Get("from") == "aliyun" {
 		models.AlertsFromCounter.WithLabelValues("aliyun").Add(1)
 		ChartsJson.Aliyun += 1
@@ -112,13 +112,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		json.Unmarshal(c.Ctx.Input.RequestBody, &p_alertmanager_json)
 	}
 
-	// alertgroup
-	alertgroup := c.Input().Get("alertgroup")
-	openAg := beego.AppConfig.String("open-alertgroup")
 	var agMap map[string]string
-	if openAg == "1" && len(alertgroup) != 0 {
-		agMap = Alertgroup(alertgroup)
-	}
 
 	pMsg.Type = c.Input().Get("type")
 	pMsg.Tpl = c.Input().Get("tpl")
@@ -131,7 +125,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	pMsg.GroupId = checkURL(agMap["groupid"], c.Input().Get("groupid"), beego.AppConfig.String("BDRL_ID"))
 
 	pMsg.Phone = checkURL(agMap["phone"], c.Input().Get("phone"))
-	if pMsg.Phone == "" && (pMsg.Type == "txdx" || pMsg.Type == "hwdx" || pMsg.Type == "bddx" || pMsg.Type == "alydx" || pMsg.Type == "txdh" || pMsg.Type == "alydh" || pMsg.Type == "rlydh" || pMsg.Type == "7moordx" || pMsg.Type == "7moordh") {
+	if pMsg.Phone == "" && (pMsg.Type == "txdx" || pMsg.Type == "bddx" || pMsg.Type == "alydx" || pMsg.Type == "txdh" || pMsg.Type == "alydh" || pMsg.Type == "rlydh" || pMsg.Type == "7moordx" || pMsg.Type == "7moordh") {
 		pMsg.Phone = GetUserPhone(1)
 	}
 
@@ -161,6 +155,61 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 		}
 	}
 
+	// 智能回退机制：若 URL 中缺省目的地/机器人/邮箱等参数，自动加载模板预设的默认值
+	if PrometheusAlertTpl != nil {
+		targetUrl := PrometheusAlertTpl.TplTargetUrl
+		atSomeOne := PrometheusAlertTpl.TplAtSomeOne
+		wxParty := PrometheusAlertTpl.TplWxParty
+		wxTag := PrometheusAlertTpl.TplWxTag
+
+		if targetUrl != "" {
+			switch pMsg.Type {
+			case "dd":
+				if pMsg.Ddurl == "" || pMsg.Ddurl == beego.AppConfig.String("ddurl") {
+					pMsg.Ddurl = targetUrl
+				}
+			case "wx":
+				if pMsg.Wxurl == "" || pMsg.Wxurl == beego.AppConfig.String("wxurl") {
+					pMsg.Wxurl = targetUrl
+				}
+			case "fs":
+				if pMsg.Fsurl == "" || pMsg.Fsurl == beego.AppConfig.String("fsurl") {
+					pMsg.Fsurl = targetUrl
+				}
+			case "webhook":
+				if pMsg.WebHookUrl == "" {
+					pMsg.WebHookUrl = targetUrl
+				}
+			case "email":
+				if pMsg.Email == "" || pMsg.Email == beego.AppConfig.String("email") {
+					pMsg.Email = targetUrl
+				}
+			case "rl":
+				if pMsg.GroupId == "" || pMsg.GroupId == beego.AppConfig.String("BDRL_ID") {
+					pMsg.GroupId = targetUrl
+				}
+			case "workwechat":
+				if pMsg.ToUser == "" || pMsg.ToUser == beego.AppConfig.String("WorkWechat_ToUser") {
+					pMsg.ToUser = targetUrl
+				}
+			default:
+				if pMsg.Phone == "" || pMsg.Phone == GetUserPhone(1) {
+					pMsg.Phone = targetUrl
+				}
+			}
+		}
+
+		if atSomeOne != "" && pMsg.AtSomeOne == "" {
+			pMsg.AtSomeOne = atSomeOne
+		}
+		if wxParty != "" && (pMsg.ToParty == "" || pMsg.ToParty == beego.AppConfig.String("WorkWechat_ToUser")) {
+			pMsg.ToParty = wxParty
+		}
+		if wxTag != "" && (pMsg.ToTag == "" || pMsg.ToTag == beego.AppConfig.String("WorkWechat_ToUser")) {
+			pMsg.ToTag = wxTag
+		}
+	}
+
 	var message string
 	if pMsg.Type != "" && PrometheusAlertTpl != nil {
 		//判断是否是来自 Prometheus的告警
@@ -174,6 +223,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				GlobalAlertRouter, _ = models.GetAllAlertRouter(query)
 			}
 			Alerts_Value, _ := p_alertmanager_json["alerts"].([]interface{})
+			logs.Info(logsign, "[webhook] [processing] Start split and routing. Total alerts count:", len(Alerts_Value))
 			//拆分告警消息
 			for _, AlertValue := range Alerts_Value {
 				p_alertmanager_json["alerts"] = Alerts_Value[0:0]
@@ -181,35 +231,68 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				go SetRecord(AlertValue)
 				//提取 prometheus 告警消息中的 label，用于和告警路由比对
 				xalert := AlertValue.(map[string]interface{})
+				
+				// 提取alertname & labels
+				alertName := ""
+				if labels, ok := xalert["labels"].(map[string]interface{}); ok {
+					if name, ok := labels["alertname"].(string); ok {
+						alertName = name
+					}
+				}
+				labelsJsonStr, _ := json.Marshal(xalert["labels"])
+				logs.Info(logsign, "[webhook] [processing-alert] Status:", xalert["status"], "| Alertname:", alertName, "| Labels:", string(labelsJsonStr))
+
 				//路由处理,可能存在多个路由都匹配成功，所以这里返回的是个列表sMsg
-				Return_pMsgs := AlertRouterSet(xalert, pMsg, PrometheusAlertTpl.Tpl)
+				Return_pMsgs := AlertRouterSet(xalert, pMsg, PrometheusAlertTpl.Tpl, logsign)
 				for _, Return_pMsg := range Return_pMsgs {
-					//logs.Debug("当前模版：", Return_pMsg.TplName)
 					//获取渲染后的模版
 					err, msg := TransformAlertMessage(p_alertmanager_json, Return_pMsg.Tpl)
 
 					if err != nil {
 						//失败不发送消息
-						logs.Error(logsign, err.Error())
+						logs.Error(logsign, "[template] [render-failed] Template Name:", Return_pMsg.Tpl, "| Error:", err.Error())
 						message = err.Error()
+						if beego.AppConfig.String("AlertRecord") == "1" {
+							models.AddRecord("Prometheus", Return_pMsg.Type, "failed", err.Error(), "模板渲染失败", string(c.Ctx.Input.RequestBody))
+						}
 					} else {
+						logs.Info(logsign, "[template] [render-success] Template Name:", Return_pMsg.Tpl)
 						//发送消息
 						message = SendMessagePrometheusAlert(msg, &Return_pMsg, logsign)
+						if beego.AppConfig.String("AlertRecord") == "1" {
+							status := "success"
+							if strings.Contains(message, "failed") || strings.Contains(message, "error") || strings.Contains(message, "错误") {
+								status = "failed"
+							}
+							models.AddRecord("Prometheus", Return_pMsg.Type, status, message, msg, string(c.Ctx.Input.RequestBody))
+						}
 					}
 
 				}
 
 			}
 		} else {
+			logs.Info(logsign, "[webhook] [processing-single] Processing single alert without split.")
 			//获取渲染后的模版
 			err, msg := TransformAlertMessage(p_json, PrometheusAlertTpl.Tpl)
 
 			if err != nil {
-				logs.Error(logsign, err.Error())
+				logs.Error(logsign, "[template] [render-failed] Template Name:", PrometheusAlertTpl.Tplname, "| Error:", err.Error())
 				message = err.Error()
+				if beego.AppConfig.String("AlertRecord") == "1" {
+					models.AddRecord("Prometheus", pMsg.Type, "failed", err.Error(), "模板渲染失败", string(c.Ctx.Input.RequestBody))
+				}
 			} else {
+				logs.Info(logsign, "[template] [render-success] Template Name:", PrometheusAlertTpl.Tplname)
 				//发送消息
 				message = SendMessagePrometheusAlert(msg, &pMsg, logsign)
+				if beego.AppConfig.String("AlertRecord") == "1" {
+					status := "success"
+					if strings.Contains(message, "failed") || strings.Contains(message, "error") || strings.Contains(message, "错误") {
+						status = "failed"
+					}
+					models.AddRecord("Prometheus", pMsg.Type, status, message, msg, string(c.Ctx.Input.RequestBody))
+				}
 			}
 		}
 
@@ -222,13 +305,43 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 }
 
 // 路由处理
-func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl string) []PrometheusAlertMsg {
+func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl string, logsign string) []PrometheusAlertMsg {
 	return_Msgs := []PrometheusAlertMsg{}
 	//原有的参数不变
 	PMsg.Tpl = Tpl
 	return_Msgs = append(return_Msgs, PMsg)
 	//循环检测现有的路由规则，找到匹配的目标后，替换发送目标参数
 	for _, router_value := range GlobalAlertRouter {
+		//判断路由规则是否启用 (2 代表禁用/关闭)
+		if router_value.Status == 2 {
+			continue
+		}
+
+		// 判断当前时间是否在路由生效的时间范围内
+		if router_value.TimeRangeStart != "" && router_value.TimeRangeEnd != "" {
+			nowTimeStr := time.Now().Format("15:04")
+			isEffective := false
+			start := router_value.TimeRangeStart
+			end := router_value.TimeRangeEnd
+
+			if start <= end {
+				// 普通时间段 (例如 06:00 - 23:59)
+				if nowTimeStr >= start && nowTimeStr <= end {
+					isEffective = true
+				}
+			} else {
+				// 跨天过夜时间段 (例如 22:00 - 06:00)
+				if nowTimeStr >= start || nowTimeStr <= end {
+					isEffective = true
+				}
+			}
+
+			if !isEffective {
+				logs.Info(logsign, "[router] [skipped] Outside of effective time range. Name:", router_value.Name, "| Range:", start, "-", end, "| Current Time:", nowTimeStr)
+				continue
+			}
+		}
+
 		LabelMap := []LabelMap{}
 		//将rules转换为列表
 		json.Unmarshal([]byte(router_value.Rules), &LabelMap)
@@ -238,35 +351,63 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 		//判断如果是恢复告警, 并且设置不发送恢复告警, 则跳过
 		if xalert["status"] == "resolved" && router_value.SendResolved == false {
 			alertName := xalert["labels"].(map[string]interface{})["alertname"].(string)
-			logs.Info("告警名称：", alertName, "路由规则：", router_value.Name, "路由类型：", router_value.Tpl.Tpltype, "路由恢复告警：", router_value.SendResolved)
+			logs.Info(logsign, "[router] [skipped] Resolved alert skipped by router. Name:", router_value.Name, "| Alertname:", alertName)
 			continue
 		}
 
 		for _, rule := range LabelMap {
-			for label_key, label_value := range xalert["labels"].(map[string]interface{}) {
-				//这里需要分两部分处理，一部分是正则规则，一部分是非正则规则
+			op := rule.Operator
+			if op == "" {
 				if rule.Regex {
-					//正则部分比对
-					if rule.Name == label_key {
-						tz := regexp.MustCompile(rule.Value)
-						if len(tz.FindAllString(label_value.(string), -1)) > 0 {
-							rules_num_match += 1
-						}
-					}
-
+					op = "=~"
 				} else {
-					//非正则部分比对
-					if rule.Name == label_key && rule.Value == label_value.(string) {
-						rules_num_match += 1
-					}
-
+					op = "=="
 				}
+			}
 
+			// 获取标签值，如果不存在则默认为空字符串 (符合Prometheus逻辑)
+			label_value_str := ""
+			exists := false
+			labels, ok := xalert["labels"].(map[string]interface{})
+			if ok {
+				var val interface{}
+				val, exists = labels[rule.Name]
+				if exists {
+					label_value_str = val.(string)
+				}
+			}
+
+			// 对于正向匹配，如果标签不存在，直接算作不匹配
+			if !exists && (op == "==" || op == "=~") {
+				continue
+			}
+
+			match := false
+			switch op {
+			case "==":
+				match = (rule.Value == label_value_str)
+			case "!=":
+				match = (rule.Value != label_value_str)
+			case "=~":
+				tz, err := regexp.Compile(rule.Value)
+				if err == nil && len(tz.FindAllString(label_value_str, -1)) > 0 {
+					match = true
+				}
+			case "!~":
+				tz, err := regexp.Compile(rule.Value)
+				if err == nil && len(tz.FindAllString(label_value_str, -1)) == 0 {
+					match = true
+				}
+			}
+
+			if match {
+				rules_num_match += 1
 			}
 		}
 
 		//判断如果路由规则匹配，需要替换url到现有的参数中
 		if rules_num == rules_num_match {
+			logs.Info(logsign, "[router] [matched] Router matched! Name:", router_value.Name, "| Channel:", router_value.Tpl.Tpltype, "| Target:", router_value.UrlOrPhone)
 			PMsg.Type = router_value.Tpl.Tpltype
 			PMsg.Tpl = router_value.Tpl.Tpl
 			atSomeOne := router_value.AtSomeOne
@@ -360,6 +501,8 @@ func SetRecord(AlertValue interface{}) {
 		Summary = xalert["annotations"].(map[string]interface{})["summary"].(string)
 	}
 
+	// 统一合并至新版 AddRecord 方案，废弃旧版分裂数据库写入，保留 ES 推送
+	/*
 	if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Labels, Instance, StartAt, EndAt, Summary, Description, Status) {
 		models.AddAlertRecord(Alertname,
 			Level,
@@ -371,6 +514,7 @@ func SetRecord(AlertValue interface{}) {
 			Description,
 			Status)
 	}
+	*/
 
 	// 告警写入ES
 	if beego.AppConfig.DefaultString("alert_to_es", "0") == "1" {
@@ -444,6 +588,7 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 
 // 发送消息
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
+	logs.Info(logsign, "[sender] [attempt] Sending alert message. ChannelType:", pmsg.Type, "| Body Length:", len(message))
 	Title := beego.AppConfig.String("title")
 	var ReturnMsg string
 	models.AlertsFromCounter.WithLabelValues("/prometheusalert").Add(1)
@@ -496,9 +641,6 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 	//腾讯云短信
 	case "txdx":
 		ReturnMsg += PostTXmessage(message, pmsg.Phone, logsign)
-	//华为云短信
-	case "hwdx":
-		ReturnMsg += PostHWmessage(message, pmsg.Phone, logsign)
 	//百度云短信
 	case "bddx":
 		ReturnMsg += PostBDYmessage(message, pmsg.Phone, logsign)

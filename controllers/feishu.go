@@ -22,7 +22,7 @@ type FSMessage struct {
 func PostToFS(title, text, Fsurl, userEmail, logsign string) string {
 	open := beego.AppConfig.String("open-feishu")
 	if open != "1" {
-		logs.Info(logsign, "[feishu]", "飞书接口未配置未开启状态,请先配置open-feishu为1")
+		logs.Warn(logsign, "[feishu] [channel-disabled] FeiShu is not enabled in configuration (open-feishu != 1)")
 		return "飞书接口未配置未开启状态,请先配置open-feishu为1"
 	}
 	RTstring := ""
@@ -39,7 +39,7 @@ func PostToFeiShu(title, text, Fsurl, logsign string) string {
 
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign, "[feishu]", b)
+	logs.Info(logsign, "[feishu] [send-attempt] Target URL:", Fsurl, "| Payload:", b.String())
 	var tr *http.Transport
 	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
 		proxy := func(_ *http.Request) (*url.URL, error) {
@@ -57,16 +57,18 @@ func PostToFeiShu(title, text, Fsurl, logsign string) string {
 	client := &http.Client{Transport: tr}
 	res, err := client.Post(Fsurl, "application/json", b)
 	if err != nil {
-		logs.Error(logsign, "[feishu]", err.Error())
+		logs.Error(logsign, "[feishu] [send-failed] Target URL:", Fsurl, "| Error:", err.Error())
+		return err.Error()
 	}
 	defer res.Body.Close()
 	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign, "[feishu]", err.Error())
+		logs.Error(logsign, "[feishu] [read-response-failed] Target URL:", Fsurl, "| Error:", err.Error())
+		return err.Error()
 	}
 	models.AlertToCounter.WithLabelValues("feishu").Add(1)
 	ChartsJson.Feishu += 1
-	logs.Info(logsign, "[feishu]", string(result))
+	logs.Info(logsign, "[feishu] [send-success] Target URL:", Fsurl, "| Response:", string(result))
 	return string(result)
 }
 
@@ -181,7 +183,7 @@ func PostToFeiShuv2(title, text, Fsurl, userOpenId, logsign string) string {
 
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign, "[feishuv2]", b)
+	logs.Info(logsign, "[feishuv2] [send-attempt] Target URL:", Fsurl, "| Payload:", b.String())
 	var tr *http.Transport
 	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
 		proxy := func(_ *http.Request) (*url.URL, error) {
@@ -199,15 +201,17 @@ func PostToFeiShuv2(title, text, Fsurl, userOpenId, logsign string) string {
 	client := &http.Client{Transport: tr}
 	res, err := client.Post(Fsurl, "application/json", b)
 	if err != nil {
-		logs.Error(logsign, "[feishuv2]", title+": "+err.Error())
+		logs.Error(logsign, "[feishuv2] [send-failed] Target URL:", Fsurl, "| Error:", err.Error())
+		return err.Error()
 	}
 	defer res.Body.Close()
 	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign, "[feishuv2]", title+": "+err.Error())
+		logs.Error(logsign, "[feishuv2] [read-response-failed] Target URL:", Fsurl, "| Error:", err.Error())
+		return err.Error()
 	}
 	models.AlertToCounter.WithLabelValues("feishu").Add(1)
 	ChartsJson.Feishu += 1
-	logs.Info(logsign, "[feishuv2]", title+": "+string(result))
+	logs.Info(logsign, "[feishuv2] [send-success] Target URL:", Fsurl, "| Response:", string(result))
 	return string(result)
 }

@@ -9,6 +9,14 @@ type LoginController struct {
 	beego.Controller
 }
 
+func (c *LoginController) Prepare() {
+	title := beego.AppConfig.String("title")
+	if title == "" {
+		title = "PrometheusAlert"
+	}
+	c.Data["AppTitle"] = title
+}
+
 func (c *LoginController) Get() {
 	//判断是否为退出操作
 	if c.Input().Get("exit") == "true" {

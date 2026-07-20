@@ -15,6 +15,10 @@ type PrometheusAlertDB struct {
 	Tplname            string `orm:"index"`
 	Tpl                string `orm:"type(text)"`
 	WebhookContentType string // webhook 请求的 contentType 如 application/json, application/x-www-form-urlencoded 等
+	TplTargetUrl       string `orm:"column(tpl_target_url);null"`
+	TplAtSomeOne       string `orm:"column(tpl_at_some_one);null"`
+	TplWxParty         string `orm:"column(tpl_wx_party);null"`
+	TplWxTag           string `orm:"column(tpl_wx_tag);null"`
 	Created            time.Time
 }
 
@@ -66,7 +70,7 @@ func DelTpl(id int) error {
 	return err
 }
 
-func AddTpl(id int, tplname, t_type, t_use, tpl string, contentType string) error {
+func AddTpl(id int, tplname, t_type, t_use, tpl string, contentType string, targetUrl, atSomeOne, wxParty, wxTag string) error {
 	o := orm.NewOrm()
 	qs := o.QueryTable("PrometheusAlertDB")
 	bExist := qs.Filter("Tplname", tplname).Exist()
@@ -82,6 +86,10 @@ func AddTpl(id int, tplname, t_type, t_use, tpl string, contentType string) erro
 		Tpluse:             t_use,
 		Tpl:                tpl,
 		WebhookContentType: contentType,
+		TplTargetUrl:       targetUrl,
+		TplAtSomeOne:       atSomeOne,
+		TplWxParty:         wxParty,
+		TplWxTag:           wxTag,
 		Created:            time.Now(),
 	}
 	// 插入数据
@@ -89,7 +97,7 @@ func AddTpl(id int, tplname, t_type, t_use, tpl string, contentType string) erro
 	return err
 }
 
-func UpdateTpl(id int, tplname, t_type, t_use, tpl string, contentType string) error {
+func UpdateTpl(id int, tplname, t_type, t_use, tpl string, contentType string, targetUrl, atSomeOne, wxParty, wxTag string) error {
 	o := orm.NewOrm()
 	tpl_update := &PrometheusAlertDB{Id: id}
 	err := o.Read(tpl_update)
@@ -100,9 +108,21 @@ func UpdateTpl(id int, tplname, t_type, t_use, tpl string, contentType string) e
 		tpl_update.Tpluse = t_use
 		tpl_update.Tpl = tpl
 		tpl_update.WebhookContentType = contentType
+		tpl_update.TplTargetUrl = targetUrl
+		tpl_update.TplAtSomeOne = atSomeOne
+		tpl_update.TplWxParty = wxParty
+		tpl_update.TplWxTag = wxTag
 		tpl_update.Created = time.Now()
 		_, err := o.Update(tpl_update)
 		return err
 	}
 	return err
+}
+
+func AlertTplDBInit() {
+	o := orm.NewOrm()
+	_, _ = o.Raw("ALTER TABLE prometheus_alert_db ADD COLUMN tpl_target_url VARCHAR(255) DEFAULT ''").Exec()
+	_, _ = o.Raw("ALTER TABLE prometheus_alert_db ADD COLUMN tpl_at_some_one VARCHAR(255) DEFAULT ''").Exec()
+	_, _ = o.Raw("ALTER TABLE prometheus_alert_db ADD COLUMN tpl_wx_party VARCHAR(255) DEFAULT ''").Exec()
+	_, _ = o.Raw("ALTER TABLE prometheus_alert_db ADD COLUMN tpl_wx_tag VARCHAR(255) DEFAULT ''").Exec()
 }

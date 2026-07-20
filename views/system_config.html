@@ -1,0 +1,1043 @@
+{{template "main" .}}
+<!-- Navbar -->
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <!-- Left navbar links -->
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+    </li>
+    <li class="nav-item d-none d-sm-inline-block">
+      <a href="/system/config" class="nav-link">系统设置</a>
+    </li>
+  </ul>
+</nav>
+<!-- /.navbar -->
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>系统设置与渠道管理</h1>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <form class="form-horizontal" onsubmit="return false" id="configForm">
+
+      <!-- ==================== 1. 全局配置 ==================== -->
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-globe mr-2"></i> 全局配置 (Global Settings)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>系统标题 (Title)</label>
+                <input type="text" class="form-control" name="title" value="{{index .Configs "title"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>默认接收手机号 (Default Phone)</label>
+                <input type="text" class="form-control" name="defaultphone" value="{{index .Configs "defaultphone"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>HTTP 代理 (Proxy URL)</label>
+                <input type="text" class="form-control" name="proxy" value="{{index .Configs "proxy"}}" placeholder="如 http://127.0.0.1:7890">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 2. 钉钉配置 ==================== -->
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fab fa-dingtalk mr-2"></i> 钉钉群机器人 (DingTalk)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用钉钉通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-dingding" name="open-dingding" {{if eq (index .Configs "open-dingding") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-dingding">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>@所有人 (At All)</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="dd_isatall" name="dd_isatall" {{if eq (index .Configs "dd_isatall") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="dd_isatall">开启 @所有人</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用机器人加签安全校验</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-dingding-secret" name="open-dingding-secret" {{if eq (index .Configs "open-dingding-secret") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-dingding-secret">开启加签</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>默认机器人 Webhook 地址 (Default URL)</label>
+                <input type="text" class="form-control" name="ddurl" value="{{index .Configs "ddurl"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 3. 企业微信配置 ==================== -->
+      <div class="card card-success">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fab fa-weixin mr-2"></i> 企业微信机器人 (WeCom Chatbot)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用企业微信通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-weixin" name="open-weixin" {{if eq (index .Configs "open-weixin") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-weixin">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-8">
+              <div class="form-group">
+                <label>默认机器人 Webhook 地址 (Default URL)</label>
+                <input type="text" class="form-control" name="wxurl" value="{{index .Configs "wxurl"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 4. 飞书配置 ==================== -->
+      <div class="card card-warning text-white">
+        <div class="card-header">
+          <h3 class="card-title text-white"><i class="fas fa-comment-alt mr-2"></i> 飞书群机器人 (Feishu)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body text-dark">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用飞书通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-feishu" name="open-feishu" {{if eq (index .Configs "open-feishu") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-feishu">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-8">
+              <div class="form-group">
+                <label>默认机器人 Webhook 地址 (Default URL)</label>
+                <input type="text" class="form-control" name="fsurl" value="{{index .Configs "fsurl"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 5. 阿里云配置 ==================== -->
+      <div class="card card-orange text-white">
+        <div class="card-header">
+          <h3 class="card-title text-white"><i class="fas fa-cloud mr-2"></i> 阿里云短信与电话 (Alibaba Cloud)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body text-dark">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="card card-outline card-warning">
+                <div class="card-header"><h5 class="card-title">阿里云短信 (Alibaba Cloud SMS)</h5></div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>启用阿里云短信</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input config-switch" id="open-alydx" name="open-alydx" {{if eq (index .Configs "open-alydx") "1"}}checked{{end}}>
+                      <label class="custom-control-label" for="open-alydx">启用</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>AccessKeyID</label>
+                    <input type="text" class="form-control" name="ALY_DX_AccessKeyId" value="{{index .Configs "ALY_DX_AccessKeyId"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>AccessSecret</label>
+                    <input type="password" class="form-control" name="ALY_DX_AccessSecret" value="{{index .Configs "ALY_DX_AccessSecret"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>签名名称 (Sign Name)</label>
+                    <input type="text" class="form-control" name="ALY_DX_SignName" value="{{index .Configs "ALY_DX_SignName"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>短信模板 ID (Template Code)</label>
+                    <input type="text" class="form-control" name="ALY_DX_Template" value="{{index .Configs "ALY_DX_Template"}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="card card-outline card-success">
+                <div class="card-header"><h5 class="card-title">阿里云语音电话 (Alibaba Cloud Voice)</h5></div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>启用阿里云语音电话</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input config-switch" id="open-alydh" name="open-alydh" {{if eq (index .Configs "open-alydh") "1"}}checked{{end}}>
+                      <label class="custom-control-label" for="open-alydh">启用</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>AccessKeyID</label>
+                    <input type="text" class="form-control" name="ALY_DH_AccessKeyId" value="{{index .Configs "ALY_DH_AccessKeyId"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>AccessSecret</label>
+                    <input type="password" class="form-control" name="ALY_DH_AccessSecret" value="{{index .Configs "ALY_DH_AccessSecret"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>被叫显号 (Called Show Number)</label>
+                    <input type="text" class="form-control" name="ALY_DX_CalledShowNumber" value="{{index .Configs "ALY_DX_CalledShowNumber"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>语音模板 ID (TTS Code)</label>
+                    <input type="text" class="form-control" name="ALY_DH_TtsCode" value="{{index .Configs "ALY_DH_TtsCode"}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 6. 腾讯云配置 ==================== -->
+      <div class="card card-secondary">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-server mr-2"></i> 腾讯云短信与电话 (Tencent Cloud)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="card card-outline card-warning">
+                <div class="card-header"><h5 class="card-title">腾讯云短信 (Tencent Cloud SMS)</h5></div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>启用腾讯云短信</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input config-switch" id="open-txdx" name="open-txdx" {{if eq (index .Configs "open-txdx") "1"}}checked{{end}}>
+                      <label class="custom-control-label" for="open-txdx">启用</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>AppKey</label>
+                    <input type="password" class="form-control" name="TXY_DX_appkey" value="{{index .Configs "TXY_DX_appkey"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>SDK App ID</label>
+                    <input type="text" class="form-control" name="TXY_DX_sdkappid" value="{{index .Configs "TXY_DX_sdkappid"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>签名 (Sign Name)</label>
+                    <input type="text" class="form-control" name="TXY_DX_sign" value="{{index .Configs "TXY_DX_sign"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>短信模板 ID (Template ID)</label>
+                    <input type="text" class="form-control" name="TXY_DX_tpl_id" value="{{index .Configs "TXY_DX_tpl_id"}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="card card-outline card-success">
+                <div class="card-header"><h5 class="card-title">腾讯云语音电话 (Tencent Cloud Voice)</h5></div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>启用腾讯云语音电话</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input config-switch" id="open-txdh" name="open-txdh" {{if eq (index .Configs "open-txdh") "1"}}checked{{end}}>
+                      <label class="custom-control-label" for="open-txdh">启用</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>AppKey</label>
+                    <input type="password" class="form-control" name="TXY_DH_phonecallappkey" value="{{index .Configs "TXY_DH_phonecallappkey"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>SDK App ID</label>
+                    <input type="text" class="form-control" name="TXY_DH_phonecallsdkappid" value="{{index .Configs "TXY_DH_phonecallsdkappid"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>语音模板 ID (Template ID)</label>
+                    <input type="text" class="form-control" name="TXY_DH_phonecalltpl_id" value="{{index .Configs "TXY_DH_phonecalltpl_id"}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 7. 电子邮件配置 ==================== -->
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-envelope mr-2"></i> 电子邮件服务 (Email)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用电子邮件通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-email" name="open-email" {{if eq (index .Configs "open-email") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-email">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>SMTP 服务器地址 (Host)</label>
+                <input type="text" class="form-control" name="Email_host" value="{{index .Configs "Email_host"}}" placeholder="如 smtp.qq.com">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>SMTP 端口 (Port)</label>
+                <input type="text" class="form-control" name="Email_port" value="{{index .Configs "Email_port"}}" placeholder="如 465 或 25">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>邮箱账号 (Username)</label>
+                <input type="text" class="form-control" name="Email_user" value="{{index .Configs "Email_user"}}" placeholder="如 your-email@qq.com">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>邮箱密码/授权码 (Password)</label>
+                <input type="password" class="form-control" name="Email_password" value="{{index .Configs "Email_password"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>邮件标题 (Default Title)</label>
+                <input type="text" class="form-control" name="Email_title" value="{{index .Configs "Email_title"}}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>默认接收邮箱列表 (Default Emails, 多个以英文逗号分隔)</label>
+                <input type="text" class="form-control" name="Default_emails" value="{{index .Configs "Default_emails"}}" placeholder="如 a@qq.com,b@qq.com">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 8. Telegram 机器人 ==================== -->
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fab fa-telegram-plane mr-2"></i> Telegram 机器人</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用 Telegram 通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-tg" name="open-tg" {{if eq (index .Configs "open-tg") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-tg">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>TG 消息模式</label>
+                <select class="form-control" name="TG_MODE_CHAN">
+                  <option value="0" {{if eq (index .Configs "TG_MODE_CHAN") "0"}}selected{{end}}>个人消息模式</option>
+                  <option value="1" {{if eq (index .Configs "TG_MODE_CHAN") "1"}}selected{{end}}>频道消息模式</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用 Markdown 格式</label>
+                <select class="form-control" name="TG_PARSE_MODE">
+                  <option value="0" {{if eq (index .Configs "TG_PARSE_MODE") "0"}}selected{{end}}>禁用 Markdown</option>
+                  <option value="1" {{if eq (index .Configs "TG_PARSE_MODE") "1"}}selected{{end}}>启用 Markdown</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>机器人 Token (Bot Token)</label>
+                <input type="password" class="form-control" name="TG_TOKEN" value="{{index .Configs "TG_TOKEN"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>目标用户 ID (User ID)</label>
+                <input type="text" class="form-control" name="TG_USERID" value="{{index .Configs "TG_USERID"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>目标频道名称或ID (Channel Name, 需以 @ 开头)</label>
+                <input type="text" class="form-control" name="TG_CHANNAME" value="{{index .Configs "TG_CHANNAME"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 9. 企业微信应用消息 ==================== -->
+      <div class="card card-success">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fab fa-weixin mr-2"></i> 企业微信应用消息 (WorkWechat App)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用企业微信应用通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-workwechat" name="open-workwechat" {{if eq (index .Configs "open-workwechat") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-workwechat">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>企业 ID (CorpID)</label>
+                <input type="text" class="form-control" name="WorkWechat_CropID" value="{{index .Configs "WorkWechat_CropID"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>应用 ID (AgentID)</label>
+                <input type="text" class="form-control" name="WorkWechat_AgentID" value="{{index .Configs "WorkWechat_AgentID"}}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>应用 Secret (AgentSecret)</label>
+                <input type="password" class="form-control" name="WorkWechat_AgentSecret" value="{{index .Configs "WorkWechat_AgentSecret"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>默认接收用户 (ToUser, 以 | 分隔)</label>
+                <input type="text" class="form-control" name="WorkWechat_ToUser" value="{{index .Configs "WorkWechat_ToUser"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>默认接收部门 (ToParty, 以 | 分隔)</label>
+                <input type="text" class="form-control" name="WorkWechat_ToParty" value="{{index .Configs "WorkWechat_ToParty"}}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>默认接收标签 (ToTag, 以 | 分隔)</label>
+                <input type="text" class="form-control" name="WorkWechat_ToTag" value="{{index .Configs "WorkWechat_ToTag"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 10. 飞书机器人应用 ==================== -->
+      <div class="card card-warning text-white">
+        <div class="card-header">
+          <h3 class="card-title text-white"><i class="fas fa-robot mr-2"></i> 飞书自建机器人应用 (Feishu App)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body text-dark">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用飞书应用通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-feishuapp" name="open-feishuapp" {{if eq (index .Configs "open-feishuapp") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-feishuapp">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>APP ID</label>
+                <input type="text" class="form-control" name="FEISHU_APPID" value="{{index .Configs "FEISHU_APPID"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>APP Secret</label>
+                <input type="password" class="form-control" name="FEISHU_APPSECRET" value="{{index .Configs "FEISHU_APPSECRET"}}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>默认接收用户 (AT_USER_ID, 飞书 open_id / user_id / union_id / 部门 open_department_id)</label>
+                <input type="text" class="form-control" name="AT_USER_ID" value="{{index .Configs "AT_USER_ID"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 11. Bark 推送 ==================== -->
+      <div class="card card-orange text-white">
+        <div class="card-header">
+          <h3 class="card-title text-white"><i class="fas fa-bell mr-2"></i> Bark 消息推送 (iOS)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body text-dark">
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>启用 Bark 通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-bark" name="open-bark" {{if eq (index .Configs "open-bark") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-bark">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>复制推送内容</label>
+                <select class="form-control" name="BARK_COPY">
+                  <option value="1" {{if eq (index .Configs "BARK_COPY") "1"}}selected{{end}}>开启复制 (1)</option>
+                  <option value="0" {{if eq (index .Configs "BARK_COPY") "0"}}selected{{end}}>关闭复制 (0)</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>历史记录保存</label>
+                <select class="form-control" name="BARK_ARCHIVE">
+                  <option value="1" {{if eq (index .Configs "BARK_ARCHIVE") "1"}}selected{{end}}>开启保存 (1)</option>
+                  <option value="0" {{if eq (index .Configs "BARK_ARCHIVE") "0"}}selected{{end}}>关闭保存 (0)</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>默认消息分组 (Group)</label>
+                <input type="text" class="form-control" name="BARK_GROUP" value="{{index .Configs "BARK_GROUP"}}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Bark 服务器地址 (Server URL)</label>
+                <input type="text" class="form-control" name="BARK_URL" value="{{index .Configs "BARK_URL"}}" placeholder="如 https://api.day.app">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Bark 推送 Key (多个使用 , 分割)</label>
+                <input type="password" class="form-control" name="BARK_KEYS" value="{{index .Configs "BARK_KEYS"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 12. 容联云电话 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-phone-alt mr-2"></i> 容联云语音电话 (RLY Voice)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用容联云语音电话</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-rlydh" name="open-rlydh" {{if eq (index .Configs "open-rlydh") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-rlydh">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-8">
+              <div class="form-group">
+                <label>接口基础地址 (RLY_URL)</label>
+                <input type="text" class="form-control" name="RLY_URL" value="{{index .Configs "RLY_URL"}}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>后台 SID (ACCOUNT_SID)</label>
+                <input type="text" class="form-control" name="RLY_ACCOUNT_SID" value="{{index .Configs "RLY_ACCOUNT_SID"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>API Token (ACCOUNT_TOKEN)</label>
+                <input type="password" class="form-control" name="RLY_ACCOUNT_TOKEN" value="{{index .Configs "RLY_ACCOUNT_TOKEN"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>App ID (APP_ID)</label>
+                <input type="text" class="form-control" name="RLY_APP_ID" value="{{index .Configs "RLY_APP_ID"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 13. 七陌云短信与电话 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-headset mr-2"></i> 七陌云短信与电话 (7moor)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="card card-outline card-warning">
+                <div class="card-header"><h5 class="card-title">七陌短信</h5></div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>启用七陌短信</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input config-switch" id="open-7moordx" name="open-7moordx" {{if eq (index .Configs "open-7moordx") "1"}}checked{{end}}>
+                      <label class="custom-control-label" for="open-7moordx">启用</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>账户 ID (ACCOUNT_ID)</label>
+                    <input type="text" class="form-control" name="7MOOR_ACCOUNT_ID" value="{{index .Configs "7MOOR_ACCOUNT_ID"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>API Secret</label>
+                    <input type="password" class="form-control" name="7MOOR_ACCOUNT_APISECRET" value="{{index .Configs "7MOOR_ACCOUNT_APISECRET"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>短信模板编号 (Template Num)</label>
+                    <input type="text" class="form-control" name="7MOOR_DX_TEMPLATENUM" value="{{index .Configs "7MOOR_DX_TEMPLATENUM"}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="card card-outline card-success">
+                <div class="card-header"><h5 class="card-title">七陌 Webcall 语音电话</h5></div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>启用七陌语音电话</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input config-switch" id="open-7moordh" name="open-7moordh" {{if eq (index .Configs "open-7moordh") "1"}}checked{{end}}>
+                      <label class="custom-control-label" for="open-7moordh">启用</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>虚拟服务号 (Service No)</label>
+                    <input type="text" class="form-control" name="7MOOR_WEBCALL_SERVICENO" value="{{index .Configs "7MOOR_WEBCALL_SERVICENO"}}">
+                  </div>
+                  <div class="form-group">
+                    <label>语音文本替换变量 (Voice Var)</label>
+                    <input type="text" class="form-control" name="7MOOR_WEBCALL_VOICE_VAR" value="{{index .Configs "7MOOR_WEBCALL_VOICE_VAR"}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 14. 百度云短信 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-cloud mr-2"></i> 百度云短信 (Baidu Cloud SMS)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用百度云短信通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-baidudx" name="open-baidudx" {{if eq (index .Configs "open-baidudx") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-baidudx">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>接入密钥 AK (AccessKey)</label>
+                <input type="text" class="form-control" name="BDY_DX_AK" value="{{index .Configs "BDY_DX_AK"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>安全密钥 SK (SecretKey)</label>
+                <input type="password" class="form-control" name="BDY_DX_SK" value="{{index .Configs "BDY_DX_SK"}}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>服务 Endpoint 地址</label>
+                <input type="text" class="form-control" name="BDY_DX_ENDPOINT" value="{{index .Configs "BDY_DX_ENDPOINT"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>短信模板 ID (Template ID)</label>
+                <input type="text" class="form-control" name="BDY_DX_TEMPLATE_ID" value="{{index .Configs "BDY_DX_TEMPLATE_ID"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>短信签名 ID (Signature ID)</label>
+                <input type="text" class="form-control" name="TXY_DX_SIGNATURE_ID" value="{{index .Configs "TXY_DX_SIGNATURE_ID"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 15. 百度如流 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-comment mr-2"></i> 百度Hi如流 (RuLiu)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用百度如流通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-ruliu" name="open-ruliu" {{if eq (index .Configs "open-ruliu") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-ruliu">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>默认群 ID (Group ID)</label>
+                <input type="text" class="form-control" name="BDRL_ID" value="{{index .Configs "BDRL_ID"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>默认机器人 Webhook 地址 (URL)</label>
+                <input type="text" class="form-control" name="BDRL_URL" value="{{index .Configs "BDRL_URL"}}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 16. 语音播报 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-bullhorn mr-2"></i> 本地语音播报插件 (Voice Broadcast)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用语音播报通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-voice" name="open-voice" {{if eq (index .Configs "open-voice") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-voice">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>插件 IP 地址 (IP)</label>
+                <input type="text" class="form-control" name="VOICE_IP" value="{{index .Configs "VOICE_IP"}}" placeholder="如 127.0.0.1">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>插件端口 (Port)</label>
+                <input type="text" class="form-control" name="VOICE_PORT" value="{{index .Configs "VOICE_PORT"}}" placeholder="如 9999">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 17. Kafka 消息队列 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-database mr-2"></i> Kafka 消息队列 (Kafka Message Queue)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>启用 Kafka 通道</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="open-kafka" name="open-kafka" {{if eq (index .Configs "open-kafka") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="open-kafka">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Kafka 服务器地址 (Server, 多个以分号分隔)</label>
+                <input type="text" class="form-control" name="kafka_server" value="{{index .Configs "kafka_server"}}" placeholder="如 127.0.0.1:9092">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>目标 Topic</label>
+                <input type="text" class="form-control" name="kafka_topic" value="{{index .Configs "kafka_topic"}}" placeholder="如 devops">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>消息检索 Key</label>
+                <input type="text" class="form-control" name="kafka_key" value="{{index .Configs "kafka_key"}}" placeholder="如 PrometheusAlert">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 18. 告警记录与定时清理 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-history mr-2"></i> 告警历史记录与定时清理</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>开启本地告警历史记录</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="AlertRecord" name="AlertRecord" {{if eq (index .Configs "AlertRecord") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="AlertRecord">开启记录</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>开启记录定时删除</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="RecordLive" name="RecordLive" {{if eq (index .Configs "RecordLive") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="RecordLive">开启自动删除</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>定时删除保留天数 (RecordLiveDay)</label>
+                <input type="number" class="form-control" name="RecordLiveDay" value="{{index .Configs "RecordLiveDay"}}" min="1" placeholder="默认 7">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 19. Elasticsearch 告警归档 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-search mr-2"></i> Elasticsearch 告警存储 (v7)</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>启用 ES 日志存储归档</label>
+                <div class="custom-control custom-switch" style="margin-top: 6px;">
+                  <input type="checkbox" class="custom-control-input config-switch" id="alert_to_es" name="alert_to_es" {{if eq (index .Configs "alert_to_es") "1"}}checked{{end}}>
+                  <label class="custom-control-label" for="alert_to_es">启用</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>ES 用户名 (Username)</label>
+                <input type="text" class="form-control" name="to_es_user" value="{{index .Configs "to_es_user"}}">
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>ES 密码 (Password)</label>
+                <input type="password" class="form-control" name="to_es_pwd" value="{{index .Configs "to_es_pwd"}}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>ES 集群节点的 URL 地址 (多个以英文分号 `;` 分割)</label>
+                <input type="text" class="form-control" name="to_es_url" value="{{index .Configs "to_es_url"}}" placeholder="如 http://127.0.0.1:9200;http://127.0.0.1:9201">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 20. 连接池与底层优化 ==================== -->
+      <div class="card card-secondary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-tools mr-2"></i> 网络与底层性能优化</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>微信/网络连接最大空闲链接数 (maxIdleConns)</label>
+                <input type="number" class="form-control" name="maxIdleConns" value="{{index .Configs "maxIdleConns"}}" min="1" placeholder="默认 100">
+                <small class="form-text text-muted">在高并发通知场景下，适当调高该空闲连接数，能大幅提高微信等 API 调用的吞吐效率。</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-right mb-4">
+        <button type="button" class="btn btn-success btn-lg" onclick="saveConfig();">
+          <i class="fas fa-save mr-2"></i> 保存全局渠道设置
+        </button>
+      </div>
+
+    </form>
+  </section>
+</div>
+<!-- /.content-wrapper -->
+
+{{template "endhtml"}}
+<script>
+function saveConfig() {
+    var data = {};
+    
+    // Parse standard inputs
+    $("#configForm input[type='text'], #configForm input[type='password'], #configForm input[type='number'], #configForm select").each(function() {
+        var name = $(this).attr("name");
+        var val = $(this).val();
+        if (name) {
+            data[name] = val;
+        }
+    });
+
+    // Parse switches
+    $("#configForm input.config-switch").each(function() {
+        var name = $(this).attr("name");
+        var val = $(this).is(":checked") ? "1" : "0";
+        if (name) {
+            data[name] = val;
+        }
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "/system/config/save",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify(data),
+        success: function(result) {
+            if (result === "ok") {
+                alert("渠道配置保存成功！修改已即时生效，无需重启应用。");
+                window.location.reload();
+            } else {
+                alert("保存失败: " + result);
+            }
+        },
+        error: function() {
+            alert("网络请求失败，请重试。");
+        }
+    });
+}
+</script>
+{{template "jshtml"}}

@@ -10,7 +10,6 @@
         <a href="/record" class="nav-link">告警管理</a>
       </li>
     </ul>
-
   </nav>
   <!-- /.navbar -->
 
@@ -25,8 +24,8 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-				<a href="javascript:if(confirm('确实要清空所有记录吗?清空后无法恢复'))location='/record/clean'" class="btn btn-default bg-danger">
-					<i class="fas fa-inbox"></i>  清空记录
+				<a href="javascript:if(confirm('确实要清空所有记录吗?清空后无法恢复'))location='/record/clean'" class="btn btn-danger">
+					<i class="fas fa-trash-alt"></i>  清空记录
 				</a>
             </ol>
           </div>
@@ -39,121 +38,34 @@
 
       <!-- Default box -->
       <div class="card">
-        <div class="card-header">
-          <h3 class="card-title" style="color:red">** 非实时告警展示</h3>
-
+        <div class="card-header bg-navy">
+          <h3 class="card-title"><i class="fas fa-history"></i> 全通路告警收发记录</h3>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-              <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-              <i class="fas fa-times"></i>
+              <i class="fas fa-minus text-white"></i>
             </button>
           </div>
         </div>
         <div class="card-body">
-
-                <table id="example1" class="table table-bordered table-striped">
-                  <thead>
-                  <tr>
-				    <th>告警名称</th>
-				    <th>开始时间</th>
-				    <th>结束时间</th>
-				    <th>级别</th>
-				    <th>Instance</th>
-				    <th>Summary</th>
-				    <th>Description</th>
-				    <th>告警状态</th>
-				    <th>Label</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-				{{range .Record}}
-				<tr>
-					<!--<td>{{.Id}}</td>-->
-					<td>
-					<span class="badge bg-primary">
-					{{.Alertname}}
-					</span>
-					</td>
-					
-					<td>
-					<span class="badge bg-warning">
-					{{.StartsAt}}
-					</span>
-					</td>
-					
-					<td>
-					
-					{{if eq .EndsAt "0001-01-01T00:00:00Z"}}<span class="badge bg-warning">持续中</span>{{else}}{{if eq .EndsAt "0001-01-01 08:00:00"}}<span class="badge bg-warning">持续中</span>{{else}}<span class="badge bg-success">{{.EndsAt}}</span>{{end}}{{end}}
-					
-					</td>
-					<td> <!-- 0 信息,1 警告,2 一般严重,3 严重,4 灾难 -->
-					<span class="badge bg-navy">
-					{{if eq .AlertLevel ""}}信息{{else}}
-					{{if eq .AlertLevel "0"}}信息{{else}}
-					{{if eq .AlertLevel "1"}}警告{{else}}
-					{{if eq .AlertLevel "2"}}一般严重{{else}}
-					{{if eq .AlertLevel "3"}}严重{{else}}
-					{{if eq .AlertLevel "4"}}灾难{{else}}
-					{{.AlertLevel}}
-					{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}
-					</span>
-					</td>
-					
-					<td>
-					<span class="badge bg-fuchsia">
-					{{.Instance}}
-					</span>
-					</td>
-					
-					<td>
-					<span class="badge bg-olive">
-					{{.Summary}}
-					</span>
-					</td>
-					
-					<td>
-					<span class="badge bg-danger">
-					{{.Description}}
-					</span>
-					</td>
-					
-					<td>
-					{{if eq .AlertStatus "firing"}}<span class="badge bg-danger">告警</span>{{else}}<span class="badge bg-success">恢复</span>{{end}}
-					</td>
-
-					<td>
-					{{.Labels}}
-					<!--<span class="badge bg-gray">
-						
-					</span>-->
-					</td>
-
-				</tr>
-				{{end}}
-                  </tbody>
-                  <tfoot>
-                  <tr>
-				    <th>告警名称</th>
-				    <th>开始时间</th>
-				    <th>结束时间</th>
-				    <th>级别</th>
-				    <th>Instance</th>
-				    <th>Summary</th>
-				    <th>Description</th>
-				    <th>告警状态</th>
-				    <th>Label</th>
-                  </tr>
-                  </tfoot>
-                </table>
-
+          <div class="table-responsive">
+            <table id="recordTable" class="table table-bordered table-hover" style="width:100%;">
+              <thead>
+              <tr class="bg-light text-center">
+				<th style="width: 150px;">记录时间</th>
+				<th style="width: 100px;">消息来源</th>
+				<th style="width: 100px;">转发渠道</th>
+				<th style="width: 100px;">发送状态</th>
+				<th>告警消息摘要</th>
+				<th>原始消息 (Payload)</th>
+				<th>通道响应结果</th>
+              </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
         </div>
         <!-- /.card-body -->
-        <div class="card-footer">
-          
-        </div>
-        <!-- /.card-footer-->
       </div>
       <!-- /.card -->
 
@@ -161,29 +73,143 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+  <!-- Modal for viewing full content -->
+  <div class="modal fade" id="contentModal" tabindex="-1" role="dialog" aria-labelledby="contentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-navy">
+          <h5 class="modal-title" id="contentModalLabel">内容详情</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="padding: 0;">
+          <pre id="modalContentBody" style="background-color: #1e1e1e; color: #d4d4d4; padding: 20px; margin: 0; border-radius: 0 0 5px 5px; max-height: 550px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', Courier, monospace; font-size: 14px;"></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {{template "endhtml"}}
 <script>
   $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-	
-	var tb = document.getElementById('example1');//获取表格的dom节点
-	var td = tb.rows[1].cells[8];//获取0行0列的td单元格
-	//td.innerHTML = '222';//动态修改表格的内容为222
-    for(var i=1,rows=tb.rows.length; i<rows-1; i++){
-        var td = tb.rows[i].cells[8];//获取0行0列的td单元格
-		var str = td.innerHTML;
-		var obj = JSON.parse(str);
-		var table_str = ""
-		for(var p in obj){
-		  //console.log(p + " " + obj[p]);
-		  table_str = table_str + '<span class="badge bg-gray">'+p+'='+obj[p]+'</span><br />'
-		}
-		td.innerHTML = table_str;
-    }
-	
+    $("#recordTable").DataTable({
+      "processing": true,
+      "serverSide": true,
+      "ajax": {
+          "url": "/record/data",
+          "type": "GET"
+      },
+      "columns": [
+          { "data": "Time", "render": function(data) {
+              return '<span class="badge badge-warning p-2"><i class="far fa-clock"></i> ' + (data || '') + '</span>';
+          }},
+          { "data": "Source", "render": function(data) {
+              return '<span class="badge badge-primary p-2" style="font-size: 13px;">' + (data || '') + '</span>';
+          }},
+          { "data": "Channel", "render": function(data) {
+              return '<span class="badge badge-info p-2" style="font-size: 13px;">' + (data || '') + '</span>';
+          }},
+          { "data": "Status", "render": function(data) {
+              if (data === "success") {
+                  return '<span class="badge badge-success p-2" style="font-size: 13px;"><i class="fas fa-check-circle"></i> 成功</span>';
+              } else if (data === "failed") {
+                  return '<span class="badge badge-danger p-2" style="font-size: 13px;"><i class="fas fa-times-circle"></i> 失败</span>';
+              } else if (data === "firing") {
+                  return '<span class="badge badge-danger p-2" style="font-size: 13px;"><i class="fas fa-bell"></i> 告警</span>';
+              } else if (data === "resolved") {
+                  return '<span class="badge badge-success p-2" style="font-size: 13px;"><i class="fas fa-check"></i> 恢复</span>';
+              } else {
+                  return '<span class="badge badge-secondary p-2" style="font-size: 13px;">' + (data || '') + '</span>';
+              }
+          }},
+          { "data": "Summary", "render": function(data) {
+              var safeData = (data || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+              return '<textarea class="content-data" style="display:none;">' + safeData + '</textarea>' +
+                     '<button class="btn btn-xs btn-outline-info view-btn" data-title="告警摘要" style="margin-right: 5px;"><i class="fas fa-eye"></i> 查看</button>' +
+                     '<span class="text-muted">' + safeData + '</span>';
+          }},
+          { "data": "OriginalPayload", "render": function(data) {
+              var safeData = (data || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+              return '<textarea class="content-data" style="display:none;">' + safeData + '</textarea>' +
+                     '<button class="btn btn-xs btn-outline-secondary view-btn" data-title="原始消息 (Original Payload)" style="margin-right: 5px;"><i class="fas fa-code"></i> 源码</button>' +
+                     '<span class="text-muted">' + safeData + '</span>';
+          }},
+          { "data": "Result", "render": function(data) {
+              var safeData = (data || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+              if (data) {
+                  return '<textarea class="content-data" style="display:none;">' + safeData + '</textarea>' +
+                         '<button class="btn btn-xs btn-outline-primary view-btn" data-title="通道响应结果" style="margin-right: 5px;"><i class="fas fa-terminal"></i> 响应</button>' +
+                         '<span class="text-muted">' + safeData + '</span>';
+              } else {
+                  return '<span class="text-muted">-</span>';
+              }
+          }}
+      ],
+      "columnDefs": [
+          { "targets": [0, 1, 2, 3], "className": "text-center align-middle" },
+          { "targets": 4, "className": "align-middle text-left", "createdCell": function (td, cellData, rowData, row, col) {
+              $(td).css({
+                  "max-width": "250px",
+                  "overflow": "hidden",
+                  "text-overflow": "ellipsis",
+                  "white-space": "nowrap"
+              });
+          }},
+          { "targets": [5, 6], "className": "align-middle text-left", "createdCell": function (td, cellData, rowData, row, col) {
+              $(td).css({
+                  "max-width": "200px",
+                  "overflow": "hidden",
+                  "text-overflow": "ellipsis",
+                  "white-space": "nowrap"
+              });
+          }}
+      ],
+      "responsive": false, 
+      "lengthChange": true, 
+      "autoWidth": false,
+      "pageLength": 10,
+      "ordering": false,
+      "language": {
+         "search": "全局搜索:",
+         "lengthMenu": "每页显示 _MENU_ 条记录",
+         "zeroRecords": "没有找到记录",
+         "info": "第 _PAGE_ 页 (总共 _PAGES_ 页，共 _TOTAL_ 条记录)",
+         "infoEmpty": "无记录可用",
+         "infoFiltered": "(从 _MAX_ 条记录中过滤)",
+         "paginate": {
+            "first": "首页",
+            "previous": "上一页",
+            "next": "下一页",
+            "last": "末页"
+         }
+      }
+    });
+
+    // Handle full content view modal
+    $(document).on('click', '.view-btn', function() {
+        var title = $(this).attr('data-title');
+        var content = $(this).siblings('.content-data').val() || '';
+        $('#contentModalLabel').html(title);
+        
+        // Beautiful JSON formatting if content is a valid JSON string
+        var cleanContent = content.trim();
+        if (cleanContent.startsWith('{') || cleanContent.startsWith('[')) {
+            try {
+                var parsed = JSON.parse(cleanContent);
+                $('#modalContentBody').text(JSON.stringify(parsed, null, 4));
+            } catch (e) {
+                $('#modalContentBody').text(content);
+            }
+        } else {
+            $('#modalContentBody').text(content);
+        }
+        $('#contentModal').modal('show');
+    });
   });
 </script>
 {{template "jshtml"}}

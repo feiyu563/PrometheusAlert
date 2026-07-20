@@ -189,3 +189,13 @@ func DoBalance(instances []string) string {
 	inst := instances[index]
 	return inst
 }
+
+// checkURL checks urls and return non-nil url
+func checkURL(urls ...string) string {
+	for _, url := range urls {
+		if len(strings.TrimSpace(url)) != 0 {
+			return url
+		}
+	}
+	return ""
+}

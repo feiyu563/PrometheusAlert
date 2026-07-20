@@ -10,7 +10,6 @@
             <a href="/alertrouter" class="nav-link">告警管理</a>
         </li>
     </ul>
-
 </nav>
 <!-- /.navbar -->
 
@@ -20,28 +19,13 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <h1>告警路由</h1>
                 </div>
-                <div class="col-sm-2">
-                    <div class="input-group">
-                        <span class="input-group-text">路由名称</span>
-                        <input id="router_name" type="text" aria-label="路由名称" class="form-control" value="{{.SearchName}}">
-                    </div>
-
-                </div>
-                <div class="col-sm-2">
-                    <div class="input-group">
-                        <span class="input-group-text">webhook</span>
-                        <input id="webhook" type="text" aria-label="webhook" class="form-control" value="{{.SearchWebhook}}">
-                        <button class="btn btn-outline-secondary btn-search" type="button" id="button-addon2">搜索</button>
-                    </div>
-
-                </div>
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <a href="/alertrouter/add" class="btn btn-default bg-warning">
-                            <i class="fas fa-file mr-2"></i> 添加路由
+                        <a href="/alertrouter/add" class="btn btn-warning text-dark font-weight-bold">
+                            <i class="fas fa-plus mr-2"></i> 添加路由
                         </a>
                     </ol>
                 </div>
@@ -54,95 +38,98 @@
 
         <!-- Default box -->
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title" style="color:red">** 告警路由目前仅支持 Prometheus</h3>
-
+            <div class="card-header bg-navy">
+                <h3 class="card-title"><i class="fas fa-directions"></i> Prometheus 告警路由配置列表</h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <button type="button" class="btn btn-tool text-white" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                        <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>
             <div class="card-body">
-
-
-                <table id="example1" class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th style="display:none;">Id</th>
-                        <th>路由名称</th>
-                        <th>生效模版</th>
-                        <th>模版类型</th>
-                        <th>模版用途</th>
-                        <th>路由规则</th>
-                        <th>创建时间</th>
-                        <th>编辑</th>
-                        <th>删除</th>
-                    </tr>
-                    </thead>
-                    <tbody id="tpllist">
-                    {{range $k,$v:= .AlertRouter}}
-                    <tr>
-                        <th style="display:none;">{{.Id}}</th>
-                        <th>{{$v.Name}}</th>
-                        <th>{{$v.Tpl.Tplname}}</th>
-                        <th>
-                            {{if eq $v.Tpl.Tpltype "dd"}}钉钉{{end}}
-                            {{if eq $v.Tpl.Tpltype "wx"}}企业微信{{end}}
-                            {{if eq $v.Tpl.Tpltype "workwechat"}}企业微信应用{{end}}
-                            {{if eq $v.Tpl.Tpltype "fs"}}飞书{{end}}
-                            {{if eq $v.Tpl.Tpltype "webhook"}}WebHook{{end}}
-                            {{if eq $v.Tpl.Tpltype "txdx"}}腾讯云短信{{end}}
-                            {{if eq $v.Tpl.Tpltype "txdh"}}腾讯云电话{{end}}
-                            {{if eq $v.Tpl.Tpltype "alydx"}}阿里云短信{{end}}
-                            {{if eq $v.Tpl.Tpltype "alydh"}}阿里云电话{{end}}
-                            {{if eq $v.Tpl.Tpltype "hwdx"}}华为云短信{{end}}
-                            {{if eq $v.Tpl.Tpltype "bddx"}}百度云短信{{end}}
-                            {{if eq $v.Tpl.Tpltype "rlydh"}}容联云电话{{end}}
-                            {{if eq $v.Tpl.Tpltype "7moordx"}}七陌短信{{end}}
-                            {{if eq $v.Tpl.Tpltype "7moordh"}}七陌语音电话{{end}}
-                            {{if eq $v.Tpl.Tpltype "email"}}Email{{end}}
-                            {{if eq $v.Tpl.Tpltype "tg"}}Telegram{{end}}
-                            {{if eq $v.Tpl.Tpltype "rl"}}百度Hi(如流){{end}}
-                            {{if eq $v.Tpl.Tpltype "bark"}}Bark(iPhone推送){{end}}
-                            {{if eq $v.Tpl.Tpltype "voice"}}语音播报{{end}}
-                            {{if eq $v.Tpl.Tpltype "fsapp"}}飞书机器人应用{{end}}
-                            {{if eq $v.Tpl.Tpltype "kafka"}}Kafka{{end}}
-                        </th>
-                        <th>{{$v.Tpl.Tpluse}}</th>
-
-                        <th>
-                            {{$v.Rules}}
-                        </th>
-
-                        <th>{{$v.Created.Format "2006-01-02 15:04:05 UTC"}}</th>
-                        <th>
-                            <a href="/alertrouter/edit?id={{.Id}}" class="btn btn-default bg-success">
-                                <i class="fa fa-edit"></i> Edit
-                            </a>
-                        </th>
-                        <th>
-                            <a href="javascript:if(confirm('确实要删除吗?'))location='/alertrouter/del?id={{.Id}}'"
-                               class="btn btn-default bg-danger">
-                                <i class="fa fa-trash"></i> Delete
-                            </a>
-                        </th>
-
-                    </tr>
-                    {{end}}
-                    </tbody>
-                </table>
-
-
+                <div class="table-responsive">
+                    <table id="alertRouterTable" class="table table-bordered table-hover mb-0" style="width:100%;">
+                        <thead>
+                        <tr class="bg-light text-center">
+                            <th style="display:none;">Id</th>
+                            <th>路由名称</th>
+                            <th>生效模版</th>
+                            <th>模版类型</th>
+                            <th>模版用途</th>
+                            <th style="text-align: left;">路由匹配规则 (AND)</th>
+                            <th>创建时间</th>
+                            <th style="width: 80px;">开启状态</th>
+                            <th style="width: 100px;">编辑</th>
+                            <th style="width: 100px;">删除</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tpllist">
+                        {{range $k,$v:= .AlertRouter}}
+                        <tr class="text-center">
+                            <td style="display:none; vertical-align: middle;">{{.Id}}</td>
+                            <td style="vertical-align: middle; font-weight: bold;">
+                                <span class="badge bg-purple p-2" style="font-size: 13px;">{{$v.Name}}</span>
+                            </td>
+                            <td style="vertical-align: middle; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                <span class="text-dark font-weight-bold">{{$v.Tpl.Tplname}}</span>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <span class="badge badge-info p-2" style="font-size: 12px;">
+                                    {{if eq $v.Tpl.Tpltype "dd"}}钉钉{{end}}
+                                    {{if eq $v.Tpl.Tpltype "wx"}}企业微信{{end}}
+                                    {{if eq $v.Tpl.Tpltype "workwechat"}}企业微信应用{{end}}
+                                    {{if eq $v.Tpl.Tpltype "fs"}}飞书{{end}}
+                                    {{if eq $v.Tpl.Tpltype "webhook"}}WebHook{{end}}
+                                    {{if eq $v.Tpl.Tpltype "txdx"}}腾讯云短信{{end}}
+                                    {{if eq $v.Tpl.Tpltype "txdh"}}腾讯云电话{{end}}
+                                    {{if eq $v.Tpl.Tpltype "alydx"}}阿里云短信{{end}}
+                                    {{if eq $v.Tpl.Tpltype "alydh"}}阿里云电话{{end}}
+                                    {{if eq $v.Tpl.Tpltype "bddx"}}百度云短信{{end}}
+                                    {{if eq $v.Tpl.Tpltype "rlydh"}}容联云电话{{end}}
+                                    {{if eq $v.Tpl.Tpltype "7moordx"}}七陌短信{{end}}
+                                    {{if eq $v.Tpl.Tpltype "7moordh"}}七陌语音电话{{end}}
+                                    {{if eq $v.Tpl.Tpltype "email"}}Email{{end}}
+                                    {{if eq $v.Tpl.Tpltype "tg"}}Telegram{{end}}
+                                    {{if eq $v.Tpl.Tpltype "rl"}}百度Hi(如流){{end}}
+                                    {{if eq $v.Tpl.Tpltype "bark"}}Bark(iPhone推送){{end}}
+                                    {{if eq $v.Tpl.Tpltype "voice"}}语音播报{{end}}
+                                    {{if eq $v.Tpl.Tpltype "fsapp"}}飞书机器人应用{{end}}
+                                    {{if eq $v.Tpl.Tpltype "kafka"}}Kafka{{end}}
+                                </span>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <span class="badge badge-secondary p-2">{{$v.Tpl.Tpluse}}</span>
+                            </td>
+                            <td style="vertical-align: middle; text-align: left; white-space: nowrap;">
+                                {{$v.Rules}}
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <span class="badge badge-light p-2"><i class="far fa-clock"></i> {{$v.Created.Format "2006-01-02 15:04:05"}}</span>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <div class="custom-control custom-switch d-inline-block">
+                                    <input type="checkbox" class="custom-control-input status-switch" id="status-{{.Id}}" data-id="{{.Id}}" {{if ne .Status 2}}checked{{end}}>
+                                    <label class="custom-control-label" for="status-{{.Id}}"></label>
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <a href="/alertrouter/edit?id={{.Id}}" class="btn btn-sm btn-outline-success">
+                                    <i class="fa fa-edit"></i> 编辑
+                                </a>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <a href="javascript:if(confirm('确实要删除该路由吗?'))location='/alertrouter/del?id={{.Id}}'"
+                                   class="btn btn-sm btn-outline-danger">
+                                    <i class="fa fa-trash"></i> 删除
+                                </a>
+                            </td>
+                        </tr>
+                        {{end}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.card-body -->
-            <div class="card-footer">
-
-            </div>
-            <!-- /.card-footer-->
         </div>
         <!-- /.card -->
 
@@ -153,34 +140,80 @@
 {{template "endhtml"}}
 <script>
     $(function () {
-        var tb = document.getElementById('example1');
-        if (tb.rows[1]){
-            var td = tb.rows[1].cells[5];
+        var tb = document.getElementById('alertRouterTable');
+        if (tb && tb.rows[1]){
             for (var i = 1, rows = tb.rows.length; i < rows; i++) {
                 var td = tb.rows[i].cells[5];
-                var str = td.innerHTML;
-                var obj = JSON.parse(str);
-                var table_str = ""
-                for (var p in obj) {
-                    console.log(obj[p]);
-                    if (obj[p].Regex) {
-                        ischeck = "正则"
-                    } else {
-                        ischeck = "普通"
+                var str = td.innerHTML.trim();
+                if (!str) continue;
+                try {
+                    var obj = JSON.parse(str);
+                    var table_str = ""
+                    for (var p in obj) {
+                        var op = obj[p].Operator || "";
+                        if (op === "") {
+                            op = obj[p].Regex ? "=~" : "==";
+                        }
+                        var badge_color = "badge-success";
+                        if (op === "!=" || op === "!~") {
+                            badge_color = "badge-danger";
+                        } else if (op === "=~") {
+                            badge_color = "badge-warning text-dark";
+                        }
+                        table_str = table_str + '<span class="badge ' + badge_color + ' p-2" style="font-size: 12.5px; margin: 2px;"><i class="fas fa-filter"></i> ' + obj[p].Name + ' ' + op + ' ' + obj[p].Value + '</span><br />'
                     }
-                    table_str = table_str + '<span class="badge bg-info">' + obj[p].Name + ' = ' + obj[p].Value + ' | ' + ischeck + '</span><br />'
+                    td.innerHTML = table_str;
+                } catch(e) {
+                    console.log("Error parsing rules json:", e);
                 }
-                td.innerHTML = table_str;
             }
         }
 
-        $(".btn-search").on( "click",function (e){
-          let name = $("#router_name").val()
-            let webhook = $("#webhook").val()
-            let url = "/alertrouter?name="+name+"&webhook="+webhook
-            window.location.href=url
-        })
-    })
+        // Initialize DataTable with search & paging
+        $("#alertRouterTable").DataTable({
+            "responsive": false, 
+            "lengthChange": true, 
+            "autoWidth": false,
+            "pageLength": 10,
+            "order": [[ 1, "asc" ]],
+            "language": {
+                 "search": "全局搜索:",
+                 "lengthMenu": "每页显示 _MENU_ 条记录",
+                 "zeroRecords": "没有找到记录",
+                 "info": "第 _PAGE_ 页 (总共 _PAGES_ 页，共 _TOTAL_ 条记录)",
+                 "infoEmpty": "无记录可用",
+                 "infoFiltered": "(从 _MAX_ 条记录中过滤)",
+                 "paginate": {
+                    "first": "首页",
+                    "previous": "上一页",
+                    "next": "下一页",
+                    "last": "末页"
+                 }
+            }
+        });
 
+        // Use event delegation for status-switch so it works across datatable pagination
+        $(document).on("change", ".status-switch", function () {
+            var routerId = $(this).data("id");
+            var isChecked = $(this).is(":checked");
+            var status = isChecked ? 0 : 2; // 0 for active, 2 for inactive
+            var self = this;
+            $.ajax({
+                type: "POST",
+                url: "/alertrouter/changestatus?id=" + routerId + "&status=" + status,
+                dataType: "json",
+                success: function (result) {
+                    if (result !== null) {
+                        alert("更新路由状态失败: " + result);
+                        $(self).prop("checked", !isChecked);
+                    }
+                },
+                error: function () {
+                    alert("网络请求失败");
+                    $(self).prop("checked", !isChecked);
+                }
+            });
+        });
+    });
 </script>
 {{template "jshtml"}}
