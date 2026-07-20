@@ -88,7 +88,7 @@ jobs:
           # 打包压缩 (Windows 用 zip，其他用 tar.gz)
           ASSET_NAME=PrometheusAlert-${{ matrix.goos }}-${{ matrix.goarch }}
           if [ "${{ matrix.goos }}" = "windows" ]; then
-            cd release_package && zip -r ../${ASSET_NAME}.zip * && cd ..
+            cd release_package && 7z a ../${ASSET_NAME}.zip * && cd ..
           else
             tar -czvf ${ASSET_NAME}.tar.gz -C release_package .
           fi
