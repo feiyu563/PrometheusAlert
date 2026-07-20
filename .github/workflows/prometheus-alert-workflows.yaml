@@ -1,41 +1,140 @@
-name: Build And Publish Docker image
+name: Build and Release
 
 on:
   push:
     branches:
       - 'master'
     tags:
-      - '*'
-  # pull_request:
-    # branches:
-      # - 'master'
+      - 'v*' # 建议使用 v1.0.0 这种格式的 Tag 触发
   release:
     types: [published]
 
+permissions:
+  contents: write # 允许创建 Release 并上传二进制文件
+  packages: write
+
 jobs:
-
-  push_to_registry:
-    name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
-
+  # ==========================================
+  # 阶段 1：打包多平台二进制文件
+  # ==========================================
+  build_binaries:
+    name: Build Binaries
+    # 仅在推送 Tag 时构建二进制，避免 master 日常提交导致频繁发版
+    if: startsWith(github.ref, 'refs/tags/')
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+          - os: ubuntu-latest
+            goos: linux
+            goarch: arm64
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+          - os: macos-14 # GitHub 官方的 M1/M2 芯片环境，用于原生编译 Apple Silicon
+            goos: darwin
+            goarch: arm64
+    runs-on: ${{ matrix.os }}
+    
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.20.6'
+          
+      - name: Install CGO dependencies for Linux ARM64
+        # 因为用到了 SQLite，交叉编译 Linux ARM64 需要专门的 C 编译器
+        if: matrix.os == 'ubuntu-latest' && matrix.goarch == 'arm64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Build and Package
+        env:
+          CGO_ENABLED: 1
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        shell: bash
+        run: |
+          # 针对 Linux ARM64 挂载专用的交叉编译器
+          if [ "${{ matrix.goos }}" = "linux" ] && [ "${{ matrix.goarch }}" = "arm64" ]; then
+            export CC=aarch64-linux-gnu-gcc
+          fi
+          
+          # 处理 Windows 后缀
+          OUTPUT_NAME=PrometheusAlert
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            OUTPUT_NAME="${OUTPUT_NAME}.exe"
+          fi
+          
+          # 执行编译
+          go build -o $OUTPUT_NAME
+          
+          # 创建发布文件夹，将二进制与依赖的静态文件放在一起
+          mkdir -p release_package
+          mv $OUTPUT_NAME release_package/
+          cp -r conf db static views release_package/
+          # 模拟 Dockerfile 中的初始化数据库操作
+          cp conf/app-example.conf release_package/conf/app.conf || true
+          
+          # 打包压缩 (Windows 用 zip，其他用 tar.gz)
+          ASSET_NAME=PrometheusAlert-${{ matrix.goos }}-${{ matrix.goarch }}
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            cd release_package && zip -r ../${ASSET_NAME}.zip * && cd ..
+          else
+            tar -czvf ${ASSET_NAME}.tar.gz -C release_package .
+          fi
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.tar.gz
+            *.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ==========================================
+  # 阶段 2：构建并推送多平台 Docker 镜像
+  # ==========================================
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+        
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract metadata (tags, labels)
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v5
         with:
           images: feiyu563/prometheus-alert
+          # 动态标签逻辑：
+          # 1. 如果是 master 分支推送，打上 latest 标签
+          # 2. 如果是 tag 推送，打上对应的版本号标签 (如 v1.0.0)
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            type=ref,event=tag
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -43,6 +142,5 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          pull: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
