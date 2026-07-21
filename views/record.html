@@ -47,6 +47,40 @@
           </div>
         </div>
         <div class="card-body">
+          <!-- 筛选控制栏 -->
+          <div class="row mb-3">
+            <div class="col-md-3 col-sm-6 mb-2">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-light">消息来源</span>
+                </div>
+                <select class="form-control" id="filter-source">
+                  <option value="">全部 (All)</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-2">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-light">转发渠道</span>
+                </div>
+                <select class="form-control" id="filter-channel">
+                  <option value="">全部 (All)</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-2">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-light">发送状态</span>
+                </div>
+                <select class="form-control" id="filter-status">
+                  <option value="">全部 (All)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="table-responsive">
             <table id="recordTable" class="table table-bordered table-hover" style="width:100%;">
               <thead>
@@ -102,7 +136,12 @@
       "serverSide": true,
       "ajax": {
           "url": "/record/data",
-          "type": "GET"
+          "type": "GET",
+          "data": function (d) {
+              d.source = $('#filter-source').val();
+              d.channel = $('#filter-channel').val();
+              d.status = $('#filter-status').val();
+          }
       },
       "columns": [
           { "data": "Time", "render": function(data) {
@@ -188,6 +227,30 @@
             "last": "末页"
          }
       }
+    });
+
+    // 加载下拉框选项数据
+    $.get("/record/filters", function(data) {
+        if (data.sources) {
+            data.sources.forEach(function(item) {
+                $('#filter-source').append(new Option(item.text, item.value));
+            });
+        }
+        if (data.channels) {
+            data.channels.forEach(function(item) {
+                $('#filter-channel').append(new Option(item.text, item.value));
+            });
+        }
+        if (data.statuses) {
+            data.statuses.forEach(function(item) {
+                $('#filter-status').append(new Option(item.text, item.value));
+            });
+        }
+    });
+
+    // 监听筛选事件
+    $('#filter-source, #filter-channel, #filter-status').on('change', function() {
+        $('#recordTable').DataTable().ajax.reload();
     });
 
     // Handle full content view modal

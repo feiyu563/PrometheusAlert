@@ -74,10 +74,10 @@ func AddAlertRecord(alertname, alertLevel, labels, instance, startsAt, endsAt, s
 func AddRecord(source, channel, status, result, summary, originalContent string) error {
 	o := orm.NewOrm()
 	alertRecord := &AlertRecord{
-		Alertname:   source,          // 消息来源 (Prometheus, Zabbix, GitLab等)
-		AlertLevel:  channel,         // 转发渠道 (wx, dd, fs, email, alydh等)
-		Labels:      status,          // 状态 ("success", "failed")
-		Instance:    result,          // 详细结果 (返回的response或Error信息)
+		Alertname:   source,  // 消息来源 (Prometheus, Zabbix, GitLab等)
+		AlertLevel:  channel, // 转发渠道 (wx, dd, fs, email, alydh等)
+		Labels:      status,  // 状态 ("success", "failed")
+		Instance:    result,  // 详细结果 (返回的response或Error信息)
 		StartsAt:    time.Now().Format("2006-01-02 15:04:05"),
 		EndsAt:      time.Now().Format("2006-01-02 15:04:05"),
 		Summary:     summary,         // 告警摘要
@@ -113,26 +113,46 @@ type StatRow struct {
 
 func GetChannelName(key string) string {
 	switch key {
-	case "dd": return "钉钉"
-	case "wx": return "企业微信"
-	case "workwechat": return "企业微信应用"
-	case "fs": return "飞书"
-	case "webhook": return "WebHook"
-	case "txdx": return "腾讯云短信"
-	case "txdh": return "腾讯云电话"
-	case "alydx": return "阿里云短信"
-	case "alydh": return "阿里云电话"
-	case "bddx": return "百度云短信"
-	case "rlydh": return "容联云电话"
-	case "7moordx": return "七陌短信"
-	case "7moordh": return "七陌语音电话"
-	case "email": return "Email"
-	case "tg": return "Telegram"
-	case "rl": return "百度Hi(如流)"
-	case "bark": return "Bark(iPhone推送)"
-	case "voice": return "语音播报"
-	case "fsapp": return "飞书自建应用"
-	case "kafka": return "Kafka"
+	case "dd":
+		return "钉钉"
+	case "wx":
+		return "企业微信"
+	case "workwechat":
+		return "企业微信应用"
+	case "fs":
+		return "飞书"
+	case "webhook":
+		return "WebHook"
+	case "txdx":
+		return "腾讯云短信"
+	case "txdh":
+		return "腾讯云电话"
+	case "alydx":
+		return "阿里云短信"
+	case "alydh":
+		return "阿里云电话"
+	case "bddx":
+		return "百度云短信"
+	case "rlydh":
+		return "容联云电话"
+	case "7moordx":
+		return "七陌短信"
+	case "7moordh":
+		return "七陌语音电话"
+	case "email":
+		return "Email"
+	case "tg":
+		return "Telegram"
+	case "rl":
+		return "百度Hi(如流)"
+	case "bark":
+		return "Bark(iPhone推送)"
+	case "voice":
+		return "语音播报"
+	case "fsapp":
+		return "飞书自建应用"
+	case "kafka":
+		return "Kafka"
 	}
 	return key
 }
@@ -254,7 +274,7 @@ func GetDashboardStats() (DashboardStats, error) {
 			mappedRow := *row
 			mappedRow.Name = GetChannelName(row.Name)
 			stats.ChannelRows = append(stats.ChannelRows, mappedRow)
-			
+
 			stats.ChannelNames = append(stats.ChannelNames, mappedRow.Name)
 			stats.ChannelCounts = append(stats.ChannelCounts, row.Total)
 		}
@@ -299,7 +319,16 @@ func (r *AlertRecord) ToDisplay() DisplayRecord {
 	}
 }
 
-func GetRecordPage(start, length int, searchVal string) ([]*AlertRecord, int64, int64, error) {
+func GetRecordFilters() (sources, channels, statuses []string, err error) {
+	o := orm.NewOrm()
+	// 动态获取去重的来源、渠道和状态
+	_, _ = o.Raw("SELECT DISTINCT alertname FROM alert_record WHERE alertname != ''").QueryRows(&sources)
+	_, _ = o.Raw("SELECT DISTINCT alert_level FROM alert_record WHERE alert_level != ''").QueryRows(&channels)
+	_, _ = o.Raw("SELECT DISTINCT alert_status FROM alert_record WHERE alert_status != ''").QueryRows(&statuses)
+	return sources, channels, statuses, nil
+}
+
+func GetRecordPage(start, length int, searchVal, source, channel, status string) ([]*AlertRecord, int64, int64, error) {
 	o := orm.NewOrm()
 	Record_all := make([]*AlertRecord, 0)
 	qs := o.QueryTable("AlertRecord")
@@ -321,6 +350,17 @@ func GetRecordPage(start, length int, searchVal string) ([]*AlertRecord, int64, 
 			Or("Description__icontains", searchVal).
 			Or("AlertStatus__icontains", searchVal)
 		qs = qs.SetCond(cond)
+	}
+
+	// 追加精确筛选条件
+	if source != "" {
+		qs = qs.Filter("Alertname", source)
+	}
+	if channel != "" {
+		qs = qs.Filter("AlertLevel", channel)
+	}
+	if status != "" {
+		qs = qs.Filter("AlertStatus", status)
 	}
 
 	// Get filtered count

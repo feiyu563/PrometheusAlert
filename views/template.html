@@ -54,6 +54,30 @@
           </div>
         </div>
         <div class="card-body">
+          <!-- 筛选控制栏 -->
+          <div class="row mb-3">
+            <div class="col-md-3 col-sm-6 mb-2">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-light">模版类型</span>
+                </div>
+                <select class="form-control" id="filter-type">
+                  <option value="">全部 (All)</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-2">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-light">模版用途</span>
+                </div>
+                <select class="form-control" id="filter-use">
+                  <option value="">全部 (All)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="table-responsive">
 			<table id="templateTable" class="table table-bordered table-hover mb-0" style="width:100%;">
 				<thead>
@@ -213,7 +237,7 @@ function importTemplate() {
 
 $(function() {
     // Initialize DataTable with search, length menu, and sorting
-    $("#templateTable").DataTable({
+    var table = $("#templateTable").DataTable({
         "responsive": false, 
         "lengthChange": true, 
         "autoWidth": false,
@@ -234,6 +258,29 @@ $(function() {
              }
         }
     });
+
+    // 动态提取列数据作为筛选下拉框选项
+    function populateFilter(columnIndex, selectId) {
+        var uniqueValues = [];
+        table.column(columnIndex).nodes().each(function(node) {
+            var text = $(node).text().trim();
+            if (text && uniqueValues.indexOf(text) === -1) {
+                uniqueValues.push(text);
+            }
+        });
+        uniqueValues.sort();
+        $.each(uniqueValues, function(index, value) {
+            $(selectId).append('<option value="' + value + '">' + value + '</option>');
+        });
+    }
+
+    // 列索引：1为模版类型，2为模版用途
+    populateFilter(1, '#filter-type');
+    populateFilter(2, '#filter-use');
+
+    // 监听下拉框改变事件，执行 DataTables 前端列精确搜索
+    $('#filter-type').on('change', function() { table.column(1).search($(this).val()).draw(); });
+    $('#filter-use').on('change', function() { table.column(2).search($(this).val()).draw(); });
 });
 </script>
 {{template "jshtml"}}

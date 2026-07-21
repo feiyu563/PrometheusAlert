@@ -24,6 +24,7 @@ func init() {
 
 	beego.Router("/record", &controllers.MainController{}, "get:Record")
 	beego.Router("/record/data", &controllers.MainController{}, "get:RecordData")
+	beego.Router("/record/filters", &controllers.MainController{}, "get:RecordFilters")
 	beego.Router("/record/clean", &controllers.MainController{}, "get:RecordClean")
 
 	//alertrouter
