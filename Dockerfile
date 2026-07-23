@@ -22,7 +22,6 @@ RUN apk update && \
     apk add --no-cache tzdata && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone && \
-    apk del tzdata && \
 	mkdir -p /app/logs && \
     apk add --no-cache sqlite-libs curl sqlite
 
