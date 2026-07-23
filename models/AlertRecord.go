@@ -1,9 +1,13 @@
 package models
 
 import (
+	"PrometheusAlert/models/elastic"
+	"encoding/json"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -73,16 +77,89 @@ func AddAlertRecord(alertname, alertLevel, labels, instance, startsAt, endsAt, s
 
 func AddRecord(source, channel, status, result, summary, originalContent string) error {
 	o := orm.NewOrm()
+
+	finalStatus := status
+
+	// 动态判断各大渠道的 JSON 返回值，确定是否真的发送成功
+	// 大部分 Webhook (钉钉、飞书、微信、腾讯云等) 都会在 HTTP 200 时返回 JSON 并在其中包含错误码
+	if result != "" && strings.HasPrefix(strings.TrimSpace(result), "{") {
+		var respMap map[string]interface{}
+		if err := json.Unmarshal([]byte(result), &respMap); err == nil {
+			hasKnownCode := false
+			isSuccess := false
+
+			// 1. 钉钉、企业微信机器人 (errcode: 0)
+			if val, ok := respMap["errcode"].(float64); ok {
+				hasKnownCode = true
+				isSuccess = (val == 0)
+			} else if val, ok := respMap["code"].(float64); ok {
+				// 2. 飞书 v2 / 飞书自建应用 (code: 0)
+				hasKnownCode = true
+				isSuccess = (val == 0)
+			} else if val, ok := respMap["StatusCode"].(float64); ok {
+				// 3. 飞书 v1 (StatusCode: 0)
+				hasKnownCode = true
+				isSuccess = (val == 0)
+			} else if val, ok := respMap["result"].(float64); ok {
+				// 4. 腾讯云短信 / 电话 (result: 0)
+				hasKnownCode = true
+				isSuccess = (val == 0)
+			} else if val, ok := respMap["success"].(bool); ok {
+				// 5. 七陌等其他含有布尔值成功标识的平台
+				hasKnownCode = true
+				isSuccess = val
+			} else if val, ok := respMap["Code"].(string); ok {
+				// 6. 阿里云的部分 JSON HTTP API 如果透传，可能包含 Code: "OK"
+				hasKnownCode = true
+				isSuccess = (val == "OK")
+			}
+
+			if hasKnownCode {
+				if isSuccess {
+					finalStatus = "success"
+				} else {
+					finalStatus = "failed"
+				}
+			}
+		}
+	}
+
+	// 兜底文本检查 (处理非 JSON 返回，或 Controller 向上抛出的 golang 原生 error 文本)
+	if finalStatus == "success" {
+		lowerRes := strings.ToLower(result)
+		if strings.Contains(lowerRes, "failed") ||
+			strings.Contains(lowerRes, "error") ||
+			strings.Contains(lowerRes, "错误") ||
+			strings.Contains(lowerRes, "invalid") {
+			finalStatus = "failed"
+		}
+	}
+
+	// 告警写入ES
+	if beego.AppConfig.DefaultString("alert_to_es", "0") == "1" {
+		esAlert := elastic.AlertES{
+			Source:          source,
+			Channel:         channel,
+			Status:          finalStatus,
+			Result:          result,
+			Summary:         summary,
+			OriginalPayload: originalContent,
+			Timestamp:       time.Now(),
+		}
+		// 异步写入ES
+		go elastic.Insert("prometheusalert-"+time.Now().Format("200601"), esAlert)
+	}
+
 	alertRecord := &AlertRecord{
-		Alertname:   source,  // 消息来源 (Prometheus, Zabbix, GitLab等)
-		AlertLevel:  channel, // 转发渠道 (wx, dd, fs, email, alydh等)
-		Labels:      status,  // 状态 ("success", "failed")
-		Instance:    result,  // 详细结果 (返回的response或Error信息)
+		Alertname:   source,      // 消息来源 (Prometheus, Zabbix, GitLab等)
+		AlertLevel:  channel,     // 转发渠道 (wx, dd, fs, email, alydh等)
+		Labels:      finalStatus, // 状态 ("success", "failed")
+		Instance:    result,      // 详细结果 (返回的response或Error信息)
 		StartsAt:    time.Now().Format("2006-01-02 15:04:05"),
 		EndsAt:      time.Now().Format("2006-01-02 15:04:05"),
 		Summary:     summary,         // 告警摘要
 		Description: originalContent, // 原始消息内容 (RequestBody)
-		AlertStatus: status,
+		AlertStatus: finalStatus,
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}

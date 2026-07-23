@@ -40,19 +40,25 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <div class="form-group">
                 <label>系统标题 (Title)</label>
                 <input type="text" class="form-control" name="title" value="{{index .Configs "title"}}">
               </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <div class="form-group">
                 <label>默认接收手机号 (Default Phone)</label>
                 <input type="text" class="form-control" name="defaultphone" value="{{index .Configs "defaultphone"}}">
               </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>值班换班时间 (0-23)</label>
+                <input type="number" class="form-control" name="OnCallTime" value="{{index .Configs "OnCallTime"}}" min="0" max="23" placeholder="默认 10">
+              </div>
+            </div>
+            <div class="col-sm-3">
               <div class="form-group">
                 <label>HTTP 代理 (Proxy URL)</label>
                 <input type="text" class="form-control" name="proxy" value="{{index .Configs "proxy"}}" placeholder="如 http://127.0.0.1:7890">

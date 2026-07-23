@@ -85,13 +85,6 @@
             </a>
 			
             <ul class="nav nav-treeview">
-			
-              <!--<li class="nav-item">
-                <a href="silences" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>告警拦截</p>
-                </a>
-              </li>-->
 			  
               <li class="nav-item">
                 <a href="/alertrouter" {{if .IsAlertRouter}}class="nav-link active"{{else}}class="nav-link"{{end}}>
@@ -118,6 +111,15 @@
           </li>
 
           <li class="nav-item">
+            <a href="/oncall" {{if .IsOnCall}}class="nav-link active"{{else}}class="nav-link"{{end}}>
+              <i class="nav-icon fas fa-calendar-alt"></i>
+              <p>
+                值班管理
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
             <a href="/system/config" {{if .IsSystemConfig}}class="nav-link active"{{else}}class="nav-link"{{end}}>
               <i class="nav-icon fas fa-cog"></i>
               <p>
@@ -126,8 +128,9 @@
             </a>
           </li>
 
+
           <li class="nav-item">
-            <a href="/servicelog" class="nav-link">
+            <a href="/servicelog" {{if .IsServiceLog}}class="nav-link active"{{else}}class="nav-link"{{end}}>
               <i class="nav-icon fas fa-file-alt"></i>
               <p>
                 服务日志

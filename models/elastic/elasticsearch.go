@@ -23,19 +23,13 @@ var (
 // AlertES is a alert structure used for serializing data in ES.
 // 将 created 定义为 es 默认的 @timestamp 时间戳字段
 type AlertES struct {
-	Alertname   string    `json:"alertname"`
-	Status      string    `json:"status"`
-	Instance    string    `json:"instance"`
-	Level       string    `json:"level"`
-	Labels      string    `json:"labels"`
-	Summary     string    `json:"summary"`
-	Description string    `json:"description"`
-	StartsAt    string    `json:"startsAt"`
-	EndsAt      string    `json:"endsAt"`
-	Created     time.Time `json:"@timestamp"`
-	Cloud       string    `json:"cloud"`
-	Hostgroup   string    `json:"hostgroup"`
-	Hostnmae    string    `json:"hostname"`
+	Source          string    `json:"source"`           // 消息来源 (Prometheus, Zabbix, GitLab等)
+	Channel         string    `json:"channel"`          // 转发渠道 (wx, dd, fs, email, alydh等)
+	Status          string    `json:"status"`           // 发送状态 ("success", "failed")
+	Result          string    `json:"result"`           // 详细结果 (返回的response或Error信息)
+	Summary         string    `json:"summary"`          // 告警摘要
+	OriginalPayload string    `json:"original_payload"` // 原始消息内容 (RequestBody)
+	Timestamp       time.Time `json:"@timestamp"`       // ES 默认时间戳
 }
 
 func init() {
@@ -86,13 +80,6 @@ func init() {
 }
 
 func Insert(index string, alert AlertES) {
-	// GetCSTtime 将日期格式从 "2024-06-06T11:00:00Z" 转成了 "2024-06-06 11:00:00"
-	// 插入 es 时默认把 starsat 和 endsat 识别为 date，导致格式不匹配的错误。
-	if PCstTime == 1 {
-		alert.StartsAt = timeConvert(alert.StartsAt)
-		alert.EndsAt = timeConvert(alert.EndsAt)
-	}
-
 	doc, err := json.Marshal(alert)
 	if err != nil {
 		logs.Error("[elasticsearch] error marshaling document: %w", err)
@@ -119,17 +106,4 @@ func Insert(index string, alert AlertES) {
 	}
 
 	logs.Info("[elasticsearch] alert document indexed successfully in index %s", index)
-}
-
-func timeConvert(csttime string) string {
-	loc, _ := time.LoadLocation("Asia/Shanghai")
-	t, err := time.ParseInLocation("2006-01-02 15:04:05", csttime, loc)
-	if err != nil {
-		return ""
-	}
-
-	_, offset := t.Zone()
-	utcTime := t.Add(time.Duration(-offset) * time.Second)
-
-	return utcTime.Format("2006-01-02T15:04:05Z")
 }

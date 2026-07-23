@@ -140,6 +140,7 @@ func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 	sdkappid := beego.AppConfig.String("TXY_DH_phonecallsdkappid")
 	tpl_id, _ := beego.AppConfig.Int("TXY_DH_phonecalltpl_id")
 	//腾讯短信接口算法部分
+	var errorCollector []string
 	TXmobile := Mobiles{}
 	mobiles := strings.Split(PhoneNumbers, ",")
 	for _, m := range mobiles {
@@ -161,11 +162,17 @@ func PostTXphonecall(Messages string, PhoneNumbers, logsign string) string {
 			Time:      intTime,
 		}
 		res := PhoneCallPost(TXurl, u, logsign)
+		if !strings.Contains(res, `"result":0`) {
+			errorCollector = append(errorCollector, fmt.Sprintf("to %s failed: %s", m, res))
+		}
 		logs.Info(logsign, "[txphonecall] [send-success] Target CalledNumber:", m, "| Response:", res)
 	}
 	models.AlertToCounter.WithLabelValues("txdh").Add(1)
 	ChartsJson.Txdh += 1
-	return PhoneNumbers + " Called Over."
+	if len(errorCollector) > 0 {
+		return strings.Join(errorCollector, "; ")
+	}
+	return PhoneNumbers + " all called successfully."
 }
 
 func PhoneCallPost(url string, u TXphonecall, logsign string) string {

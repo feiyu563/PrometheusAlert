@@ -39,9 +39,11 @@ func SendBark(msg, logsign string) string {
 		get, err := sendBark(urlprefix)
 		if err != nil {
 			logs.Error(logsign, "[bark]", fmt.Errorf("send to %s, err: %v", u, err))
+			return err.Error()
 		}
 		if get.Code != 200 {
 			logs.Error(logsign, "[bark]", fmt.Errorf("send to %s, get code: %d", u, get.Code))
+			return fmt.Sprintf("failed: get code %d, message: %s", get.Code, get.Message)
 		}
 	}
 	models.AlertToCounter.WithLabelValues("bark").Add(1)

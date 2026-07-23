@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
+	"fmt"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -26,6 +27,7 @@ func PostBDYmessage(Messages, PhoneNumbers, logsign string) string {
 	//smsClient.Config.Retry = bce.NewNoRetryPolicy()
 	// 配置连接超时时间为30秒
 	smsClient.Config.ConnectionTimeoutInMillis = 30 * 1000
+	var errorCollector []string
 	contentMap := make(map[string]interface{})
 	contentMap["code"] = Messages
 	mobiles := strings.Split(PhoneNumbers, ",")
@@ -39,10 +41,19 @@ func PostBDYmessage(Messages, PhoneNumbers, logsign string) string {
 		result, err := smsClient.SendSms(sendSmsArgs)
 		if err != nil {
 			logs.Error(logsign, "[bdymessage]", "send sms to %s error, %s", m, err)
+			errorCollector = append(errorCollector, fmt.Sprintf("to %s failed: %s", m, err.Error()))
+			continue
+		}
+		if result.Code != "1000" && result.Code != "OK" {
+			errorCollector = append(errorCollector, fmt.Sprintf("to %s failed: code %s, msg %s", m, result.Code, result.Message))
+			logs.Error(logsign, "[bdymessage]", "send sms to %s failed, code: %s, message: %s", m, result.Code, result.Message)
 		}
 		logs.Info(logsign, "[bdymessage]", "send sms success to %s . %s", m, result)
 	}
 	models.AlertToCounter.WithLabelValues("bdydx").Add(1)
 	ChartsJson.Bdydx += 1
-	return PhoneNumbers + " SendMessages Over."
+	if len(errorCollector) > 0 {
+		return strings.Join(errorCollector, "; ")
+	}
+	return PhoneNumbers + " all sent successfully."
 }

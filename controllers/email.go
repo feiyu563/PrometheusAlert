@@ -3,10 +3,11 @@ package controllers
 import (
 	"PrometheusAlert/models"
 	"crypto/tls"
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/go-gomail/gomail"
-	"strings"
 )
 
 // SendEmail
@@ -48,6 +49,7 @@ func SendEmail(EmailBody, Emails, EmailTitle, logsign string) string {
 	ChartsJson.Email += 1
 	if err != nil {
 		logs.Error(logsign, "[email]", err.Error())
+		return err.Error()
 	}
 	logs.Info(logsign, "[email]", "email send ok to "+Emails)
 	return "email send ok to " + Emails

@@ -2,10 +2,8 @@ package controllers
 
 import (
 	"PrometheusAlert/models"
-	"PrometheusAlert/models/elastic"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	tmplhtml "html/template"
 	"regexp"
 	"strings"
@@ -228,10 +226,9 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 			for _, AlertValue := range Alerts_Value {
 				p_alertmanager_json["alerts"] = Alerts_Value[0:0]
 				p_alertmanager_json["alerts"] = append(p_alertmanager_json["alerts"].([]interface{}), AlertValue)
-				go SetRecord(AlertValue)
 				//提取 prometheus 告警消息中的 label，用于和告警路由比对
 				xalert := AlertValue.(map[string]interface{})
-				
+
 				// 提取alertname & labels
 				alertName := ""
 				if labels, ok := xalert["labels"].(map[string]interface{}); ok {
@@ -458,83 +455,6 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 	}
 
 	return return_Msgs
-}
-
-// 处理告警记录
-func SetRecord(AlertValue interface{}) {
-	var Alertname, Status, Level, Labels, Instance, Summary, Description, StartAt, EndAt string
-	xalert := AlertValue.(map[string]interface{})
-	PCstTime, _ := beego.AppConfig.Int("prometheus_cst_time")
-	StartAt = xalert["startsAt"].(string)
-	EndAt = xalert["endsAt"].(string)
-	if PCstTime == 1 {
-		StartAt = GetCSTtime(xalert["startsAt"].(string))
-		EndAt = GetCSTtime(xalert["endsAt"].(string))
-	}
-
-	Status = xalert["status"].(string)
-	//get labels
-
-	//get alertname
-	if xalert["labels"].(map[string]interface{})["alertname"] != nil {
-		Alertname = xalert["labels"].(map[string]interface{})["alertname"].(string)
-	}
-	if xalert["labels"].(map[string]interface{})["level"] != nil {
-		Level = xalert["labels"].(map[string]interface{})["level"].(string)
-	}
-	if xalert["labels"].(map[string]interface{})["instance"] != nil {
-		Instance = xalert["labels"].(map[string]interface{})["instance"].(string)
-	}
-	labelsJsonStr, err := json.Marshal(xalert["labels"].(map[string]interface{}))
-	if err != nil {
-		logs.Error("转换lables失败：", err)
-	} else {
-		Labels = string(labelsJsonStr)
-	}
-
-	//get description
-	if xalert["annotations"].(map[string]interface{})["description"] != nil {
-		Description = xalert["annotations"].(map[string]interface{})["description"].(string)
-	}
-	//get summary
-	if xalert["annotations"].(map[string]interface{})["summary"] != nil {
-		Summary = xalert["annotations"].(map[string]interface{})["summary"].(string)
-	}
-
-	// 统一合并至新版 AddRecord 方案，废弃旧版分裂数据库写入，保留 ES 推送
-	/*
-	if beego.AppConfig.String("AlertRecord") == "1" && !models.GetRecordExist(Alertname, Level, Labels, Instance, StartAt, EndAt, Summary, Description, Status) {
-		models.AddAlertRecord(Alertname,
-			Level,
-			Labels,
-			Instance,
-			StartAt,
-			EndAt,
-			Summary,
-			Description,
-			Status)
-	}
-	*/
-
-	// 告警写入ES
-	if beego.AppConfig.DefaultString("alert_to_es", "0") == "1" {
-		dt := time.Now()
-		dty, dtm := dt.Year(), int(dt.Month())
-		esIndex := fmt.Sprintf("prometheusalert-%d%02d", dty, dtm)
-		alert := &elastic.AlertES{
-			Alertname:   Alertname,
-			Status:      Status,
-			Instance:    Instance,
-			Level:       Level,
-			Labels:      Labels,
-			Summary:     Summary,
-			Description: Description,
-			StartsAt:    StartAt,
-			EndsAt:      EndAt,
-			Created:     dt,
-		}
-		go elastic.Insert(esIndex, *alert)
-	}
 }
 
 // 消息模版化

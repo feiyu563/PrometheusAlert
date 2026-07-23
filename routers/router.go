@@ -35,6 +35,12 @@ func init() {
 	beego.Router("/alertrouter/changestatus", &controllers.MainController{}, "post:RouterChangeStatus")
 	beego.Router("/alertrouter/del", &controllers.MainController{}, "get:RouterDel")
 
+	beego.Router("/oncall", &controllers.MainController{}, "get:OnCall")
+	beego.Router("/oncall/add", &controllers.MainController{}, "get:OnCallAdd")
+	beego.Router("/oncall/edit", &controllers.MainController{}, "get:OnCallEdit")
+	beego.Router("/oncall/save", &controllers.MainController{}, "post:SaveOnCall")
+	beego.Router("/oncall/del", &controllers.MainController{}, "get:OnCallDel")
+
 	//system config
 	beego.Router("/system/config", &controllers.MainController{}, "get:SystemConfig")
 	beego.Router("/system/config/save", &controllers.MainController{}, "post:SaveSystemConfig")

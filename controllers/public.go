@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"bufio"
+	"PrometheusAlert/models"
+	"encoding/json"
 	"fmt"
 	"math/rand"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -42,7 +42,7 @@ func GetTime(timeStr interface{}, timeFormat ...string) string {
 }
 
 // 转换时间为持续时长
-func GetTimeDuration(startTime string,endTime string) string {
+func GetTimeDuration(startTime string, endTime string) string {
 	var tm = "N/A"
 	if startTime != "" && endTime != "" {
 		starT1 := startTime[0:10]
@@ -89,9 +89,9 @@ func GetTimeDuration(startTime string,endTime string) string {
 
 // 转换任意时区到CST
 func GetCSTtime(date string) string {
-	var t time.Time                                                       
-    var cstLoc *time.Location                                                                
-    cstLoc = time.FixedZone("CST", 8*3600)
+	var t time.Time
+	var cstLoc *time.Location
+	cstLoc = time.FixedZone("CST", 8*3600)
 	if date == "" {
 		// 获取当前时间并转换为 CST
 		t = time.Now().In(cstLoc)
@@ -137,45 +137,57 @@ func TimeFormat(timestr, format string) string {
 
 // 获取用户号码
 func GetUserPhone(neednum int) string {
-	//判断是否存在user.csv文件
-	Num := beego.AppConfig.String("defaultphone")
+	defaultPhone := beego.AppConfig.String("defaultphone")
+	if neednum <= 0 {
+		return defaultPhone
+	}
+
+	onCallTime := 10 // 默认 10 点
+	if onCallTimeStr := beego.AppConfig.String("OnCallTime"); onCallTimeStr != "" {
+		if val, err := strconv.Atoi(onCallTimeStr); err == nil {
+			onCallTime = val
+		}
+	}
+
 	Today := time.Now()
-	//判断当前时间是否大于10点,大于10点取当天值班号码,小于10点取前一天值班号码
+	//判断当前时间是否大于换班时间,大于取当天值班号码,小于取前一天值班号码
 	DayString := ""
-	if time.Now().Hour() >= 10 {
+	if time.Now().Hour() >= onCallTime {
 		//取当天值班号码
 		DayString = Today.Format("2006年1月2日")
 	} else {
 		//取前一天值班号码
 		DayString = Today.AddDate(0, 0, -1).Format("2006年1月2日")
 	}
-	_, err := os.Stat("user.csv")
-	if err == nil {
-		f, err := os.Open("user.csv")
-		if err != nil {
-			logs.Error(err.Error())
-		}
-		defer f.Close()
-		rd := bufio.NewReader(f)
-		for {
-			line, err := rd.ReadString('\n') //以'\n'为结束符读入一行
-			if err != nil {
-				if err.Error() != "EOF" {
-					logs.Error(err.Error())
-				}
-				break
-			}
-			if strings.Contains(line, DayString) {
-				x := strings.Split(line, ",")
-				Num = x[neednum]
-				break
-			}
-		}
-		f.Close()
-	} else {
-		logs.Error(err.Error())
+
+	oc, err := models.GetOnCallByDateString(DayString)
+	if err != nil {
+		logs.Warn("Could not find on-call schedule for date:", DayString, ". Falling back to default phone. Error:", err)
+		return defaultPhone
 	}
-	return Num
+
+	var users []models.OnCallUser
+	err = json.Unmarshal([]byte(oc.Users), &users)
+	if err != nil {
+		logs.Error("Error parsing on-call users JSON for date:", DayString, ". Error:", err)
+		return defaultPhone
+	}
+
+	if len(users) == 0 {
+		return defaultPhone
+	}
+
+	userIndex := (neednum - 1) / 2
+	if userIndex < 0 || userIndex >= len(users) {
+		logs.Warn("On-call user index out of bounds for date:", DayString, ". neednum:", neednum, ", but only", len(users), "users configured. Falling back to default phone.")
+		return defaultPhone // Not enough users configured or invalid neednum
+	}
+
+	if (neednum-1)%2 == 0 { // Phone number is at odd positions (1, 3, 5...)
+		return users[userIndex].Phone
+	}
+	// Name is at even positions (2, 4, 6...)
+	return users[userIndex].Name
 }
 
 // 随机返回
