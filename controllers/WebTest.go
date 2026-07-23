@@ -2,10 +2,16 @@ package controllers
 
 import (
 	"encoding/json"
+
 	"github.com/astaxie/beego"
 )
 
 func (c *MainController) AlertTest() {
+	if !CheckAccount(c.Ctx) {
+		c.Data["json"] = "unauthorized"
+		c.ServeJSON()
+		return
+	}
 	MessageData := c.Input().Get("mtype")
 	logsign := "[" + LogsSign() + "]"
 	switch MessageData {

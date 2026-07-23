@@ -3,10 +3,11 @@ package controllers
 import (
 	"PrometheusAlert/models"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 // template page
@@ -50,7 +51,7 @@ func (c *MainController) AddTpl() {
 	t_use := c.Input().Get("use")
 	content := c.Input().Get("content")
 	contentType := c.Input().Get("contentType")
-	
+
 	// 持久化预设终端参数
 	targetUrl := c.Input().Get("purl")
 	atSomeOne := c.Input().Get("pat")
@@ -78,6 +79,11 @@ func (c *MainController) AddTpl() {
 }
 
 func (c *MainController) ImportTpl() {
+	if !CheckAccount(c.Ctx) {
+		c.Data["json"] = "unauthorized"
+		c.ServeJSON()
+		return
+	}
 	var imTpl []*models.PrometheusAlertDB
 	logs.Debug(strings.Replace(string(c.Ctx.Input.RequestBody), "\n", "", -1))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &imTpl)

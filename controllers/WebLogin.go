@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"crypto/sha256"
+	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )
@@ -21,7 +24,8 @@ func (c *LoginController) Get() {
 	//判断是否为退出操作
 	if c.Input().Get("exit") == "true" {
 		c.Ctx.SetCookie("username", "", -1, "/")
-		c.Ctx.SetCookie("password", "", -1, "/")
+		c.Ctx.SetCookie("logintoken", "", -1, "/")
+		c.Ctx.SetCookie("password", "", -1, "/") // 清除旧版本可能残留的明文密码 cookie
 		c.Redirect("/", 302)
 		return
 	}
@@ -34,13 +38,16 @@ func (c *LoginController) Post() {
 	password := c.Input().Get("password")
 	autologin := c.Input().Get("autologin") == "on"
 	//判断用户名密码是否正确
-	if beego.AppConfig.String("login_user") == username && beego.AppConfig.String("login_password") == password {
+	cfgUser := beego.AppConfig.String("login_user")
+	cfgPwd := beego.AppConfig.String("login_password")
+	if cfgUser == username && cfgPwd == password {
 		maxage := 0
 		if autologin {
 			maxage = 1<<31 - 1
 		}
+		token := fmt.Sprintf("%x", sha256.Sum256([]byte(username+password+"PrometheusAlert")))
 		c.Ctx.SetCookie("username", username, maxage, "/")
-		c.Ctx.SetCookie("password", password, maxage, "/")
+		c.Ctx.SetCookie("logintoken", token, maxage, "/")
 		c.Redirect("/", 301)
 		return
 	} else {
@@ -58,17 +65,18 @@ func (c *LoginController) Post() {
 	//return
 }
 
-//检查cookie是否为登录状态
+// 检查cookie是否为登录状态
 func CheckAccount(mycookie *context.Context) bool {
-	ck, err := mycookie.Request.Cookie("username")
+	ckUser, err := mycookie.Request.Cookie("username")
 	if err != nil {
 		return false
 	}
-	username := ck.Value
-	ck, err = mycookie.Request.Cookie("password")
+	ckToken, err := mycookie.Request.Cookie("logintoken")
 	if err != nil {
 		return false
 	}
-	password := ck.Value
-	return beego.AppConfig.String("login_user") == username && beego.AppConfig.String("login_password") == password
+	cfgUser := beego.AppConfig.String("login_user")
+	cfgPwd := beego.AppConfig.String("login_password")
+	expectedToken := fmt.Sprintf("%x", sha256.Sum256([]byte(cfgUser+cfgPwd+"PrometheusAlert")))
+	return ckUser.Value == cfgUser && ckToken.Value == expectedToken
 }
