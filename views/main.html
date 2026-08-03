@@ -1,6 +1,7 @@
 {{define "main"}}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,179 +16,246 @@
   <!-- flag-icon-css -->
   <link rel="stylesheet" href="/static/plugins/flag-icon-css/css/flag-icon.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet"href="/static/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+  <style>
+    .brand-text {
+      display: inline-block;
+      max-width: 175px;
+      font-size: 1.1rem;
+      white-space: nowrap;
+    }
+  </style>
 </head>
+
 <body class="hold-transition sidebar-mini">
-<!-- Site wrapper -->
-<div class="wrapper">
+  <!-- Site wrapper -->
+  <div class="wrapper">
 
-  <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="/" class="brand-link">
-      <img src="/static/dist/img/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">{{.AppTitle}}</span>
-    </a>
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="/" class="brand-link">
+        <img src="/static/dist/img/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+          style="opacity: .8">
+        <span class="brand-text font-weight-light">{{.AppTitle}}</span>
+      </a>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
+      <!-- Sidebar -->
+      <div class="sidebar">
 
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-			   
-          <li class="nav-item">
-            <a href="/" {{if .IsIndex}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                仪表板
-              </p>
-            </a>
-          </li>
-		  
-          <li {{if .IsTemplateMenu}}class="nav-item menu-open"{{else}}class="nav-item"{{end}}>
-            <a href="#" {{if .IsTemplateMenu}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                模板管理
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-			
-            <ul class="nav nav-treeview">
-			
-              <li class="nav-item">
-                <a href="/template" {{if .IsTemplate}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="fas fa-heart nav-icon"></i>
-                  <p>自定义模版</p>
-                </a>
-              </li>
-			  
-              <li class="nav-item">
-                <a href="/markdowntest" {{if .IsMarkDownTest}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="far fa-image nav-icon"></i>
-                  <p>模板测试</p>
-                </a>
-              </li>
-			  
-            </ul>
-          </li>
-		  
-          <li {{if .IsAlertManageMenu}}class="nav-item menu-open"{{else}}class="nav-item"{{end}}>
-            <a href="#" {{if .IsAlertManageMenu}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-              <i class="nav-icon fa fa-bell"></i>
-              <p>
-                告警管理
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-			
-            <ul class="nav nav-treeview">
-			  
-              <li class="nav-item">
-                <a href="/alertrouter" {{if .IsAlertRouter}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="fas fa-inbox nav-icon"></i>
-                  <p>告警路由</p>
-                </a>
-              </li>
 
-              <li class="nav-item">
-                <a href="/test" {{if .IsTest}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="fas fa-bullhorn nav-icon"></i>
-                  <p>告警测试</p>
-                </a>
-              </li>
+            <li class="nav-item">
+              <a href="/" {{if .IsIndex}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  仪表板
+                </p>
+              </a>
+            </li>
 
-              <li class="nav-item">
-                <a href="/record" {{if .IsRecord}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-                  <i class="fas fa-book nav-icon"></i>
-                  <p>告警记录</p>
-                </a>
-              </li>
+            <li {{if .IsTemplateMenu}}class="nav-item menu-open" {{else}}class="nav-item" {{end}}>
+              <a href="#" {{if .IsTemplateMenu}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                <i class="nav-icon fas fa-chart-pie"></i>
+                <p>
+                  模板管理
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
 
-            </ul>
-          </li>
+              <ul class="nav nav-treeview">
 
-          <li class="nav-item">
-            <a href="/oncall" {{if .IsOnCall}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-              <i class="nav-icon fas fa-calendar-alt"></i>
-              <p>
-                值班管理
-              </p>
-            </a>
-          </li>
+                <li class="nav-item">
+                  <a href="/template" {{if .IsTemplate}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                    <i class="fas fa-heart nav-icon"></i>
+                    <p>自定义模版</p>
+                  </a>
+                </li>
 
-          <li class="nav-item">
-            <a href="/system/config" {{if .IsSystemConfig}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-              <i class="nav-icon fas fa-cog"></i>
-              <p>
-                系统设置
-              </p>
-            </a>
-          </li>
+                <li class="nav-item">
+                  <a href="/markdowntest" {{if .IsMarkDownTest}}class="nav-link active" {{else}}class="nav-link"
+                    {{end}}>
+                    <i class="far fa-image nav-icon"></i>
+                    <p>模板测试</p>
+                  </a>
+                </li>
 
+              </ul>
+            </li>
 
-          <li class="nav-item">
-            <a href="/servicelog" {{if .IsServiceLog}}class="nav-link active"{{else}}class="nav-link"{{end}}>
-              <i class="nav-icon fas fa-file-alt"></i>
-              <p>
-                服务日志
-                <span class="right badge badge-info">Log</span>
-              </p>
-            </a>
-          </li>
+            <li {{if .IsAlertManageMenu}}class="nav-item menu-open" {{else}}class="nav-item" {{end}}>
+              <a href="#" {{if .IsAlertManageMenu}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                <i class="nav-icon fa fa-bell"></i>
+                <p>
+                  告警管理
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+
+              <ul class="nav nav-treeview">
+
+                <li class="nav-item">
+                  <a href="/alertrouter" {{if .IsAlertRouter}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                    <i class="fas fa-inbox nav-icon"></i>
+                    <p>告警路由</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="/test" {{if .IsTest}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                    <i class="fas fa-bullhorn nav-icon"></i>
+                    <p>告警测试</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="/record" {{if .IsRecord}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                    <i class="fas fa-book nav-icon"></i>
+                    <p>告警记录</p>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="/oncall" {{if .IsOnCall}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>
+                  值班管理
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="/system/config" {{if .IsSystemConfig}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                <i class="nav-icon fas fa-cog"></i>
+                <p>
+                  系统设置
+                </p>
+              </a>
+            </li>
 
 
-        </ul>
-      </nav>
-      <!-- /.sidebar-menu -->
-    </div>
-    <!-- /.sidebar -->
-  </aside>
-{{end}}
+            <li class="nav-item">
+              <a href="/servicelog" {{if .IsServiceLog}}class="nav-link active" {{else}}class="nav-link" {{end}}>
+                <i class="nav-icon fas fa-file-alt"></i>
+                <p>
+                  服务日志
+                  <span class="right badge badge-info">Log</span>
+                </p>
+              </a>
+            </li>
 
-{{define "endhtml"}}
 
-  <footer class="main-footer">
-    <strong>PrometheusAlert <a href="https://github.com/feiyu563/PrometheusAlert">Github</a> && <a href="https://gitee.com/feiyu563/PrometheusAlert">Gitee</a> </strong>
-  </footer>
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
+    {{end}}
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
-</div>
-<!-- ./wrapper -->
+    {{define "endhtml"}}
 
-<!-- jQuery -->
-<script src="/static/plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="/static/dist/js/adminlte.min.js"></script>
-<script src="/static/dist/js/marked.min.js"></script>
-<!-- ChartJS -->
-<script src="/static/plugins/chart.js/Chart.min.js"></script>
-<!-- DataTables  & Plugins -->
-<script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/static/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="/static/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="/static/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="/static/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-<script src="/static/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="/static/plugins/jszip/jszip.min.js"></script>
-<script src="/static/plugins/pdfmake/pdfmake.min.js"></script>
-<script src="/static/plugins/pdfmake/vfs_fonts.js"></script>
-<script src="/static/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-<script src="/static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-<script src="/static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<script src="/static/dist/js/FileSaver.js"></script>
-{{end}}
+    <footer class="main-footer">
+      <strong>PrometheusAlert <a href="https://github.com/feiyu563/PrometheusAlert">Github</a> && <a
+          href="https://gitee.com/feiyu563/PrometheusAlert">Gitee</a> </strong>
+    </footer>
 
-{{define "jshtml"}}
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+
+  <!-- jQuery -->
+  <script src="/static/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="/static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/dist/js/adminlte.min.js"></script>
+  <script src="/static/dist/js/marked.min.js"></script>
+  <!-- ChartJS -->
+  <script src="/static/plugins/chart.js/Chart.min.js"></script>
+  <!-- DataTables  & Plugins -->
+  <script src="/static/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="/static/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/static/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="/static/plugins/jszip/jszip.min.js"></script>
+  <script src="/static/plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="/static/plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="/static/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="/static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="/static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <script src="/static/dist/js/FileSaver.js"></script>
+  <script>
+    (function () {
+      var navbar = document.querySelector("nav.main-header");
+      if (!navbar) {
+        return;
+      }
+
+      fetch("/api/session", { credentials: "same-origin" })
+        .then(function (response) {
+          if (!response.ok) {
+            return null;
+          }
+          return response.json();
+        })
+        .then(function (session) {
+          if (!session || !session.authenticated || !session.username) {
+            return;
+          }
+
+          var navigation = document.createElement("ul");
+          navigation.className = "navbar-nav ml-auto";
+
+          var item = document.createElement("li");
+          item.className = "nav-item dropdown";
+
+          var toggle = document.createElement("a");
+          toggle.className = "nav-link dropdown-toggle";
+          toggle.href = "#";
+          toggle.setAttribute("data-toggle", "dropdown");
+          toggle.setAttribute("aria-haspopup", "true");
+          toggle.setAttribute("aria-expanded", "false");
+
+          var userIcon = document.createElement("i");
+          userIcon.className = "fas fa-user mr-1";
+          toggle.appendChild(userIcon);
+          toggle.appendChild(document.createTextNode(session.username));
+
+          var menu = document.createElement("div");
+          menu.className = "dropdown-menu dropdown-menu-right";
+
+          var logout = document.createElement("a");
+          logout.className = "dropdown-item";
+          logout.href = "/login?exit=true";
+          logout.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>退出登录';
+          menu.appendChild(logout);
+
+          item.appendChild(toggle);
+          item.appendChild(menu);
+          navigation.appendChild(item);
+          navbar.appendChild(navigation);
+        })
+        .catch(function () { });
+    })();
+  </script>
+  {{end}}
+
+  {{define "jshtml"}}
 </body>
+
 </html>
 {{end}}
