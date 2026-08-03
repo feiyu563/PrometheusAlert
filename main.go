@@ -3,6 +3,7 @@ package main
 import (
 	"PrometheusAlert/models"
 	_ "PrometheusAlert/routers"
+	"io"
 	"os"
 	"path"
 
@@ -23,23 +24,53 @@ func IsExist(path string) bool {
 	return err == nil || os.IsExist(err)
 }
 
+func sqliteDBPath() string {
+	return beego.AppConfig.DefaultString("db_path", "./db/PrometheusAlertDB.db")
+}
+
+func ensureSQLiteDB(dbName string) error {
+	if IsExist(dbName) {
+		return nil
+	}
+
+	if err := os.MkdirAll(path.Dir(dbName), os.ModePerm); err != nil {
+		return err
+	}
+
+	const seedDB = "./db/PrometheusAlertDB.db"
+	if dbName != seedDB && IsExist(seedDB) {
+		source, err := os.Open(seedDB)
+		if err != nil {
+			return err
+		}
+		defer source.Close()
+
+		target, err := os.Create(dbName)
+		if err != nil {
+			return err
+		}
+		defer target.Close()
+
+		_, err = io.Copy(target, source)
+		return err
+	}
+
+	file, err := os.Create(dbName)
+	if err != nil {
+		return err
+	}
+	return file.Close()
+}
+
 func init() {
 	dbDriver := beego.AppConfig.String("db_driver")
 	switch dbDriver {
 	case "sqlite3":
 		// 检查数据库文件
-		DbName := "./db/PrometheusAlertDB.db"
-		if !IsExist(DbName) {
-			err := os.MkdirAll(path.Dir(DbName), os.ModePerm)
-			if err != nil {
-				logs.Error(err)
-				return
-			}
-			_, err = os.Create(DbName)
-			if err != nil {
-				logs.Error(err)
-				return
-			}
+		DbName := sqliteDBPath()
+		if err := ensureSQLiteDB(DbName); err != nil {
+			logs.Error(err)
+			return
 		}
 		// 注册驱动（“sqlite3” 属于默认注册，此处代码可省略）
 		err := orm.RegisterDriver("db_driver", orm.DRSqlite)
@@ -83,18 +114,10 @@ func init() {
 		orm.SetMaxOpenConns("default", 10)
 	default:
 		// 检查数据库文件
-		Db_name := "./db/PrometheusAlertDB.db"
-		if !IsExist(Db_name) {
-			err := os.MkdirAll(path.Dir(Db_name), os.ModePerm)
-			if err != nil {
-				logs.Error(err)
-				return
-			}
-			_, err = os.Create(Db_name)
-			if err != nil {
-				logs.Error(err)
-				return
-			}
+		Db_name := sqliteDBPath()
+		if err := ensureSQLiteDB(Db_name); err != nil {
+			logs.Error(err)
+			return
 		}
 		// 注册驱动（“sqlite3” 属于默认注册，此处代码可省略）
 		err := orm.RegisterDriver("db_driver", orm.DRSqlite)

@@ -11,6 +11,27 @@
   <link rel="stylesheet" href="/static/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet"href="/static/dist/css/adminlte.min.css">
+  <style>
+    .sso-login-button {
+      color: #007bff;
+      background-color: #fff;
+      border-color: #007bff;
+    }
+    .sso-login-button:hover,
+    .sso-login-button:focus {
+      color: #0056b3;
+      background-color: #f2f4f6;
+      border-color: #0069d9;
+      box-shadow: none;
+    }
+    .sso-login-button:not(:disabled):not(.disabled):active,
+    .show > .sso-login-button.dropdown-toggle {
+      color: #0056b3;
+      background-color: #e2e6ea;
+      border-color: #005cbf;
+      box-shadow: none;
+    }
+  </style>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -56,7 +77,14 @@
         </div>
       </form>
 
-
+      {{if .SSOEnabled}}
+      <div class="text-center my-3">
+        <span class="text-muted">或</span>
+      </div>
+      <a href="/sso/login" class="btn btn-primary btn-block sso-login-button">
+        <i class="fas fa-sign-in-alt mr-2"></i>使用 OIDC 登录
+      </a>
+      {{end}}
 
       <div class="social-auth-links text-center mb-3">
 	  {{if .loginerror}}

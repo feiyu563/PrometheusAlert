@@ -10,6 +10,9 @@ func init() {
 	//page
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/login", &controllers.LoginController{})
+	beego.Router("/sso/login", &controllers.LoginController{}, "get:SSOLogin")
+	beego.Router("/sso/callback", &controllers.LoginController{}, "get:SSOCallback")
+	beego.Router("/api/session", &controllers.LoginController{}, "get:Session")
 
 	beego.Router("/template", &controllers.MainController{}, "get:Template")
 	beego.Router("/template/add", &controllers.MainController{}, "get:TemplateAdd")

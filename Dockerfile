@@ -1,4 +1,4 @@
-FROM golang:1.20.6-alpine3.18 as builder
+FROM golang:1.25.0-alpine3.22 as builder
 
 WORKDIR $GOPATH/src/github.com/feiyu563/PrometheusAlert
 
@@ -14,7 +14,7 @@ COPY . $GOPATH/src/github.com/feiyu563/PrometheusAlert
 RUN go build
 
 # -----------------------------------------------------------------------------
-FROM alpine:3.18
+FROM alpine:3.22
 
 LABEL maintainer="jikun.zhang"
 
