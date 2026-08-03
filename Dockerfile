@@ -14,7 +14,7 @@ COPY . $GOPATH/src/github.com/feiyu563/PrometheusAlert
 RUN go build
 
 # -----------------------------------------------------------------------------
-FROM alpine:3.18
+FROM alpine:3.22
 
 LABEL maintainer="jikun.zhang"
 
