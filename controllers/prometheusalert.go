@@ -263,7 +263,12 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 						logs.Error(logsign, "[template] [render-failed] Template Name:", Return_pMsg.Tpl, "| Error:", err.Error())
 						message = err.Error()
 						if beego.AppConfig.String("AlertRecord") == "1" {
-							models.AddRecord("Prometheus", Return_pMsg.Type, "failed", err.Error(), "模板渲染失败", string(c.Ctx.Input.RequestBody))
+							// 记录告警
+							err := models.AddRecord("Prometheus", Return_pMsg.Type, "failed", err.Error(), "模板渲染失败",
+								string(c.Ctx.Input.RequestBody))
+							if err != nil {
+								logs.Error(logsign, "告警入库写入失败 "+err.Error())
+							}
 						}
 					} else {
 						logs.Info(logsign, "[template] [render-success] Template Name:", Return_pMsg.Tpl)
@@ -274,7 +279,12 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 							if strings.Contains(message, "failed") || strings.Contains(message, "error") || strings.Contains(message, "错误") {
 								status = "failed"
 							}
-							models.AddRecord("Prometheus", Return_pMsg.Type, status, message, msg, string(c.Ctx.Input.RequestBody))
+							// 记录告警
+							err := models.AddRecord("Prometheus", Return_pMsg.Type, status, message, msg,
+								string(c.Ctx.Input.RequestBody))
+							if err != nil {
+								logs.Error(logsign, "告警入库写入失败 "+err.Error())
+							}
 						}
 					}
 
@@ -306,7 +316,12 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 				logs.Error(logsign, "[template] [render-failed] Template Name:", PrometheusAlertTpl.Tplname, "| Error:", err.Error())
 				message = err.Error()
 				if beego.AppConfig.String("AlertRecord") == "1" {
-					models.AddRecord("Prometheus", pMsg.Type, "failed", err.Error(), "模板渲染失败", string(c.Ctx.Input.RequestBody))
+					// 记录告警
+					err := models.AddRecord("Prometheus", pMsg.Type, "failed", err.Error(), "模板渲染失败",
+						string(c.Ctx.Input.RequestBody))
+					if err != nil {
+						logs.Error(logsign, "告警入库写入失败 "+err.Error())
+					}
 				}
 			} else {
 				logs.Info(logsign, "[template] [render-success] Template Name:", PrometheusAlertTpl.Tplname)
@@ -317,7 +332,12 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 					if strings.Contains(message, "failed") || strings.Contains(message, "error") || strings.Contains(message, "错误") {
 						status = "failed"
 					}
-					models.AddRecord("Prometheus", pMsg.Type, status, message, msg, string(c.Ctx.Input.RequestBody))
+					// 记录告警
+					err := models.AddRecord("Prometheus", pMsg.Type, status, message, msg,
+						string(c.Ctx.Input.RequestBody))
+					if err != nil {
+						logs.Error(logsign, "告警入库写入失败 "+err.Error())
+					}
 				}
 			}
 		}
