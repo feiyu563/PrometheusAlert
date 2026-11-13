@@ -3,7 +3,7 @@
 
 #### 1.钉钉机器人、企业微信机器人均已经支持@某人的功能。使用时，需要在Url中加入`&at= 1539510xxxx`；如需添加多个@目标，用,号分割即可。此处需注意：钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号。
 
-`示例：http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx&at= 1539510xxxx`
+`示例：http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&ddurl=https://oapi.dingtalk.com/robot/send?access_token=xxxx&at=1539510xxxx`
 
 
 #### 2.url参数中 `ddurl、wxurl、fsurl、phone、email、wxuser、wxparty、wxtag、groupid `等可不写，如不写这些参数，则会默认去读取配置文件中的对应参数发送消息。
@@ -35,3 +35,14 @@
 #### 7.模版数据等信息均存储在程序目录的下的`db/PrometheusAlertDB.db`中。
 
 #### 8.关于优先级问题：路由功能 > URL参数 > app.conf
+
+#### 9. url 参数中新增有 `useAlertName=true` 参数，用于使用 `AlertName` 作为渠道通知的消息预览文字
+默认情况下告警消息的预览文字为 `PrometheusAlert` 配置文件定义值，利用此参数可以将**告警名称**作为预览文字显示在未读消息中。
+```shell
+## add &useAlertName=true
+http://[prometheusalert_url]:8080/prometheusalert?type=dd&tpl=prometheus-dd&useAlertName=true
+```
+
+该特性适用于如下渠道：
+- [x] dingding (钉钉)
+- [x] feishu (飞书)

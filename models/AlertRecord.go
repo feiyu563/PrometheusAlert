@@ -15,12 +15,12 @@ type AlertRecord struct {
 	Id          int64
 	Alertname   string
 	AlertLevel  string
-	Labels      string
+	Status      string
 	Instance    string
 	StartsAt    string
 	EndsAt      string
-	Summary     string
-	Description string
+	Summary     string `orm:"type(text)"`
+	Description string `orm:"type(text)"`
 	AlertStatus string
 	CreatedTime time.Time
 	UpdatedBy   string
@@ -60,7 +60,7 @@ func AddAlertRecord(alertname, alertLevel, labels, instance, startsAt, endsAt, s
 		//Id: id,
 		Alertname:   alertname,
 		AlertLevel:  alertLevel,
-		Labels:      labels,
+		Status:      labels,
 		Instance:    instance,
 		StartsAt:    startsAt,
 		EndsAt:      endsAt,
@@ -153,7 +153,7 @@ func AddRecord(source, channel, status, result, summary, originalContent string)
 	alertRecord := &AlertRecord{
 		Alertname:   source,      // 消息来源 (Prometheus, Zabbix, GitLab等)
 		AlertLevel:  channel,     // 转发渠道 (wx, dd, fs, email, alydh等)
-		Labels:      finalStatus, // 状态 ("success", "failed")
+		Status:      finalStatus, // 状态 ("success", "failed")
 		Instance:    result,      // 详细结果 (返回的response或Error信息)
 		StartsAt:    time.Now().Format("2006-01-02 15:04:05"),
 		EndsAt:      time.Now().Format("2006-01-02 15:04:05"),
@@ -380,7 +380,7 @@ func (r *AlertRecord) ToDisplay() DisplayRecord {
 			Channel:         "默认或路由分发",
 			Status:          r.AlertStatus, // firing / resolved
 			Summary:         r.Summary,
-			OriginalPayload: r.Labels, // 原 Prometheus Labels Json
+			OriginalPayload: r.Status, // 原 Prometheus Labels Json
 			Result:          "目标主机: " + r.Instance,
 		}
 	}
