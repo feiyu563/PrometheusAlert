@@ -1,4 +1,37 @@
 {{template "main" .}}
+<style>
+  .code-editor {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background-color: #1e1e1e !important;
+    color: #9cdcfe !important;
+    border: 1px solid #3c3c3c !important;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .code-editor:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25), inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .code-editor-pink {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background-color: #1e1e1e !important;
+    color: #ce9178 !important;
+    border: 1px solid #3c3c3c !important;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .code-editor-pink:focus {
+    border-color: #e83e8c !important;
+    box-shadow: 0 0 0 0.2rem rgba(232,62,140,0.25), inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+</style>
+
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
@@ -10,7 +43,6 @@
         <a href="/template" class="nav-link">模版管理</a>
       </li>
     </ul>
-
   </nav>
   <!-- /.navbar -->
 
@@ -32,15 +64,11 @@
 
       <!-- Default box -->
       <div class="card">
-        <div class="card-header">
-          <h3 class="card-title"></h3>
-
+        <div class="card-header bg-navy">
+          <h3 class="card-title"><i class="fas fa-edit mr-2"></i> 编辑已有的自定义告警通知模版</h3>
           <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse" title="Collapse">
               <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-              <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
@@ -49,25 +77,19 @@
 			<form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
 			<input type="hidden" name="id" value="{{.Template.Id}}">
 			
-			
-			  <div class="row">
+			  <div class="row mb-3">
 				<div class="col-12">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label>*模版名称</label>
-					<input type="text" id="name" name="name" class="form-control" value="{{.Template.Tplname}}">
+					<label class="form-label text-dark">* 模版唯一标识名称 (Tpl Name)</label>
+					<input type="text" id="name" name="name" class="form-control" value="{{.Template.Tplname}}" placeholder="英文、拼音或数字。模版名称不可重复且必须唯一">
 				  </div>
 				</div>
-
 			  </div>
-			
-			<br />
-			
-			  <div class="row">
+
+			  <div class="row mb-3">
 				<div class="col-sm-6">
-				  <!-- select -->
 				  <div class="form-group">
-					<label>*模版类型</label>
+					<label class="form-label text-dark">* 模版通知渠道类型 (Tpl Type)</label>
 					<select class="form-control" name="type" id="type" onchange="typeChange()">
 					<option value="dd" {{if eq .Template.Tpltype "dd"}}selected="selected"{{end}}>钉钉</option>
 					<option value="wx" {{if eq .Template.Tpltype "wx"}}selected="selected"{{end}}>企业微信</option>
@@ -78,11 +100,10 @@
 					<option value="txdh" {{if eq .Template.Tpltype "txdh"}}selected="selected"{{end}}>腾讯云电话</option>
 					<option value="alydx" {{if eq .Template.Tpltype "alydx"}}selected="selected"{{end}}>阿里云短信</option>
 					<option value="alydh" {{if eq .Template.Tpltype "alydh"}}selected="selected"{{end}}>阿里云电话</option>
-					<option value="hwdx" {{if eq .Template.Tpltype "hwdx"}}selected="selected"{{end}}>华为云短信</option>
 					<option value="bddx" {{if eq .Template.Tpltype "bddx"}}selected="selected"{{end}}>百度云短信</option>
 					<option value="rlydh" {{if eq .Template.Tpltype "rlydh"}}selected="selected"{{end}}>容联云电话</option>
-					<option value="rlydh" {{if eq .Template.Tpltype "7moordx"}}selected="selected"{{end}}>七陌短信</option>
-					<option value="rlydh" {{if eq .Template.Tpltype "7moordh"}}selected="selected"{{end}}>七陌语音电话</option>
+					<option value="7moordx" {{if eq .Template.Tpltype "7moordx"}}selected="selected"{{end}}>七陌短信</option>
+					<option value="7moordh" {{if eq .Template.Tpltype "7moordh"}}selected="selected"{{end}}>七陌语音电话</option>
 					<option value="email" {{if eq .Template.Tpltype "email"}}selected="selected"{{end}}>Email</option>
 					<option value="tg" {{if eq .Template.Tpltype "tg"}}selected="selected"{{end}}>Telegram</option>
 					<option value="rl" {{if eq .Template.Tpltype "rl"}}selected="selected"{{end}}>百度Hi(如流)</option>
@@ -90,20 +111,19 @@
 					<option value="fsapp" {{if eq .Template.Tpltype "fsapp"}}selected="selected"{{end}}>飞书机器人应用</option>
 					<option value="kafka" {{if eq .Template.Tpltype "kafka"}}selected="selected"{{end}}>Kafka</option>
 					</select>
-                    {{if eq .Template.Tpltype "webhook"}}
-                    <label>请求的content-type</label>
-                    <select class="form-control" id="contentType" name="contentType">
-                        <option value="application/json" {{if eq .contentType "application/json"}}selected="selected"{{end}}>application/json</option>
-					    <option value="application/x-www-form-urlencoded" {{if eq .contentType "application/x-www-form-urlencoded"}}selected="selected"{{end}}>application/x-www-form-urlencoded</option>
-                    </select>
-                    {{end}}
+                    
+                    <div id="divContentType" {{if eq .Template.Tpltype "webhook"}}{{else}}style="display: none;"{{end}} class="mt-2">
+                        <label class="form-label text-dark small">请求的 Content-Type</label>
+                        <select class="form-control form-control-sm" id="contentType" name="contentType">
+                            <option value="application/json" {{if eq .contentType "application/json"}}selected="selected"{{end}}>application/json</option>
+					        <option value="application/x-www-form-urlencoded" {{if eq .contentType "application/x-www-form-urlencoded"}}selected="selected"{{end}}>application/x-www-form-urlencoded</option>
+                        </select>
+                    </div>
 				  </div>
 				</div>
-				
 				<div class="col-sm-6">
-				  <!-- select -->
 				  <div class="form-group">
-					<label>*模版用途</label>
+					<label class="form-label text-dark">* 模版适配数据来源用途 (Tpl Use)</label>
 					<select class="form-control" name="use" id="use">
 					<option value="Prometheus" {{if eq .Template.Tpluse "Prometheus"}}selected="selected"{{end}}>Prometheus</option>
 					<option value="Graylog2" {{if eq .Template.Tpluse "Graylog2"}}selected="selected"{{end}}>Graylog2</option>
@@ -118,85 +138,73 @@
 				  </div>
 				</div>
 			  </div>
-
-			<br />
-
-
-			  <div class="row">
+			
+			  <div class="row mb-3">
 				<div class="col-sm-6">
-				  <!-- textarea -->
 				  <div class="form-group">
-					<label>*模版内容:</label>
-					  <textarea class="form-control" style="color:#dc1aa9;background-color:black" cols="30" rows="10" id="content" name="content">{{.Template.Tpl}}</textarea>
+					<label class="form-label text-dark">* Go text/template 模版语法渲染内容:</label>
+					<textarea class="form-control code-editor-pink" cols="30" rows="12" id="content" name="content" placeholder="Go 模板语法代码">{{.Template.Tpl}}</textarea>
 				  </div>
 				</div>
 				
-				
 				<div class="col-sm-6">
-				  <!-- textarea -->
 				  <div class="form-group">
-					<label>消息协议JSON内容:</label>
-					  <textarea class="form-control" style="color:white;background-color:black" cols="30" rows="10" id="pjson" name="pjson" placeholder="可在PrometheusAlert日志中查找"></textarea>
+					<label class="form-label text-dark">原始消息协议 JSON 样例内容 (调试用):</label>
+					<textarea class="form-control code-editor" cols="30" rows="12" id="pjson" name="pjson" placeholder="在“仪表板-运行日志”中寻找对应的原始推送 JSON，复制到此处进行一键发送测试。"></textarea>
 				  </div>
 				</div>
-				
 			  </div>
-
-			<br />
 
 			  <div class="row">
 				<div id="Purl" class="col-sm-6">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "webhook"}}WebHook地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "rl"}}百度Hi(如流)群id{{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}{{if eq .Template.Tpltype "fsapp"}}飞书 用户open_id、user_id、union_ids、部门open_department_id{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}</label>
-					<input type="text" id="purl" class="form-control" name="purl" value="">
+					<label id="typestr" class="form-label text-dark">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "webhook"}}WebHook地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "rl"}}百度Hi(如流)群id{{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}{{if eq .Template.Tpltype "fsapp"}}飞书 用户open_id、user_id、union_ids、部门open_department_id{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}</label>
+					<input type="text" id="purl" class="form-control" name="purl" value="{{.Template.TplTargetUrl}}">
 				  </div>
 				</div>
 
 				<div id="Pat" class="col-sm-6">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">@某人</label>
-					<input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱">
+					<label id="typestr" class="form-label text-dark">@某人</label>
+					<input type="text" id="pat" class="form-control" name="pat" value="{{.Template.TplAtSomeOne}}"  placeholder="钉钉使用手机号，企业微信机器人使用用户帐号，飞书机器人使用Email。">
 				  </div>
 				</div>
 
 				<div id="Party" class="col-sm-6" style="display:none">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">接受部门</label>
-					<input type="text" id="pparty" class="form-control" name="pparty" value="">
+					<label id="typestr" class="form-label text-dark">接受部门</label>
+					<input type="text" id="pparty" class="form-control" name="pparty" value="{{.Template.TplWxParty}}">
 				  </div>
 				</div>
 
 				<div id="Tag" class="col-sm-6" style="display:none">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">接受标签</label>
-					<input type="text" id="ptag" class="form-control" name="ptag" value="">
+					<label id="typestr" class="form-label text-dark">接受标签</label>
+					<input type="text" id="ptag" class="form-control" name="ptag" value="{{.Template.TplWxTag}}">
 				  </div>
 				</div>
 
 			  </div>
 
 			<br />
-
+			
 			<div class="text-right">
-			<span style="color:red;font-weight:bold">进行模版测试前请先点击保存模版</span>
-			<a class="btn btn-app bg-success" onclick="savetpl();">
-			  <i class="fas fa-save"></i> 保存模版
-			</a>
+			  <span class="text-muted mr-3 font-weight-bold"><i class="fas fa-exclamation-circle text-warning"></i> 进行一键模版测试前请先点击保存模版</span>
+			  
+			  <button class="btn btn-success font-weight-bold mr-2" onclick="savetpl();">
+			    <i class="fas fa-save mr-1"></i> 保存模版
+			  </button>
 
-			<a class="btn btn-app bg-info" onclick="sendtest();">
-			  <i class="fas fa-bullhorn"></i> 模版测试
-			</a>
+			  <button class="btn btn-info font-weight-bold" onclick="sendtest();">
+			    <i class="fas fa-bullhorn mr-1"></i> 模版测试
+			  </button>
 			</div>
 			</form>
 
         </div>
         <!-- /.card-body -->
-        <div class="card-footer">
-          特别提醒：自定义模板仅支持 /prometheusalert 接口，其他接口均为固定模版接口，不支持自定义模板
+        <div class="card-footer bg-light">
+          <i class="fas fa-info-circle text-primary"></i> <strong>特别提醒：</strong>自定义模板仅支持 <code>/prometheusalert</code> 接口，其他第三方直连接口均为系统固定模版接口，不支持自定义模板。
         </div>
         <!-- /.card-footer-->
       </div>
@@ -222,66 +230,77 @@ function typeChange(){
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="none";
  } else if(typeSelect=="wx"){
 	typeStr.innerText="微信机器人地址";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="none";
  } else if(typeSelect=="fs"){
 	typeStr.innerText="飞书机器人地址";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="none";
  } else if(typeSelect=="fsapp"){
 	typeStr.innerText="飞书 用户open_id、user_id、union_ids、部门open_department_id";
 	document.getElementById("Purl").style.display="none";
 	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="none";
  } else if(typeSelect=="voice"){
 	typeStr.innerText="";
 	document.getElementById("Purl").style.display="none";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="none";
  } else if(typeSelect=="webhook"){
 	typeStr.innerText="webhook地址";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="";
  } else if(typeSelect=="email"){
 	typeStr.innerText="邮箱(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="none";
  } else if(typeSelect=="rl"){
 	typeStr.innerText="百度Hi(如流)群id";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="none";
  } else if(typeSelect=="workwechat"){
 	typeStr.innerText="接受用户";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="";
 	document.getElementById("Tag").style.display="";
+    document.getElementById("divContentType").style.display="none";
  } else if(typeSelect=="kafka"){
 	 typeStr.innerText="Kafka";
 	 document.getElementById("Purl").style.display="none";
 	 document.getElementById("Pat").style.display="none";
 	 document.getElementById("Party").style.display="none";
 	 document.getElementById("Tag").style.display="none";
+	 document.getElementById("divContentType").style.display="none";
  } else{
 	typeStr.innerText="手机号";
 	document.getElementById("Purl").style.display="";
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+    document.getElementById("divContentType").style.display="none";
  }
  
 }
@@ -311,6 +330,9 @@ $.ajax({
 			alert("模版保存失败!");
 		};
 	},
+    error: function() {
+        alert("网络请求失败，模板保存失败");
+    }
 });
 
 }
@@ -350,7 +372,6 @@ function sendtest(){
 	if (upjson.value.length==0){
 		alert('消息协议JSON内容不能为空');
 	}else{
-		var json_data = JSON.stringify(upjson.value);
 		$.ajax({
 			url: sendurl,
 			async: false,
@@ -359,6 +380,9 @@ function sendtest(){
 			success: function (data, status) {
 				alert(data);
 			},
+            error: function() {
+                alert("一键发送测试失败，请检查通道设置、JSON 报文格式及服务端配置。");
+            }
 		});
 		
 	};

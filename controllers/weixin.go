@@ -46,7 +46,7 @@ func init() {
 func PostToWeiXin(text, WXurl, atuserid, logsign string) string {
 	open := beego.AppConfig.String("open-weixin")
 	if open != "1" {
-		logs.Info(logsign, "[weixin]", "企业微信接口未配置未开启状态,请先配置open-weixin为1")
+		logs.Warn(logsign, "[weixin] [channel-disabled] WeChat is not enabled in configuration (open-weixin != 1)")
 		return "企业微信接口未配置未开启状态,请先配置open-weixin为1"
 	}
 
@@ -65,33 +65,21 @@ func PostToWeiXin(text, WXurl, atuserid, logsign string) string {
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign, "[weixin]", b)
-	//var tr *http.Transport
-	//if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
-	//	proxy := func(_ *http.Request) (*url.URL, error) {
-	//		return url.Parse(proxyUrl)
-	//	}
-	//	tr = &http.Transport{
-	//		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	//		Proxy:           proxy,
-	//	}
-	//} else {
-	//	tr = &http.Transport{
-	//		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	//	}
-	//}
-	//client := &http.Client{Transport: tr}
+	logs.Info(logsign, "[weixin] [send-attempt] Target URL:", WXurl, "| Payload:", b.String())
+
 	res, err := client.Post(WXurl, "application/json", b)
 	if err != nil {
-		logs.Error(logsign, "[weixin]", err.Error())
+		logs.Error(logsign, "[weixin] [send-failed] Target URL:", WXurl, "| Error:", err.Error())
+		return err.Error()
 	}
 	defer res.Body.Close()
 	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign, "[weixin]", err.Error())
+		logs.Error(logsign, "[weixin] [read-response-failed] Target URL:", WXurl, "| Error:", err.Error())
+		return err.Error()
 	}
 	models.AlertToCounter.WithLabelValues("weixin").Add(1)
 	ChartsJson.Weixin += 1
-	logs.Info(logsign, "[weixin]", string(result))
+	logs.Info(logsign, "[weixin] [send-success] Target URL:", WXurl, "| Response:", string(result))
 	return string(result)
 }

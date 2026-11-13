@@ -5,13 +5,14 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 type RuLiuMessage struct {
@@ -89,11 +90,13 @@ func PostToRuLiu(ids, text, RLurl, logsign string) string {
 	res, err := client.Post(RLurl, "application/json", b)
 	if err != nil {
 		logs.Error(logsign, "[ruliu]", err.Error())
+		return err.Error()
 	}
 	defer res.Body.Close()
 	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		logs.Error(logsign, "[ruliu]", err.Error())
+		return err.Error()
 	}
 	models.AlertToCounter.WithLabelValues("ruliu").Add(1)
 	ChartsJson.Ruliu += 1

@@ -7,10 +7,9 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/" class="nav-link">仪表板</a>
       </li>
     </ul>
-
   </nav>
   <!-- /.navbar -->
 
@@ -21,7 +20,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>PrometheusAlert</h1>
+            <h1>服务状态大盘</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -30,20 +29,78 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+        
+        <!-- KPI Metrics Row -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{.Stats.TodayReceived}}</h3>
+                <p>今日接收告警总数</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-cloud-download-alt"></i>
+              </div>
+              <a href="/record" class="small-box-footer">查看告警明细 <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-primary">
+              <div class="inner">
+                <h3>{{.Stats.MonthReceived}}</h3>
+                <p>本月接收告警总数</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <a href="/record" class="small-box-footer">查看告警明细 <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{.Stats.TodaySentSuccess}}</h3>
+                <p>今日发送成功总数</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-check-double"></i>
+              </div>
+              <a href="/record" class="small-box-footer">查看告警明细 <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-teal">
+              <div class="inner text-white">
+                <h3 class="text-white">{{.Stats.MonthSentSuccess}}</h3>
+                <p>本月发送成功总数</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-paper-plane"></i>
+              </div>
+              <a href="/record" class="small-box-footer text-white">查看告警明细 <i class="fas fa-arrow-circle-right text-white"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+
+        <!-- Charts Row -->
         <div class="row">
           <div class="col-md-6">
-
             <!-- DONUT CHART -->
-            <div class="card card-danger">
-              <div class="card-header">
-                <h3 class="card-title">接收告警</h3>
-
+            <div class="card card-indigo">
+              <div class="card-header bg-navy">
+                <h3 class="card-title"><i class="fas fa-chart-pie mr-1"></i> 历史告警来源占比 (Sources)</h3>
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-minus text-white"></i>
                   </button>
                 </div>
               </div>
@@ -53,22 +110,17 @@
               <!-- /.card-body -->
             </div>
             <!-- /.card -->
-
           </div>
+          
           <!-- /.col (LEFT) -->
           <div class="col-md-6">
-
             <!-- BAR CHART -->
-            <div class="card card-success">
-              <div class="card-header">
-                <h3 class="card-title">发送告警</h3>
-
+            <div class="card card-olive">
+              <div class="card-header bg-navy">
+                <h3 class="card-title"><i class="fas fa-chart-bar mr-1"></i> 历史发送渠道统计 (Channels)</h3>
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-minus text-white"></i>
                   </button>
                 </div>
               </div>
@@ -80,34 +132,106 @@
               <!-- /.card-body -->
             </div>
             <!-- /.card -->
-
           </div>
           <!-- /.col (RIGHT) -->
         </div>
+		<!-- /.row -->
 		
-        <!-- /.row -->
-		
-        <!--<div class="row">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>名称</th>
-						<th>模版类型</th>
-						<th>模版用途</th>
-						<th>路径</th>
-					</tr>
-				</thead>
-				<tbody id="tpllist" >
-					<tr>
-						<th>1</th>
-						<th>2</th>
-                        <th>3</th>
-						<th>4</th>
-					</tr>
-				</tbody>
-			</table>
-        </div>-->
-		
+        <!-- Historical Tables Row -->
+        <div class="row">
+          <!-- Left: Source Stats Table -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header bg-navy">
+                <h3 class="card-title"><i class="fas fa-compress-alt mr-1"></i> 各告警源历史运营统计</h3>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-striped table-valign-middle mb-0">
+                    <thead>
+                      <tr class="bg-light text-center">
+                        <th style="text-align: left;">告警源 (Source)</th>
+                        <th>触发总次数</th>
+                        <th>成功路由</th>
+                        <th>拦截或失败</th>
+                        <th style="width: 120px;">投递成功率</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{range .Stats.SourceRows}}
+                      <tr class="text-center">
+                        <td style="text-align: left; font-weight: bold; vertical-align: middle;">
+                          <span class="badge badge-primary p-2">{{.Name}}</span>
+                        </td>
+                        <td style="vertical-align: middle;">{{.Total}}</td>
+                        <td style="vertical-align: middle;"><span class="text-success font-weight-bold">{{.Success}}</span></td>
+                        <td style="vertical-align: middle;"><span class="text-danger">{{.Failed}}</span></td>
+                        <td style="vertical-align: middle;">
+                          <div class="progress progress-xs" style="margin-bottom: 2px;">
+                            <div class="progress-bar bg-success" style="width: {{.SuccessRate}}%"></div>
+                          </div>
+                          <span class="badge badge-success p-1" style="font-size: 11px;">{{printf "%.1f" .SuccessRate}}%</span>
+                        </td>
+                      </tr>
+                      {{else}}
+                      <tr>
+                        <td colspan="5" class="text-center text-muted">暂无历史告警源记录</td>
+                      </tr>
+                      {{end}}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right: Channel Stats Table -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header bg-navy">
+                <h3 class="card-title"><i class="fas fa-share-alt mr-1"></i> 各通知渠道历史发送统计</h3>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-striped table-valign-middle mb-0">
+                    <thead>
+                      <tr class="bg-light text-center">
+                        <th style="text-align: left;">发送渠道 (Channel)</th>
+                        <th>发送总次数</th>
+                        <th>成功数量</th>
+                        <th>失败数量</th>
+                        <th style="width: 120px;">投递成功率</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{range .Stats.ChannelRows}}
+                      <tr class="text-center">
+                        <td style="text-align: left; font-weight: bold; vertical-align: middle;">
+                          <span class="badge badge-info p-2">{{.Name}}</span>
+                        </td>
+                        <td style="vertical-align: middle;">{{.Total}}</td>
+                        <td style="vertical-align: middle;"><span class="text-success font-weight-bold">{{.Success}}</span></td>
+                        <td style="vertical-align: middle;"><span class="text-danger">{{.Failed}}</span></td>
+                        <td style="vertical-align: middle;">
+                          <div class="progress progress-xs" style="margin-bottom: 2px;">
+                            <div class="progress-bar bg-success" style="width: {{.SuccessRate}}%"></div>
+                          </div>
+                          <span class="badge badge-success p-1" style="font-size: 11px;">{{printf "%.1f" .SuccessRate}}%</span>
+                        </td>
+                      </tr>
+                      {{else}}
+                      <tr>
+                        <td colspan="5" class="text-center text-muted">暂无历史通知渠道记录</td>
+                      </tr>
+                      {{end}}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+		<!-- /.row -->
 		
       </div><!-- /.container-fluid -->
     </section>
@@ -117,81 +241,93 @@
 {{template "endhtml"}}
 <script>
   $(function () {
-    /* ChartJS
-     * -------
-     * Here we will create a few charts using ChartJS
-     */
+    /* ChartJS Settings */
 
-    var areaChartData = {
-      labels  : ['Telegram', '七陌短信', '七陌语音电话', '阿里云短信', '阿里云语音电话', '	百度云短信', 'Bark(iPhone推送)', '钉钉', 'Email', '飞书', '华为云短信', '容联云语音电话', '	百度Hi(如流)', '腾讯云短信', '腾讯云语音电话', 'Webhook', '企业微信', '	企业微信应用', '语音播报'],
-      datasets: [
-        {
-          label               : 'Send Alerts to',
-          backgroundColor     : 'rgba(60,141,188,0.9)',
-          borderColor         : 'rgba(60,141,188,0.8)',
-          pointRadius          : false,
-          pointColor          : '#3b8bba',
-          pointStrokeColor    : 'rgba(60,141,188,1)',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [{{.ChartsJson.Telegram}}, {{.ChartsJson.Smoordx}}, {{.ChartsJson.Smoordh}}, {{.ChartsJson.Alydx}}, {{.ChartsJson.Alydh}}, {{.ChartsJson.Bdydx}}, {{.ChartsJson.Bark}}, {{.ChartsJson.Dingding}}, {{.ChartsJson.Email}}, {{.ChartsJson.Feishu}}, {{.ChartsJson.Hwdx}}, {{.ChartsJson.Rlydx}}, {{.ChartsJson.Ruliu}}, {{.ChartsJson.Txdx}}, {{.ChartsJson.Txdh}}, {{.ChartsJson.Webhook}}, {{.ChartsJson.Weixin}}, {{.ChartsJson.Workwechat}}, {{.ChartsJson.Voice}}]
-        },
-      ]
-    }
+    var donutLabels = [
+        {{range .Stats.SourceNames}}'{{.}}',{{end}}
+    ];
+    var donutCounts = [
+        {{range .Stats.SourceCounts}}{{.}},{{end}}
+    ];
 
+    var channelLabels = [
+        {{range .Stats.ChannelNames}}'{{.}}',{{end}}
+    ];
+    var channelCounts = [
+        {{range .Stats.ChannelCounts}}{{.}},{{end}}
+    ];
 
     //-------------
-    //- DONUT CHART -
+    //- DONUT CHART (SOURCES) -
     //-------------
-    // Get context with jQuery - using jQuery's .get() method.
-    var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-    var donutData        = {
-      labels: [
-          'zabbix',
-          'grafana',
-          'graylog',
-          'prometheus',
-          'prometheusalert',
-          'aliyun',
-      ],
+    var donutChartCanvas = $('#donutChart').get(0).getContext('2d');
+    var donutData = {
+      labels: donutLabels,
       datasets: [
         {
-          data: [{{.ChartsJson.Zabbix}},{{.ChartsJson.Grafana}},{{.ChartsJson.Graylog}},{{.ChartsJson.Prometheus}},{{.ChartsJson.Prometheusalert}},{{.ChartsJson.Aliyun}}],
-          backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc'],
+          data: donutCounts,
+          backgroundColor : [
+              '#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8', 
+              '#6610f2', '#e83e8c', '#fd7e14', '#20c997', '#6c757d'
+          ],
         }
       ]
-    }
-    var donutOptions     = {
+    };
+    var donutOptions = {
       maintainAspectRatio : false,
       responsive : true,
+    };
+    
+    if (donutCounts.length > 0) {
+        new Chart(donutChartCanvas, {
+          type: 'doughnut',
+          data: donutData,
+          options: donutOptions
+        });
+    } else {
+        $("#donutChart").parent().html('<div class="text-center text-muted py-5"><i class="fas fa-exclamation-circle"></i> 暂无数据</div>');
     }
-    //Create pie or douhnut chart
-    // You can switch between pie and douhnut using the method below.
-    new Chart(donutChartCanvas, {
-      type: 'doughnut',
-      data: donutData,
-      options: donutOptions
-    })
 
     //-------------
-    //- BAR CHART -
+    //- BAR CHART (CHANNELS) -
     //-------------
-    var barChartCanvas = $('#barChart').get(0).getContext('2d')
-    var barChartData = $.extend(true, {}, areaChartData)
-    var temp0 = areaChartData.datasets[0]
-    barChartData.datasets[0] = temp0
+    var barChartCanvas = $('#barChart').get(0).getContext('2d');
+    var barChartData = {
+      labels  : channelLabels,
+      datasets: [
+        {
+          label               : '历史发送次数',
+          backgroundColor     : 'rgba(40,167,69,0.8)',
+          borderColor         : 'rgba(40,167,69,1)',
+          pointRadius         : false,
+          data                : channelCounts
+        },
+      ]
+    };
 
     var barChartOptions = {
       responsive              : true,
       maintainAspectRatio     : false,
-      datasetFill             : false
-    }
+      datasetFill             : false,
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true,
+                  stepSize: 1
+              }
+          }]
+      }
+    };
 
-    new Chart(barChartCanvas, {
-      type: 'bar',
-      data: barChartData,
-      options: barChartOptions
-    })
-  })
+    if (channelCounts.length > 0) {
+        new Chart(barChartCanvas, {
+          type: 'bar',
+          data: barChartData,
+          options: barChartOptions
+        });
+    } else {
+        $("#barChart").parent().html('<div class="text-center text-muted py-5"><i class="fas fa-exclamation-circle"></i> 暂无数据</div>');
+    }
+  });
 </script>
 {{template "jshtml"}}

@@ -36,13 +36,15 @@ func PostToWebhook(text, WebhookUrl, logsign string, contentType string) string 
 	res, err := client.Post(WebhookUrl, contentType, JsonMsg)
 	if err != nil {
 		logs.Error(logsign, "[Webhook]", err.Error())
+		return err.Error()
 	}
+	defer res.Body.Close()
 
 	result, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		logs.Error(logsign, "[Webhook]", err.Error())
+		return err.Error()
 	}
-	defer res.Body.Close()
 	models.AlertToCounter.WithLabelValues("webhook").Add(1)
 	ChartsJson.Webhook += 1
 	logs.Info(logsign, "[Webhook]", string(result))

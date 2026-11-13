@@ -3,8 +3,10 @@ package controllers
 // Issue: https://github.com/feiyu563/PrometheusAlert/issues/181
 
 import (
+	"PrometheusAlert/models"
 	"encoding/json"
 	"strconv"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -127,8 +129,18 @@ func (c *GitlabController) GitlabWeixin() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &event)
-	c.Data["json"] = sendGitlabEvent(3, event, eventType, logsign, wxurl)
+	res := sendGitlabEvent(3, event, eventType, logsign, wxurl)
+	c.Data["json"] = res
 	logs.Info(logsign, c.Data["json"])
+
+	if beego.AppConfig.String("AlertRecord") == "1" {
+		status := "success"
+		if strings.Contains(res, "failed") || strings.Contains(res, "error") || strings.Contains(res, "错误") {
+			status = "failed"
+		}
+		models.AddRecord("GitLab", "wx", status, res, eventType, string(c.Ctx.Input.RequestBody))
+	}
+
 	c.ServeJSON()
 }
 
@@ -140,8 +152,18 @@ func (c *GitlabController) GitlabDingding() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &event)
-	c.Data["json"] = sendGitlabEvent(2, event, eventType, logsign, ddurl)
+	res := sendGitlabEvent(2, event, eventType, logsign, ddurl)
+	c.Data["json"] = res
 	logs.Info(logsign, c.Data["json"])
+
+	if beego.AppConfig.String("AlertRecord") == "1" {
+		status := "success"
+		if strings.Contains(res, "failed") || strings.Contains(res, "error") || strings.Contains(res, "错误") {
+			status = "failed"
+		}
+		models.AddRecord("GitLab", "dd", status, res, eventType, string(c.Ctx.Input.RequestBody))
+	}
+
 	c.ServeJSON()
 }
 
@@ -153,8 +175,18 @@ func (c *GitlabController) GitlabFeishu() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &event)
-	c.Data["json"] = sendGitlabEvent(4, event, eventType, logsign, fsurl)
+	res := sendGitlabEvent(4, event, eventType, logsign, fsurl)
+	c.Data["json"] = res
 	logs.Info(logsign, c.Data["json"])
+
+	if beego.AppConfig.String("AlertRecord") == "1" {
+		status := "success"
+		if strings.Contains(res, "failed") || strings.Contains(res, "error") || strings.Contains(res, "错误") {
+			status = "failed"
+		}
+		models.AddRecord("GitLab", "fs", status, res, eventType, string(c.Ctx.Input.RequestBody))
+	}
+
 	c.ServeJSON()
 }
 

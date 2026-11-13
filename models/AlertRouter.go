@@ -6,15 +6,18 @@ import (
 )
 
 type AlertRouter struct {
-	Id           int `orm:"index"`
-	Name         string
-	Tpl          *PrometheusAlertDB `orm:"rel(fk)"`
-	Rules        string
-	UrlOrPhone   string
-	AtSomeOne    string
-	AtSomeOneRR  bool
-	SendResolved bool
-	Created      time.Time
+	Id             int `orm:"index"`
+	Name           string
+	Tpl            *PrometheusAlertDB `orm:"rel(fk)"`
+	Rules          string
+	UrlOrPhone     string
+	AtSomeOne      string
+	AtSomeOneRR    bool
+	SendResolved   bool
+	Status         int
+	Created        time.Time
+	TimeRangeStart string `orm:"default(00:00)"`
+	TimeRangeEnd   string `orm:"default(23:59)"`
 }
 
 type AlertRouterQuery struct {
@@ -22,26 +25,29 @@ type AlertRouterQuery struct {
 	Webhook string
 }
 
-func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, at_some_one_rr bool, sendResolved bool) error {
+func AddAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, at_some_one_rr bool, sendResolved bool, status int, timeRangeStart, timeRangeEnd string) error {
 	tpl, _ := GetTpl(tplid)
 	o := orm.NewOrm()
 	AlertRouter_table := &AlertRouter{
-		Id:           id,
-		Name:         name,
-		Tpl:          tpl,
-		Rules:        rules,
-		UrlOrPhone:   url_or_phone,
-		AtSomeOne:    at_some_one,
-		AtSomeOneRR:  at_some_one_rr,
-		SendResolved: sendResolved,
-		Created:      time.Now(),
+		Id:             id,
+		Name:           name,
+		Tpl:            tpl,
+		Rules:          rules,
+		UrlOrPhone:     url_or_phone,
+		AtSomeOne:      at_some_one,
+		AtSomeOneRR:    at_some_one_rr,
+		SendResolved:   sendResolved,
+		Status:         status,
+		TimeRangeStart: timeRangeStart,
+		TimeRangeEnd:   timeRangeEnd,
+		Created:        time.Now(),
 	}
 	// 插入数据
 	_, err := o.Insert(AlertRouter_table)
 	return err
 }
 
-func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, at_some_one_rr bool, sendResolved bool) error {
+func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one string, at_some_one_rr bool, sendResolved bool, status int, timeRangeStart, timeRangeEnd string) error {
 	tpl, _ := GetTpl(tplid)
 	o := orm.NewOrm()
 	router_update := &AlertRouter{Id: id}
@@ -55,11 +61,21 @@ func UpdateAlertRouter(id int, tplid int, name, rules, url_or_phone, at_some_one
 		router_update.AtSomeOne = at_some_one
 		router_update.AtSomeOneRR = at_some_one_rr
 		router_update.SendResolved = sendResolved
+		router_update.Status = status
+		router_update.TimeRangeStart = timeRangeStart
+		router_update.TimeRangeEnd = timeRangeEnd
 		router_update.Created = time.Now()
 		_, err := o.Update(router_update)
 		return err
 	}
 	return err
+}
+
+func AlertRouterDBInit() {
+	o := orm.NewOrm()
+	_, _ = o.Raw("ALTER TABLE alert_router ADD COLUMN status INTEGER DEFAULT 0").Exec()
+	_, _ = o.Raw("ALTER TABLE alert_router ADD COLUMN time_range_start VARCHAR(255) DEFAULT '00:00'").Exec()
+	_, _ = o.Raw("ALTER TABLE alert_router ADD COLUMN time_range_end VARCHAR(255) DEFAULT '23:59'").Exec()
 }
 
 func DelAlertRouter(id int) error {

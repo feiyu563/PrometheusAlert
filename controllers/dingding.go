@@ -34,7 +34,7 @@ type DDMessage struct {
 func PostToDingDing(title, text, Ddurl, AtSomeOne, logsign string) string {
 	open := beego.AppConfig.String("open-dingding")
 	if open != "1" {
-		logs.Info(logsign, "[dingding]", "钉钉接口未配置未开启状态,请先配置open-dingding为1")
+		logs.Warn(logsign, "[dingding] [channel-disabled] DingDing is not enabled in configuration (open-dingding != 1)")
 		return "钉钉接口未配置未开启状态,请先配置open-dingding为1"
 	}
 	// dingding sign
@@ -72,7 +72,7 @@ func PostToDingDing(title, text, Ddurl, AtSomeOne, logsign string) string {
 	}
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(u)
-	logs.Info(logsign, "[dingding]", b)
+	logs.Info(logsign, "[dingding] [send-attempt] Target URL:", Ddurl, "| Payload:", b.String())
 	var tr *http.Transport
 	if proxyUrl := beego.AppConfig.String("proxy"); proxyUrl != "" {
 		proxy := func(_ *http.Request) (*url.URL, error) {
@@ -90,16 +90,18 @@ func PostToDingDing(title, text, Ddurl, AtSomeOne, logsign string) string {
 	client := &http.Client{Transport: tr}
 	res, err := client.Post(Ddurl, "application/json", b)
 	if err != nil {
-		logs.Error(logsign, "[dingding]", err.Error())
+		logs.Error(logsign, "[dingding] [send-failed] Target URL:", Ddurl, "| Error:", err.Error())
+		return err.Error()
 	}
 	defer res.Body.Close()
 	result, err := io.ReadAll(res.Body)
 	if err != nil {
-		logs.Error(logsign, "[dingding]", err.Error())
+		logs.Error(logsign, "[dingding] [read-response-failed] Target URL:", Ddurl, "| Error:", err.Error())
+		return err.Error()
 	}
 	models.AlertToCounter.WithLabelValues("dingding").Add(1)
 	ChartsJson.Dingding += 1
-	logs.Info(logsign, "[dingding]", string(result))
+	logs.Info(logsign, "[dingding] [send-success] Target URL:", Ddurl, "| Response:", string(result))
 	return string(result)
 }
 

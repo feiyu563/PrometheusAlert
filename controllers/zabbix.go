@@ -3,6 +3,7 @@ package controllers
 import (
 	"PrometheusAlert/models"
 	"encoding/json"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -24,8 +25,18 @@ func (c *ZabbixController) ZabbixAlert() {
 	logsign := "[" + LogsSign() + "]"
 	logs.Info(logsign, string(c.Ctx.Input.RequestBody))
 	json.Unmarshal(c.Ctx.Input.RequestBody, &alert)
-	c.Data["json"] = SendMessageZabbix(alert, logsign)
+	res := SendMessageZabbix(alert, logsign)
+	c.Data["json"] = res
 	logs.Info(logsign, c.Data["json"])
+
+	if beego.AppConfig.String("AlertRecord") == "1" {
+		status := "success"
+		if strings.Contains(res, "failed") || strings.Contains(res, "error") || strings.Contains(res, "错误") {
+			status = "failed"
+		}
+		models.AddRecord("Zabbix", alert.ZabbixType, status, res, alert.ZabbixMessage, string(c.Ctx.Input.RequestBody))
+	}
+
 	c.ServeJSON()
 }
 
@@ -58,12 +69,6 @@ func SendMessageZabbix(message ZabbixMessage, logsign string) string {
 			message.ZabbixTarget = GetUserPhone(1)
 		}
 		ret = PostTXmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
-	//华为云短信
-	case "hwdx":
-		if message.ZabbixTarget == "" {
-			message.ZabbixTarget = GetUserPhone(1)
-		}
-		ret = ret + PostHWmessage(message.ZabbixMessage, message.ZabbixTarget, logsign)
 	//百度云短信
 	case "bddx":
 		if message.ZabbixTarget == "" {

@@ -103,12 +103,14 @@ func Post7MOORmessage(Messages string, PhoneNumbers, logsign string) string {
 	resp, err := client.Do(req)
 	if err != nil {
 		logs.Error(logsign, "[7moordx]", err.Error())
+		return err.Error()
 	}
 	defer resp.Body.Close()
 
 	result, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		logs.Error(logsign, "[7moordx]", err.Error())
+		return err.Error()
 	}
 	models.AlertToCounter.WithLabelValues("7moordx").Add(1)
 	ChartsJson.Smoordx += 1
@@ -119,14 +121,20 @@ func Post7MOORmessage(Messages string, PhoneNumbers, logsign string) string {
 
 // Post7MOORphonecall sends mutiple phonenumbers
 func Post7MOORphonecall(Messages string, PhoneNumbers, logsign string) string {
+	var errorCollector []string
 	mobiles := strings.Split(PhoneNumbers, ",")
 	for _, mobile := range mobiles {
-		go webcallPost(Messages, mobile, logsign)
+		res := webcallPost(Messages, mobile, logsign)
+		if !strings.Contains(res, `"statusCode":0`) {
+			errorCollector = append(errorCollector, fmt.Sprintf("to %s failed: %s", mobile, res))
+		}
 	}
 	models.AlertToCounter.WithLabelValues("7moordh").Add(1)
 	ChartsJson.Smoordh += 1
-
-	return PhoneNumbers + " called over."
+	if len(errorCollector) > 0 {
+		return strings.Join(errorCollector, "; ")
+	}
+	return PhoneNumbers + " all called successfully."
 }
 
 // webcallPost makes phonecall by 7moor webcall
@@ -178,12 +186,14 @@ func webcallPost(Messages string, PhoneNumber, logsign string) string {
 	resp, err := client.Do(req)
 	if err != nil {
 		logs.Error(logsign, "[7moordh]", err.Error())
+		return err.Error()
 	}
 	defer resp.Body.Close()
 
 	result, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		logs.Error(logsign, "[7moordh]", err.Error())
+		return err.Error()
 	}
 	logs.Info(logsign, "[7moordh]", string(result))
 

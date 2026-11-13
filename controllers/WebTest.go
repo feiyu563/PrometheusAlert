@@ -2,10 +2,16 @@ package controllers
 
 import (
 	"encoding/json"
+
 	"github.com/astaxie/beego"
 )
 
 func (c *MainController) AlertTest() {
+	if !CheckAccount(c.Ctx) {
+		c.Data["json"] = "unauthorized"
+		c.ServeJSON()
+		return
+	}
 	MessageData := c.Input().Get("mtype")
 	logsign := "[" + LogsSign() + "]"
 	switch MessageData {
@@ -28,10 +34,6 @@ func (c *MainController) AlertTest() {
 		c.Data["json"] = ret
 	case "txdh":
 		ret := PostTXphonecall("PrometheusAlertCenter测试告警", beego.AppConfig.String("defaultphone"), logsign)
-		c.Data["json"] = ret
-	case "hwdx":
-		MobileMessage := "PrometheusAlertCenter测试告警"
-		ret := PostHWmessage(MobileMessage, beego.AppConfig.String("defaultphone"), logsign)
 		c.Data["json"] = ret
 	case "alydx":
 		MobileMessage := "PrometheusAlertCenter测试告警"

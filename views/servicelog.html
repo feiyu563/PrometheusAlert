@@ -1,0 +1,273 @@
+{{template "main" .}}
+<style>
+  #logConsole {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 13.5px;
+    padding: 20px;
+    border-radius: 6px;
+    height: 600px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+    border: 1px solid #3c3c3c;
+  }
+</style>
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/servicelog" class="nav-link">服务日志</a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>服务运行日志控制台</h1>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header bg-navy d-flex align-items-center justify-content-between">
+          <h3 class="card-title" style="line-height: 32px;"><i class="fas fa-terminal"></i> 运行日志 (prometheusalertcenter.log)</h3>
+          <div class="card-tools ml-auto d-flex align-items-center">
+            
+            <!-- Interactive Search Console Bar -->
+            <div class="input-group input-group-sm mr-2" style="max-width: 280px; vertical-align: middle;">
+                <input id="txtLogSearch" type="text" class="form-control" placeholder="搜索日志关键词..." style="border-right: none;">
+                <div class="input-group-append">
+                    <span id="lblSearchCount" class="input-group-text bg-dark border-secondary text-muted" style="font-size: 11px; min-width: 55px; justify-content: center; border-left: none;">0/0</span>
+                    <button id="btnSearchPrev" class="btn btn-outline-light border-secondary" title="上一个 (Shift+Enter)"><i class="fas fa-chevron-up"></i></button>
+                    <button id="btnSearchNext" class="btn btn-outline-light border-secondary" title="下一个 (Enter)"><i class="fas fa-chevron-down"></i></button>
+                </div>
+            </div>
+
+            <span id="logMeta" class="badge badge-light p-2 mr-2" style="font-size: 12.5px;">-</span>
+            <button id="btnRefresh" class="btn btn-sm btn-info mr-2"><i class="fas fa-sync-alt"></i> 刷新</button>
+            <button id="btnScrollTop" class="btn btn-sm btn-outline-light mr-2"><i class="fas fa-arrow-up"></i> 到顶部</button>
+            <button id="btnScrollBottom" class="btn btn-sm btn-outline-light"><i class="fas fa-arrow-down"></i> 到底部</button>
+          </div>
+        </div>
+        <div class="card-body">
+            <div id="logAlert" class="alert alert-warning d-none" role="alert">
+                <i class="fas fa-exclamation-triangle"></i> <strong>安全警示：</strong> 当前日志文件大小已超过 <strong>1 MB 安全阈值</strong>，为保障浏览器与服务器的内存和性能，系统已自动定位并仅展示了<strong>最后 1 MB</strong> 的尾部日志。
+            </div>
+            <div id="logConsole">加载中...</div>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer bg-light">
+          <i class="fas fa-info-circle text-primary"></i> 服务运行日志每隔几天会自动清理（周期可于 <code>RecordLiveDay</code> 配置中配置），日志文件对于监控发送状态、第三方连通性排错至关重要。
+        </div>
+      </div>
+      <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{{template "endhtml"}}
+<script>
+  $(function () {
+      var rawLogText = "";       // Cache the raw, unescaped log string
+      var escapedLogHtml = "";   // HTML escaped log string for rendering
+      var searchResults = [];    // Array of match mark DOM elements
+      var searchIndex = -1;      // Current search selection pointer
+
+      function escapeHtml(text) {
+          return text
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+      }
+
+      function escapeRegExp(string) {
+          return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      }
+
+      function loadLogs() {
+          $("#logConsole").text("正在加载日志，请稍候...");
+          $.ajax({
+              type: "GET",
+              url: "/servicelog/data",
+              dataType: "json",
+              success: function (res) {
+                  if (res === "unauthorized") {
+                      window.location.replace("/login");
+                      return;
+                  }
+                  
+                  // Cache raw logs and compute escaped HTML
+                  rawLogText = res.content || "";
+                  escapedLogHtml = escapeHtml(rawLogText);
+                  
+                  // Set initial text
+                  $("#logConsole").html(escapedLogHtml);
+                  
+                  // Update file size metadata
+                  var sizeMB = (res.size / 1024.0 / 1024.0).toFixed(2);
+                  $("#logMeta").html('<i class="fas fa-hdd"></i> 文件大小: ' + sizeMB + ' MB');
+                  
+                  // Handle alert banner
+                  if (res.truncated) {
+                      $("#logAlert").removeClass("d-none");
+                  } else {
+                      $("#logAlert").addClass("d-none");
+                  }
+                  
+                  // Re-evaluate search if there's an active query
+                  var currentQuery = $("#txtLogSearch").val();
+                  if (currentQuery.trim() !== "") {
+                      performSearch(true);
+                  } else {
+                      resetSearch();
+                      setTimeout(scrollToBottom, 100);
+                  }
+              },
+              error: function() {
+                  $("#logConsole").text("获取运行日志失败，请确保服务正常运行且日志文件存在。");
+              }
+          });
+      }
+
+      function performSearch(keepIndex) {
+          var query = $("#txtLogSearch").val();
+          if (!query || query.trim() === "") {
+              resetSearch();
+              return;
+          }
+
+          var keyword = query.trim();
+          var escapedKeyword = escapeRegExp(keyword);
+          var regex = new RegExp("(" + escapedKeyword + ")", "gi");
+
+          // Safely inject highlighters over the escaped HTML log block
+          var highlightedHtml = escapedLogHtml.replace(regex, '<mark class="log-match" style="background-color: #ffc107; color: #000; border-radius: 2px;">$1</mark>');
+          $("#logConsole").html(highlightedHtml);
+
+          // Locate all matching mark nodes
+          searchResults = $(".log-match").toArray();
+          var totalMatches = searchResults.length;
+
+          if (totalMatches === 0) {
+              searchIndex = -1;
+              $("#lblSearchCount").text("0/0").removeClass("text-muted").addClass("text-danger");
+              return;
+          }
+
+          $("#lblSearchCount").removeClass("text-danger").addClass("text-muted");
+
+          if (keepIndex && searchIndex >= 0 && searchIndex < totalMatches) {
+              // Preserve old pointer if still within bounds
+              navigateToMatch(searchIndex);
+          } else {
+              // Start from the first match
+              searchIndex = 0;
+              navigateToMatch(0);
+          }
+      }
+
+      function navigateToMatch(index) {
+          var total = searchResults.length;
+          if (total === 0) return;
+
+          // Normalize selection index
+          if (index < 0) {
+              index = total - 1;
+          } else if (index >= total) {
+              index = 0;
+          }
+          searchIndex = index;
+
+          // Reset all matches to standard yellow
+          $(".log-match").css("background-color", "#ffc107");
+
+          // Highlight the selected focus target in vibrant orange
+          var focusedElement = searchResults[searchIndex];
+          focusedElement.style.backgroundColor = "#fd7e14";
+
+          // Smoothly scroll focus target into the viewport center
+          focusedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // Update match index counts
+          $("#lblSearchCount").text((searchIndex + 1) + "/" + total);
+      }
+
+      function resetSearch() {
+          $("#logConsole").html(escapedLogHtml);
+          searchResults = [];
+          searchIndex = -1;
+          $("#lblSearchCount").text("0/0").removeClass("text-danger").addClass("text-muted");
+      }
+
+      function scrollToBottom() {
+          var consoleDiv = document.getElementById("logConsole");
+          if (consoleDiv) {
+              consoleDiv.scrollTop = consoleDiv.scrollHeight;
+          }
+      }
+
+      function scrollToTop() {
+          var consoleDiv = document.getElementById("logConsole");
+          if (consoleDiv) {
+              consoleDiv.scrollTop = 0;
+          }
+      }
+
+      // Handle query inputs in real-time
+      $("#txtLogSearch").on("input", function() {
+          performSearch(false);
+      });
+
+      // Key bindings (Enter for next, Shift+Enter for prev)
+      $("#txtLogSearch").on("keydown", function(e) {
+          if (e.which === 13) { // Enter key
+              e.preventDefault();
+              if (searchResults.length === 0) return;
+              if (e.shiftKey) {
+                  navigateToMatch(searchIndex - 1);
+              } else {
+                  navigateToMatch(searchIndex + 1);
+              }
+          }
+      });
+
+      // Next / Prev button triggers
+      $("#btnSearchPrev").on("click", function() {
+          navigateToMatch(searchIndex - 1);
+      });
+      $("#btnSearchNext").on("click", function() {
+          navigateToMatch(searchIndex + 1);
+      });
+
+      // Action buttons
+      $("#btnRefresh").on("click", loadLogs);
+      $("#btnScrollTop").on("click", scrollToTop);
+      $("#btnScrollBottom").on("click", scrollToBottom);
+
+      // Initial load
+      loadLogs();
+  });
+</script>
+{{template "jshtml"}}

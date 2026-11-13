@@ -10,7 +10,6 @@
         <a href="/alertrouter" class="nav-link">告警管理</a>
       </li>
     </ul>
-
   </nav>
   <!-- /.navbar -->
 
@@ -32,15 +31,11 @@
 
       <!-- Default box -->
       <div class="card">
-        <div class="card-header">
-          <h3 class="card-title"></h3>
-
+        <div class="card-header bg-navy">
+          <h3 class="card-title"><i class="fas fa-plus mr-2"></i> 创建全新的 Prometheus 告警路由</h3>
           <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse" title="Collapse">
               <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-              <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
@@ -48,20 +43,17 @@
 
 			<form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
 			
-			
-			  <div class="row">
+			  <div class="row mb-3">
 				<div class="col-sm-6">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label>路由名称</label>
-					<input type="text" id="name" class="form-control" name="name" value="">
+					<label class="form-label text-dark">* 路由名称 (Router Name)</label>
+					<input type="text" id="name" class="form-control" name="name" value="" placeholder="请输入路由名称，如 微信磁盘告警路由">
 				  </div>
 				</div>
 			  
 				<div class="col-sm-6">
-				  <!-- select -->
 				  <div class="form-group">
-					<label>生效模版名称</label>
+					<label class="form-label text-dark">* 生效通知模版名称 (Tpl Name)</label>
 					<select class="form-control" name="tpl_id" id="tpl_id" onchange="typeChange()">
 					{{range .Template}}
 					<option value="{{.Id}}">{{.Tplname}}</option>
@@ -69,12 +61,10 @@
 					</select>
 				  </div>
 				</div>
-
 			  </div>
 			
-			  <div class="row"  style="display:none;">
+			  <div class="row" style="display:none;">
 				<div class="col-sm-6">
-				  <!-- text input -->
 				  <div class="form-group">
 					<label>模版类型</label>
 					<input type="text" id="tpltype" class="form-control" name="tpltype" value="" disabled>
@@ -83,105 +73,120 @@
 			  </div>
 
 			<br />
-			
-			<div id="labelx">
+            
+            <label class="form-label text-dark font-weight-bold"><i class="fas fa-tags text-indigo"></i> 配置标签匹配规则项 (AND 且关系)</label>
+			<div id="labelx" class="mt-2">
 			  <div class="row">
-				<div class="col-3">
-				  <!-- text input -->
+				<div class="col-4">
 				  <div class="form-group">
-					<label>Label Name: 可以去告警记录中查询</label>
-					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="如 app">
+					<label class="small text-muted">Label Name (键)</label>
+					<input type="text" id="rules" class="form-control" name="rules" value="" placeholder="如 alertname">
 				  </div>
 				</div>
 				
 				<div class="col-3">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label>Label Value: 可以去告警记录中查询</label>
-					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="如 nginx">
+					<label class="small text-muted">匹配操作符 (Operator)</label>
+					<select id="rulesoperator" class="form-control" name="rulesoperator">
+					  <option value="==" selected>== (等于)</option>
+					  <option value="!=">!= (不等于)</option>
+					  <option value="=~">=~ (正则匹配)</option>
+					  <option value="!~">!~ (正则不匹配)</option>
+					</select>
 				  </div>
 				</div>
 
-				
-				<div class="col-1 d-flex align-items-center">
-				  <!-- text input -->
-					<div class="form-check">
-					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox">
-					  <label class="form-check-label">Regex</label>
-					</div>
+				<div class="col-4">
+				  <div class="form-group">
+					<label class="small text-muted">Label Value (值)</label>
+					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value="" placeholder="如 DiskSpaceLow">
+				  </div>
 				</div>
-				
 			  </div>
 			  
 			<br />
 			</div>
 
-			
-			
-			  <div class="row">
+			  <div class="row mb-3">
 				<div class="col-sm-6">
-				  <!-- text input -->
 				  <div class="form-group">
-					<button id='labeladd' type="button" class="btn btn-info btn-flat"><i class="far fa-plus-square"></i></button>
+					<button id='labeladd' type="button" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus mr-1"></i> 添加过滤规则项</button>
 				  </div>
 				</div>
 			  </div>
 			  
 
-			<br />
-			<div class="row">
+			<div class="row mb-3">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="form-label text-dark">是否发送恢复告警 (Resolved)</label>
+						<select class="form-control" name="send_resolved" id="send_resolved" >
+							<option value="true">发送</option>
+							<option value="false">不发送</option>
+						</select>
+					</div>
+				</div>
 
-					<div class="col-sm-6">
-						<!-- select -->
-						<div class="form-group">
-							<label>是否发送恢复告警</label>
-							<select class="form-control" name="send_resolved" id="send_resolved" >
-								<option value="true">发送</option>
-								<option value="false">不发送</option>
-							</select>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="form-label text-dark">是否启用该路由</label>
+						<div class="custom-control custom-switch" style="margin-top: 6px;">
+							<input type="checkbox" class="custom-control-input" id="status" name="status" checked>
+							<label class="custom-control-label font-weight-normal text-muted" for="status">勾选启用该路由转发规则</label>
 						</div>
 					</div>
-
 				</div>
-			<br />
+			</div>
 
-			  <div class="row">
+			<div class="row mb-3">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="form-label text-dark"><i class="far fa-clock text-primary mr-1"></i> 每日生效开始时间 (Daily Start)</label>
+						<input type="time" id="time_range_start" class="form-control" name="time_range_start" value="00:00">
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="form-label text-dark"><i class="far fa-clock text-danger mr-1"></i> 每日生效结束时间 (Daily End)</label>
+						<input type="time" id="time_range_end" class="form-control" name="time_range_end" value="23:59">
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
 				<div id="Purl" class="col-sm-6">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">钉钉机器人地址</label>
-					<input type="text" id="purl" class="form-control" name="purl" value="">
+					<label id="typestr" class="form-label text-dark">钉钉机器人地址</label>
+					<input type="text" id="purl" class="form-control" name="purl" value="" placeholder="请输入对应的 URL 或 目标终端信息">
 				  </div>
 				</div>
 
 				<div id="Pat" class="col-sm-5">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">@某人</label>
-					<input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，">
-					<!-- <input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱"> -->
+					<label id="typestr" class="form-label text-dark">@某人</label>
+					<input type="text" id="pat" class="form-control" name="pat" value="" placeholder="手机号、帐号或Email。多个请以逗号分隔。">
 				  </div>
 				</div>
 
-				<div id="Patrr" class="col-sm-1">
-					<div class="form-check">
-					  <input id="patrr" class="form-check-input" name="patrr" type="checkbox">
-					  <label class="form-check-label">轮询@某人</label>
+				<div id="Patrr" class="col-sm-1" style="vertical-align: bottom;">
+					<div class="form-group" style="margin-top: 36px;">
+                        <div class="custom-control custom-checkbox">
+                            <input id="patrr" class="custom-control-input" name="patrr" type="checkbox">
+                            <label class="custom-control-label font-weight-normal text-muted" for="patrr">轮询</label>
+                        </div>
 					</div>
 				</div>
 
 				<div id="Party" class="col-sm-6" style="display:none">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">接受部门</label>
+					<label id="typestr" class="form-label text-dark">接受部门</label>
 					<input type="text" id="pparty" class="form-control" name="pparty" value="">
 				  </div>
 				</div>
 
 				<div id="Tag" class="col-sm-6" style="display:none">
-				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">接受标签</label>
+					<label id="typestr" class="form-label text-dark">接受标签</label>
 					<input type="text" id="ptag" class="form-control" name="ptag" value="">
 				  </div>
 				</div>
@@ -191,16 +196,16 @@
 			<br />
 
 			<div class="text-right">
-			<a class="btn btn-app bg-success" onclick="savetpl();">
-			  <i class="fas fa-save"></i> 保存路由
-			</a>
+              <button class="btn btn-success font-weight-bold" onclick="savetpl();">
+                <i class="fas fa-save mr-1"></i> 保存告警路由
+              </button>
 			</div>
 			</form>
 
         </div>
         <!-- /.card-body -->
-        <div class="card-footer">
-          
+        <div class="card-footer bg-light">
+          <i class="fas fa-info-circle text-info"></i> <strong>提示：</strong>告警路由是实现告警消息分发、合并及差异化发送的目标网关核心组件。
         </div>
         <!-- /.card-footer-->
       </div>
@@ -216,7 +221,35 @@ $(function () {
 	typeChange();
 	
 	$('#labeladd').click(function(){
-	    var labeldiv='<div class="row"> 				<div class="col-3"> 				  				  <div class="form-group"> 					<label>Label Name</label> 					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="如 app"> 				  </div> 				</div> 				 				<div class="col-3"> 				 				  <div class="form-group"> 					<label>Label Value</label> 					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="如 nginx"> 				  </div> 				</div>  				 				<div class="col-1 d-flex align-items-center"> 				  					<div class="form-check"> 					  <input id="rulesregex" class="form-check-input" name="rulesregex" type="checkbox"> 					  <label class="form-check-label">Regex</label> 					</div> 				</div> 				 			  				<div class="col-sm-1 d-flex align-items-center">				  <div class="form-group">					<button id="labeldel" type="button" class="btn btn-danger btn-flat"><i class="fa fa-trash"></i></button>				  </div>				</div></div> 			   			<br />';
+	    var labeldiv='<div class="row"> \
+				<div class="col-4"> \
+				  <div class="form-group"> \
+					<label class="small text-muted">Label Name</label> \
+					<input type="text" id="rules" class="form-control" name="rules" value=""  placeholder="如 app"> \
+				  </div> \
+				</div> \
+				<div class="col-3"> \
+				  <div class="form-group"> \
+					<label class="small text-muted">Operator</label> \
+					<select id="rulesoperator" class="form-control" name="rulesoperator"> \
+					  <option value="==" selected>== (等于)</option> \
+					  <option value="!=">!= (不等于)</option> \
+					  <option value="=~">=~ (正则匹配)</option> \
+					  <option value="!~">!~ (正则不匹配)</option> \
+					</select> \
+				  </div> \
+				</div> \
+				<div class="col-4"> \
+				  <div class="form-group"> \
+					<label class="small text-muted">Label Value</label> \
+					<input type="text" id="rulesvalue" class="form-control" name="rulesvalue" value=""  placeholder="如 nginx"> \
+				  </div> \
+				</div> \
+				<div class="col-sm-1 d-flex align-items-center"> \
+				  <div class="form-group" style="margin-top: 24px;"> \
+					<button id="labeldel" type="button" class="btn btn-sm btn-danger btn-flat"><i class="fa fa-trash"></i></button> \
+				  </div> \
+				</div></div><br />';
 		$('#labelx').append(labeldiv);
 	});
 
@@ -297,11 +330,6 @@ function typeChange(){
 	document.getElementById("Tag").style.display="none";
  } else if(tpltype.value=="workwechat"){
     alert("workwechat暂不支持告警路由，待后期开启!");
-	/*typeStr.innerText="接受用户";
-	document.getElementById("Pat").style.display="none";
-	document.getElementById("Party").style.display="";
-	document.getElementById("Tag").style.display="";*/
-	
  } else{
 	typeStr.innerText="手机号(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
@@ -323,11 +351,12 @@ function savetpl(){
 	//取到所有rules
 	var RouterRules =new Array();
 	$("#labelx > div").each(function() {
+		var op = $(this).find("#rulesoperator").val();
 		var LabelMap={
 			Name: $(this).find("#rules").val(),
 			Value: $(this).find("#rulesvalue").val(),
-			Regex: $(this).find("#rulesregex").is(":checked")
-
+			Regex: op === "=~" || op === "!~",
+			Operator: op
 		};
 		RouterRules.push(LabelMap);
 	});
@@ -346,6 +375,9 @@ function savetpl(){
 		RouterPat: $('#pat').val(),
 		RouterPatRR: $("#patrr").is(":checked"),
 		RouterSendResolved: send_resolved,
+		RouterStatus: $("#status").is(":checked") ? 0 : 2,
+		RouterTimeRangeStart: $('#time_range_start').val(),
+		RouterTimeRangeEnd: $('#time_range_end').val(),
 		Rules: RouterRules
 	};
 

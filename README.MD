@@ -50,13 +50,10 @@ PrometheusAlert 后端使用了 [beego](https://github.com/beego/beego) 框架�
 ├── main.go
 ├── Makefile
 ├── models：模型
-├── PrometheusAlert：二进制文件
 ├── PrometheusAlertVoicePlugin
 ├── README.MD
 ├── routers：路由
 ├── static：静态资源
-├── swagger
-├── tests：测试
 ├── views：前端模板
 └── zabbixclient
 ```
@@ -80,25 +77,15 @@ PrometheusAlert 后端使用了 [beego](https://github.com/beego/beego) 框架�
 默认构建生成的文件是 `./PrometheusAlert`。
 
 ```sh
-# 默认
-make
-
 # 构建
-make build
-
-# 清理构建
-make clean
-
-# 运行 fmt/vet/test
-make format/vet/test
+go build
 
 # 构建镜像，推送镜像，运行镜像
-make docker/docker-push/docker-test
+docker built -t docker/docker-push/docker-test .
 
 # 本地测试运行
-make clean && make build
-cp conf/app-example.conf conf/app.conf
-./PrometheusAlert
+cp conf/app-example.conf conf/app.conf # 复制配置文件
+go run main.go #或者直接使用bee run
 
 # 测试应用健康
 curl http://localhost:8080/health
@@ -112,9 +99,9 @@ curl http://localhost:8080/health
 
 ```sh
 #打开PrometheusAlert releases页面，根据需要选择需要的版本下载到本地解压并进入解压后的目录
-如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9.1/linux.zip)
+如linux版本(https://github.com/feiyu563/PrometheusAlert/releases/download/v5.0.0/PrometheusAlert-linux-amd64.tar.gz)
 
-# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v4.9.1/linux.zip && unzip linux.zip &&cd linux/
+# wget https://github.com/feiyu563/PrometheusAlert/releases/download/v5.0.0/PrometheusAlert-linux-amd64.tar.gz && tar zxvf PrometheusAlert-linux-amd64.tar.gz
 
 #运行PrometheusAlert
 # ./PrometheusAlert (#后台运行请执行 nohup ./PrometheusAlert &)
@@ -148,7 +135,7 @@ docker run -d \
 -e PA_OPEN_FEISHU=1 \
 -e PA_OPEN_DINGDING=1 \
 -e PA_OPEN_WEIXIN=1 \
-feiyu563/prometheus-alert:v4.9.1
+feiyu563/prometheus-alert:master
 ```
 
 <br/>

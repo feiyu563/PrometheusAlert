@@ -1,4 +1,45 @@
 {{template "main" .}}
+<style>
+  .code-editor {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background-color: #1e1e1e !important;
+    color: #9cdcfe !important;
+    border: 1px solid #3c3c3c !important;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .code-editor:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25), inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .code-editor-pink {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    background-color: #1e1e1e !important;
+    color: #ce9178 !important;
+    border: 1px solid #3c3c3c !important;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .code-editor-pink:focus {
+    border-color: #e83e8c !important;
+    box-shadow: 0 0 0 0.2rem rgba(232,62,140,0.25), inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  #MarkdownHtml {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 20px;
+    min-height: 150px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+</style>
+
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
@@ -10,7 +51,6 @@
         <a href="/markdowntest" class="nav-link">模板管理</a>
       </li>
     </ul>
-
   </nav>
   <!-- /.navbar -->
 
@@ -21,7 +61,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Markdown测试</h1>
+            <h1>Markdown 模版渲染测试</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -32,62 +72,71 @@
 
       <!-- Default box -->
       <div class="card">
-        <div class="card-header">
-          <h3 class="card-title" style="color:red">** 用于查看模版渲染效果</h3>
-
+        <div class="card-header bg-navy">
+          <h3 class="card-title"><i class="fas fa-edit"></i> 编写测试内容 (左右分栏比对)</h3>
           <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse" title="Collapse">
               <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-              <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
         <div class="card-body">
 		<form class="form-horizontal" method="POST" action="##" enctype="multipart/form-data" onsubmit="return false" id="formtpl">
-			<label>*Json内容: 原始Json内容文本</label>
-			<br />
-			<textarea id="jsoncontent" name="jsoncontent" class="form-control" style="color:white;background-color:black" cols="30" rows="10" placeholder="原始Json内容文本"></textarea>
-			<br />
-			<label>*模版内容: 自定义模版内容文本</label>
-			<br />
-			<textarea id="tplcontent" name="tplcontent" class="form-control" style="color:#dc1aa9;background-color:black" cols="30" rows="10" placeholder="自定义模版内容文本"></textarea>
-			<br />
-			<div class="text-right">
-			
-			<a class="btn btn-app bg-success" onclick="showHtml();">
-			  <i class="fas fa-bullhorn"></i> 查看效果
-			</a>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-dark"><i class="fas fa-file-code text-primary mr-1"></i> * 原始 Json 报文内容</label>
+                    <textarea id="jsoncontent" name="jsoncontent" class="form-control code-editor" cols="30" rows="12" placeholder='请输入要测试的原始 Json 报文，例如：
+{
+    "status": "firing",
+    "labels": {
+        "alertname": "DiskSpaceLow",
+        "level": "warning"
+    },
+    "annotations": {
+        "summary": "主机硬盘空间不足"
+    }
+}'></textarea>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-dark"><i class="fas fa-feather-alt text-pink mr-1"></i> * 自定义 Go Template 模版内容</label>
+                    <textarea id="tplcontent" name="tplcontent" class="form-control code-editor-pink" cols="30" rows="12" placeholder='请输入要渲染的模版内容，使用 Go 模版语法，例如：
+{{range .alerts}}
+告警状态: {{.status}}
+告警名称: {{.labels.alertname}}
+详细摘要: {{.annotations.summary}}
+{{end}}'></textarea>
+                </div>
+            </div>
+            
+			<div class="text-right mt-2">
+                <button class="btn btn-success font-weight-bold" onclick="showHtml();">
+                  <i class="fas fa-play mr-1"></i> 立即执行渲染效果测试
+                </button>
 			</div>
 		</form>
         </div>
-
       </div>
       <!-- /.card -->
 
-
       <!-- Default box -->
       <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">显示效果: 效果仅供参考，因部分机器人对markdown的支持不同，可能渲染的结果会不尽相同</h3>
-
+        <div class="card-header bg-navy">
+          <h3 class="card-title"><i class="fab fa-markdown"></i> 渲染效果展示 (仅供参考，各客户端实际展现受机器人Markdown规范制约)</h3>
           <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <button type="button" class="btn btn-tool text-white" data-card-widget="collapse" title="Collapse">
               <i class="fas fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-              <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
-        <div class="card-body" id='MarkdownHtml'>
-		 <!-- /.Show MarkdownHtml -->
+        <div class="card-body">
+            <div id='MarkdownHtml' class="text-dark">
+                <span class="text-muted"><i class="fas fa-info-circle"></i> 在上方填入 JSON 与模版内容并点击“立即执行渲染”，渲染结果将在此处呈现实时 Markdown 效果...</span>
+            </div>
         </div>
         <!-- /.card-body -->
       </div>
       <!-- /.card -->
-
 
     </section>
     <!-- /.content -->
@@ -99,14 +148,14 @@ function showHtml(){
 	var jsoncontent=document.getElementById("jsoncontent");
 	var tplcontent=document.getElementById("tplcontent");
 
-	if (jsoncontent.value.length==0){
+	if (jsoncontent.value.trim().length==0){
 		alert('原始Json内容文本不能为空');
-		return
+		return;
 	};
 
-	if (tplcontent.value.length==0){
+	if (tplcontent.value.trim().length==0){
 		alert('自定义模版内容文本不能为空');
-		return
+		return;
 	};
 	
 	$.ajax({
@@ -118,8 +167,10 @@ function showHtml(){
 			console.log(result);
 			$("#MarkdownHtml").html(marked(result));
 		},
+        error: function() {
+            alert("执行渲染请求失败，请检查语法或网络");
+        }
 	});
-	
 };
 </script>
 {{template "jshtml"}}

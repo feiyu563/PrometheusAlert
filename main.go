@@ -3,27 +3,19 @@ package main
 import (
 	"PrometheusAlert/models"
 	_ "PrometheusAlert/routers"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/robfig/cron/v3"
 	"os"
 	"path"
-	"runtime"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/robfig/cron/v3"
 
 	"github.com/astaxie/beego"
+	beecontext "github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-)
-
-// Infos are set at build time use ldflags.
-var (
-	Version   string
-	Revision  string
-	BuildUser string
-	BuildDate string
-	GoVersion = runtime.Version()
 )
 
 func IsExist(path string) bool {
@@ -118,12 +110,22 @@ func init() {
 		}
 	}
 	// 注册模型
-	orm.RegisterModel(new(models.PrometheusAlertDB), new(models.AlertRecord), new(models.AlertRouter))
+	orm.RegisterModel(new(models.PrometheusAlertDB), new(models.AlertRecord), new(models.AlertRouter), new(models.SysConfig))
 	err := orm.RunSyncdb("default", false, true)
 	if err != nil {
 		logs.Error(err)
 		return
 	}
+	models.AlertRouterDBInit()
+	models.AlertTplDBInit()
+	models.InitConfigCache()
+	models.HookBeegoAppConfig()
+}
+
+type CustomAccessLogFilter struct{}
+
+func (f *CustomAccessLogFilter) Filter(ctx *beecontext.Context) bool {
+	return ctx.Request.URL.Path == "/health"
 }
 
 func main() {
@@ -135,12 +137,6 @@ func main() {
 		logpath := beego.AppConfig.String("logpath")
 		logs.SetLogger(logtype, `{"filename":"`+logpath+`"}`)
 	}
-	// 输出应用信息
-	logs.Info("[main] 构建的Go版本: %s", GoVersion)
-	logs.Info("[main] 应用当前版本: %s", Version)
-	logs.Info("[main] 应用当前提交: %s", Revision)
-	logs.Info("[main] 应用构建时间: %s", BuildDate)
-	logs.Info("[main] 应用构建用户: %s", BuildUser)
 
 	// 定时删除日志
 	RecordLive, _ := beego.AppConfig.Int("RecordLive")
@@ -157,5 +153,7 @@ func main() {
 	}
 	models.MetricsInit()
 	beego.Handler("/metrics", promhttp.Handler())
+	beego.BConfig.Log.AccessLogs = true
+	beego.DefaultAccessLogFilter = &CustomAccessLogFilter{}
 	beego.Run()
 }

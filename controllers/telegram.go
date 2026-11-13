@@ -28,20 +28,21 @@ func SendTG(msg, logsign string) string {
 	if tgmsgmode == "0" {
 		// 推送给个人
 		tgusermsg := tgbotapi.NewMessage(tguserid, msg)
-                if tgParseMode == "1" {
-                        tgusermsg.ParseMode = "Markdown" // 设置解析模式为Markdown
-                }
+		if tgParseMode == "1" {
+			tgusermsg.ParseMode = "Markdown" // 设置解析模式为Markdown
+		}
 		_, err = botapi.Send(tgusermsg)
 	} else {
 		// 推送给channel
 		tgchanmsg := tgbotapi.NewMessageToChannel(tgchanname, msg)
-                if tgParseMode == "1" {
-                        tgchanmsg.ParseMode = "Markdown" // 设置解析模式为Markdown
-                }
+		if tgParseMode == "1" {
+			tgchanmsg.ParseMode = "Markdown" // 设置解析模式为Markdown
+		}
 		_, err = botapi.Send(tgchanmsg)
 	}
 	if err != nil {
 		logs.Error(logsign, "[tg]", err.Error())
+		return err.Error()
 	}
 	models.AlertToCounter.WithLabelValues("telegram").Add(1)
 	ChartsJson.Telegram += 1

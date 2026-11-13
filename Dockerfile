@@ -7,11 +7,11 @@ RUN apk update && \
 
 ENV GO111MODULE on
 
-ENV GOPROXY https://goproxy.io
+ENV GOPROXY https://goproxy.cn,direct
 
 COPY . $GOPATH/src/github.com/feiyu563/PrometheusAlert
 
-RUN make build
+RUN go build
 
 # -----------------------------------------------------------------------------
 FROM alpine:3.18
@@ -22,12 +22,8 @@ RUN apk update && \
     apk add --no-cache tzdata && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone && \
-    apk del tzdata && \
 	mkdir -p /app/logs && \
     apk add --no-cache sqlite-libs curl sqlite
-
-HEALTHCHECK --start-period=10s --interval=20s --timeout=3s --retries=3 \
-    CMD curl -fs http://localhost:8080/health || exit 1
 
 WORKDIR /app
 
